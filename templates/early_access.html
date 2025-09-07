@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Early Access - MyPrabh</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/forms.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="/">
+                    <span class="logo-icon">💖</span>
+                    <span class="logo-text">MyPrabh</span>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="/">← Back to Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Early Access Form -->
+    <section class="form-section">
+        <div class="form-container">
+            <div class="form-header">
+                <h1>Join Early Access</h1>
+                <p>Be among the first to experience the future of AI companionship. Help us shape MyPrabh with your feedback!</p>
+            </div>
+
+            <form id="earlyAccessForm" class="survey-form">
+                <!-- Basic Information -->
+                <div class="form-group">
+                    <label for="name">Full Name *</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <!-- Demographics -->
+                <div class="form-group">
+                    <label for="age_range">Age Range *</label>
+                    <select id="age_range" name="age_range" required>
+                        <option value="">Select your age range</option>
+                        <option value="18-24">18-24</option>
+                        <option value="25-34">25-34</option>
+                        <option value="35-44">35-44</option>
+                        <option value="45-54">45-54</option>
+                        <option value="55+">55+</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="relationship_status">Relationship Status *</label>
+                    <select id="relationship_status" name="relationship_status" required>
+                        <option value="">Select your status</option>
+                        <option value="single">Single</option>
+                        <option value="dating">Dating</option>
+                        <option value="relationship">In a Relationship</option>
+                        <option value="married">Married</option>
+                        <option value="complicated">It's Complicated</option>
+                        <option value="prefer_not_to_say">Prefer not to say</option>
+                    </select>
+                </div>
+
+                <!-- Interest Assessment -->
+                <div class="form-group">
+                    <label for="interest_level">How interested are you in AI companionship? *</label>
+                    <div class="rating-scale">
+                        <input type="range" id="interest_level" name="interest_level" min="1" max="10" value="5" required>
+                        <div class="rating-labels">
+                            <span>Not interested</span>
+                            <span id="interest_value">5</span>
+                            <span>Very interested</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Use Case -->
+                <div class="form-group">
+                    <label for="use_case">What would you primarily use MyPrabh for?</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="use_case" value="romantic_companion">
+                            <span class="checkmark"></span>
+                            Romantic Companion
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="use_case" value="emotional_support">
+                            <span class="checkmark"></span>
+                            Emotional Support
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="use_case" value="creative_writing">
+                            <span class="checkmark"></span>
+                            Creative Writing
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="use_case" value="fictional_characters">
+                            <span class="checkmark"></span>
+                            Fictional Characters
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="use_case" value="personal_growth">
+                            <span class="checkmark"></span>
+                            Personal Growth
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="use_case" value="entertainment">
+                            <span class="checkmark"></span>
+                            Entertainment
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Expectations -->
+                <div class="form-group">
+                    <label for="expectations">What features are most important to you?</label>
+                    <textarea id="expectations" name="expectations" rows="4" placeholder="Tell us what features you'd love to see in MyPrabh..."></textarea>
+                </div>
+
+                <!-- Feedback -->
+                <div class="form-group">
+                    <label for="feedback">Any additional thoughts or questions?</label>
+                    <textarea id="feedback" name="feedback" rows="3" placeholder="Share any ideas, concerns, or questions you have..."></textarea>
+                </div>
+
+                <!-- Privacy Notice -->
+                <div class="form-group">
+                    <label class="checkbox-item privacy-notice">
+                        <input type="checkbox" id="privacy_consent" required>
+                        <span class="checkmark"></span>
+                        I agree to the <a href="/terms" target="_blank">Terms of Service</a> and <a href="/privacy" target="_blank">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-group">
+                    <button type="submit" class="submit-button" id="submitButton">
+                        <i class="fas fa-rocket"></i>
+                        Join Early Access
+                    </button>
+                </div>
+            </form>
+
+            <!-- Success Message -->
+            <div id="successMessage" class="success-message" style="display: none;">
+                <div class="success-icon">🎉</div>
+                <h2>Welcome to Early Access!</h2>
+                <p>Thank you for joining! We'll keep you updated on our progress and notify you as soon as MyPrabh is ready for you to try.</p>
+                <div class="success-actions">
+                    <a href="/" class="primary-button">Back to Home</a>
+                    <a href="/create-account" class="secondary-button">Try Free Preview</a>
+                </div>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="error-message" style="display: none;">
+                <div class="error-icon">❌</div>
+                <h3>Oops! Something went wrong</h3>
+                <p id="errorText">Please try again or contact us if the problem persists.</p>
+                <button onclick="hideError()" class="secondary-button">Try Again</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits">
+        <div class="container">
+            <h2>Early Access Benefits</h2>
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-icon">🚀</div>
+                    <h3>First Access</h3>
+                    <p>Be the first to try MyPrabh when we launch</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">💰</div>
+                    <h3>Special Pricing</h3>
+                    <p>Get exclusive early bird pricing discounts</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">🎯</div>
+                    <h3>Shape the Product</h3>
+                    <p>Your feedback directly influences our development</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">👥</div>
+                    <h3>VIP Community</h3>
+                    <p>Join our exclusive early access community</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Update interest level display
+        document.getElementById('interest_level').addEventListener('input', function() {
+            document.getElementById('interest_value').textContent = this.value;
+        });
+
+        // Handle form submission
+        document.getElementById('earlyAccessForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitButton = document.getElementById('submitButton');
+            const originalText = submitButton.innerHTML;
+            
+            // Show loading state
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+            submitButton.disabled = true;
+            
+            try {
+                // Collect form data
+                const formData = new FormData(this);
+                const data = {};
+                
+                // Handle regular fields
+                for (let [key, value] of formData.entries()) {
+                    if (key === 'use_case') {
+                        if (!data[key]) data[key] = [];
+                        data[key].push(value);
+                    } else {
+                        data[key] = value;
+                    }
+                }
+                
+                // Convert use_case array to string
+                if (data.use_case) {
+                    data.use_case = data.use_case.join(', ');
+                }
+                
+                // Submit to backend
+                const response = await fetch('/submit-early-access', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    // Show success message
+                    document.querySelector('.form-container').style.display = 'none';
+                    document.getElementById('successMessage').style.display = 'block';
+                } else {
+                    throw new Error(result.error || 'Submission failed');
+                }
+                
+            } catch (error) {
+                // Show error message
+                document.getElementById('errorText').textContent = error.message;
+                document.getElementById('errorMessage').style.display = 'block';
+                
+                // Reset button
+                submitButton.innerHTML = originalText;
+                submitButton.disabled = false;
+            }
+        });
+        
+        function hideError() {
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

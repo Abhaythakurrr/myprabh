@@ -4,6 +4,13 @@
 !MYPRABH/**
 !.gitignore
 !QUICK_DEPLOY.md
+!app.py
+!requirements.txt
+!Procfile
+!templates/
+!templates/**
+!static/
+!static/**
 
 # But exclude these from MYPRABH folder
 MYPRABH/*.db
