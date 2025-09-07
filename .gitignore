@@ -1,0 +1,92 @@
+# Include only MYPRABH folder and essential files
+*
+!MYPRABH/
+!MYPRABH/**
+!.gitignore
+!QUICK_DEPLOY.md
+
+# But exclude these from MYPRABH folder
+MYPRABH/*.db
+MYPRABH/*.sqlite
+MYPRABH/*.sqlite3
+MYPRABH/myprabh.db
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# Environment Variables
+.env
+.env.local
+.env.production
+.env.development
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Exclude all training and model files
+*training*.py
+*finetune*.py
+test_*.py
+proper_*.py
+simple_*.py
+focused_*.py
+natural_*.py
+create_perfect_*.py
+smart_prabh_chat.py
+final_authentic_training.py
+retrain_focused.py
+*.safetensors
+*.bin
+*.pt
+*.pth
+output_adapter*/
+*_model/
+*.h5
+*.pkl
+*.joblib
+
+# Exclude brain/heart modules (not needed for MVP)
+brain/
+heart/
+prabh_memories/
+
+# Exclude old web interface
+web_interface/
+
+# Exclude other project files
+run_prabh_ai.py
+prabh_ai_core.py
+PRABH_AI_README.md
+deploy_to_railway.sh

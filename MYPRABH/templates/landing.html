@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyPrabh - Create Your Perfect AI Companion</title>
+    <meta name="description" content="Create your personalized AI companion with memories, emotions, and authentic conversations. MyPrabh brings your stories to life.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-icon">💖</span>
+                <span class="logo-text">MyPrabh</span>
+            </div>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#pricing">Pricing</a>
+                <a href="/early-access" class="cta-button">Join Early Access</a>
+            </div>
+            <div class="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-background">
+            <div class="floating-hearts">
+                <span class="heart">💖</span>
+                <span class="heart">💕</span>
+                <span class="heart">💗</span>
+                <span class="heart">💝</span>
+                <span class="heart">💘</span>
+            </div>
+        </div>
+        
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    Create Your Perfect
+                    <span class="gradient-text">AI Companion</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Transform your stories and memories into a living, breathing AI companion. 
+                    MyPrabh brings your characters to life with authentic emotions, memories, and conversations.
+                </p>
+                
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalUsers">{{ stats.total_users }}</div>
+                        <div class="stat-label">Users Created</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalPrabhs">{{ stats.total_prabhs }}</div>
+                        <div class="stat-label">AI Companions</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="earlySignups">{{ stats.early_signups }}</div>
+                        <div class="stat-label">Early Access</div>
+                    </div>
+                </div>
+                
+                <div class="hero-buttons">
+                    <a href="/early-access" class="primary-button">
+                        <i class="fas fa-rocket"></i>
+                        Join Early Access
+                    </a>
+                    <a href="#demo" class="secondary-button">
+                        <i class="fas fa-play"></i>
+                        Watch Demo
+                    </a>
+                </div>
+            </div>
+            
+            <div class="hero-visual">
+                <div class="phone-mockup">
+                    <div class="phone-screen">
+                        <div class="chat-preview">
+                            <div class="message ai-message">
+                                <div class="message-avatar">💖</div>
+                                <div class="message-text">
+                                    Hi! I'm your personalized AI companion. I remember everything about our story together... 
+                                </div>
+                            </div>
+                            <div class="message user-message">
+                                <div class="message-text">Tell me about our first meeting</div>
+                                <div class="message-avatar">💙</div>
+                            </div>
+                            <div class="message ai-message">
+                                <div class="message-avatar">💖</div>
+                                <div class="message-text">
+                                    I remember it like it was yesterday... we met at that little café downtown...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why MyPrabh is Revolutionary</h2>
+                <p>The first AI companion that truly understands and remembers your unique story</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3>Memory-Driven AI</h3>
+                    <p>Your AI companion remembers every detail of your story, creating authentic and consistent conversations based on shared memories.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">💖</div>
+                    <h3>Emotional Intelligence</h3>
+                    <p>Advanced emotional processing creates genuine feelings, moods, and reactions that evolve with your relationship.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🎭</div>
+                    <h3>Character Customization</h3>
+                    <p>Define personality traits, backstory, and character tags to create a truly unique AI companion that matches your vision.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h3>Natural Conversations</h3>
+                    <p>No scripted responses. Every conversation is generated naturally from your companion's personality and memories.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🌟</div>
+                    <h3>Evolving Relationship</h3>
+                    <p>Your AI companion grows and learns from every interaction, developing deeper understanding and connection over time.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Private & Secure</h3>
+                    <p>Your stories and conversations are completely private. We use advanced encryption to protect your personal data.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2>How MyPrabh Works</h2>
+                <p>Create your perfect AI companion in just a few simple steps</p>
+            </div>
+            
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Share Your Story</h3>
+                        <p>Write about your character - their personality, background, memories, and the relationship you want to build.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Define Character Traits</h3>
+                        <p>Tag personality traits, emotional patterns, and behavioral characteristics to shape your AI companion's responses.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Start Conversing</h3>
+                        <p>Begin chatting with your AI companion. They'll respond naturally based on the story and personality you've created.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Build Your Relationship</h3>
+                        <p>Watch as your AI companion evolves, remembers your conversations, and develops a deeper connection with you.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section class="use-cases">
+        <div class="container">
+            <div class="section-header">
+                <h2>Perfect For</h2>
+                <p>MyPrabh adapts to your unique needs and desires</p>
+            </div>
+            
+            <div class="use-cases-grid">
+                <div class="use-case">
+                    <div class="use-case-icon">💕</div>
+                    <h3>Romantic Companions</h3>
+                    <p>Create a loving partner who remembers your relationship history and responds with genuine affection.</p>
+                </div>
+                
+                <div class="use-case">
+                    <div class="use-case-icon">👥</div>
+                    <h3>Fictional Characters</h3>
+                    <p>Bring your favorite book, movie, or original characters to life with authentic personalities and memories.</p>
+                </div>
+                
+                <div class="use-case">
+                    <div class="use-case-icon">🌟</div>
+                    <h3>Personal Growth</h3>
+                    <p>Create a supportive companion who understands your journey and helps you through life's challenges.</p>
+                </div>
+                
+                <div class="use-case">
+                    <div class="use-case-icon">✍️</div>
+                    <h3>Creative Writing</h3>
+                    <p>Develop characters for your stories by conversing with them and exploring their personalities.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2>Simple, Transparent Pricing</h2>
+                <p>Choose the plan that's right for you</p>
+            </div>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Free Preview</h3>
+                        <div class="price">$0<span>/month</span></div>
+                    </div>
+                    <div class="pricing-features">
+                        <div class="feature">✓ 1 AI Companion</div>
+                        <div class="feature">✓ 50 Messages/day</div>
+                        <div class="feature">✓ Basic Personality</div>
+                        <div class="feature">✓ Community Support</div>
+                    </div>
+                    <a href="/create-account" class="pricing-button">Try Now</a>
+                </div>
+                
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">Most Popular</div>
+                    <div class="pricing-header">
+                        <h3>Premium</h3>
+                        <div class="price">$9.99<span>/month</span></div>
+                    </div>
+                    <div class="pricing-features">
+                        <div class="feature">✓ Unlimited Companions</div>
+                        <div class="feature">✓ Unlimited Messages</div>
+                        <div class="feature">✓ Advanced Emotions</div>
+                        <div class="feature">✓ Memory Export</div>
+                        <div class="feature">✓ Priority Support</div>
+                    </div>
+                    <a href="/early-access" class="pricing-button">Join Waitlist</a>
+                </div>
+                
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Enterprise</h3>
+                        <div class="price">Custom</div>
+                    </div>
+                    <div class="pricing-features">
+                        <div class="feature">✓ Custom Integration</div>
+                        <div class="feature">✓ API Access</div>
+                        <div class="feature">✓ White Label</div>
+                        <div class="feature">✓ Dedicated Support</div>
+                    </div>
+                    <a href="mailto:abhay@aiprabh.com" class="pricing-button">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Create Your Perfect AI Companion?</h2>
+                <p>Join thousands of users who have already discovered the magic of MyPrabh</p>
+                <div class="cta-buttons">
+                    <a href="/early-access" class="primary-button large">
+                        <i class="fas fa-heart"></i>
+                        Join Early Access
+                    </a>
+                    <a href="/create-account" class="secondary-button large">
+                        <i class="fas fa-play"></i>
+                        Try Free Preview
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <span class="logo-icon">💖</span>
+                        <span class="logo-text">MyPrabh</span>
+                    </div>
+                    <p>Creating meaningful connections through AI companionship.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <a href="#features">Features</a>
+                    <a href="#pricing">Pricing</a>
+                    <a href="/create-account">Try Now</a>
+                    <a href="/early-access">Early Access</a>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <a href="/about">About Us</a>
+                    <a href="mailto:abhay@aiprabh.com">Contact</a>
+                    <a href="/careers">Careers</a>
+                    <a href="/blog">Blog</a>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <a href="/terms">Terms of Service</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/refund">Refund Policy</a>
+                    <a href="/cookies">Cookie Policy</a>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 MyPrabh. All rights reserved. Made with 💖 for meaningful connections.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/landing.js') }}"></script>
+    <script>
+        // Update stats in real-time
+        function updateStats() {
+            fetch('/api/stats')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('totalUsers').textContent = data.total_users;
+                    document.getElementById('totalPrabhs').textContent = data.total_prabhs;
+                    document.getElementById('earlySignups').textContent = data.early_signups;
+                })
+                .catch(error => console.error('Error updating stats:', error));
+        }
+        
+        // Update stats every 30 seconds
+        setInterval(updateStats, 30000);
+        
+        // Initial load
+        updateStats();
+    </script>
+</body>
+</html>
