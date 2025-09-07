@@ -2,9 +2,10 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 import sqlite3
 import uuid
-import smtplib
-from email.mime.text import MimeText
-from email.mime.multipart import MimeMultipart
+# Email functionality disabled for MVP deployment
+# import smtplib
+# from email.mime.text import MimeText
+# from email.mime.multipart import MimeMultipart
 import json
 from datetime import datetime
 import os
@@ -14,11 +15,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 app.secret_key = 'myprabh_mvp_2024_secret_key'
 
-# Email configuration
-SMTP_SERVER = "smtp.gmail.com"
-SMTP_PORT = 587
-EMAIL_ADDRESS = "abhay@aiprabh.com"
-EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', '')  # Set this in environment
+# Email configuration - DISABLED for MVP deployment
+# SMTP_SERVER = "smtp.gmail.com"
+# SMTP_PORT = 587
+# EMAIL_ADDRESS = "abhay@aiprabh.com"
+# EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', '')  # Set this in environment
 
 # Database initialization
 def init_db():
@@ -458,41 +459,10 @@ def generate_prabh_response(message, prabh_data):
     return base_response
 
 def send_early_access_email(data):
-    """Send early access notification email"""
-    try:
-        if not EMAIL_PASSWORD:
-            return  # Skip email if not configured
-        
-        msg = MimeMultipart()
-        msg['From'] = EMAIL_ADDRESS
-        msg['To'] = EMAIL_ADDRESS
-        msg['Subject'] = "New Early Access Signup - MyPrabh"
-        
-        body = f"""
-        New Early Access Signup:
-        
-        Name: {data['name']}
-        Email: {data['email']}
-        Age Range: {data['age_range']}
-        Relationship Status: {data['relationship_status']}
-        Interest Level: {data['interest_level']}/10
-        Use Case: {data.get('use_case', 'Not specified')}
-        Expectations: {data.get('expectations', 'Not specified')}
-        Feedback: {data.get('feedback', 'Not specified')}
-        
-        Timestamp: {datetime.now()}
-        """
-        
-        msg.attach(MimeText(body, 'plain'))
-        
-        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
-        server.starttls()
-        server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-        server.send_message(msg)
-        server.quit()
-        
-    except Exception as e:
-        print(f"Email sending failed: {e}")
+    """Send early access notification email - DISABLED for MVP deployment"""
+    # Email functionality disabled for Railway deployment
+    print(f"Early access signup received: {data['name']} ({data['email']})")
+    return
 
 def get_live_stats():
     """Get real-time statistics"""
