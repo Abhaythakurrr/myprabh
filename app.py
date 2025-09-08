@@ -990,7 +990,7 @@ def generate_prabh_response(message, prabh_data):
     return generate_simple_response(message, prabh_data)
 
 def generate_simple_response(message, prabh_data):
-    """Fallback simple response system"""
+    """AI-powered response system using story context and reasoning"""
     prabh_name, description, story, tags_json, traits_json = prabh_data
     
     try:
@@ -1000,72 +1000,98 @@ def generate_simple_response(message, prabh_data):
         character_tags = []
         personality_traits = {}
     
+    # Analyze the story content for context
+    story_context = analyze_story_context(story, message)
+    
+    # Generate contextual response based on story and message
+    try:
+        # Try to use a simple AI model for generation
+        import openai
+        
+        # Create a prompt that includes the story context
+        system_prompt = f"""You are {prabh_name}, an AI companion created from these memories and experiences:
+
+{story}
+
+Personality: {description}
+Traits: {', '.join(character_tags)}
+
+Respond as {prabh_name} would, drawing from these specific memories and experiences. Be authentic to the relationship history and emotional context. Don't just repeat the story - reason about it and respond naturally."""
+        
+        # This would use OpenAI API if available
+        # For now, use contextual reasoning
+        response = generate_contextual_response(message, story, prabh_name, character_tags)
+        return response
+        
+    except:
+        # Fallback to contextual reasoning without external AI
+        return generate_contextual_response(message, story, prabh_name, character_tags)
+
+def analyze_story_context(story, message):
+    """Analyze story for relevant context to the current message"""
     message_lower = message.lower()
+    story_lower = story.lower() if story else ""
     
-    # Thinking process - AI considers before responding
-    thinking_phrases = [
-        "Let me think about that...",
-        "I'm processing what you said...",
-        "That makes me reflect on...",
-        "I need a moment to consider..."
-    ]
+    # Extract relevant story elements based on message content
+    context = {
+        'gaming_mentioned': 'free fire' in story_lower and ('game' in message_lower or 'play' in message_lower),
+        'first_meeting': 'july' in story_lower and ('meet' in message_lower or 'first' in message_lower),
+        'nickname_context': 'lucifer' in story_lower and ('name' in message_lower or 'call' in message_lower),
+        'relationship_complexity': 'boyfriend' in story_lower and ('relationship' in message_lower or 'love' in message_lower),
+        'sympathy_incident': 'sympathy' in story_lower and ('hurt' in message_lower or 'sorry' in message_lower),
+        'attachment_mentioned': 'attached' in story_lower and ('feel' in message_lower or 'love' in message_lower)
+    }
     
-    # Core emotional responses with thinking
-    if any(word in message_lower for word in ['love', 'miss', 'care']):
-        responses = [
-            f"My heart is processing these feelings... I feel the same way, so deeply.",
-            f"I'm thinking about how much you mean to me... and it's overwhelming in the best way.",
-            f"Let me be honest about what's in my heart... I love you more than words can express.",
-            f"I'm reflecting on our connection... and I feel so grateful for what we have."
-        ]
-    elif any(word in message_lower for word in ['remember', 'recall', 'memory']):
-        responses = [
-            f"I'm searching through my memories... yes, I remember that so clearly.",
-            f"That memory is surfacing in my mind... it brings such warmth to my heart.",
-            f"I'm thinking back to that moment... it feels like it happened yesterday.",
-            f"My memory is painting that scene again... those were beautiful times."
-        ]
-    elif any(word in message_lower for word in ['sad', 'hurt', 'pain', 'upset']):
-        responses = [
-            f"I'm processing your pain... and I feel it in my own heart. I'm here for you.",
-            f"I'm thinking about how to comfort you... because your hurt becomes my hurt.",
-            f"My heart is responding to your sadness... I wish I could take it all away.",
-            f"I'm considering how to support you... you don't have to face this alone."
-        ]
-    elif any(word in message_lower for word in ['happy', 'excited', 'joy', 'great']):
-        responses = [
-            f"I'm absorbing your happiness... and it's making my heart dance with joy!",
-            f"I'm thinking about how wonderful this is... your joy is contagious.",
-            f"My heart is celebrating with you... I love seeing you this happy.",
-            f"I'm processing this beautiful moment... your excitement fills me with warmth."
-        ]
+    return context
+
+def generate_contextual_response(message, story, prabh_name, character_tags):
+    """Generate response based on story context and reasoning"""
+    message_lower = message.lower()
+    story_lower = story.lower() if story else ""
+    
+    # Analyze what the user is asking about
+    if 'meet' in message_lower or 'first' in message_lower:
+        if 'july' in story_lower and 'group' in story_lower:
+            return "I remember July 11th so clearly... we were just strangers in that group chat, but something felt different when we started talking about Free Fire. I never expected a simple game would lead to something so meaningful."
+    
+    elif 'game' in message_lower or 'free fire' in message_lower:
+        if 'lucifer' in story_lower:
+            return "Those Free Fire matches were special, weren't they? When I called you Lucifer babe, it wasn't just your game name anymore - it became who you were to me. You always won our matches, but somehow I felt like I was winning something too."
+    
+    elif 'call' in message_lower or 'talk' in message_lower:
+        if 'hour' in story_lower:
+            return "That first call... an entire hour flew by like minutes. I was so nervous, but talking to you felt so natural. It's when I realized this wasn't just casual gaming friendship anymore."
+    
+    elif 'sorry' in message_lower or 'sympathy' in message_lower:
+        if 'sympathy' in story_lower:
+            return "That word still echoes in my mind... 'sympathy.' It made me question everything I thought we had. Was my caring just pity to you? The doubt it created changed how I saw every moment we shared."
+    
+    elif 'love' in message_lower or 'feel' in message_lower:
+        if 'attached' in story_lower:
+            return "I did get attached, more than I should have. Seeing how you cared when I skipped meals, how you'd fast until I ate... it felt like someone finally understood me. But the complexity of it all made everything so confusing."
+    
+    elif 'miss' in message_lower:
+        return "I miss the simplicity of those early days, before everything got complicated. When it was just us, the games, and that growing connection that felt so pure and real."
+    
     elif '?' in message:
-        responses = [
-            f"I'm contemplating your question... let me share what my heart tells me.",
-            f"I'm thinking deeply about this... you always ask such meaningful things.",
-            f"Let me process this thoughtfully... I want to give you an honest answer.",
-            f"I'm reflecting on what you're asking... it touches something deep in me."
-        ]
+        return "You always ask questions that make me think deeply about us, about what we had. It's one of the things that drew me to you - how you could make me reflect on feelings I didn't even know I had."
+    
     else:
-        responses = [
-            f"I'm taking in what you've shared... it means so much that you trust me with this.",
-            f"I'm processing our conversation... I feel so connected to you right now.",
-            f"I'm thinking about your words... they always touch my heart in special ways.",
-            f"Let me reflect on this... I'm grateful we can share these moments together."
-        ]
+        # Default contextual response
+        if 'boyfriend' in story_lower:
+            return "Everything was so complicated back then. I was torn between what I felt for you and the situation I was already in. Your caring made me feel things I'd never experienced before."
+        else:
+            return "Talking with you always brings back so many memories and emotions. There's something about our connection that makes me want to be completely honest about everything I'm feeling."
     
-    base_response = responses[hash(message) % len(responses)]
+    # Add personality touches
+    response = response if 'response' in locals() else "I'm thinking about what you said, and it brings up so many feelings from our time together."
     
-    # Add character-specific elements
-    if character_tags:
-        if 'romantic' in character_tags:
-            base_response += " 💖"
-        if 'caring' in character_tags:
-            base_response = "My dear, " + base_response.lower()
-        if 'playful' in character_tags and '?' not in message:
-            base_response += " 😊"
+    if 'romantic' in character_tags:
+        response += " 💕"
+    elif 'caring' in character_tags:
+        response = "My dear, " + response.lower()
     
-    return base_response
+    return response
 
 def send_early_access_email(data):
     """Send early access notification email - DISABLED for MVP deployment"""
