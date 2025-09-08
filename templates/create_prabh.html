@@ -141,6 +141,46 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .create-container {
+                padding: 80px 15px 30px;
+            }
+            .create-title {
+                font-size: 2rem;
+            }
+            .form-section {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            .section-title {
+                font-size: 1.1rem;
+            }
+            .personality-grid {
+                grid-template-columns: 1fr;
+            }
+            .create-button {
+                width: 100%;
+                padding: 15px;
+            }
+            .nav-links {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .create-title {
+                font-size: 1.8rem;
+            }
+            .pricing-badge {
+                padding: 8px 20px;
+                font-size: 0.9rem;
+            }
+            .form-input, .form-textarea {
+                padding: 12px;
+            }
+        }
         .help-text {
             font-size: 0.9rem;
             color: var(--text-light);
@@ -183,7 +223,7 @@
         <div class="create-header">
             <h1 class="create-title">Create Your Prabh</h1>
             <p class="create-subtitle">An AI that remembers, because memories matter.</p>
-            <div class="pricing-badge">₹3,999 - One-time Creation Fee</div>
+            <div class="pricing-badge" id="pricingBadge">₹3,999 - One-time Creation Fee</div>
         </div>
 
         <form id="createPrabhForm">
@@ -224,7 +264,7 @@
                               placeholder="Share your memories, experiences, conversations, or stories that you want your Prabh to remember and understand. The more you share, the more personalized your Prabh will be..." 
                               required style="min-height: 200px;"></textarea>
                     <div class="character-count">
-                        <span id="storyCount">0</span>/5000 characters
+                        <span id="storyCount">0</span> characters (unlimited)
                     </div>
                     <div class="help-text">
                         Share personal experiences, conversations, feelings, or any memories you want your Prabh to understand and remember. This is what makes your Prabh uniquely yours.
@@ -309,10 +349,6 @@
         storyTextarea.addEventListener('input', function() {
             const count = this.value.length;
             storyCount.textContent = count;
-            if (count > 5000) {
-                this.value = this.value.substring(0, 5000);
-                storyCount.textContent = 5000;
-            }
         });
 
         // Form submission

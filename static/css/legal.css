@@ -403,6 +403,21 @@ body {
         max-width: 300px;
         justify-content: center;
     }
+    
+    .blog-grid,
+    .categories-grid,
+    .feature-grid,
+    .benefits-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .newsletter-form .form-group {
+        flex-direction: column;
+    }
+    
+    .newsletter-form input {
+        margin-bottom: 10px;
+    }
 }
 
 @media (max-width: 480px) {

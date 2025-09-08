@@ -68,6 +68,10 @@
                 </div>
 
                 <div class="social-login">
+                    <button type="button" onclick="loginWithFace()" class="social-button face">
+                        <i class="fas fa-camera"></i>
+                        Login with Face
+                    </button>
                     <button class="social-button google">
                         <i class="fab fa-google"></i>
                         Continue with Google
@@ -117,6 +121,77 @@
                 submitButton.disabled = false;
             });
         });
+        
+        function loginWithFace() {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert('Camera not supported on this device');
+                return;
+            }
+            
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    const video = document.createElement('video');
+                    video.srcObject = stream;
+                    video.play();
+                    
+                    const modal = document.createElement('div');
+                    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:9999;display:flex;align-items:center;justify-content:center;';
+                    
+                    const container = document.createElement('div');
+                    container.style.cssText = 'background:white;padding:20px;border-radius:10px;text-align:center;';
+                    
+                    video.style.cssText = 'width:300px;height:200px;border-radius:10px;';
+                    
+                    const loginBtn = document.createElement('button');
+                    loginBtn.textContent = 'Login with Face';
+                    loginBtn.style.cssText = 'margin:10px;padding:10px 20px;background:#ff6b9d;color:white;border:none;border-radius:5px;cursor:pointer;';
+                    
+                    const closeBtn = document.createElement('button');
+                    closeBtn.textContent = 'Close';
+                    closeBtn.style.cssText = 'margin:10px;padding:10px 20px;background:#ccc;color:black;border:none;border-radius:5px;cursor:pointer;';
+                    
+                    container.appendChild(video);
+                    container.appendChild(document.createElement('br'));
+                    container.appendChild(loginBtn);
+                    container.appendChild(closeBtn);
+                    modal.appendChild(container);
+                    document.body.appendChild(modal);
+                    
+                    loginBtn.onclick = () => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        canvas.getContext('2d').drawImage(video, 0, 0);
+                        
+                        const imageData = canvas.toDataURL('image/jpeg');
+                        
+                        fetch('/api/face-login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ image_data: imageData })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert('Face login successful!');
+                                window.location.href = data.redirect || '/dashboard';
+                            } else {
+                                alert('Face not recognized: ' + data.error);
+                            }
+                            stream.getTracks().forEach(track => track.stop());
+                            document.body.removeChild(modal);
+                        });
+                    };
+                    
+                    closeBtn.onclick = () => {
+                        stream.getTracks().forEach(track => track.stop());
+                        document.body.removeChild(modal);
+                    };
+                })
+                .catch(error => {
+                    alert('Camera access denied');
+                });
+        }
     </script>
 </body>
 </html>

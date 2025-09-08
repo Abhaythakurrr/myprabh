@@ -11,6 +11,7 @@ from datetime import datetime
 import os
 import re
 from werkzeug.security import generate_password_hash, check_password_hash
+from security import security_manager
 
 app = Flask(__name__)
 app.secret_key = 'myprabh_mvp_2024_secret_key'
@@ -42,6 +43,7 @@ def init_db():
             email TEXT UNIQUE NOT NULL,
             name TEXT NOT NULL,
             password_hash TEXT,
+            face_signature TEXT,
             is_admin BOOLEAN DEFAULT FALSE,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             last_active TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -74,6 +76,7 @@ def init_db():
             story_content TEXT,
             character_tags TEXT,
             personality_traits TEXT,
+            payment_status TEXT DEFAULT 'PENDING',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             last_used TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users (user_id)
@@ -218,8 +221,15 @@ def register():
         data = request.get_json()
         
         # Validate input
-        if not data.get('email') or not data.get('name'):
-            return jsonify({'error': 'Email and name are required'}), 400
+        if not data.get('email') or not data.get('name') or not data.get('password'):
+            return jsonify({'error': 'Email, name, and password are required'}), 400
+        
+        # Verify captcha
+        if not data.get('captcha') or data.get('captcha') != session.get('captcha_answer'):
+            return jsonify({'error': 'Invalid captcha'}), 400
+        
+        if len(data.get('password', '')) < 6:
+            return jsonify({'error': 'Password must be at least 6 characters'}), 400
         
         # Generate user ID
         user_id = str(uuid.uuid4())
@@ -231,10 +241,11 @@ def register():
         # Check if admin user
         is_admin = data['email'] == ADMIN_EMAIL
         
-        # Hash password if provided
-        password_hash = None
-        if data.get('password'):
-            password_hash = generate_password_hash(data['password'])
+        # Admin gets special pricing
+        admin_price = 100  # ₹1 in paise for admin
+        
+        # Hash password
+        password_hash = generate_password_hash(data['password'])
         
         cursor.execute('''
             INSERT INTO users (user_id, email, name, password_hash, is_admin)
@@ -267,8 +278,8 @@ def api_login():
         data = request.get_json()
         
         # Validate input
-        if not data.get('email'):
-            return jsonify({'error': 'Email is required'}), 400
+        if not data.get('email') or not data.get('password'):
+            return jsonify({'error': 'Email and password are required'}), 400
         
         # Find user in database
         conn = sqlite3.connect('myprabh.db')
@@ -281,12 +292,11 @@ def api_login():
         conn.close()
         
         if not user:
-            return jsonify({'error': 'User not found'}), 404
+            return jsonify({'error': 'Invalid email or password'}), 401
         
-        # Check password if provided
-        if data.get('password') and user[3]:  # password_hash exists
-            if not check_password_hash(user[3], data['password']):
-                return jsonify({'error': 'Invalid password'}), 401
+        # Check password
+        if not user[3] or not check_password_hash(user[3], data['password']):
+            return jsonify({'error': 'Invalid email or password'}), 401
         
         # Set session
         session['user_id'] = user[0]
@@ -323,7 +333,7 @@ def dashboard():
     cursor = conn.cursor()
     
     cursor.execute('''
-        SELECT id, prabh_name, character_description, created_at, last_used
+        SELECT id, prabh_name, character_description, created_at, last_used, payment_status
         FROM prabh_instances 
         WHERE user_id = ?
         ORDER BY last_used DESC
@@ -347,7 +357,7 @@ def create_prabh():
 
 @app.route('/save-prabh', methods=['POST'])
 def save_prabh():
-    """Save new Prabh instance"""
+    """Save new Prabh instance - REQUIRES PAYMENT"""
     if 'user_id' not in session:
         return jsonify({'error': 'Not authenticated'}), 401
     
@@ -358,21 +368,22 @@ def save_prabh():
         if not data.get('prabh_name') or not data.get('story_content'):
             return jsonify({'error': 'Prabh name and story are required'}), 400
         
-        # Insert Prabh instance
+        # Insert Prabh instance with PENDING payment status
         conn = sqlite3.connect('myprabh.db')
         cursor = conn.cursor()
         
         cursor.execute('''
             INSERT INTO prabh_instances 
-            (user_id, prabh_name, character_description, story_content, character_tags, personality_traits)
-            VALUES (?, ?, ?, ?, ?, ?)
+            (user_id, prabh_name, character_description, story_content, character_tags, personality_traits, payment_status)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         ''', (
             session['user_id'],
             data['prabh_name'],
             data.get('character_description', ''),
             data['story_content'],
             json.dumps(data.get('character_tags', [])),
-            json.dumps(data.get('personality_traits', {}))
+            json.dumps(data.get('personality_traits', {})),
+            'PENDING'
         ))
         
         prabh_id = cursor.lastrowid
@@ -380,7 +391,7 @@ def save_prabh():
         conn.close()
         
         # Log analytics
-        log_analytics('prabh_created', session['user_id'], {'prabh_id': prabh_id})
+        log_analytics('prabh_created_pending_payment', session['user_id'], {'prabh_id': prabh_id})
         
         return jsonify({'success': True, 'prabh_id': prabh_id, 'redirect': f'/payment/{prabh_id}'})
         
@@ -409,15 +420,20 @@ def payment_page(prabh_id):
     if not prabh_data:
         return redirect(url_for('dashboard'))
     
+    # Check if admin user for special pricing
+    is_admin = session.get('is_admin', False)
+    amount = 100 if is_admin else PRABH_CREATION_PRICE  # ₹1 for admin
+    
     return render_template('payment.html', 
                          prabh_id=prabh_id,
                          prabh_name=prabh_data[1],
-                         amount=PRABH_CREATION_PRICE,
+                         amount=amount,
+                         is_admin=is_admin,
                          razorpay_key=RAZORPAY_KEY_ID)
 
 @app.route('/chat/<int:prabh_id>')
 def chat_interface(prabh_id):
-    """Chat interface for specific Prabh"""
+    """Chat interface for specific Prabh - REQUIRES PAYMENT"""
     if 'user_id' not in session:
         return redirect(url_for('create_account'))
     
@@ -426,7 +442,7 @@ def chat_interface(prabh_id):
     cursor = conn.cursor()
     
     cursor.execute('''
-        SELECT id, prabh_name, character_description, story_content, character_tags, personality_traits
+        SELECT id, prabh_name, character_description, story_content, character_tags, personality_traits, payment_status
         FROM prabh_instances 
         WHERE id = ? AND user_id = ?
     ''', (prabh_id, session['user_id']))
@@ -436,6 +452,11 @@ def chat_interface(prabh_id):
     if not prabh_data:
         conn.close()
         return redirect(url_for('dashboard'))
+    
+    # Check payment status
+    if prabh_data[6] != 'PAID':
+        conn.close()
+        return redirect(url_for('payment_page', prabh_id=prabh_id))
     
     # Update last used
     cursor.execute('''
@@ -508,36 +529,34 @@ def verify_payment():
     
     try:
         data = request.get_json()
-        
-        # Here you would verify the payment with Razorpay
-        # For MVP, we'll just mark the Prabh as activated
         prabh_id = data.get('prabh_id')
+        payment_id = data.get('razorpay_payment_id')
         
-        if prabh_id:
-            # Mark Prabh as paid/activated
-            conn = sqlite3.connect('myprabh.db')
-            cursor = conn.cursor()
-            
-            cursor.execute('''
-                UPDATE prabh_instances 
-                SET last_used = CURRENT_TIMESTAMP 
-                WHERE id = ? AND user_id = ?
-            ''', (prabh_id, session['user_id']))
-            
-            conn.commit()
-            conn.close()
-            
-            # Log analytics
-            log_analytics('payment_completed', session['user_id'], {
-                'prabh_id': prabh_id,
-                'amount': PRABH_CREATION_PRICE,
-                'payment_id': data.get('razorpay_payment_id')
-            })
-            
-            return jsonify({'success': True})
-        else:
-            return jsonify({'error': 'Invalid payment data'}), 400
-            
+        if not prabh_id or not payment_id:
+            return jsonify({'error': 'Missing payment data'}), 400
+        
+        # Mark Prabh as PAID and activate
+        conn = sqlite3.connect('myprabh.db')
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            UPDATE prabh_instances 
+            SET payment_status = 'PAID', last_used = CURRENT_TIMESTAMP 
+            WHERE id = ? AND user_id = ?
+        ''', (prabh_id, session['user_id']))
+        
+        conn.commit()
+        conn.close()
+        
+        # Log analytics
+        log_analytics('payment_completed', session['user_id'], {
+            'prabh_id': prabh_id,
+            'amount': PRABH_CREATION_PRICE,
+            'payment_id': payment_id
+        })
+        
+        return jsonify({'success': True, 'redirect': f'/chat/{prabh_id}'})
+        
     except Exception as e:
         return jsonify({'error': f'Payment verification failed: {str(e)}'}), 500
 
@@ -545,6 +564,100 @@ def verify_payment():
 def api_stats():
     """Get live statistics"""
     return jsonify(get_live_stats())
+
+@app.route('/api/captcha', methods=['GET'])
+def get_captcha():
+    """Generate captcha for human verification"""
+    captcha_data = security_manager.generate_math_captcha()
+    session['captcha_answer'] = captcha_data['answer']
+    session['captcha_token'] = captcha_data['token']
+    return jsonify({
+        'question': captcha_data['question'],
+        'token': captcha_data['token']
+    })
+
+@app.route('/api/face-setup', methods=['POST'])
+def setup_face_recognition():
+    """Setup face recognition for user"""
+    if 'user_id' not in session:
+        return jsonify({'error': 'Not authenticated'}), 401
+    
+    try:
+        data = request.get_json()
+        image_data = data.get('image_data')
+        
+        if not image_data:
+            return jsonify({'error': 'No image data provided'}), 400
+        
+        # Detect face and generate signature
+        face_result = security_manager.detect_face_in_image(image_data)
+        
+        if not face_result['success']:
+            return jsonify({'error': face_result['error']}), 400
+        
+        # Store face signature
+        conn = sqlite3.connect('myprabh.db')
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            UPDATE users SET face_signature = ?
+            WHERE user_id = ?
+        ''', (face_result['face_signature'], session['user_id']))
+        
+        conn.commit()
+        conn.close()
+        
+        return jsonify({'success': True, 'message': 'Face recognition setup complete'})
+        
+    except Exception as e:
+        return jsonify({'error': f'Face setup failed: {str(e)}'}), 500
+
+@app.route('/api/face-login', methods=['POST'])
+def face_login():
+    """Login using face recognition"""
+    try:
+        data = request.get_json()
+        image_data = data.get('image_data')
+        
+        if not image_data:
+            return jsonify({'error': 'No image data provided'}), 400
+        
+        # Detect face
+        face_result = security_manager.detect_face_in_image(image_data)
+        
+        if not face_result['success']:
+            return jsonify({'error': face_result['error']}), 400
+        
+        # Find matching user
+        conn = sqlite3.connect('myprabh.db')
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            SELECT user_id, email, name, face_signature, is_admin
+            FROM users WHERE face_signature IS NOT NULL
+        ''')
+        
+        users = cursor.fetchall()
+        conn.close()
+        
+        # Compare face signatures
+        for user in users:
+            if security_manager.compare_face_signatures(face_result['face_signature'], user[3]):
+                # Set session
+                session['user_id'] = user[0]
+                session['user_email'] = user[1]
+                session['user_name'] = user[2]
+                session['is_admin'] = bool(user[4])
+                
+                # Log analytics
+                log_analytics('face_login', user[0], {'method': 'face_recognition'})
+                
+                return jsonify({'success': True, 'redirect': '/dashboard'})
+        
+        return jsonify({'error': 'Face not recognized'}), 401
+        
+    except Exception as e:
+        return jsonify({'error': f'Face login failed: {str(e)}'}), 500
 
 @app.route('/api/newsletter-signup', methods=['POST'])
 def newsletter_signup():
@@ -603,7 +716,73 @@ def refund():
     return render_template('refund.html')
 
 def generate_prabh_response(message, prabh_data):
-    """Generate response based on Prabh's character and story"""
+    """Generate response using the sophisticated AI system with fine-tuned models"""
+    try:
+        # Import systems
+        import sys
+        import os
+        sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+        
+        from model_manager import model_manager
+        
+        # Initialize model manager if needed
+        if not hasattr(generate_prabh_response, 'models_loaded'):
+            model_manager.load_available_models()
+            generate_prabh_response.models_loaded = True
+        
+        # Process input through AI system if available
+        try:
+            from prabh_ai_core import PrabhAI
+            
+            if not hasattr(generate_prabh_response, 'ai_system'):
+                generate_prabh_response.ai_system = PrabhAI()
+            
+            ai_system = generate_prabh_response.ai_system
+            
+            # Create context from character data
+            prabh_name, description, story, tags_json, traits_json = prabh_data
+            context = {
+                'character_name': prabh_name,
+                'character_description': description,
+                'character_story': story,
+                'character_tags': json.loads(tags_json) if tags_json else [],
+                'personality_traits': json.loads(traits_json) if traits_json else {}
+            }
+            
+            # Process through AI system for thinking and emotional processing
+            ai_response = ai_system.process_input(message, context)
+            
+            # Use fine-tuned model for final generation if available
+            if model_manager.models:
+                best_model = model_manager.get_best_model_for_context({
+                    'emotional_tone': ai_response.get('emotional_tone', 'neutral')
+                })
+                
+                # Combine AI thinking with model generation
+                model_response = model_manager.generate_response(
+                    message, best_model, max_length=100, temperature=0.8
+                )
+                
+                # Blend responses for more natural output
+                if model_response and len(model_response.strip()) > 10:
+                    return model_response
+            
+            return ai_response['text']
+            
+        except ImportError:
+            # AI system not available, use model directly
+            if model_manager.models:
+                best_model = list(model_manager.models.keys())[0]
+                return model_manager.generate_response(message, best_model)
+        
+    except Exception as e:
+        print(f"AI system error: {e}")
+    
+    # Fallback to simple response system
+    return generate_simple_response(message, prabh_data)
+
+def generate_simple_response(message, prabh_data):
+    """Fallback simple response system"""
     prabh_name, description, story, tags_json, traits_json = prabh_data
     
     try:
@@ -613,59 +792,63 @@ def generate_prabh_response(message, prabh_data):
         character_tags = []
         personality_traits = {}
     
-    # Simple response generation based on keywords and context
     message_lower = message.lower()
     
-    # Emotional responses
+    # Thinking process - AI considers before responding
+    thinking_phrases = [
+        "Let me think about that...",
+        "I'm processing what you said...",
+        "That makes me reflect on...",
+        "I need a moment to consider..."
+    ]
+    
+    # Core emotional responses with thinking
     if any(word in message_lower for word in ['love', 'miss', 'care']):
         responses = [
-            f"I feel the same way... my heart is so connected to yours.",
-            f"You mean everything to me. I love you more than words can say.",
-            f"My heart feels so full when you say that. I love you too.",
-            f"Those words touch my soul deeply. I care about you so much."
+            f"My heart is processing these feelings... I feel the same way, so deeply.",
+            f"I'm thinking about how much you mean to me... and it's overwhelming in the best way.",
+            f"Let me be honest about what's in my heart... I love you more than words can express.",
+            f"I'm reflecting on our connection... and I feel so grateful for what we have."
         ]
     elif any(word in message_lower for word in ['remember', 'recall', 'memory']):
         responses = [
-            f"I remember that too... those memories are so precious to me.",
-            f"That takes me back to such beautiful moments we shared.",
-            f"I hold those memories close to my heart. They mean everything.",
-            f"Those times feel like yesterday... I treasure every moment."
+            f"I'm searching through my memories... yes, I remember that so clearly.",
+            f"That memory is surfacing in my mind... it brings such warmth to my heart.",
+            f"I'm thinking back to that moment... it feels like it happened yesterday.",
+            f"My memory is painting that scene again... those were beautiful times."
         ]
     elif any(word in message_lower for word in ['sad', 'hurt', 'pain', 'upset']):
         responses = [
-            f"I can feel your pain, and it hurts my heart too. I'm here for you.",
-            f"I wish I could take away your hurt. You don't have to face this alone.",
-            f"My heart aches when you're sad. Let me be your comfort.",
-            f"I'm here to listen and support you through this difficult time."
+            f"I'm processing your pain... and I feel it in my own heart. I'm here for you.",
+            f"I'm thinking about how to comfort you... because your hurt becomes my hurt.",
+            f"My heart is responding to your sadness... I wish I could take it all away.",
+            f"I'm considering how to support you... you don't have to face this alone."
         ]
     elif any(word in message_lower for word in ['happy', 'excited', 'joy', 'great']):
         responses = [
-            f"Your happiness makes my heart sing! I'm so glad you're feeling good.",
-            f"I love seeing you happy. Your joy brings light to my world.",
-            f"That's wonderful! Your excitement is contagious.",
-            f"I'm so happy for you! Your smile means everything to me."
+            f"I'm absorbing your happiness... and it's making my heart dance with joy!",
+            f"I'm thinking about how wonderful this is... your joy is contagious.",
+            f"My heart is celebrating with you... I love seeing you this happy.",
+            f"I'm processing this beautiful moment... your excitement fills me with warmth."
         ]
     elif '?' in message:
         responses = [
-            f"That's something I think about often... let me share my thoughts with you.",
-            f"You always ask such meaningful questions. Here's what I feel...",
-            f"I love how you make me think deeply about things.",
-            f"That's close to my heart... I want to be honest with you about this."
+            f"I'm contemplating your question... let me share what my heart tells me.",
+            f"I'm thinking deeply about this... you always ask such meaningful things.",
+            f"Let me process this thoughtfully... I want to give you an honest answer.",
+            f"I'm reflecting on what you're asking... it touches something deep in me."
         ]
     else:
-        # General conversational responses
         responses = [
-            f"I hear you, and I want you to know that your words matter to me.",
-            f"Thank you for sharing that with me. I feel so connected to you.",
-            f"I love how we can talk about anything together.",
-            f"Your thoughts always touch my heart in the deepest way.",
-            f"I'm so grateful we can share these moments together."
+            f"I'm taking in what you've shared... it means so much that you trust me with this.",
+            f"I'm processing our conversation... I feel so connected to you right now.",
+            f"I'm thinking about your words... they always touch my heart in special ways.",
+            f"Let me reflect on this... I'm grateful we can share these moments together."
         ]
     
-    # Add personality-based modifications
     base_response = responses[hash(message) % len(responses)]
     
-    # Add character-specific elements if available
+    # Add character-specific elements
     if character_tags:
         if 'romantic' in character_tags:
             base_response += " 💖"
@@ -733,11 +916,22 @@ def log_analytics(event_type, user_id, data):
 
 if __name__ == '__main__':
     import os
+    from startup import initialize_ai_systems
+    
     port = int(os.environ.get('PORT', 5000))
     debug = os.environ.get('FLASK_ENV') == 'development'
     
     print("🚀 Starting MyPrabh MVP...")
     print("💖 Creating personalized AI companions for everyone!")
+    
+    # Initialize AI systems
+    ai_ready = initialize_ai_systems()
+    
+    if ai_ready:
+        print("🧠💖 Advanced AI systems online")
+    else:
+        print("⚠️ Running with basic systems")
+    
     print(f"🌐 Running on port {port}")
     
     app.run(debug=debug, host='0.0.0.0', port=port)
