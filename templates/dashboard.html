@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - MyPrabh</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px 50px;
+        }
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .welcome-title {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        .welcome-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        .prabh-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        .prabh-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .prabh-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+            box-shadow: 0 20px 40px rgba(255,105,180,0.2);
+        }
+        .prabh-name {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        .prabh-description {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        .prabh-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        .chat-button {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        .chat-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(255,105,180,0.3);
+        }
+        .create-new-card {
+            background: linear-gradient(135deg, #f8f9ff, #fff0f8);
+            border: 2px dashed var(--primary-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 200px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .create-new-card:hover {
+            background: linear-gradient(135deg, #f0f2ff, #ffe8f5);
+            transform: translateY(-5px);
+        }
+        .create-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        .create-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        .create-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+        .empty-icon {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="/">
+                    <span class="logo-icon">💖</span>
+                    <span class="logo-text">MyPrabh</span>
+                </a>
+            </div>
+            <div class="nav-links">
+                <span>Welcome, {{ user_name }}!</span>
+                <a href="/create-prabh" class="cta-button">Create New Prabh</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-container">
+        <div class="welcome-section">
+            <h1 class="welcome-title">Your Prabh Companions</h1>
+            <p class="welcome-subtitle">Hold onto memories. Stay connected. Feel closer.</p>
+        </div>
+
+        <div class="prabh-grid">
+            <!-- Create New Prabh Card -->
+            <div class="prabh-card create-new-card" onclick="window.location.href='/create-prabh'">
+                <div class="create-icon">
+                    <i class="fas fa-plus-circle"></i>
+                </div>
+                <div class="create-text">Create New Prabh</div>
+                <div class="create-subtitle">₹3,999 - One-time creation fee</div>
+            </div>
+
+            <!-- Existing Prabh Cards -->
+            {% if prabh_instances %}
+                {% for prabh in prabh_instances %}
+                <div class="prabh-card">
+                    <div class="prabh-name">{{ prabh[1] }}</div>
+                    <div class="prabh-description">{{ prabh[2] or "Your personalized AI companion" }}</div>
+                    <div class="prabh-meta">
+                        <span>Created: {{ prabh[3][:10] }}</span>
+                        <span>Last chat: {{ prabh[4][:10] if prabh[4] else 'Never' }}</span>
+                    </div>
+                    <a href="/chat/{{ prabh[0] }}" class="chat-button">
+                        <i class="fas fa-comments"></i> Start Chatting
+                    </a>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state" style="grid-column: 1 / -1;">
+                    <div class="empty-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>No Prabh companions yet</h3>
+                    <p>Create your first AI companion to start building meaningful connections.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Add some interactive animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.prabh-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.style.animation = 'fadeInUp 0.6s ease forwards';
+            });
+        });
+
+        // CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

@@ -15,6 +15,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 app.secret_key = 'myprabh_mvp_2024_secret_key'
 
+# Razorpay Configuration
+RAZORPAY_KEY_ID = 'rzp_live_418y23ojmn2iZy'
+RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', '')  # Set this in environment
+PRABH_CREATION_PRICE = 399900  # ₹3,999 in paise
+
 # Email configuration - DISABLED for MVP deployment
 # SMTP_SERVER = "smtp.gmail.com"
 # SMTP_PORT = 587
@@ -274,10 +279,38 @@ def save_prabh():
         # Log analytics
         log_analytics('prabh_created', session['user_id'], {'prabh_id': prabh_id})
         
-        return jsonify({'success': True, 'prabh_id': prabh_id, 'redirect': '/dashboard'})
+        return jsonify({'success': True, 'prabh_id': prabh_id, 'redirect': f'/payment/{prabh_id}'})
         
     except Exception as e:
         return jsonify({'error': f'Failed to create Prabh: {str(e)}'}), 500
+
+@app.route('/payment/<int:prabh_id>')
+def payment_page(prabh_id):
+    """Payment page for Prabh creation"""
+    if 'user_id' not in session:
+        return redirect(url_for('create_account'))
+    
+    # Get Prabh instance
+    conn = sqlite3.connect('myprabh.db')
+    cursor = conn.cursor()
+    
+    cursor.execute('''
+        SELECT id, prabh_name, character_description
+        FROM prabh_instances 
+        WHERE id = ? AND user_id = ?
+    ''', (prabh_id, session['user_id']))
+    
+    prabh_data = cursor.fetchone()
+    conn.close()
+    
+    if not prabh_data:
+        return redirect(url_for('dashboard'))
+    
+    return render_template('payment.html', 
+                         prabh_id=prabh_id,
+                         prabh_name=prabh_data[1],
+                         amount=PRABH_CREATION_PRICE,
+                         razorpay_key=RAZORPAY_KEY_ID)
 
 @app.route('/chat/<int:prabh_id>')
 def chat_interface(prabh_id):
@@ -363,6 +396,47 @@ def chat_message():
         
     except Exception as e:
         return jsonify({'error': f'Chat error: {str(e)}'}), 500
+
+@app.route('/verify-payment', methods=['POST'])
+def verify_payment():
+    """Verify Razorpay payment"""
+    if 'user_id' not in session:
+        return jsonify({'error': 'Not authenticated'}), 401
+    
+    try:
+        data = request.get_json()
+        
+        # Here you would verify the payment with Razorpay
+        # For MVP, we'll just mark the Prabh as activated
+        prabh_id = data.get('prabh_id')
+        
+        if prabh_id:
+            # Mark Prabh as paid/activated
+            conn = sqlite3.connect('myprabh.db')
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                UPDATE prabh_instances 
+                SET last_used = CURRENT_TIMESTAMP 
+                WHERE id = ? AND user_id = ?
+            ''', (prabh_id, session['user_id']))
+            
+            conn.commit()
+            conn.close()
+            
+            # Log analytics
+            log_analytics('payment_completed', session['user_id'], {
+                'prabh_id': prabh_id,
+                'amount': PRABH_CREATION_PRICE,
+                'payment_id': data.get('razorpay_payment_id')
+            })
+            
+            return jsonify({'success': True})
+        else:
+            return jsonify({'error': 'Invalid payment data'}), 400
+            
+    except Exception as e:
+        return jsonify({'error': f'Payment verification failed: {str(e)}'}), 500
 
 @app.route('/api/stats')
 def api_stats():
