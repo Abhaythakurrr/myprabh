@@ -24,10 +24,13 @@ PRABH_CREATION_PRICE = 1000  # ₹10 in paise (prototype testing)
 # Admin Configuration
 ADMIN_EMAIL = 'abhaythakurr17@gmail.com'  # Full access admin user
 
-# Email configuration - DISABLED for MVP deployment
+# Email configuration
+SUPPORT_EMAIL = "abhay@aiprabh.com"  # Support and founder contact email
+CONTACT_EMAIL = "abhay@aiprabh.com"  # General contact email
+
+# SMTP configuration - DISABLED for MVP deployment
 # SMTP_SERVER = "smtp.gmail.com"
 # SMTP_PORT = 587
-# EMAIL_ADDRESS = "abhay@aiprabh.com"
 # EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', '')  # Set this in environment
 
 # Database initialization
@@ -211,46 +214,13 @@ def submit_early_access():
     except Exception as e:
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
 
-@app.route('/create_account')
+@app.route('/create_account', methods=['GET', 'POST'])
 def create_account():
-    """Account creation page"""
-    return render_template('create_account.html')
-
-@app.route('/login')
-def login():
-    """Login page"""
-    return render_template('login.html')
-
-@app.route('/cookies')
-def cookies():
-    """Cookie policy page"""
-    return render_template('cookies.html')
-
-@app.route('/about')
-def about():
-    """About us page"""
-    return render_template('about.html')
-
-@app.route('/careers')
-def careers():
-    """Careers page"""
-    return render_template('careers.html')
-
-@app.route('/blog')
-def blog():
-    """Blog page"""
-    return render_template('blog.html')
-
-@app.route('/logout')
-def logout():
-    """Logout user"""
-    session.clear()
-    return redirect(url_for('index'))
-
-@app.route('/register', methods=['POST'])
-@app.route('/create_account', methods=['POST'])
-def register():
-    """Handle user registration"""
+    """Account creation page and handler"""
+    if request.method == 'GET':
+        return render_template('create_account.html')
+    
+    # Handle POST request (account creation)
     try:
         email = request.form.get('email')
         password = request.form.get('password')
@@ -311,13 +281,17 @@ def register():
         return redirect(url_for('dashboard'))
         
     except sqlite3.IntegrityError:
-        return jsonify({'error': 'Email already registered'}), 400
+        return render_template('create_account.html', error='Email already registered')
     except Exception as e:
-        return jsonify({'error': f'Registration failed: {str(e)}'}), 500
+        return render_template('create_account.html', error=f'Registration failed: {str(e)}')
 
-@app.route('/login', methods=['POST'])
-def login_user():
-    """Handle user login"""
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Login page and handler"""
+    if request.method == 'GET':
+        return render_template('login.html')
+    
+    # Handle POST request (login)
     try:
         email = request.form.get('email')
         password = request.form.get('password')
@@ -370,7 +344,40 @@ def login_user():
         return redirect(url_for('dashboard'))
         
     except Exception as e:
-        return jsonify({'error': f'Login failed: {str(e)}'}), 500
+        return render_template('login.html', error=f'Login failed: {str(e)}')
+
+@app.route('/cookies')
+def cookies():
+    """Cookie policy page"""
+    return render_template('cookies.html')
+
+@app.route('/about')
+def about():
+    """About us page"""
+    return render_template('about.html')
+
+@app.route('/careers')
+def careers():
+    """Careers page"""
+    return render_template('careers.html')
+
+@app.route('/blog')
+def blog():
+    """Blog page"""
+    return render_template('blog.html')
+
+@app.route('/logout')
+def logout():
+    """Logout user"""
+    session.clear()
+    return redirect(url_for('index'))
+
+@app.route('/register', methods=['POST'])
+def register():
+    """Legacy registration endpoint - redirects to create_account"""
+    return redirect(url_for('create_account'), code=307)
+
+
 
 @app.route('/dashboard')
 def dashboard():
@@ -1095,8 +1102,10 @@ def generate_contextual_response(message, story, prabh_name, character_tags):
 
 def send_early_access_email(data):
     """Send early access notification email - DISABLED for MVP deployment"""
-    # Email functionality disabled for Railway deployment
-    print(f"Early access signup received: {data['name']} ({data['email']})")
+    # Email functionality disabled for deployment
+    # In production, this would send notification to abhay@aiprabh.com
+    print(f"📧 Early access signup received: {data['name']} ({data['email']})")
+    print(f"📬 Notification would be sent to: {SUPPORT_EMAIL}")
     return
 
 def track_visitor(request):

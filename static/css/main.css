@@ -156,6 +156,7 @@ p {
   display: flex;
   gap: var(--space-lg);
   list-style: none;
+  align-items: center;
 }
 
 .nav-link {
@@ -170,6 +171,10 @@ p {
   color: var(--primary-pink);
 }
 
+.nav-link.active {
+  color: var(--primary-pink);
+}
+
 .nav-link::after {
   content: '';
   position: absolute;
@@ -181,7 +186,8 @@ p {
   transition: var(--transition-normal);
 }
 
-.nav-link:hover::after {
+.nav-link:hover::after,
+.nav-link.active::after {
   width: 100%;
 }
 
@@ -429,6 +435,12 @@ p {
     display: none;
   }
   
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+    text-align: center;
+  }
+  
   .stats {
     flex-direction: column;
     gap: var(--space-md);
@@ -456,6 +468,14 @@ p {
   .btn-large {
     padding: var(--space-md) var(--space-lg);
     font-size: 1rem;
+  }
+  
+  .brand-text {
+    font-size: 1.5rem;
+  }
+  
+  .brand-heart {
+    font-size: 1.25rem;
   }
 }
 
@@ -504,4 +524,89 @@ p {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* Footer */
+.footer {
+  background: var(--charcoal);
+  color: var(--cream);
+  padding: var(--space-2xl) 0 var(--space-lg);
+  border-top: 1px solid var(--medium-gray);
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--space-xl);
+  margin-bottom: var(--space-xl);
+}
+
+.footer-section h4 {
+  color: var(--lofi-rose);
+  font-size: 1.25rem;
+  margin-bottom: var(--space-md);
+  font-family: var(--font-script);
+}
+
+.footer-section p {
+  color: var(--medium-gray);
+  margin-bottom: var(--space-sm);
+}
+
+.footer-section a {
+  color: var(--medium-gray);
+  text-decoration: none;
+  display: block;
+  margin-bottom: var(--space-xs);
+  transition: var(--transition-fast);
+}
+
+.footer-section a:hover {
+  color: var(--lofi-rose);
+  text-decoration: underline;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: var(--space-lg);
+  border-top: 1px solid rgba(100, 116, 139, 0.2);
+}
+
+.footer-bottom p {
+  color: var(--medium-gray);
+  font-size: 0.875rem;
+}
+
+/* Navigation Brand */
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  text-decoration: none;
+}
+
+.brand-text {
+  font-family: var(--font-script);
+  font-size: 1.75rem;
+  font-weight: 700;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.brand-heart {
+  font-size: 1.5rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Section Titles */
+.section-title {
+  font-family: var(--font-script);
+  font-size: 2.5rem;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: var(--space-lg);
 }

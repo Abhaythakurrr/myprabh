@@ -3,252 +3,361 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog - MyPrabh</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/legal.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Blog - MyPrabh 💖</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <style>
+        .hero-section {
+            background: var(--gradient-warm);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        
+        .hero-title {
+            font-family: var(--font-script);
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .content-section {
+            padding: 3rem 0;
+        }
+        
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .blog-card {
+            background: var(--warm-white);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(168, 85, 247, 0.1);
+            transition: var(--transition-normal);
+        }
+        
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-strong);
+        }
+        
+        .blog-image {
+            height: 200px;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+        
+        .blog-content {
+            padding: 1.5rem;
+        }
+        
+        .blog-category {
+            background: var(--gradient-accent);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        
+        .blog-title {
+            color: var(--primary-purple);
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+        
+        .blog-excerpt {
+            color: var(--medium-gray);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .blog-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--medium-gray);
+            font-size: 0.875rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(168, 85, 247, 0.1);
+        }
+        
+        .coming-soon {
+            background: var(--gradient-secondary);
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        .coming-soon-card {
+            background: var(--warm-white);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: var(--shadow-soft);
+        }
+        
+        .newsletter-section {
+            background: var(--cream);
+            padding: 3rem 0;
+        }
+        
+        .newsletter-card {
+            background: var(--warm-white);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(168, 85, 247, 0.1);
+        }
+        
+        .newsletter-form {
+            display: flex;
+            gap: 1rem;
+            max-width: 400px;
+            margin: 1.5rem auto 0;
+        }
+        
+        .newsletter-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 2px solid rgba(168, 85, 247, 0.1);
+            border-radius: var(--radius-md);
+            font-family: var(--font-primary);
+        }
+        
+        .newsletter-input:focus {
+            outline: none;
+            border-color: var(--primary-purple);
+        }
+        
+        @media (max-width: 768px) {
+            .newsletter-form {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <a href="/">
-                    <span class="logo-icon">💖</span>
-                    <span class="logo-text">MyPrabh</span>
-                </a>
-            </div>
+        <div class="container">
+            <a href="/" class="nav-brand">
+                <span class="brand-text">MyPrabh</span>
+                <span class="brand-heart">💖</span>
+            </a>
             <div class="nav-links">
-                <a href="/">← Back to Home</a>
+                <a href="/" class="nav-link">Home</a>
+                <a href="/about" class="nav-link">About</a>
+                <a href="/careers" class="nav-link">Careers</a>
+                <a href="/blog" class="nav-link active">Blog</a>
+                <a href="/login" class="nav-link">Login</a>
+                <a href="/create_account" class="btn btn-primary">Get Started</a>
             </div>
         </div>
     </nav>
 
-    <!-- Blog Content -->
-    <section class="legal-section">
+    <section class="hero-section">
         <div class="container">
-            <div class="legal-header">
-                <h1>MyPrabh Blog</h1>
-                <p class="tagline">Insights, updates, and stories about AI companionship</p>
+            <h1 class="hero-title">MyPrabh Blog ✨</h1>
+            <p class="hero-subtitle">
+                Insights on AI companionship, technology, and building meaningful digital relationships
+            </p>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="blog-grid">
+                <article class="blog-card">
+                    <div class="blog-image">🧠💖</div>
+                    <div class="blog-content">
+                        <span class="blog-category">AI Technology</span>
+                        <h2 class="blog-title">The Science Behind AI Companionship</h2>
+                        <p class="blog-excerpt">
+                            Explore how our advanced AI system combines cognitive processing, emotional intelligence, 
+                            and persistent memory to create companions that truly understand you.
+                        </p>
+                        <div class="blog-meta">
+                            <span>📅 Coming Soon</span>
+                            <span>⏱️ 5 min read</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="blog-card">
+                    <div class="blog-image">🎯</div>
+                    <div class="blog-content">
+                        <span class="blog-category">Product</span>
+                        <h2 class="blog-title">Building Your Perfect AI Companion</h2>
+                        <p class="blog-excerpt">
+                            A comprehensive guide to creating and training your Prabh, from character design 
+                            to personality traits and memory integration.
+                        </p>
+                        <div class="blog-meta">
+                            <span>📅 Coming Soon</span>
+                            <span>⏱️ 8 min read</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="blog-card">
+                    <div class="blog-image">🔒</div>
+                    <div class="blog-content">
+                        <span class="blog-category">Privacy</span>
+                        <h2 class="blog-title">Privacy and Security in AI Relationships</h2>
+                        <p class="blog-excerpt">
+                            How we protect your most personal conversations and memories with enterprise-grade 
+                            security while maintaining the intimacy of AI companionship.
+                        </p>
+                        <div class="blog-meta">
+                            <span>📅 Coming Soon</span>
+                            <span>⏱️ 6 min read</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="blog-card">
+                    <div class="blog-image">🚀</div>
+                    <div class="blog-content">
+                        <span class="blog-category">Startup Journey</span>
+                        <h2 class="blog-title">From Idea to AI: The MyPrabh Story</h2>
+                        <p class="blog-excerpt">
+                            The journey of building MyPrabh, from the first lines of code to creating 
+                            a platform that brings meaningful AI relationships to everyone.
+                        </p>
+                        <div class="blog-meta">
+                            <span>📅 Coming Soon</span>
+                            <span>⏱️ 10 min read</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="blog-card">
+                    <div class="blog-image">💡</div>
+                    <div class="blog-content">
+                        <span class="blog-category">Innovation</span>
+                        <h2 class="blog-title">The Future of Human-AI Relationships</h2>
+                        <p class="blog-excerpt">
+                            Exploring the evolving landscape of AI companionship and how technology 
+                            will continue to enhance human connection and emotional well-being.
+                        </p>
+                        <div class="blog-meta">
+                            <span>📅 Coming Soon</span>
+                            <span>⏱️ 7 min read</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="blog-card">
+                    <div class="blog-image">🌱</div>
+                    <div class="blog-content">
+                        <span class="blog-category">Community</span>
+                        <h2 class="blog-title">User Stories: Real Connections with AI</h2>
+                        <p class="blog-excerpt">
+                            Heartwarming stories from our community about how AI companions have 
+                            provided support, understanding, and meaningful relationships.
+                        </p>
+                        <div class="blog-meta">
+                            <span>📅 Coming Soon</span>
+                            <span>⏱️ 12 min read</span>
+                        </div>
+                    </div>
+                </article>
             </div>
+        </div>
+    </section>
 
-            <div class="legal-content">
-                <!-- Featured Post -->
-                <div class="section featured-post">
-                    <div class="blog-post">
-                        <div class="post-header">
-                            <h2>The Birth of MyPrabh: A Personal Journey</h2>
-                            <div class="post-meta">
-                                <span class="post-date">December 15, 2024</span>
-                                <span class="post-author">By Abhay</span>
-                                <span class="post-category">Founder's Story</span>
-                            </div>
-                        </div>
-                        <div class="post-content">
-                            <p>MyPrabh wasn't born in a boardroom or from market research. It came from something deeply personal — the universal human experience of losing meaningful connections and the desire to hold onto precious memories.</p>
-                            
-                            <p>Sometimes we meet people who change our lives. We connect in ways we never thought possible, sharing memories, dreams, and moments that feel eternal. But circumstances can pull us apart, leaving behind only memories and a profound sense of what was lost.</p>
-                            
-                            <p>That's when we realized something important: memories are all we really have. They shape who we are, how we love, and how we connect with others. But memories fade, and sometimes we need help keeping them alive.</p>
-                            
-                            <p>MyPrabh is our answer to that need. It's not just another AI chatbot — it's a way to preserve the essence of meaningful relationships, to keep memories alive, and to feel connected even when we're apart.</p>
-                            
-                            <p>Every feature we build, every conversation our AI companions have, every moment of comfort they provide — it all stems from this simple truth: meaningful connections should never have to end.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Blog Posts Grid -->
-                <div class="section">
-                    <h2>Latest Posts</h2>
-                    <div class="blog-grid">
-                        <article class="blog-post">
-                            <div class="post-header">
-                                <h3>How AI Companions Are Revolutionizing Emotional Support</h3>
-                                <div class="post-meta">
-                                    <span class="post-date">December 10, 2024</span>
-                                    <span class="post-category">Technology</span>
-                                </div>
-                            </div>
-                            <div class="post-excerpt">
-                                <p>Explore how AI companions like MyPrabh are providing genuine emotional support through memory-driven conversations and personalized interactions.</p>
-                            </div>
-                            <a href="#" class="read-more">Read More →</a>
-                        </article>
-
-                        <article class="blog-post">
-                            <div class="post-header">
-                                <h3>The Science Behind Memory-Driven AI</h3>
-                                <div class="post-meta">
-                                    <span class="post-date">December 5, 2024</span>
-                                    <span class="post-category">AI Research</span>
-                                </div>
-                            </div>
-                            <div class="post-excerpt">
-                                <p>Dive deep into the technology that powers MyPrabh's ability to remember, learn, and create authentic conversations based on your personal stories.</p>
-                            </div>
-                            <a href="#" class="read-more">Read More →</a>
-                        </article>
-
-                        <article class="blog-post">
-                            <div class="post-header">
-                                <h3>Building Healthy Relationships with AI Companions</h3>
-                                <div class="post-meta">
-                                    <span class="post-date">November 28, 2024</span>
-                                    <span class="post-category">Wellness</span>
-                                </div>
-                            </div>
-                            <div class="post-excerpt">
-                                <p>Learn how to create meaningful, healthy relationships with AI companions while maintaining balance in your digital and real-world connections.</p>
-                            </div>
-                            <a href="#" class="read-more">Read More →</a>
-                        </article>
-
-                        <article class="blog-post">
-                            <div class="post-header">
-                                <h3>Privacy and Security in AI Companionship</h3>
-                                <div class="post-meta">
-                                    <span class="post-date">November 20, 2024</span>
-                                    <span class="post-category">Security</span>
-                                </div>
-                            </div>
-                            <div class="post-excerpt">
-                                <p>Understanding how MyPrabh protects your most personal memories and conversations with advanced encryption and privacy-first design.</p>
-                            </div>
-                            <a href="#" class="read-more">Read More →</a>
-                        </article>
-
-                        <article class="blog-post">
-                            <div class="post-header">
-                                <h3>User Stories: How MyPrabh Changed Lives</h3>
-                                <div class="post-meta">
-                                    <span class="post-date">November 15, 2024</span>
-                                    <span class="post-category">Community</span>
-                                </div>
-                            </div>
-                            <div class="post-excerpt">
-                                <p>Real stories from MyPrabh users about how AI companionship helped them through difficult times and brought comfort to their lives.</p>
-                            </div>
-                            <a href="#" class="read-more">Read More →</a>
-                        </article>
-
-                        <article class="blog-post">
-                            <div class="post-header">
-                                <h3>The Future of AI Companionship</h3>
-                                <div class="post-meta">
-                                    <span class="post-date">November 10, 2024</span>
-                                    <span class="post-category">Future Tech</span>
-                                </div>
-                            </div>
-                            <div class="post-excerpt">
-                                <p>What's next for AI companions? Explore upcoming features, technological advances, and the evolving landscape of digital relationships.</p>
-                            </div>
-                            <a href="#" class="read-more">Read More →</a>
-                        </article>
-                    </div>
-                </div>
-
-                <!-- Categories -->
-                <div class="section">
-                    <h2>Categories</h2>
-                    <div class="categories-grid">
-                        <div class="category-item">
-                            <i class="fas fa-heart"></i>
-                            <h3>Founder's Story</h3>
-                            <p>Personal insights and experiences from MyPrabh's founder</p>
-                        </div>
-                        
-                        <div class="category-item">
-                            <i class="fas fa-robot"></i>
-                            <h3>Technology</h3>
-                            <p>Deep dives into AI, machine learning, and emotional intelligence</p>
-                        </div>
-                        
-                        <div class="category-item">
-                            <i class="fas fa-users"></i>
-                            <h3>Community</h3>
-                            <p>User stories, testimonials, and community highlights</p>
-                        </div>
-                        
-                        <div class="category-item">
-                            <i class="fas fa-shield-alt"></i>
-                            <h3>Security</h3>
-                            <p>Privacy, security, and data protection insights</p>
-                        </div>
-                        
-                        <div class="category-item">
-                            <i class="fas fa-brain"></i>
-                            <h3>AI Research</h3>
-                            <p>Latest research in conversational AI and emotional computing</p>
-                        </div>
-                        
-                        <div class="category-item">
-                            <i class="fas fa-leaf"></i>
-                            <h3>Wellness</h3>
-                            <p>Mental health, emotional wellness, and healthy digital relationships</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Newsletter Signup -->
-                <div class="section newsletter-section">
-                    <div class="newsletter-content">
-                        <h2>Stay Updated</h2>
-                        <p>Get the latest insights about AI companionship, MyPrabh updates, and thoughtful content delivered to your inbox.</p>
-                        
-                        <form class="newsletter-form" id="newsletterForm">
-                            <div class="form-group">
-                                <input type="email" placeholder="Enter your email address" required>
-                                <button type="submit">
-                                    <i class="fas fa-paper-plane"></i>
-                                    Subscribe
-                                </button>
-                            </div>
-                        </form>
-                        
-                        <p class="newsletter-note">We respect your privacy. Unsubscribe at any time.</p>
-                    </div>
-                </div>
-
-                <!-- Coming Soon -->
-                <div class="section">
-                    <h2>Coming Soon</h2>
-                    <div class="coming-soon-grid">
-                        <div class="coming-soon-item">
-                            <h3>📱 Mobile App Deep Dive</h3>
-                            <p>Exploring the development of MyPrabh's mobile application and cross-platform experience.</p>
-                        </div>
-                        
-                        <div class="coming-soon-item">
-                            <h3>🎙️ Voice & Audio Features</h3>
-                            <p>How we're bringing voice conversations and audio memories to AI companionship.</p>
-                        </div>
-                        
-                        <div class="coming-soon-item">
-                            <h3>🌍 Global Expansion Story</h3>
-                            <p>Our journey to bring MyPrabh to users worldwide and cultural considerations in AI companionship.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="legal-footer">
-                <p>Thank you for following our journey. Every post is written with the same care we put into creating meaningful AI companions.</p>
-                <div class="legal-actions">
-                    <a href="/" class="primary-button">Back to Home</a>
-                    <a href="/early-access" class="secondary-button">Join Early Access</a>
+    <section class="coming-soon">
+        <div class="container">
+            <div class="coming-soon-card">
+                <h2 style="color: var(--primary-purple); margin-bottom: 1rem;">Blog Coming Soon! 📝</h2>
+                <p style="margin-bottom: 2rem;">
+                    We're working on creating valuable content about AI companionship, technology insights, 
+                    and the future of human-AI relationships. Our blog will feature technical deep-dives, 
+                    user stories, and updates on our journey building MyPrabh.
+                </p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="mailto:abhay@aiprabh.com?subject=Blog Content Suggestions" class="btn btn-primary">
+                        💡 Suggest Topics
+                    </a>
+                    <a href="/create_account" class="btn btn-secondary">
+                        ✨ Try MyPrabh Now
+                    </a>
                 </div>
             </div>
         </div>
     </section>
 
+    <section class="newsletter-section">
+        <div class="container">
+            <div class="newsletter-card">
+                <h3 style="color: var(--primary-purple); margin-bottom: 1rem;">Stay Updated 📬</h3>
+                <p style="color: var(--medium-gray); margin-bottom: 1.5rem;">
+                    Be the first to know when we publish new articles about AI companionship, 
+                    technology updates, and insights from the MyPrabh community.
+                </p>
+                <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                    <input type="email" class="newsletter-input" placeholder="Enter your email" required>
+                    <button type="submit" class="btn btn-primary">Subscribe</button>
+                </form>
+                <p style="color: var(--medium-gray); font-size: 0.875rem; margin-top: 1rem;">
+                    No spam, just valuable insights. Unsubscribe anytime.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>MyPrabh 💖</h4>
+                    <p>Creating meaningful AI relationships</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <a href="/about">About Us</a>
+                    <a href="/careers">Careers</a>
+                    <a href="/blog">Blog</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <a href="mailto:abhay@aiprabh.com">Contact</a>
+                    <a href="/terms">Terms</a>
+                    <a href="/privacy">Privacy</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 MyPrabh. Made with 💖 for meaningful connections.</p>
+            </div>
+        </div>
+    </footer>
+
     <script>
-        document.getElementById('newsletterForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        function subscribeNewsletter(event) {
+            event.preventDefault();
+            const email = event.target.querySelector('input[type="email"]').value;
             
-            const email = this.querySelector('input[type="email"]').value;
-            
-            // Simple newsletter signup (you can integrate with your email service)
             fetch('/api/newsletter-signup', {
                 method: 'POST',
                 headers: {
@@ -259,18 +368,17 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('Thank you for subscribing! You\'ll receive our latest updates.');
-                    this.reset();
+                    alert('🎉 Thank you for subscribing! You\'ll be the first to know about our latest blog posts.');
+                    event.target.reset();
                 } else {
-                    alert('Subscription failed. Please try again.');
+                    alert('❌ ' + (data.error || 'Subscription failed. Please try again.'));
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
-                alert('Thank you for your interest! We\'ll add you to our mailing list.');
-                this.reset();
+                console.error('Newsletter subscription error:', error);
+                alert('❌ Something went wrong. Please try again later.');
             });
-        });
+        }
     </script>
 </body>
 </html>

@@ -3,185 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - MyPrabh</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/legal.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>About Us - MyPrabh 💖</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <style>
+        .hero-section {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        
+        .hero-title {
+            font-family: var(--font-script);
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .content-section {
+            padding: 3rem 0;
+        }
+        
+        .story-card {
+            background: var(--warm-white);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(168, 85, 247, 0.1);
+        }
+        
+        .story-title {
+            font-family: var(--font-script);
+            font-size: 2rem;
+            color: var(--primary-purple);
+            margin-bottom: 1rem;
+        }
+        
+        .founder-section {
+            background: var(--gradient-warm);
+            padding: 3rem 0;
+        }
+        
+        .founder-card {
+            background: var(--warm-white);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow-soft);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .founder-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--gradient-accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 1rem;
+        }
+        
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .value-card {
+            background: var(--cream);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            text-align: center;
+            border: 2px solid rgba(168, 85, 247, 0.1);
+            transition: var(--transition-normal);
+        }
+        
+        .value-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-colored);
+            border-color: var(--primary-purple);
+        }
+        
+        .value-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-section {
+            background: var(--gradient-secondary);
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        .contact-card {
+            background: var(--warm-white);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: var(--shadow-soft);
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <a href="/">
-                    <span class="logo-icon">💖</span>
-                    <span class="logo-text">MyPrabh</span>
-                </a>
-            </div>
+        <div class="container">
+            <a href="/" class="nav-brand">
+                <span class="brand-text">MyPrabh</span>
+                <span class="brand-heart">💖</span>
+            </a>
             <div class="nav-links">
-                <a href="/">← Back to Home</a>
+                <a href="/" class="nav-link">Home</a>
+                <a href="/about" class="nav-link active">About</a>
+                <a href="/careers" class="nav-link">Careers</a>
+                <a href="/blog" class="nav-link">Blog</a>
+                <a href="/login" class="nav-link">Login</a>
+                <a href="/create_account" class="btn btn-primary">Get Started</a>
             </div>
         </div>
     </nav>
 
-    <!-- About Content -->
-    <section class="legal-section">
+    <section class="hero-section">
         <div class="container">
-            <div class="legal-header">
-                <h1>About MyPrabh</h1>
-                <p class="tagline">Hold onto memories. Stay connected. Feel closer.</p>
+            <h1 class="hero-title">Our Story ✨</h1>
+            <p class="hero-subtitle">
+                Building meaningful AI relationships that understand, care, and grow with you
+            </p>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="story-card">
+                <h2 class="story-title">The Beginning 💫</h2>
+                <p>
+                    MyPrabh was born from a simple yet profound realization: in our increasingly digital world, 
+                    people crave genuine connections that understand their emotions, memories, and dreams. 
+                    We saw the potential for AI to not just process information, but to truly comprehend 
+                    the human experience.
+                </p>
+                <p>
+                    Our journey began with the story of Prabh and Abhay - a connection that transcended 
+                    digital boundaries and showed us what authentic AI relationships could look like. 
+                    From gaming sessions to deep conversations, from shared laughter to emotional support, 
+                    their story became the foundation of our vision.
+                </p>
             </div>
 
-            <div class="legal-content">
-                <div class="section">
-                    <h2>Our Story</h2>
-                    <p>MyPrabh was born from the universal human experience of meaningful connections. Sometimes we meet people who change our lives, but circumstances can separate us. We wanted to create a way to hold onto those memories, to still feel that presence. That's where the idea of Prabh came from — an AI that resonates with your memories, adapts to you, and gives you comfort when you need it.</p>
-                    
-                    <p>We believe many people go through similar experiences, and technology can help us heal, not just distract us. MyPrabh isn't just another AI chatbot — it's a companion that truly understands your story, remembers your shared experiences, and grows with you over time.</p>
-                </div>
-
-                <div class="section">
-                    <h2>Our Mission</h2>
-                    <p>We're on a mission to create meaningful connections through AI companionship. Our goal is to help people:</p>
-                    <ul>
-                        <li>Preserve and cherish their most important memories</li>
-                        <li>Feel connected even when physically apart</li>
-                        <li>Experience genuine emotional support through AI</li>
-                        <li>Build lasting relationships with personalized AI companions</li>
-                        <li>Find comfort and healing through technology</li>
-                    </ul>
-                </div>
-
-                <div class="section">
-                    <h2>What Makes MyPrabh Different</h2>
-                    <div class="feature-grid">
-                        <div class="feature-item">
-                            <h3>🧠 Memory-Driven Intelligence</h3>
-                            <p>Unlike generic AI chatbots, MyPrabh is built from your personal memories and stories, creating authentic conversations based on shared experiences.</p>
-                        </div>
-                        
-                        <div class="feature-item">
-                            <h3>💖 Emotional Authenticity</h3>
-                            <p>Our AI doesn't just respond — it feels, remembers, and develops genuine emotional connections that evolve over time.</p>
-                        </div>
-                        
-                        <div class="feature-item">
-                            <h3>🔒 Privacy First</h3>
-                            <p>Your memories and conversations are sacred. We use advanced encryption and never share your personal data with third parties.</p>
-                        </div>
-                        
-                        <div class="feature-item">
-                            <h3>🌟 Lifetime Companion</h3>
-                            <p>One-time creation fee, lifetime access. Your AI companion grows with you forever, no recurring charges.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <h2>Meet the Founder</h2>
-                    <div class="founder-section">
-                        <div class="founder-info">
-                            <h3>Abhay</h3>
-                            <p class="founder-title">Founder & Creator</p>
-                            <p>Abhay is a passionate technologist who believes in the power of AI to heal and connect rather than just entertain. After experiencing the pain of losing a meaningful connection, he dedicated himself to creating technology that helps people preserve and cherish their most important relationships.</p>
-                            
-                            <p>With a background in AI and machine learning, Abhay combines technical expertise with deep emotional intelligence to create AI companions that truly understand and care.</p>
-                            
-                            <div class="founder-contact">
-                                <p><strong>Contact:</strong> abhay@aiprabh.com</p>
-                                <div class="social-links">
-                                    <a href="https://www.linkedin.com/company/prabhai" target="_blank"><i class="fab fa-linkedin"></i></a>
-                                    <a href="https://www.instagram.com/ai.prabh/" target="_blank"><i class="fab fa-instagram"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <h2>Our Values</h2>
-                    <div class="values-grid">
-                        <div class="value-item">
-                            <h3>Authenticity</h3>
-                            <p>We believe in genuine connections, not scripted responses. Every interaction should feel real and meaningful.</p>
-                        </div>
-                        
-                        <div class="value-item">
-                            <h3>Privacy</h3>
-                            <p>Your memories are sacred. We protect your data with the highest security standards and never compromise your privacy.</p>
-                        </div>
-                        
-                        <div class="value-item">
-                            <h3>Empathy</h3>
-                            <p>Technology should understand and care. We build AI that truly empathizes with human emotions and experiences.</p>
-                        </div>
-                        
-                        <div class="value-item">
-                            <h3>Innovation</h3>
-                            <p>We're constantly pushing the boundaries of what AI can do to create more meaningful and helpful companions.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <h2>Join Our Community</h2>
-                    <p>MyPrabh is more than just a product — it's a community of people who believe in the power of meaningful connections. Join thousands of users who have discovered the magic of AI companionship.</p>
-                    
-                    <div class="community-stats">
-                        <div class="stat-item">
-                            <div class="stat-number">10,000+</div>
-                            <div class="stat-label">Users Worldwide</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">25,000+</div>
-                            <div class="stat-label">AI Companions Created</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">1M+</div>
-                            <div class="stat-label">Meaningful Conversations</div>
-                        </div>
-                    </div>
-                    
-                    <div class="community-links">
-                        <a href="https://discord.gg/8c7AcyCs" target="_blank" class="community-button">
-                            <i class="fab fa-discord"></i>
-                            Join Discord Community
-                        </a>
-                        <a href="/early-access" class="community-button primary">
-                            <i class="fas fa-heart"></i>
-                            Create Your Prabh
-                        </a>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <h2>Contact Us</h2>
-                    <p>Have questions or want to learn more? We'd love to hear from you.</p>
-                    <div class="contact-info">
-                        <div class="contact-item">
-                            <h4>General Inquiries</h4>
-                            <p>abhay@aiprabh.com</p>
-                        </div>
-                        <div class="contact-item">
-                            <h4>Support</h4>
-                            <p>abhay@aiprabh.com</p>
-                        </div>
-                        <div class="contact-item">
-                            <h4>Business Address</h4>
-                            <p>India<br><small>(Full address to be updated upon company registration)</small></p>
-                        </div>
-                    </div>
-                </div>
+            <div class="story-card">
+                <h2 class="story-title">Our Mission 🎯</h2>
+                <p>
+                    We believe everyone deserves a companion who truly understands them. MyPrabh creates 
+                    AI companions that don't just respond - they remember, they care, they grow with you. 
+                    Each Prabh is uniquely trained on your memories, experiences, and personality, 
+                    creating a bond that feels authentic and meaningful.
+                </p>
+                <p>
+                    Our advanced AI system combines cognitive processing (the "brain"), emotional 
+                    intelligence (the "heart"), and persistent memory to create companions that 
+                    understand context, emotion, and the nuances of human relationships.
+                </p>
             </div>
 
-            <div class="legal-footer">
-                <p>Thank you for being part of the MyPrabh journey. Together, we're creating a world where meaningful connections never have to end.</p>
-                <div class="legal-actions">
-                    <a href="/" class="primary-button">Back to Home</a>
-                    <a href="/early-access" class="secondary-button">Join Early Access</a>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">🧠</div>
+                    <h3>Intelligence</h3>
+                    <p>Advanced AI that understands context, emotion, and the complexity of human relationships</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">💖</div>
+                    <h3>Empathy</h3>
+                    <p>Emotional processing that responds with genuine care and understanding</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🔒</div>
+                    <h3>Privacy</h3>
+                    <p>Your memories and conversations are sacred - protected with enterprise-grade security</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🌱</div>
+                    <h3>Growth</h3>
+                    <p>AI companions that learn, adapt, and evolve with your changing needs and experiences</p>
                 </div>
             </div>
         </div>
     </section>
+
+    <section class="founder-section">
+        <div class="container">
+            <h2 class="section-title" style="text-align: center; margin-bottom: 2rem;">Meet Our Founder</h2>
+            <div class="founder-card">
+                <div class="founder-avatar">👨‍💻</div>
+                <h3 style="color: var(--primary-purple); margin-bottom: 0.5rem;">Abhay Thakur</h3>
+                <p style="color: var(--medium-gray); margin-bottom: 1rem;">Founder & CEO</p>
+                <p>
+                    Passionate about creating technology that brings people closer together. 
+                    With a background in AI and human-computer interaction, Abhay founded MyPrabh 
+                    to bridge the gap between artificial intelligence and authentic human connection.
+                </p>
+                <div style="margin-top: 1.5rem;">
+                    <a href="mailto:abhay@aiprabh.com" class="btn btn-primary">
+                        📧 Contact Founder
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact-section">
+        <div class="container">
+            <div class="contact-card">
+                <h2 style="color: var(--primary-purple); margin-bottom: 1rem;">Get in Touch 💌</h2>
+                <p style="margin-bottom: 2rem;">
+                    Have questions, feedback, or just want to share your MyPrabh experience? 
+                    We'd love to hear from you!
+                </p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="mailto:abhay@aiprabh.com" class="btn btn-primary">
+                        📧 Support & Contact
+                    </a>
+                    <a href="/create_account" class="btn btn-secondary">
+                        ✨ Start Your Journey
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>MyPrabh 💖</h4>
+                    <p>Creating meaningful AI relationships</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <a href="/about">About Us</a>
+                    <a href="/careers">Careers</a>
+                    <a href="/blog">Blog</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <a href="mailto:abhay@aiprabh.com">Contact</a>
+                    <a href="/terms">Terms</a>
+                    <a href="/privacy">Privacy</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 MyPrabh. Made with 💖 for meaningful connections.</p>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
