@@ -3,352 +3,507 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Account - MyPrabh</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/forms.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <a href="/">
-                    <span class="logo-icon">💖</span>
-                    <span class="logo-text">MyPrabh</span>
-                </a>
-            </div>
-            <div class="nav-links">
-                <a href="/">← Back to Home</a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Account Creation Form -->
-    <section class="form-section">
-        <div class="form-container">
-            <div class="form-header">
-                <h1>Create Your Account</h1>
-                <p>Start your journey with MyPrabh and create your perfect AI companion</p>
-            </div>
-
-            <form id="createAccountForm" class="survey-form">
-                <div class="form-group">
-                    <label for="name">Full Name *</label>
-                    <input type="text" id="name" name="name" required placeholder="Enter your full name">
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email Address *</label>
-                    <input type="email" id="email" name="email" required placeholder="Enter your email address">
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Password *</label>
-                    <input type="password" id="password" name="password" required placeholder="Create a secure password" minlength="6">
-                </div>
-
-                <div class="form-group">
-                    <label for="confirm_password">Confirm Password *</label>
-                    <input type="password" id="confirm_password" name="confirm_password" required placeholder="Confirm your password" minlength="6">
-                </div>
-
-                <div class="form-group">
-                    <label class="checkbox-item privacy-notice">
-                        <input type="checkbox" id="terms_consent" required>
-                        <span class="checkmark"></span>
-                        I agree to the <a href="/terms" target="_blank">Terms of Service</a> and <a href="/privacy" target="_blank">Privacy Policy</a>
-                    </label>
-                </div>
-
-                <div class="form-group">
-                    <label class="checkbox-item">
-                        <input type="checkbox" id="marketing_consent">
-                        <span class="checkmark"></span>
-                        I'd like to receive updates about MyPrabh features and improvements
-                    </label>
-                </div>
-
-                <div class="form-group">
-                    <label for="captcha">Human Verification *</label>
-                    <div class="captcha-container">
-                        <div class="captcha-question" id="captchaQuestion">Loading...</div>
-                        <input type="text" id="captcha" name="captcha" required placeholder="Enter the answer">
-                        <button type="button" onclick="refreshCaptcha()" class="refresh-captcha">
-                            <i class="fas fa-refresh"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Face Recognition Setup (Optional)</label>
-                    <div class="face-setup">
-                        <button type="button" onclick="setupFaceLogin()" class="face-button">
-                            <i class="fas fa-camera"></i>
-                            Setup Face Login
-                        </button>
-                        <small>Enable face login for quick access without password</small>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <button type="submit" class="submit-button" id="submitButton">
-                        <i class="fas fa-user-plus"></i>
-                        Create Account
-                    </button>
-                </div>
-            </form>
-
-            <!-- Success Message -->
-            <div id="successMessage" class="success-message" style="display: none;">
-                <div class="success-icon">🎉</div>
-                <h2>Welcome to MyPrabh!</h2>
-                <p>Your account has been created successfully. You can now create your first AI companion and start building meaningful connections.</p>
-                <div class="success-actions">
-                    <a href="/dashboard" class="primary-button">Go to Dashboard</a>
-                </div>
-            </div>
-
-            <!-- Error Message -->
-            <div id="errorMessage" class="error-message" style="display: none;">
-                <div class="error-icon">❌</div>
-                <h3>Account Creation Failed</h3>
-                <p id="errorText">Please try again or contact us if the problem persists.</p>
-                <button onclick="hideError()" class="secondary-button">Try Again</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Preview -->
-    <section class="benefits">
-        <div class="container">
-            <h2>What You'll Get</h2>
-            <div class="benefits-grid">
-                <div class="benefit-item">
-                    <div class="benefit-icon">🤖</div>
-                    <h3>AI Companion</h3>
-                    <p>Create your personalized AI companion with unique personality and memories</p>
-                </div>
-                <div class="benefit-item">
-                    <div class="benefit-icon">💬</div>
-                    <h3>Natural Conversations</h3>
-                    <p>Enjoy authentic conversations that feel real and meaningful</p>
-                </div>
-                <div class="benefit-item">
-                    <div class="benefit-icon">🧠</div>
-                    <h3>Memory & Learning</h3>
-                    <p>Your AI companion remembers your conversations and grows with you</p>
-                </div>
-                <div class="benefit-item">
-                    <div class="benefit-icon">🔒</div>
-                    <h3>Private & Secure</h3>
-                    <p>Your conversations and data are completely private and secure</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <script>
-        // Handle form submission
-        document.getElementById('createAccountForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const submitButton = document.getElementById('submitButton');
-            const originalText = submitButton.innerHTML;
-            
-            // Show loading state
-            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
-            submitButton.disabled = true;
-            
-            try {
-                // Collect form data
-                const formData = new FormData(this);
-                const password = formData.get('password');
-                const confirmPassword = formData.get('confirm_password');
-                
-                // Validate passwords match
-                if (password !== confirmPassword) {
-                    throw new Error('Passwords do not match');
-                }
-                
-                const data = {
-                    name: formData.get('name'),
-                    email: formData.get('email'),
-                    password: password,
-                    marketing_consent: formData.get('marketing_consent') === 'on'
-                };
-                
-                // Submit to backend
-                const response = await fetch('/register', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                const result = await response.json();
-                
-                if (response.ok) {
-                    // Show success message
-                    document.querySelector('.form-container').style.display = 'none';
-                    document.getElementById('successMessage').style.display = 'block';
-                    
-                    // Redirect after 2 seconds
-                    setTimeout(() => {
-                        window.location.href = result.redirect || '/dashboard';
-                    }, 2000);
-                } else {
-                    throw new Error(result.error || 'Account creation failed');
-                }
-                
-            } catch (error) {
-                // Show error message
-                document.getElementById('errorText').textContent = error.message;
-                document.getElementById('errorMessage').style.display = 'block';
-                
-                // Reset button
-                submitButton.innerHTML = originalText;
-                submitButton.disabled = false;
-            }
-        });
-        
-        function hideError() {
-            document.getElementById('errorMessage').style.display = 'none';
+    <title>Create Account - MyPrabh 💖</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-secondary);
+            padding: var(--space-md);
+            position: relative;
+            overflow: hidden;
         }
         
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="stars" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><text x="10" y="15" text-anchor="middle" fill="rgba(168,85,247,0.1)" font-size="12">✨</text></pattern></defs><rect width="100" height="100" fill="url(%23stars)"/></svg>');
+            opacity: 0.4;
+        }
+        
+        .auth-card {
+            background: var(--warm-white);
+            border-radius: var(--radius-xl);
+            padding: var(--space-2xl);
+            box-shadow: var(--shadow-strong);
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: var(--space-xl);
+        }
+        
+        .auth-title {
+            font-family: var(--font-script);
+            font-size: 2.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .auth-subtitle {
+            color: var(--medium-gray);
+            font-size: 1.125rem;
+        }
+        
+        .form-group {
+            margin-bottom: var(--space-md);
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: var(--space-xs);
+            font-weight: 600;
+            color: var(--dark-gray);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: var(--space-md);
+            border: 2px solid rgba(168, 85, 247, 0.1);
+            border-radius: var(--radius-md);
+            font-family: var(--font-primary);
+            font-size: 1rem;
+            background: var(--cream);
+            transition: var(--transition-fast);
+            box-sizing: border-box;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+            background: var(--warm-white);
+        }
+        
+        .captcha-container {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-md);
+        }
+        
+        .captcha-question {
+            background: var(--gradient-accent);
+            color: white;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            min-width: 120px;
+            text-align: center;
+        }
+        
+        .captcha-input {
+            flex: 1;
+        }
+        
+        .face-recognition {
+            text-align: center;
+            margin: var(--space-md) 0;
+            padding: var(--space-md);
+            background: var(--gradient-warm);
+            border-radius: var(--radius-md);
+        }
+        
+        .face-btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-normal);
+            margin: 0 var(--space-xs);
+        }
+        
+        .face-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-colored);
+        }
+        
+        .auth-divider {
+            text-align: center;
+            margin: var(--space-lg) 0;
+            position: relative;
+            color: var(--medium-gray);
+        }
+        
+        .auth-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(168, 85, 247, 0.2);
+        }
+        
+        .auth-divider span {
+            background: var(--warm-white);
+            padding: 0 var(--space-md);
+        }
+        
+        .auth-links {
+            text-align: center;
+            margin-top: var(--space-lg);
+        }
+        
+        .auth-link {
+            color: var(--primary-purple);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition-fast);
+        }
+        
+        .auth-link:hover {
+            color: var(--primary-pink);
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-md);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        .success-message {
+            background: rgba(34, 197, 94, 0.1);
+            color: #16a34a;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-md);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+        
+        .password-strength {
+            margin-top: var(--space-xs);
+            font-size: 0.875rem;
+        }
+        
+        .strength-weak { color: #dc2626; }
+        .strength-medium { color: #f59e0b; }
+        .strength-strong { color: #16a34a; }
+        
+        .back-link {
+            position: absolute;
+            top: var(--space-lg);
+            left: var(--space-lg);
+            color: var(--medium-gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition-fast);
+            z-index: 2;
+        }
+        
+        .back-link:hover {
+            color: var(--primary-purple);
+        }
+        
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-md);
+        }
+        
+        .terms-checkbox input[type="checkbox"] {
+            margin-top: 0.25rem;
+        }
+        
+        .terms-text {
+            font-size: 0.875rem;
+            color: var(--medium-gray);
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-link">← Back to Home</a>
+    
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1 class="auth-title">Join MyPrabh ✨</h1>
+                <p class="auth-subtitle">Create your account and start building meaningful AI relationships</p>
+            </div>
+            
+            {% if error %}
+            <div class="error-message">
+                {{ error }}
+            </div>
+            {% endif %}
+            
+            {% if success %}
+            <div class="success-message">
+                {{ success }}
+            </div>
+            {% endif %}
+            
+            <form method="POST" id="signupForm">
+                <div class="form-group">
+                    <label for="email" class="form-label">💌 Email Address</label>
+                    <input type="email" id="email" name="email" class="form-input" required 
+                           placeholder="your@email.com" value="{{ request.form.email or '' }}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">🔐 Password</label>
+                    <input type="password" id="password" name="password" class="form-input" required 
+                           placeholder="Create a strong password" onkeyup="checkPasswordStrength()">
+                    <div id="password-strength" class="password-strength"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm_password" class="form-label">🔒 Confirm Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" class="form-input" required 
+                           placeholder="Confirm your password" onkeyup="checkPasswordMatch()">
+                    <div id="password-match" class="password-strength"></div>
+                </div>
+                
+                <!-- Math Captcha -->
+                <div class="captcha-container">
+                    <div class="captcha-question" id="captcha-question">Loading...</div>
+                    <input type="text" name="captcha_answer" class="form-input captcha-input" 
+                           placeholder="Answer" required>
+                    <input type="hidden" name="captcha_token" id="captcha-token">
+                </div>
+                
+                <div class="terms-checkbox">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms" class="terms-text">
+                        I agree to the <a href="/terms" class="auth-link" target="_blank">Terms of Service</a> 
+                        and <a href="/privacy" class="auth-link" target="_blank">Privacy Policy</a>. 
+                        I understand that MyPrabh creates AI companions for meaningful connections. 💖
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;" id="submitBtn">
+                    ✨ Create My Account
+                </button>
+            </form>
+            
+            <div class="auth-divider">
+                <span>optional</span>
+            </div>
+            
+            <div class="face-recognition">
+                <h4 style="margin-bottom: 0.5rem; color: var(--dark-gray);">🔐 Enhanced Security</h4>
+                <p style="margin-bottom: 1rem; color: var(--medium-gray); font-size: 0.875rem;">
+                    Set up face recognition for secure, passwordless login
+                </p>
+                <button type="button" class="face-btn" onclick="setupFaceRecognition()">
+                    📷 Setup Face Login
+                </button>
+            </div>
+            
+            <div class="auth-links">
+                <p>Already have an account? <a href="/login" class="auth-link">Sign in here 💕</a></p>
+                <p><a href="/early_access" class="auth-link">Join our early access program ✨</a></p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
         // Load captcha on page load
-        let currentCaptchaToken = null;
+        window.addEventListener('load', loadCaptcha);
         
         function loadCaptcha() {
             fetch('/api/captcha')
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('captchaQuestion').textContent = data.question;
-                    currentCaptchaToken = data.token;
+                    document.getElementById('captcha-question').textContent = data.question;
+                    document.getElementById('captcha-token').value = data.token;
                 })
                 .catch(error => {
-                    document.getElementById('captchaQuestion').textContent = 'Error loading captcha';
+                    console.error('Error loading captcha:', error);
+                    document.getElementById('captcha-question').textContent = '3 + 4 = ?';
                 });
         }
         
-        function refreshCaptcha() {
-            loadCaptcha();
-            document.getElementById('captcha').value = '';
-        }
-        
-        function setupFaceLogin() {
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                alert('Camera not supported on this device');
+        function checkPasswordStrength() {
+            const password = document.getElementById('password').value;
+            const strengthDiv = document.getElementById('password-strength');
+            
+            if (password.length === 0) {
+                strengthDiv.textContent = '';
                 return;
             }
             
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => {
-                    const video = document.createElement('video');
-                    video.srcObject = stream;
-                    video.play();
-                    
-                    const modal = document.createElement('div');
-                    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:9999;display:flex;align-items:center;justify-content:center;';
-                    
-                    const container = document.createElement('div');
-                    container.style.cssText = 'background:white;padding:20px;border-radius:10px;text-align:center;';
-                    
-                    video.style.cssText = 'width:300px;height:200px;border-radius:10px;';
-                    
-                    const captureBtn = document.createElement('button');
-                    captureBtn.textContent = 'Capture Face';
-                    captureBtn.style.cssText = 'margin:10px;padding:10px 20px;background:#ff6b9d;color:white;border:none;border-radius:5px;cursor:pointer;';
-                    
-                    const closeBtn = document.createElement('button');
-                    closeBtn.textContent = 'Close';
-                    closeBtn.style.cssText = 'margin:10px;padding:10px 20px;background:#ccc;color:black;border:none;border-radius:5px;cursor:pointer;';
-                    
-                    container.appendChild(video);
-                    container.appendChild(document.createElement('br'));
-                    container.appendChild(captureBtn);
-                    container.appendChild(closeBtn);
-                    modal.appendChild(container);
-                    document.body.appendChild(modal);
-                    
-                    captureBtn.onclick = () => {
-                        const canvas = document.createElement('canvas');
-                        canvas.width = video.videoWidth;
-                        canvas.height = video.videoHeight;
-                        canvas.getContext('2d').drawImage(video, 0, 0);
-                        
-                        const imageData = canvas.toDataURL('image/jpeg');
-                        
-                        fetch('/api/face-setup', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ image_data: imageData })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                alert('Face recognition setup complete!');
-                            } else {
-                                alert('Setup failed: ' + data.error);
-                            }
-                            stream.getTracks().forEach(track => track.stop());
-                            document.body.removeChild(modal);
-                        });
-                    };
-                    
-                    closeBtn.onclick = () => {
-                        stream.getTracks().forEach(track => track.stop());
-                        document.body.removeChild(modal);
-                    };
-                })
-                .catch(error => {
-                    alert('Camera access denied');
-                });
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            
+            if (strength < 3) {
+                strengthDiv.textContent = '🔴 Weak password';
+                strengthDiv.className = 'password-strength strength-weak';
+            } else if (strength < 4) {
+                strengthDiv.textContent = '🟡 Medium strength';
+                strengthDiv.className = 'password-strength strength-medium';
+            } else {
+                strengthDiv.textContent = '🟢 Strong password';
+                strengthDiv.className = 'password-strength strength-strong';
+            }
         }
         
-        // Load captcha on page load
-        document.addEventListener('DOMContentLoaded', loadCaptcha);
+        function checkPasswordMatch() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+            const matchDiv = document.getElementById('password-match');
+            
+            if (confirmPassword.length === 0) {
+                matchDiv.textContent = '';
+                return;
+            }
+            
+            if (password === confirmPassword) {
+                matchDiv.textContent = '✅ Passwords match';
+                matchDiv.className = 'password-strength strength-strong';
+            } else {
+                matchDiv.textContent = '❌ Passwords do not match';
+                matchDiv.className = 'password-strength strength-weak';
+            }
+        }
+        
+        async function setupFaceRecognition() {
+            const email = document.getElementById('email').value;
+            if (!email) {
+                alert('Please enter your email address first.');
+                return;
+            }
+            
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const video = document.createElement('video');
+                video.srcObject = stream;
+                video.play();
+                
+                // Create modal for face capture
+                const modal = document.createElement('div');
+                modal.style.cssText = `
+                    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                    background: rgba(0,0,0,0.8); display: flex; align-items: center;
+                    justify-content: center; z-index: 1000;
+                `;
+                
+                const container = document.createElement('div');
+                container.style.cssText = `
+                    background: white; padding: 2rem; border-radius: 1rem;
+                    text-align: center; max-width: 400px;
+                `;
+                
+                container.innerHTML = `
+                    <h3 style="margin-bottom: 1rem; color: var(--dark-gray);">Setup Face Recognition 📷</h3>
+                    <p style="margin-bottom: 1rem; color: var(--medium-gray);">Position your face in the camera and click capture</p>
+                `;
+                
+                video.style.cssText = 'width: 300px; height: 200px; border-radius: 0.5rem; margin-bottom: 1rem;';
+                container.appendChild(video);
+                
+                const buttonContainer = document.createElement('div');
+                buttonContainer.innerHTML = `
+                    <button onclick="captureFace('${email}')" style="margin-right: 0.5rem;" class="btn btn-primary">📸 Capture</button>
+                    <button onclick="closeFaceModal()" class="btn btn-secondary">❌ Cancel</button>
+                `;
+                container.appendChild(buttonContainer);
+                
+                modal.appendChild(container);
+                document.body.appendChild(modal);
+                
+                window.currentStream = stream;
+                window.currentModal = modal;
+                window.currentVideo = video;
+                
+            } catch (error) {
+                alert('Camera access denied. Please enable camera permissions to use face recognition.');
+            }
+        }
+        
+        function captureFace(email) {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = window.currentVideo.videoWidth;
+            canvas.height = window.currentVideo.videoHeight;
+            context.drawImage(window.currentVideo, 0, 0);
+            
+            const imageData = canvas.toDataURL('image/jpeg');
+            
+            // Send to server for face signature
+            fetch('/api/setup_face', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    image: imageData,
+                    email: email
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Face recognition setup successful! 🎉 You can now use face login after creating your account.');
+                    closeFaceModal();
+                } else {
+                    alert('Face setup failed: ' + data.error);
+                }
+            })
+            .catch(error => {
+                alert('Error setting up face recognition: ' + error);
+            });
+        }
+        
+        function closeFaceModal() {
+            if (window.currentStream) {
+                window.currentStream.getTracks().forEach(track => track.stop());
+            }
+            if (window.currentModal) {
+                document.body.removeChild(window.currentModal);
+            }
+        }
+        
+        // Form submission with validation
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+            
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                alert('Passwords do not match. Please check and try again.');
+                return;
+            }
+            
+            if (password.length < 8) {
+                e.preventDefault();
+                alert('Password must be at least 8 characters long.');
+                return;
+            }
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.classList.add('loading');
+            submitBtn.innerHTML = '<div class="spinner"></div> Creating Account...';
+        });
     </script>
-    
-    <style>
-        .captcha-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 5px;
-        }
-        .captcha-question {
-            background: #f0f0f0;
-            padding: 10px;
-            border-radius: 5px;
-            font-weight: bold;
-            min-width: 100px;
-        }
-        .refresh-captcha {
-            background: #ff6b9d;
-            color: white;
-            border: none;
-            padding: 8px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .face-setup {
-            text-align: center;
-            margin-top: 10px;
-        }
-        .face-button {
-            background: #6c5ce7;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-bottom: 5px;
-        }
-        .social-button.face {
-            background: #6c5ce7;
-        }
-    </style>
 </body>
 </html>

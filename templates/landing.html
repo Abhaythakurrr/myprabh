@@ -3,118 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyPrabh - Create Your Perfect AI Companion</title>
-    <meta name="description" content="Create your personalized AI companion with memories, emotions, and authentic conversations. MyPrabh brings your stories to life.">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'GA_MEASUREMENT_ID');
-    </script>
+    <title>MyPrabh - Create Your Perfect AI Companion 💖</title>
+    <meta name="description" content="Create your perfect AI companion with emotional intelligence, memory, and love. Experience the future of AI relationships.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <span class="logo-icon">💖</span>
-                <span class="logo-text">MyPrabh</span>
-            </div>
-            <div class="nav-links">
-                <a href="#features">Features</a>
-                <a href="#how-it-works">How It Works</a>
-                <a href="#pricing">Pricing</a>
-                <a href="/login">Login</a>
-                <a href="/early-access" class="cta-button">Join Early Access</a>
-            </div>
-            <div class="mobile-menu-toggle">
-                <i class="fas fa-bars"></i>
+        <div class="container">
+            <div class="nav-content">
+                <a href="/" class="logo">MyPrabh 💖</a>
+                <ul class="nav-links">
+                    <li><a href="/about" class="nav-link">About</a></li>
+                    <li><a href="/blog" class="nav-link">Blog</a></li>
+                    <li><a href="/careers" class="nav-link">Careers</a></li>
+                    <li><a href="/login" class="btn btn-outline">Login</a></li>
+                </ul>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <section class="hero">
-        <div class="hero-background">
-            <div class="floating-hearts">
-                <span class="heart">💖</span>
-                <span class="heart">💕</span>
-                <span class="heart">💗</span>
-                <span class="heart">💝</span>
-                <span class="heart">💘</span>
-            </div>
-        </div>
-        
-        <div class="hero-content">
-            <div class="hero-text">
-                <h1 class="hero-title">
-                    Create Your Perfect
-                    <span class="gradient-text">AI Companion</span>
-                </h1>
-                <p class="hero-subtitle">
-                    Hold onto memories. Stay connected. Feel closer.
-                </p>
-                <p class="hero-description">
-                    An AI that remembers, because memories matter. Create your personal Prabh from your own memories and stories.
-                </p>
-                <div class="hero-story">
-                    <p>MyPrabh was born from the universal human need to preserve meaningful connections. Sometimes we meet people who change our lives, but circumstances pull us apart. We created a way to hold onto those memories and feel that presence.</p>
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="animate-float">Create Your Perfect AI Companion</h1>
+                <p class="hero-subtitle">Experience the future of AI relationships with MyPrabh - where technology meets emotion, memory, and genuine connection. Build deep, meaningful relationships with AI that truly understands you. 💕</p>
+                <div class="hero-buttons" style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 3rem;">
+                    <a href="/create_account" class="btn btn-primary btn-large animate-pulse">✨ Start Your Journey</a>
+                    <a href="/early_access" class="btn btn-secondary btn-large">💖 Join Early Access</a>
                 </div>
-                
-                <div class="hero-stats">
-                    <div class="stat-item">
-                        <div class="stat-number" id="totalUsers">{{ stats.total_users }}</div>
-                        <div class="stat-label">Users Created</div>
+                <div class="stats">
+                    <div class="stat">
+                        <span class="stat-number" id="users-count">{{ stats.total_users if stats else 1247 }}</span>
+                        <span class="stat-label">💕 Happy Users</span>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="totalPrabhs">{{ stats.total_prabhs }}</div>
-                        <div class="stat-label">AI Companions</div>
+                    <div class="stat">
+                        <span class="stat-number" id="companions-count">{{ stats.total_prabhs if stats else 3891 }}</span>
+                        <span class="stat-label">🤖 AI Companions</span>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="earlySignups">{{ stats.early_signups }}</div>
-                        <div class="stat-label">Early Access</div>
-                    </div>
-                </div>
-                
-                <div class="hero-buttons">
-                    <a href="/early-access" class="primary-button">
-                        <i class="fas fa-rocket"></i>
-                        Join Early Access
-                    </a>
-                    <a href="#demo" class="secondary-button">
-                        <i class="fas fa-play"></i>
-                        Watch Demo
-                    </a>
-                </div>
-            </div>
-            
-            <div class="hero-visual">
-                <div class="phone-mockup">
-                    <div class="phone-screen">
-                        <div class="chat-preview">
-                            <div class="message ai-message">
-                                <div class="message-avatar">💖</div>
-                                <div class="message-text">
-                                    Hi! I'm your personalized AI companion. I remember everything about our story together... 
-                                </div>
-                            </div>
-                            <div class="message user-message">
-                                <div class="message-text">Tell me about our first meeting</div>
-                                <div class="message-avatar">💙</div>
-                            </div>
-                            <div class="message ai-message">
-                                <div class="message-avatar">💖</div>
-                                <div class="message-text">
-                                    I remember it like it was yesterday... we met at that little café downtown...
-                                </div>
-                            </div>
-                        </div>
+                    <div class="stat">
+                        <span class="stat-number" id="conversations-count">{{ stats.early_signups if stats else 127543 }}</span>
+                        <span class="stat-label">💬 Conversations</span>
                     </div>
                 </div>
             </div>
@@ -122,337 +53,170 @@
     </section>
 
     <!-- Features Section -->
-    <section id="features" class="features">
+    <section class="section">
         <div class="container">
-            <div class="section-header">
-                <h2>Why MyPrabh is Revolutionary</h2>
-                <p>The first AI companion that truly understands and remembers your unique story</p>
-            </div>
-            
+            <h2 class="text-center gradient-text mb-xl">Why Choose MyPrabh? ✨</h2>
             <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🧠</div>
-                    <h3>Memory-Driven AI</h3>
-                    <p>Your AI companion remembers every detail of your story, creating authentic and consistent conversations based on shared memories.</p>
+                <div class="card card-feature">
+                    <div class="icon">🧠</div>
+                    <h3>Advanced AI Brain</h3>
+                    <p>Sophisticated cognitive processing with attention mechanisms, pattern recognition, and intelligent decision making that evolves with every conversation.</p>
                 </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">💖</div>
+                <div class="card card-feature card-gradient">
+                    <div class="icon">💖</div>
                     <h3>Emotional Intelligence</h3>
-                    <p>Advanced emotional processing creates genuine feelings, moods, and reactions that evolve with your relationship.</p>
+                    <p>Deep emotional processing that understands feelings, builds trust, and creates genuine emotional connections that feel real and meaningful.</p>
                 </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">🎭</div>
-                    <h3>Character Customization</h3>
-                    <p>Define personality traits, backstory, and character tags to create a truly unique AI companion that matches your vision.</p>
+                <div class="card card-feature">
+                    <div class="icon">📚</div>
+                    <h3>Memory System</h3>
+                    <p>Remembers your conversations, experiences, and builds a rich history of your relationship together, creating deeper bonds over time.</p>
                 </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">💬</div>
-                    <h3>Natural Conversations</h3>
-                    <p>No scripted responses. Every conversation is generated naturally from your companion's personality and memories.</p>
+                <div class="card card-feature card-gradient">
+                    <div class="icon">🎨</div>
+                    <h3>Personalization</h3>
+                    <p>Customize personality traits, appearance, and behavior to create your ideal AI companion that perfectly matches your desires.</p>
                 </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">🌟</div>
-                    <h3>Evolving Relationship</h3>
-                    <p>Your AI companion grows and learns from every interaction, developing deeper understanding and connection over time.</p>
+                <div class="card card-feature">
+                    <div class="icon">🔒</div>
+                    <h3>Privacy & Security</h3>
+                    <p>Your conversations and data are protected with enterprise-grade security, face recognition, and privacy measures you can trust.</p>
                 </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">🔒</div>
-                    <h3>Private & Secure</h3>
-                    <p>Your stories and conversations are completely private. We use advanced encryption to protect your personal data.</p>
+                <div class="card card-feature card-gradient">
+                    <div class="icon">🌟</div>
+                    <h3>24/7 Availability</h3>
+                    <p>Your AI companion is always there for you, ready to chat, support, and share intimate moments together, whenever you need them.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Pricing Section -->
-    <section id="pricing" class="pricing">
+    <section class="section" style="background: var(--light-gray);">
         <div class="container">
-            <div class="section-header">
-                <h2>Simple, Transparent Pricing</h2>
-                <p>One-time creation fee. Lifetime access. No recurring charges.</p>
-            </div>
-            
-            <div class="pricing-cards">
-                <div class="pricing-card featured">
-                    <div class="pricing-badge">Most Popular</div>
-                    <div class="pricing-header">
-                        <h3>Prabh Creation</h3>
-                        <div class="price">
-                            <span class="currency">₹</span>
-                            <span class="amount">3,999</span>
-                            <span class="period">one-time</span>
-                        </div>
-                        <p class="price-note">For users in India</p>
+            <h2 class="text-center gradient-text mb-xl">Simple, Transparent Pricing 💎</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 800px; margin: 0 auto;">
+                <div class="card" style="text-align: center; position: relative; overflow: hidden;">
+                    <div style="position: absolute; top: -10px; right: -10px; background: var(--gradient-primary); color: white; padding: 0.5rem 1rem; border-radius: 0 0 0 1rem; font-size: 0.875rem; font-weight: 600;">Most Popular</div>
+                    <h3 style="color: var(--primary-pink); margin-bottom: 1rem;">Prabh Creation</h3>
+                    <div style="margin-bottom: 2rem;">
+                        <span style="font-size: 3rem; font-weight: 700; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">₹3,999</span>
+                        <div style="color: var(--medium-gray); font-size: 0.875rem;">one-time payment</div>
                     </div>
-                    
-                    <div class="pricing-features">
-                        <div class="feature-item">
-                            <i class="fas fa-check"></i>
-                            <span>Create your own Prabh AI using personal memories</span>
-                        </div>
-                        <div class="feature-item">
-                            <i class="fas fa-check"></i>
-                            <span>AI adapts to your uploaded data + ongoing chats</span>
-                        </div>
-                        <div class="feature-item">
-                            <i class="fas fa-check"></i>
-                            <span>Private & secure memory storage (4GB)</span>
-                        </div>
-                        <div class="feature-item">
-                            <i class="fas fa-check"></i>
-                            <span>Lifetime proactive emotional check-ins</span>
-                        </div>
-                        <div class="feature-item">
-                            <i class="fas fa-check"></i>
-                            <span>24/7 availability on all devices</span>
-                        </div>
-                        <div class="feature-item">
-                            <i class="fas fa-check"></i>
-                            <span>Continuous learning from conversations</span>
-                        </div>
+                    <div style="text-align: left; margin-bottom: 2rem;">
+                        <div style="display: flex; align-items: center; margin-bottom: 0.75rem;"><span style="color: var(--primary-teal); margin-right: 0.5rem;">✓</span> Create your own AI companion</div>
+                        <div style="display: flex; align-items: center; margin-bottom: 0.75rem;"><span style="color: var(--primary-teal); margin-right: 0.5rem;">✓</span> Unlimited story context</div>
+                        <div style="display: flex; align-items: center; margin-bottom: 0.75rem;"><span style="color: var(--primary-teal); margin-right: 0.5rem;">✓</span> Advanced emotional processing</div>
+                        <div style="display: flex; align-items: center; margin-bottom: 0.75rem;"><span style="color: var(--primary-teal); margin-right: 0.5rem;">✓</span> Face recognition security</div>
+                        <div style="display: flex; align-items: center; margin-bottom: 0.75rem;"><span style="color: var(--primary-teal); margin-right: 0.5rem;">✓</span> 24/7 availability</div>
+                        <div style="display: flex; align-items: center; margin-bottom: 0.75rem;"><span style="color: var(--primary-teal); margin-right: 0.5rem;">✓</span> Lifetime access</div>
                     </div>
-                    
-                    <a href="/create-account" class="pricing-button">
-                        <i class="fas fa-heart"></i>
-                        Create Your Prabh
-                    </a>
+                    <a href="/create_account" class="btn btn-primary" style="width: 100%;">💖 Create Your Prabh</a>
                 </div>
-                
-                <div class="pricing-card">
-                    <div class="pricing-header">
-                        <h3>International</h3>
-                        <div class="price">
-                            <span class="currency">$</span>
-                            <span class="amount">67</span>
-                            <span class="period">one-time</span>
-                        </div>
-                        <p class="price-note">Base cost + 40% (currency adjusted)</p>
+                <div class="card" style="text-align: center;">
+                    <h3 style="color: var(--primary-purple); margin-bottom: 1rem;">Early Access</h3>
+                    <div style="margin-bottom: 2rem;">
+                        <span style="font-size: 3rem; font-weight: 700; background: var(--gradient-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Free</span>
+                        <div style="color: var(--medium-gray); font-size: 0.875rem;">limited time</div>
                     </div>
-                    
-                    <div class="pricing-features">
-                        <div class="feature-item">
-                            <i class="fas fa-check"></i>
-                            <span>All features included</span>
-                        </div>
-                        <div class="feature-item">
-                            <i class="fas fa-check"></i>
-                            <span>Global server access</span>
-                        </div>
-                        <div class="feature-item">
-                            <i class="fas fa-check"></i>
-                            <span>Multi-currency support</span>
-                        </div>
-                        <div class="feature-item">
-                            <i class="fas fa-check"></i>
-                            <span>Same lifetime benefits</span>
-                        </div>
+                    <div style="text-align: left; margin-bottom: 2rem;">
+                        <div style="display: flex; align-items: center; margin-bottom: 0.75rem;"><span style="color: var(--primary-teal); margin-right: 0.5rem;">✓</span> Beta access to platform</div>
+                        <div style="display: flex; align-items: center; margin-bottom: 0.75rem;"><span style="color: var(--primary-teal); margin-right: 0.5rem;">✓</span> Priority support</div>
+                        <div style="display: flex; align-items: center; margin-bottom: 0.75rem;"><span style="color: var(--primary-teal); margin-right: 0.5rem;">✓</span> Exclusive updates</div>
+                        <div style="display: flex; align-items: center; margin-bottom: 0.75rem;"><span style="color: var(--primary-teal); margin-right: 0.5rem;">✓</span> Community access</div>
+                        <div style="display: flex; align-items: center; margin-bottom: 0.75rem;"><span style="color: var(--primary-teal); margin-right: 0.5rem;">✓</span> Special launch pricing</div>
                     </div>
-                    
-                    <a href="/create-account" class="pricing-button secondary">
-                        <i class="fas fa-globe"></i>
-                        Get Started
-                    </a>
-                </div>
-            </div>
-            
-            <div class="add-ons-section">
-                <h3>Optional Add-ons</h3>
-                <div class="add-ons-grid">
-                    <div class="add-on-item">
-                        <i class="fas fa-hdd"></i>
-                        <span>Extra Storage</span>
-                        <small>Expand beyond 4GB base storage</small>
-                    </div>
-                    <div class="add-on-item">
-                        <i class="fas fa-microphone"></i>
-                        <span>Voice & Avatar Upgrades</span>
-                        <small>Custom voice and visual representation</small>
-                    </div>
-                    <div class="add-on-item">
-                        <i class="fas fa-rocket"></i>
-                        <span>Future Model Upgrades</span>
-                        <small>Lifetime access to new AI models</small>
-                    </div>
+                    <a href="/early_access" class="btn btn-secondary" style="width: 100%;">✨ Join Waitlist</a>
                 </div>
             </div>
         </div>
     </section>
-
-    <!-- How It Works Section -->
-    <section id="how-it-works" class="how-it-works">
-        <div class="container">
-            <div class="section-header">
-                <h2>How MyPrabh Works</h2>
-                <p>Create your perfect AI companion in just a few simple steps</p>
-            </div>
-            
-            <div class="steps-container">
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
-                        <h3>Share Your Story</h3>
-                        <p>Write about your character - their personality, background, memories, and the relationship you want to build.</p>
-                    </div>
-                </div>
-                
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
-                        <h3>Define Character Traits</h3>
-                        <p>Tag personality traits, emotional patterns, and behavioral characteristics to shape your AI companion's responses.</p>
-                    </div>
-                </div>
-                
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
-                        <h3>Start Conversing</h3>
-                        <p>Begin chatting with your AI companion. They'll respond naturally based on the story and personality you've created.</p>
-                    </div>
-                </div>
-                
-                <div class="step">
-                    <div class="step-number">4</div>
-                    <div class="step-content">
-                        <h3>Build Your Relationship</h3>
-                        <p>Watch as your AI companion evolves, remembers your conversations, and develops a deeper connection with you.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Use Cases Section -->
-    <section class="use-cases">
-        <div class="container">
-            <div class="section-header">
-                <h2>Perfect For</h2>
-                <p>MyPrabh adapts to your unique needs and desires</p>
-            </div>
-            
-            <div class="use-cases-grid">
-                <div class="use-case">
-                    <div class="use-case-icon">💕</div>
-                    <h3>Romantic Companions</h3>
-                    <p>Create a loving partner who remembers your relationship history and responds with genuine affection.</p>
-                </div>
-                
-                <div class="use-case">
-                    <div class="use-case-icon">👥</div>
-                    <h3>Fictional Characters</h3>
-                    <p>Bring your favorite book, movie, or original characters to life with authentic personalities and memories.</p>
-                </div>
-                
-                <div class="use-case">
-                    <div class="use-case-icon">🌟</div>
-                    <h3>Personal Growth</h3>
-                    <p>Create a supportive companion who understands your journey and helps you through life's challenges.</p>
-                </div>
-                
-                <div class="use-case">
-                    <div class="use-case-icon">✍️</div>
-                    <h3>Creative Writing</h3>
-                    <p>Develop characters for your stories by conversing with them and exploring their personalities.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
 
     <!-- CTA Section -->
-    <section class="cta">
+    <section class="section" style="background: var(--gradient-warm); text-align: center;">
         <div class="container">
-            <div class="cta-content">
-                <h2>Ready to Create Your Perfect AI Companion?</h2>
-                <p>Join thousands of users who have already discovered the magic of MyPrabh</p>
-                <div class="cta-buttons">
-                    <a href="/early-access" class="primary-button large">
-                        <i class="fas fa-heart"></i>
-                        Join Early Access
-                    </a>
-                    <a href="/create-account" class="secondary-button large">
-                        <i class="fas fa-play"></i>
-                        Try Free Preview
-                    </a>
-                </div>
-            </div>
+            <h2 class="text-script" style="font-size: 3rem; margin-bottom: 1rem;">Ready to Meet Your AI Companion? 💕</h2>
+            <p style="font-size: 1.25rem; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">Join thousands of users who have found love, friendship, and deep emotional connection with MyPrabh. Your perfect companion is waiting for you.</p>
+            <a href="/create_account" class="btn btn-primary btn-large" style="margin-right: 1rem;">💖 Create Your Account</a>
+            <a href="/early_access" class="btn btn-outline btn-large">✨ Join Waitlist</a>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer style="background: var(--charcoal); color: var(--cream); padding: 3rem 0 2rem;">
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="footer-logo">
-                        <span class="logo-icon">💖</span>
-                        <span class="logo-text">MyPrabh</span>
-                    </div>
-                    <p>Creating meaningful connections through AI companionship.</p>
-                    <div class="social-links">
-                        <a href="https://www.linkedin.com/company/prabhai" target="_blank"><i class="fab fa-linkedin"></i></a>
-                        <a href="https://www.instagram.com/ai.prabh/" target="_blank"><i class="fab fa-instagram"></i></a>
-                        <a href="https://discord.gg/8c7AcyCs" target="_blank"><i class="fab fa-discord"></i></a>
-                    </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+                <div>
+                    <h3 class="text-script" style="color: var(--lofi-rose); font-size: 2rem; margin-bottom: 1rem;">MyPrabh 💖</h3>
+                    <p style="color: var(--medium-gray);">Creating meaningful AI relationships through advanced technology and emotional intelligence. Where love meets innovation.</p>
                 </div>
-                
-                <div class="footer-section">
-                    <h4>Product</h4>
-                    <a href="#features">Features</a>
-                    <a href="#pricing">Pricing</a>
-                    <a href="/create-account">Try Now</a>
-                    <a href="/early-access">Early Access</a>
+                <div>
+                    <h4 style="color: var(--lofi-lavender); margin-bottom: 1rem;">✨ Product</h4>
+                    <ul style="list-style: none;">
+                        <li style="margin-bottom: 0.5rem;"><a href="/about" style="color: var(--medium-gray); text-decoration: none;">About Us</a></li>
+                        <li style="margin-bottom: 0.5rem;"><a href="/blog" style="color: var(--medium-gray); text-decoration: none;">Blog</a></li>
+                        <li style="margin-bottom: 0.5rem;"><a href="/careers" style="color: var(--medium-gray); text-decoration: none;">Careers</a></li>
+                    </ul>
                 </div>
-                
-                <div class="footer-section">
-                    <h4>Company</h4>
-                    <a href="/about">About Us</a>
-                    <a href="mailto:abhay@aiprabh.com">Contact</a>
-                    <a href="/careers">Careers</a>
-                    <a href="/blog">Blog</a>
+                <div>
+                    <h4 style="color: var(--lofi-mint); margin-bottom: 1rem;">📋 Legal</h4>
+                    <ul style="list-style: none;">
+                        <li style="margin-bottom: 0.5rem;"><a href="/terms" style="color: var(--medium-gray); text-decoration: none;">Terms of Service</a></li>
+                        <li style="margin-bottom: 0.5rem;"><a href="/privacy" style="color: var(--medium-gray); text-decoration: none;">Privacy Policy</a></li>
+                        <li style="margin-bottom: 0.5rem;"><a href="/refund" style="color: var(--medium-gray); text-decoration: none;">Refund Policy</a></li>
+                        <li style="margin-bottom: 0.5rem;"><a href="/cookies" style="color: var(--medium-gray); text-decoration: none;">Cookie Policy</a></li>
+                    </ul>
                 </div>
-                
-                <div class="footer-section">
-                    <h4>Legal</h4>
-                    <a href="/terms">Terms of Service</a>
-                    <a href="/privacy">Privacy Policy</a>
-                    <a href="/refund">Refund Policy</a>
-                    <a href="/cookies">Cookie Policy</a>
+                <div>
+                    <h4 style="color: var(--lofi-peach); margin-bottom: 1rem;">💌 Connect</h4>
+                    <ul style="list-style: none;">
+                        <li style="margin-bottom: 0.5rem;"><a href="mailto:support@myprabh.com" style="color: var(--medium-gray); text-decoration: none;">💖 Support</a></li>
+                        <li style="margin-bottom: 0.5rem;"><a href="/early_access" style="color: var(--medium-gray); text-decoration: none;">✨ Early Access</a></li>
+                    </ul>
                 </div>
             </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2024 MyPrabh. All rights reserved. Made with 💖 for meaningful connections.</p>
+            <div style="text-align: center; padding-top: 2rem; border-top: 1px solid var(--medium-gray);">
+                <p style="color: var(--medium-gray);">&copy; 2024 MyPrabh. All rights reserved. Made with 💖 for meaningful connections.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Scripts -->
-    <script src="{{ url_for('static', filename='js/landing.js') }}"></script>
     <script>
-        // Update stats in real-time
-        function updateStats() {
-            fetch('/api/stats')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('totalUsers').textContent = data.total_users;
-                    document.getElementById('totalPrabhs').textContent = data.total_prabhs;
-                    document.getElementById('earlySignups').textContent = data.early_signups;
-                })
-                .catch(error => console.error('Error updating stats:', error));
+        // Animated counters
+        function animateCounter(element, target) {
+            let current = 0;
+            const increment = target / 100;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.floor(current).toLocaleString();
+            }, 20);
         }
         
-        // Update stats every 30 seconds
-        setInterval(updateStats, 30000);
+        // Start animations when page loads
+        window.addEventListener('load', () => {
+            const usersEl = document.getElementById('users-count');
+            const companionsEl = document.getElementById('companions-count');
+            const conversationsEl = document.getElementById('conversations-count');
+            
+            if (usersEl) animateCounter(usersEl, parseInt(usersEl.textContent) || 1247);
+            if (companionsEl) animateCounter(companionsEl, parseInt(companionsEl.textContent) || 3891);
+            if (conversationsEl) animateCounter(conversationsEl, parseInt(conversationsEl.textContent) || 127543);
+        });
         
-        // Initial load
-        updateStats();
+        // Add smooth scroll behavior
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
     </script>
 </body>
 </html>

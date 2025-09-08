@@ -3,195 +3,446 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - MyPrabh</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/forms.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Login - MyPrabh 💖</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-warm);
+            padding: var(--space-md);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="hearts" x="0" y="0" width="25" height="25" patternUnits="userSpaceOnUse"><text x="12.5" y="18" text-anchor="middle" fill="rgba(255,107,157,0.1)" font-size="14">💕</text></pattern></defs><rect width="100" height="100" fill="url(%23hearts)"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .auth-card {
+            background: var(--warm-white);
+            border-radius: var(--radius-xl);
+            padding: var(--space-2xl);
+            box-shadow: var(--shadow-strong);
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: var(--space-xl);
+        }
+        
+        .auth-title {
+            font-family: var(--font-script);
+            font-size: 2.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .auth-subtitle {
+            color: var(--medium-gray);
+            font-size: 1.125rem;
+        }
+        
+        .form-group {
+            margin-bottom: var(--space-md);
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: var(--space-xs);
+            font-weight: 600;
+            color: var(--dark-gray);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: var(--space-md);
+            border: 2px solid rgba(255, 107, 157, 0.1);
+            border-radius: var(--radius-md);
+            font-family: var(--font-primary);
+            font-size: 1rem;
+            background: var(--cream);
+            transition: var(--transition-fast);
+            box-sizing: border-box;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-pink);
+            box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.1);
+            background: var(--warm-white);
+        }
+        
+        .captcha-container {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-md);
+        }
+        
+        .captcha-question {
+            background: var(--gradient-secondary);
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            color: var(--dark-gray);
+            min-width: 120px;
+            text-align: center;
+        }
+        
+        .captcha-input {
+            flex: 1;
+        }
+        
+        .face-recognition {
+            text-align: center;
+            margin: var(--space-md) 0;
+        }
+        
+        .face-btn {
+            background: var(--gradient-accent);
+            color: white;
+            border: none;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-normal);
+            margin: 0 var(--space-xs);
+        }
+        
+        .face-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .auth-divider {
+            text-align: center;
+            margin: var(--space-lg) 0;
+            position: relative;
+            color: var(--medium-gray);
+        }
+        
+        .auth-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(255, 107, 157, 0.2);
+        }
+        
+        .auth-divider span {
+            background: var(--warm-white);
+            padding: 0 var(--space-md);
+        }
+        
+        .auth-links {
+            text-align: center;
+            margin-top: var(--space-lg);
+        }
+        
+        .auth-link {
+            color: var(--primary-pink);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition-fast);
+        }
+        
+        .auth-link:hover {
+            color: var(--primary-purple);
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-md);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        .success-message {
+            background: rgba(34, 197, 94, 0.1);
+            color: #16a34a;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-md);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+        
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        
+        .back-link {
+            position: absolute;
+            top: var(--space-lg);
+            left: var(--space-lg);
+            color: var(--medium-gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition-fast);
+            z-index: 2;
+        }
+        
+        .back-link:hover {
+            color: var(--primary-pink);
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <a href="/">
-                    <span class="logo-icon">💖</span>
-                    <span class="logo-text">MyPrabh</span>
-                </a>
+    <a href="/" class="back-link">← Back to Home</a>
+    
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1 class="auth-title">Welcome Back 💕</h1>
+                <p class="auth-subtitle">Sign in to continue your AI companion journey</p>
             </div>
-            <div class="nav-links">
-                <a href="/">← Back to Home</a>
+            
+            {% if error %}
+            <div class="error-message">
+                {{ error }}
             </div>
-        </div>
-    </nav>
-
-    <!-- Login Form -->
-    <section class="form-section">
-        <div class="container">
-            <div class="form-container">
-                <div class="form-header">
-                    <h1>Welcome Back</h1>
-                    <p>Sign in to your MyPrabh account</p>
+            {% endif %}
+            
+            {% if success %}
+            <div class="success-message">
+                {{ success }}
+            </div>
+            {% endif %}
+            
+            <form method="POST" id="loginForm">
+                <div class="form-group">
+                    <label for="email" class="form-label">💌 Email Address</label>
+                    <input type="email" id="email" name="email" class="form-input" required 
+                           placeholder="your@email.com" value="{{ request.form.email or '' }}">
                 </div>
-
-                <form id="loginForm" class="auth-form">
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" name="password" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="remember" name="remember">
-                            <span class="checkmark"></span>
-                            Remember me
-                        </label>
-                    </div>
-
-                    <button type="submit" class="submit-button">
-                        <i class="fas fa-sign-in-alt"></i>
-                        Sign In
-                    </button>
-                </form>
-
-                <div class="form-footer">
-                    <p>Don't have an account? <a href="/create-account">Create Account</a></p>
-                    <p><small>Note: Admin users (abhaythakurr17@gmail.com) have full access to all features</small></p>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">🔐 Password</label>
+                    <input type="password" id="password" name="password" class="form-input" required 
+                           placeholder="Enter your password">
                 </div>
-
-                <div class="divider">
-                    <span>or</span>
+                
+                <!-- Math Captcha -->
+                <div class="captcha-container">
+                    <div class="captcha-question" id="captcha-question">Loading...</div>
+                    <input type="text" name="captcha_answer" class="form-input captcha-input" 
+                           placeholder="Answer" required>
+                    <input type="hidden" name="captcha_token" id="captcha-token">
                 </div>
-
-                <div class="social-login">
-                    <button type="button" onclick="loginWithFace()" class="social-button face">
-                        <i class="fas fa-camera"></i>
-                        Login with Face
-                    </button>
-                    <button class="social-button google">
-                        <i class="fab fa-google"></i>
-                        Continue with Google
-                    </button>
-                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;">
+                    ✨ Sign In
+                </button>
+            </form>
+            
+            <div class="auth-divider">
+                <span>or</span>
+            </div>
+            
+            <div class="face-recognition">
+                <p style="margin-bottom: 1rem; color: var(--medium-gray); font-size: 0.875rem;">
+                    Use face recognition for secure login
+                </p>
+                <button type="button" class="face-btn" onclick="setupFaceLogin()">
+                    📷 Setup Face Login
+                </button>
+                <button type="button" class="face-btn" onclick="loginWithFace()">
+                    🔓 Face Login
+                </button>
+            </div>
+            
+            <div class="auth-links">
+                <p>Don't have an account? <a href="/create_account" class="auth-link">Create one here 💖</a></p>
+                <p><a href="/forgot-password" class="auth-link">Forgot your password? 🤔</a></p>
             </div>
         </div>
-    </section>
-
+    </div>
+    
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        // Load captcha on page load
+        window.addEventListener('load', loadCaptcha);
+        
+        function loadCaptcha() {
+            fetch('/api/captcha')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('captcha-question').textContent = data.question;
+                    document.getElementById('captcha-token').value = data.token;
+                })
+                .catch(error => {
+                    console.error('Error loading captcha:', error);
+                    document.getElementById('captcha-question').textContent = '2 + 2 = ?';
+                });
+        }
+        
+        // Face recognition functions
+        async function setupFaceLogin() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const video = document.createElement('video');
+                video.srcObject = stream;
+                video.play();
+                
+                // Create modal for face capture
+                const modal = document.createElement('div');
+                modal.style.cssText = `
+                    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                    background: rgba(0,0,0,0.8); display: flex; align-items: center;
+                    justify-content: center; z-index: 1000;
+                `;
+                
+                const container = document.createElement('div');
+                container.style.cssText = `
+                    background: white; padding: 2rem; border-radius: 1rem;
+                    text-align: center; max-width: 400px;
+                `;
+                
+                container.innerHTML = `
+                    <h3 style="margin-bottom: 1rem;">Setup Face Recognition 📷</h3>
+                    <p style="margin-bottom: 1rem; color: #666;">Position your face in the camera and click capture</p>
+                `;
+                
+                video.style.cssText = 'width: 300px; height: 200px; border-radius: 0.5rem; margin-bottom: 1rem;';
+                container.appendChild(video);
+                
+                const buttonContainer = document.createElement('div');
+                buttonContainer.innerHTML = `
+                    <button onclick="captureFace()" style="margin-right: 0.5rem;" class="btn btn-primary">📸 Capture</button>
+                    <button onclick="closeFaceModal()" class="btn btn-secondary">❌ Cancel</button>
+                `;
+                container.appendChild(buttonContainer);
+                
+                modal.appendChild(container);
+                document.body.appendChild(modal);
+                
+                window.currentStream = stream;
+                window.currentModal = modal;
+                window.currentVideo = video;
+                
+            } catch (error) {
+                alert('Camera access denied. Please enable camera permissions.');
+            }
+        }
+        
+        function captureFace() {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = window.currentVideo.videoWidth;
+            canvas.height = window.currentVideo.videoHeight;
+            context.drawImage(window.currentVideo, 0, 0);
             
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData);
+            const imageData = canvas.toDataURL('image/jpeg');
             
-            // Show loading state
-            const submitButton = this.querySelector('button[type="submit"]');
-            const originalText = submitButton.innerHTML;
-            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing In...';
-            submitButton.disabled = true;
-            
-            fetch('/api/login', {
+            // Send to server for face signature
+            fetch('/api/setup_face', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    image: imageData,
+                    email: document.getElementById('email').value
+                })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    submitButton.innerHTML = '<i class="fas fa-check"></i> Success!';
-                    setTimeout(() => {
-                        window.location.href = data.redirect || '/dashboard';
-                    }, 1000);
+                    alert('Face recognition setup successful! 🎉');
+                    closeFaceModal();
                 } else {
-                    alert(data.error || 'Login failed. Please try again.');
-                    submitButton.innerHTML = originalText;
-                    submitButton.disabled = false;
+                    alert('Face setup failed: ' + data.error);
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
-                submitButton.innerHTML = originalText;
-                submitButton.disabled = false;
+                alert('Error setting up face recognition: ' + error);
             });
-        });
-        
-        function loginWithFace() {
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                alert('Camera not supported on this device');
-                return;
-            }
-            
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => {
-                    const video = document.createElement('video');
-                    video.srcObject = stream;
-                    video.play();
-                    
-                    const modal = document.createElement('div');
-                    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:9999;display:flex;align-items:center;justify-content:center;';
-                    
-                    const container = document.createElement('div');
-                    container.style.cssText = 'background:white;padding:20px;border-radius:10px;text-align:center;';
-                    
-                    video.style.cssText = 'width:300px;height:200px;border-radius:10px;';
-                    
-                    const loginBtn = document.createElement('button');
-                    loginBtn.textContent = 'Login with Face';
-                    loginBtn.style.cssText = 'margin:10px;padding:10px 20px;background:#ff6b9d;color:white;border:none;border-radius:5px;cursor:pointer;';
-                    
-                    const closeBtn = document.createElement('button');
-                    closeBtn.textContent = 'Close';
-                    closeBtn.style.cssText = 'margin:10px;padding:10px 20px;background:#ccc;color:black;border:none;border-radius:5px;cursor:pointer;';
-                    
-                    container.appendChild(video);
-                    container.appendChild(document.createElement('br'));
-                    container.appendChild(loginBtn);
-                    container.appendChild(closeBtn);
-                    modal.appendChild(container);
-                    document.body.appendChild(modal);
-                    
-                    loginBtn.onclick = () => {
-                        const canvas = document.createElement('canvas');
-                        canvas.width = video.videoWidth;
-                        canvas.height = video.videoHeight;
-                        canvas.getContext('2d').drawImage(video, 0, 0);
-                        
-                        const imageData = canvas.toDataURL('image/jpeg');
-                        
-                        fetch('/api/face-login', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ image_data: imageData })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                alert('Face login successful!');
-                                window.location.href = data.redirect || '/dashboard';
-                            } else {
-                                alert('Face not recognized: ' + data.error);
-                            }
-                            stream.getTracks().forEach(track => track.stop());
-                            document.body.removeChild(modal);
-                        });
-                    };
-                    
-                    closeBtn.onclick = () => {
-                        stream.getTracks().forEach(track => track.stop());
-                        document.body.removeChild(modal);
-                    };
-                })
-                .catch(error => {
-                    alert('Camera access denied');
-                });
         }
+        
+        function closeFaceModal() {
+            if (window.currentStream) {
+                window.currentStream.getTracks().forEach(track => track.stop());
+            }
+            if (window.currentModal) {
+                document.body.removeChild(window.currentModal);
+            }
+        }
+        
+        async function loginWithFace() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const video = document.createElement('video');
+                video.srcObject = stream;
+                video.play();
+                
+                // Auto-capture after 3 seconds
+                setTimeout(() => {
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    context.drawImage(video, 0, 0);
+                    
+                    const imageData = canvas.toDataURL('image/jpeg');
+                    
+                    // Send for face login
+                    fetch('/api/face_login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ image: imageData })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = data.redirect || '/dashboard';
+                        } else {
+                            alert('Face login failed: ' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        alert('Error with face login: ' + error);
+                    });
+                    
+                    stream.getTracks().forEach(track => track.stop());
+                }, 3000);
+                
+                alert('Look at the camera for 3 seconds... 📷');
+                
+            } catch (error) {
+                alert('Camera access denied. Please enable camera permissions.');
+            }
+        }
+        
+        // Form submission with loading state
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.classList.add('loading');
+            submitBtn.innerHTML = '<div class="spinner"></div> Signing In...';
+        });
     </script>
 </body>
 </html>

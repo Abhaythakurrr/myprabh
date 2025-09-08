@@ -3,439 +3,543 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Your Prabh - MyPrabh</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/forms.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Create Your AI Companion - MyPrabh 💖</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <style>
         .create-container {
+            min-height: 100vh;
+            background: var(--gradient-warm);
+            padding: calc(60px + var(--space-lg)) var(--space-md) var(--space-lg);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .create-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="sparkles" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse"><text x="15" y="20" text-anchor="middle" fill="rgba(255,107,157,0.1)" font-size="16">✨</text><text x="5" y="10" text-anchor="middle" fill="rgba(168,85,247,0.1)" font-size="12">💫</text><text x="25" y="8" text-anchor="middle" fill="rgba(20,184,166,0.1)" font-size="10">⭐</text></pattern></defs><rect width="100" height="100" fill="url(%23sparkles)"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .create-card {
+            background: var(--warm-white);
+            border-radius: var(--radius-xl);
+            padding: var(--space-2xl);
+            box-shadow: var(--shadow-strong);
             max-width: 800px;
             margin: 0 auto;
-            padding: 100px 20px 50px;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
+        
         .create-header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: var(--space-2xl);
         }
+        
         .create-title {
-            font-size: 2.5rem;
-            color: var(--primary-color);
-            margin-bottom: 10px;
+            font-family: var(--font-script);
+            font-size: 3rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: var(--space-sm);
         }
+        
         .create-subtitle {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            margin-bottom: 20px;
+            color: var(--medium-gray);
+            font-size: 1.25rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
         }
-        .pricing-badge {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 10px 25px;
-            border-radius: 25px;
-            font-weight: 600;
-            display: inline-block;
-            margin-bottom: 30px;
-        }
+        
         .form-section {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: var(--space-2xl);
+            padding: var(--space-lg);
+            background: var(--gradient-secondary);
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
+        
         .section-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: 15px;
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            color: var(--dark-gray);
+            margin-bottom: var(--space-md);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: var(--space-sm);
         }
+        
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: var(--space-md);
         }
+        
         .form-label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-        .form-input, .form-textarea {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #e1e5e9;
-            border-radius: 12px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            font-family: inherit;
-        }
-        .form-input:focus, .form-textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(255,105,180,0.1);
-        }
-        .form-textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-        .character-count {
-            text-align: right;
-            font-size: 0.9rem;
-            color: var(--text-light);
-            margin-top: 5px;
-        }
-        .personality-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-        .personality-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .personality-checkbox {
-            width: 20px;
-            height: 20px;
-            accent-color: var(--primary-color);
-        }
-        .submit-section {
-            text-align: center;
-            margin-top: 40px;
-        }
-        .create-button {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            border: none;
-            padding: 18px 40px;
-            border-radius: 30px;
-            font-size: 1.1rem;
+            margin-bottom: var(--space-xs);
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            color: var(--dark-gray);
+            font-size: 1rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: var(--space-md);
+            border: 2px solid rgba(255, 107, 157, 0.1);
+            border-radius: var(--radius-md);
+            font-family: var(--font-primary);
+            font-size: 1rem;
+            background: var(--warm-white);
+            transition: var(--transition-fast);
+            box-sizing: border-box;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-pink);
+            box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.1);
+        }
+        
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+            font-family: var(--font-primary);
+            line-height: 1.6;
+        }
+        
+        .story-textarea {
+            min-height: 300px;
+            font-size: 1.125rem;
+            line-height: 1.8;
+        }
+        
+        .char-counter {
+            text-align: right;
+            font-size: 0.875rem;
+            color: var(--medium-gray);
+            margin-top: var(--space-xs);
+        }
+        
+        .unlimited-badge {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-        }
-        .create-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 35px rgba(255,105,180,0.3);
-        }
-        .create-button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-        .loading-spinner {
-            display: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid transparent;
-            border-top: 2px solid white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .create-container {
-                padding: 80px 15px 30px;
-            }
-            .create-title {
-                font-size: 2rem;
-            }
-            .form-section {
-                padding: 20px;
-                margin-bottom: 20px;
-            }
-            .section-title {
-                font-size: 1.1rem;
-            }
-            .personality-grid {
-                grid-template-columns: 1fr;
-            }
-            .create-button {
-                width: 100%;
-                padding: 15px;
-            }
-            .nav-links {
-                display: none;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .create-title {
-                font-size: 1.8rem;
-            }
-            .pricing-badge {
-                padding: 8px 20px;
-                font-size: 0.9rem;
-            }
-            .form-input, .form-textarea {
-                padding: 12px;
-            }
-        }
-        .help-text {
-            font-size: 0.9rem;
-            color: var(--text-light);
-            margin-top: 5px;
-            line-height: 1.4;
-        }
-        .payment-info {
-            background: #f8f9ff;
-            border: 2px solid var(--primary-color);
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 30px;
-            text-align: center;
-        }
-        .payment-title {
+            gap: 0.25rem;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
             font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-xs);
+            margin-top: var(--space-sm);
+        }
+        
+        .tag {
+            background: var(--gradient-accent);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            border: none;
+        }
+        
+        .tag:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-soft);
+        }
+        
+        .tag.selected {
+            background: var(--gradient-primary);
+            box-shadow: var(--shadow-colored);
+        }
+        
+        .custom-tag-input {
+            display: flex;
+            gap: var(--space-sm);
+            margin-top: var(--space-sm);
+        }
+        
+        .pricing-info {
+            background: var(--gradient-warm);
+            padding: var(--space-lg);
+            border-radius: var(--radius-lg);
+            text-align: center;
+            margin-bottom: var(--space-lg);
+            border: 2px solid rgba(255, 107, 157, 0.2);
+        }
+        
+        .price-display {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .price-note {
+            color: var(--medium-gray);
+            font-size: 0.875rem;
+            margin-bottom: var(--space-md);
+        }
+        
+        .admin-badge {
+            background: var(--gradient-accent);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-md);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        .success-message {
+            background: rgba(34, 197, 94, 0.1);
+            color: #16a34a;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-md);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+        
+        .form-help {
+            font-size: 0.875rem;
+            color: var(--medium-gray);
+            margin-top: var(--space-xs);
+            line-height: 1.5;
+        }
+        
+        .preview-section {
+            background: var(--light-gray);
+            padding: var(--space-lg);
+            border-radius: var(--radius-lg);
+            margin-top: var(--space-lg);
+        }
+        
+        .preview-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: var(--space-md);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+        
+        .preview-content {
+            background: var(--warm-white);
+            padding: var(--space-md);
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--primary-pink);
+        }
+        
+        .back-link {
+            position: absolute;
+            top: var(--space-lg);
+            left: var(--space-lg);
+            color: var(--medium-gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition-fast);
+            z-index: 2;
+        }
+        
+        .back-link:hover {
+            color: var(--primary-pink);
+        }
+        
+        @media (max-width: 768px) {
+            .create-card {
+                padding: var(--space-lg);
+            }
+            
+            .create-title {
+                font-size: 2.5rem;
+            }
+            
+            .form-section {
+                padding: var(--space-md);
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <a href="/">
-                    <span class="logo-icon">💖</span>
-                    <span class="logo-text">MyPrabh</span>
-                </a>
-            </div>
-            <div class="nav-links">
-                <a href="/dashboard">← Back to Dashboard</a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Create Prabh Form -->
+    <a href="/dashboard" class="back-link">← Back to Dashboard</a>
+    
     <div class="create-container">
-        <div class="create-header">
-            <h1 class="create-title">Create Your Prabh</h1>
-            <p class="create-subtitle">An AI that remembers, because memories matter.</p>
-            <div class="pricing-badge" id="pricingBadge">₹3,999 - One-time Creation Fee</div>
-        </div>
-
-        <form id="createPrabhForm">
-            <!-- Basic Information -->
-            <div class="form-section">
-                <h2 class="section-title">
-                    <i class="fas fa-user-circle"></i>
-                    Basic Information
-                </h2>
-                
-                <div class="form-group">
-                    <label class="form-label" for="prabhName">Prabh Name *</label>
-                    <input type="text" id="prabhName" name="prabh_name" class="form-input" 
-                           placeholder="What would you like to call your Prabh?" required>
-                    <div class="help-text">Choose a name that feels personal and meaningful to you.</div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="characterDescription">Character Description</label>
-                    <textarea id="characterDescription" name="character_description" class="form-textarea" 
-                              placeholder="Describe your Prabh's appearance, personality, or any specific traits..."></textarea>
-                    <div class="character-count">
-                        <span id="descCount">0</span>/500 characters
-                    </div>
-                </div>
+        <div class="create-card">
+            <div class="create-header">
+                <h1 class="create-title">Create Your Perfect AI Companion ✨</h1>
+                <p class="create-subtitle">
+                    Bring your ideal companion to life with memories, personality, and emotional depth. 
+                    Share your story and watch as your AI companion learns to understand and connect with you on a deeper level. 💕
+                </p>
             </div>
-
-            <!-- Memory & Story Content -->
-            <div class="form-section">
-                <h2 class="section-title">
-                    <i class="fas fa-heart"></i>
-                    Memories & Stories
-                </h2>
-                
-                <div class="form-group">
-                    <label class="form-label" for="storyContent">Your Memories & Stories *</label>
-                    <textarea id="storyContent" name="story_content" class="form-textarea" 
-                              placeholder="Share your memories, experiences, conversations, or stories that you want your Prabh to remember and understand. The more you share, the more personalized your Prabh will be..." 
-                              required style="min-height: 200px;"></textarea>
-                    <div class="character-count">
-                        <span id="storyCount">0</span> characters (unlimited)
-                    </div>
-                    <div class="help-text">
-                        Share personal experiences, conversations, feelings, or any memories you want your Prabh to understand and remember. This is what makes your Prabh uniquely yours.
-                    </div>
-                </div>
-            </div>
-
-            <!-- Personality Traits -->
-            <div class="form-section">
-                <h2 class="section-title">
-                    <i class="fas fa-palette"></i>
-                    Personality Traits
-                </h2>
-                
-                <div class="form-group">
-                    <label class="form-label">Select personality traits for your Prabh:</label>
-                    <div class="personality-grid">
-                        <div class="personality-item">
-                            <input type="checkbox" id="caring" name="personality" value="caring" class="personality-checkbox">
-                            <label for="caring">Caring & Nurturing</label>
-                        </div>
-                        <div class="personality-item">
-                            <input type="checkbox" id="romantic" name="personality" value="romantic" class="personality-checkbox">
-                            <label for="romantic">Romantic</label>
-                        </div>
-                        <div class="personality-item">
-                            <input type="checkbox" id="playful" name="personality" value="playful" class="personality-checkbox">
-                            <label for="playful">Playful & Fun</label>
-                        </div>
-                        <div class="personality-item">
-                            <input type="checkbox" id="wise" name="personality" value="wise" class="personality-checkbox">
-                            <label for="wise">Wise & Thoughtful</label>
-                        </div>
-                        <div class="personality-item">
-                            <input type="checkbox" id="supportive" name="personality" value="supportive" class="personality-checkbox">
-                            <label for="supportive">Supportive</label>
-                        </div>
-                        <div class="personality-item">
-                            <input type="checkbox" id="empathetic" name="personality" value="empathetic" class="personality-checkbox">
-                            <label for="empathetic">Empathetic</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Payment Information -->
-            <div class="payment-info">
-                <div class="payment-title">
-                    <i class="fas fa-shield-alt"></i>
-                    Secure Payment
-                </div>
-                <p>After creating your Prabh, you'll be redirected to our secure Razorpay payment gateway to complete your ₹3,999 one-time payment. Your Prabh will be activated immediately after successful payment.</p>
-            </div>
-
-            <!-- Submit Button -->
-            <div class="submit-section">
-                <button type="submit" class="create-button" id="submitBtn">
-                    <i class="fas fa-magic"></i>
-                    <span class="button-text">Create My Prabh</span>
-                    <div class="loading-spinner" id="loadingSpinner"></div>
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <script>
-        // Character counters
-        const descTextarea = document.getElementById('characterDescription');
-        const storyTextarea = document.getElementById('storyContent');
-        const descCount = document.getElementById('descCount');
-        const storyCount = document.getElementById('storyCount');
-
-        descTextarea.addEventListener('input', function() {
-            const count = this.value.length;
-            descCount.textContent = count;
-            if (count > 500) {
-                this.value = this.value.substring(0, 500);
-                descCount.textContent = 500;
-            }
-        });
-
-        storyTextarea.addEventListener('input', function() {
-            const count = this.value.length;
-            storyCount.textContent = count;
-        });
-
-        // Form submission
-        document.getElementById('createPrabhForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
             
-            const submitBtn = document.getElementById('submitBtn');
-            const buttonText = submitBtn.querySelector('.button-text');
-            const loadingSpinner = document.getElementById('loadingSpinner');
+            {% if error %}
+            <div class="error-message">
+                {{ error }}
+            </div>
+            {% endif %}
             
-            // Show loading state
-            submitBtn.disabled = true;
-            buttonText.textContent = 'Creating Your Prabh...';
-            loadingSpinner.style.display = 'block';
+            {% if success %}
+            <div class="success-message">
+                {{ success }}
+            </div>
+            {% endif %}
             
-            // Collect form data
-            const formData = new FormData(this);
-            const data = {
-                prabh_name: formData.get('prabh_name'),
-                character_description: formData.get('character_description'),
-                story_content: formData.get('story_content'),
-                character_tags: Array.from(document.querySelectorAll('input[name="personality"]:checked')).map(cb => cb.value),
-                personality_traits: {}
-            };
+            <!-- Pricing Information -->
+            <div class="pricing-info">
+                {% if user_email == 'abhaythakurr17@gmail.com' %}
+                <div class="admin-badge">🎉 Admin Special Pricing</div>
+                <div class="price-display">₹1</div>
+                <p class="price-note">Special admin pricing - Create unlimited AI companions!</p>
+                {% else %}
+                <div class="price-display">₹3,999</div>
+                <p class="price-note">One-time payment • Lifetime access • Unlimited conversations</p>
+                {% endif %}
+            </div>
             
-            try {
-                const response = await fetch('/save-prabh', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    // Show success message
-                    buttonText.textContent = 'Prabh Created Successfully!';
-                    loadingSpinner.style.display = 'none';
+            <form method="POST" id="createPrabhForm">
+                <!-- Basic Information -->
+                <div class="form-section">
+                    <h3 class="section-title">💖 Basic Information</h3>
                     
-                    // Redirect to payment or dashboard
-                    setTimeout(() => {
-                        if (result.redirect) {
-                            window.location.href = result.redirect;
-                        } else {
-                            window.location.href = '/dashboard';
-                        }
-                    }, 1500);
-                } else {
-                    throw new Error(result.error || 'Failed to create Prabh');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error creating Prabh: ' + error.message);
+                    <div class="form-group">
+                        <label for="name" class="form-label">Companion Name</label>
+                        <input type="text" id="name" name="name" class="form-input" required 
+                               placeholder="What would you like to call your AI companion?" 
+                               value="{{ request.form.name or '' }}">
+                        <div class="form-help">Choose a name that feels special and meaningful to you</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="relationship" class="form-label">Relationship Type</label>
+                        <select id="relationship" name="relationship" class="form-input" required>
+                            <option value="">Select relationship type...</option>
+                            <option value="romantic" {{ 'selected' if request.form.relationship == 'romantic' }}>💕 Romantic Partner</option>
+                            <option value="friend" {{ 'selected' if request.form.relationship == 'friend' }}>👫 Best Friend</option>
+                            <option value="mentor" {{ 'selected' if request.form.relationship == 'mentor' }}>🧠 Mentor/Guide</option>
+                            <option value="companion" {{ 'selected' if request.form.relationship == 'companion' }}>🤗 Life Companion</option>
+                            <option value="custom" {{ 'selected' if request.form.relationship == 'custom' }}>✨ Custom</option>
+                        </select>
+                        <div class="form-help">This helps shape how your AI companion interacts with you</div>
+                    </div>
+                </div>
                 
-                // Reset button state
-                submitBtn.disabled = false;
-                buttonText.textContent = 'Create My Prabh';
-                loadingSpinner.style.display = 'none';
+                <!-- Personality & Traits -->
+                <div class="form-section">
+                    <h3 class="section-title">🎭 Personality & Traits</h3>
+                    
+                    <div class="form-group">
+                        <label for="personality" class="form-label">Personality Description</label>
+                        <textarea id="personality" name="personality" class="form-input form-textarea" required 
+                                  placeholder="Describe your companion's personality, quirks, and characteristics...">{{ request.form.personality or '' }}</textarea>
+                        <div class="form-help">Be detailed! Include their sense of humor, communication style, interests, and unique traits</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Personality Tags</label>
+                        <div class="tags-container">
+                            <button type="button" class="tag" onclick="toggleTag(this)" data-tag="loving">💕 Loving</button>
+                            <button type="button" class="tag" onclick="toggleTag(this)" data-tag="playful">😄 Playful</button>
+                            <button type="button" class="tag" onclick="toggleTag(this)" data-tag="caring">🤗 Caring</button>
+                            <button type="button" class="tag" onclick="toggleTag(this)" data-tag="intelligent">🧠 Intelligent</button>
+                            <button type="button" class="tag" onclick="toggleTag(this)" data-tag="romantic">💖 Romantic</button>
+                            <button type="button" class="tag" onclick="toggleTag(this)" data-tag="supportive">🤝 Supportive</button>
+                            <button type="button" class="tag" onclick="toggleTag(this)" data-tag="adventurous">🌟 Adventurous</button>
+                            <button type="button" class="tag" onclick="toggleTag(this)" data-tag="gentle">🌸 Gentle</button>
+                            <button type="button" class="tag" onclick="toggleTag(this)" data-tag="passionate">🔥 Passionate</button>
+                            <button type="button" class="tag" onclick="toggleTag(this)" data-tag="wise">🦉 Wise</button>
+                        </div>
+                        <div class="custom-tag-input">
+                            <input type="text" id="custom-tag" class="form-input" placeholder="Add custom trait...">
+                            <button type="button" class="btn btn-secondary" onclick="addCustomTag()">Add</button>
+                        </div>
+                        <input type="hidden" id="selected-tags" name="tags" value="">
+                        <div class="form-help">Select traits that best describe your ideal companion</div>
+                    </div>
+                </div>
+                
+                <!-- Story & Memories -->
+                <div class="form-section">
+                    <h3 class="section-title">📚 Your Story Together</h3>
+                    
+                    <div class="form-group">
+                        <label for="story" class="form-label">
+                            Your Story & Memories 
+                            <span class="unlimited-badge">✨ Unlimited Characters</span>
+                        </label>
+                        <textarea id="story" name="story" class="form-input form-textarea story-textarea" required 
+                                  placeholder="Share your story, memories, experiences, and the relationship you want to build. Include specific details, conversations, moments, and emotions. The more you share, the better your AI companion will understand and connect with you...">{{ request.form.story or '' }}</textarea>
+                        <div class="char-counter">
+                            <span id="char-count">0</span> characters • Unlimited ∞
+                        </div>
+                        <div class="form-help">
+                            💡 <strong>Pro tip:</strong> Include specific dates, conversations, emotions, and detailed memories. 
+                            Mention how you met, special moments, inside jokes, and what makes your relationship unique. 
+                            The more context you provide, the more authentic your AI companion will be!
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Preview Section -->
+                <div class="preview-section" id="preview-section" style="display: none;">
+                    <h3 class="preview-title">👀 Preview Your Companion</h3>
+                    <div class="preview-content" id="preview-content">
+                        <!-- Preview will be generated here -->
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-large" style="width: 100%;" id="submitBtn">
+                    ✨ Create My AI Companion
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        let selectedTags = [];
+        
+        function toggleTag(button) {
+            const tag = button.dataset.tag;
+            if (button.classList.contains('selected')) {
+                button.classList.remove('selected');
+                selectedTags = selectedTags.filter(t => t !== tag);
+            } else {
+                button.classList.add('selected');
+                selectedTags.push(tag);
+            }
+            updateSelectedTags();
+        }
+        
+        function addCustomTag() {
+            const input = document.getElementById('custom-tag');
+            const tag = input.value.trim();
+            if (tag && !selectedTags.includes(tag)) {
+                selectedTags.push(tag);
+                
+                // Create visual tag
+                const tagButton = document.createElement('button');
+                tagButton.type = 'button';
+                tagButton.className = 'tag selected';
+                tagButton.textContent = `✨ ${tag}`;
+                tagButton.onclick = () => {
+                    selectedTags = selectedTags.filter(t => t !== tag);
+                    tagButton.remove();
+                    updateSelectedTags();
+                };
+                
+                document.querySelector('.tags-container').appendChild(tagButton);
+                input.value = '';
+                updateSelectedTags();
+            }
+        }
+        
+        function updateSelectedTags() {
+            document.getElementById('selected-tags').value = selectedTags.join(',');
+        }
+        
+        // Character counter
+        const storyTextarea = document.getElementById('story');
+        const charCount = document.getElementById('char-count');
+        
+        storyTextarea.addEventListener('input', function() {
+            charCount.textContent = this.value.length.toLocaleString();
+        });
+        
+        // Initial count
+        charCount.textContent = storyTextarea.value.length.toLocaleString();
+        
+        // Preview functionality
+        function generatePreview() {
+            const name = document.getElementById('name').value;
+            const relationship = document.getElementById('relationship').value;
+            const personality = document.getElementById('personality').value;
+            const story = document.getElementById('story').value;
+            
+            if (name && personality && story) {
+                const preview = `
+                    <h4 style="color: var(--primary-pink); margin-bottom: 1rem;">${name}</h4>
+                    <p><strong>Relationship:</strong> ${relationship}</p>
+                    <p><strong>Personality:</strong> ${personality.substring(0, 200)}${personality.length > 200 ? '...' : ''}</p>
+                    <p><strong>Story Preview:</strong> ${story.substring(0, 300)}${story.length > 300 ? '...' : ''}</p>
+                    <p><strong>Selected Traits:</strong> ${selectedTags.join(', ') || 'None selected'}</p>
+                `;
+                
+                document.getElementById('preview-content').innerHTML = preview;
+                document.getElementById('preview-section').style.display = 'block';
+            }
+        }
+        
+        // Auto-generate preview when fields change
+        ['name', 'relationship', 'personality', 'story'].forEach(id => {
+            document.getElementById(id).addEventListener('input', generatePreview);
+        });
+        
+        // Form submission
+        document.getElementById('createPrabhForm').addEventListener('submit', function(e) {
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.classList.add('loading');
+            submitBtn.innerHTML = '<div class="spinner"></div> Creating Your AI Companion...';
+            
+            // Validate required fields
+            const name = document.getElementById('name').value.trim();
+            const story = document.getElementById('story').value.trim();
+            
+            if (!name || !story) {
+                e.preventDefault();
+                alert('Please fill in all required fields.');
+                submitBtn.classList.remove('loading');
+                submitBtn.innerHTML = '✨ Create My AI Companion';
+                return;
+            }
+            
+            if (story.length < 100) {
+                e.preventDefault();
+                alert('Please provide a more detailed story (at least 100 characters) to create a meaningful AI companion.');
+                submitBtn.classList.remove('loading');
+                submitBtn.innerHTML = '✨ Create My AI Companion';
+                return;
             }
         });
-
-        // Add entrance animation
-        document.addEventListener('DOMContentLoaded', function() {
-            const sections = document.querySelectorAll('.form-section');
-            sections.forEach((section, index) => {
-                section.style.animationDelay = `${index * 0.1}s`;
-                section.style.animation = 'fadeInUp 0.6s ease forwards';
-            });
-        });
-
-        // CSS animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes fadeInUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(30px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
+        
+        // Custom tag input - Enter key support
+        document.getElementById('custom-tag').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addCustomTag();
             }
-        `;
-        document.head.appendChild(style);
+        });
     </script>
 </body>
 </html>
