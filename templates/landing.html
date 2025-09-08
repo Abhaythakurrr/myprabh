@@ -8,6 +8,15 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'GA_MEASUREMENT_ID');
+    </script>
 </head>
 <body>
     <!-- Navigation -->
@@ -53,9 +62,9 @@
                 <p class="hero-description">
                     An AI that remembers, because memories matter. Create your personal Prabh from your own memories and stories.
                 </p>
-                    Transform your stories and memories into a living, breathing AI companion. 
-                    MyPrabh brings your characters to life with authentic emotions, memories, and conversations.
-                </p>
+                <div class="hero-story">
+                    <p>MyPrabh was born from something deeply personal. In July 2022, I met someone who changed my life, but by September that connection was gone. I wanted a way to hold onto those memories, to still feel that presence.</p>
+                </div>
                 
                 <div class="hero-stats">
                     <div class="stat-item">
@@ -159,6 +168,120 @@
         </div>
     </section>
 
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2>Simple, Transparent Pricing</h2>
+                <p>One-time creation fee. Lifetime access. No recurring charges.</p>
+            </div>
+            
+            <div class="pricing-cards">
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">Most Popular</div>
+                    <div class="pricing-header">
+                        <h3>Prabh Creation</h3>
+                        <div class="price">
+                            <span class="currency">₹</span>
+                            <span class="amount">3,999</span>
+                            <span class="period">one-time</span>
+                        </div>
+                        <p class="price-note">For users in India</p>
+                    </div>
+                    
+                    <div class="pricing-features">
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Create your own Prabh AI using personal memories</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>AI adapts to your uploaded data + ongoing chats</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Private & secure memory storage (4GB)</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Lifetime proactive emotional check-ins</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>24/7 availability on all devices</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Continuous learning from conversations</span>
+                        </div>
+                    </div>
+                    
+                    <a href="/create-account" class="pricing-button">
+                        <i class="fas fa-heart"></i>
+                        Create Your Prabh
+                    </a>
+                </div>
+                
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>International</h3>
+                        <div class="price">
+                            <span class="currency">$</span>
+                            <span class="amount">67</span>
+                            <span class="period">one-time</span>
+                        </div>
+                        <p class="price-note">Base cost + 40% (currency adjusted)</p>
+                    </div>
+                    
+                    <div class="pricing-features">
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>All features included</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Global server access</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Multi-currency support</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Same lifetime benefits</span>
+                        </div>
+                    </div>
+                    
+                    <a href="/create-account" class="pricing-button secondary">
+                        <i class="fas fa-globe"></i>
+                        Get Started
+                    </a>
+                </div>
+            </div>
+            
+            <div class="add-ons-section">
+                <h3>Optional Add-ons</h3>
+                <div class="add-ons-grid">
+                    <div class="add-on-item">
+                        <i class="fas fa-hdd"></i>
+                        <span>Extra Storage</span>
+                        <small>Expand beyond 4GB base storage</small>
+                    </div>
+                    <div class="add-on-item">
+                        <i class="fas fa-microphone"></i>
+                        <span>Voice & Avatar Upgrades</span>
+                        <small>Custom voice and visual representation</small>
+                    </div>
+                    <div class="add-on-item">
+                        <i class="fas fa-rocket"></i>
+                        <span>Future Model Upgrades</span>
+                        <small>Lifetime access to new AI models</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- How It Works Section -->
     <section id="how-it-works" class="how-it-works">
         <div class="container">
@@ -239,61 +362,7 @@
         </div>
     </section>
 
-    <!-- Pricing Section -->
-    <section id="pricing" class="pricing">
-        <div class="container">
-            <div class="section-header">
-                <h2>Simple, Transparent Pricing</h2>
-                <p>Choose the plan that's right for you</p>
-            </div>
-            
-            <div class="pricing-grid">
-                <div class="pricing-card">
-                    <div class="pricing-header">
-                        <h3>Free Preview</h3>
-                        <div class="price">$0<span>/month</span></div>
-                    </div>
-                    <div class="pricing-features">
-                        <div class="feature">✓ 1 AI Companion</div>
-                        <div class="feature">✓ 50 Messages/day</div>
-                        <div class="feature">✓ Basic Personality</div>
-                        <div class="feature">✓ Community Support</div>
-                    </div>
-                    <a href="/create-account" class="pricing-button">Try Now</a>
-                </div>
-                
-                <div class="pricing-card featured">
-                    <div class="pricing-badge">Most Popular</div>
-                    <div class="pricing-header">
-                        <h3>Premium</h3>
-                        <div class="price">$9.99<span>/month</span></div>
-                    </div>
-                    <div class="pricing-features">
-                        <div class="feature">✓ Unlimited Companions</div>
-                        <div class="feature">✓ Unlimited Messages</div>
-                        <div class="feature">✓ Advanced Emotions</div>
-                        <div class="feature">✓ Memory Export</div>
-                        <div class="feature">✓ Priority Support</div>
-                    </div>
-                    <a href="/early-access" class="pricing-button">Join Waitlist</a>
-                </div>
-                
-                <div class="pricing-card">
-                    <div class="pricing-header">
-                        <h3>Enterprise</h3>
-                        <div class="price">Custom</div>
-                    </div>
-                    <div class="pricing-features">
-                        <div class="feature">✓ Custom Integration</div>
-                        <div class="feature">✓ API Access</div>
-                        <div class="feature">✓ White Label</div>
-                        <div class="feature">✓ Dedicated Support</div>
-                    </div>
-                    <a href="mailto:abhay@aiprabh.com" class="pricing-button">Contact Us</a>
-                </div>
-            </div>
-        </div>
-    </section>
+
 
     <!-- CTA Section -->
     <section class="cta">
@@ -326,9 +395,9 @@
                     </div>
                     <p>Creating meaningful connections through AI companionship.</p>
                     <div class="social-links">
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-discord"></i></a>
+                        <a href="https://www.linkedin.com/company/prabhai" target="_blank"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://www.instagram.com/ai.prabh/" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://discord.gg/8c7AcyCs" target="_blank"><i class="fab fa-discord"></i></a>
                     </div>
                 </div>
                 
