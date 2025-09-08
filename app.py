@@ -19,7 +19,7 @@ app.secret_key = 'myprabh_mvp_2024_secret_key'
 # Razorpay Configuration
 RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', '')  # Set this in environment
 RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', '')  # Set this in environment
-PRABH_CREATION_PRICE = 399900  # ₹3,999 in paise
+PRABH_CREATION_PRICE = 1000  # ₹10 in paise (prototype testing)
 
 # Admin Configuration
 ADMIN_EMAIL = 'abhaythakurr17@gmail.com'  # Full access admin user
@@ -475,7 +475,7 @@ def payment_page(prabh_id):
     
     # Check if admin user for special pricing
     is_admin = session.get('is_admin', False)
-    amount = 100 if is_admin else PRABH_CREATION_PRICE  # ₹1 for admin
+    amount = 100 if is_admin else PRABH_CREATION_PRICE  # ₹1 for admin, ₹10 for users
     
     return render_template('payment.html', 
                          prabh_id=prabh_id,
@@ -642,7 +642,7 @@ def verify_payment():
         # Log analytics
         log_analytics('payment_completed', session['user_id'], {
             'prabh_id': prabh_id,
-            'amount': PRABH_CREATION_PRICE,
+            'amount': 100 if session.get('is_admin') else PRABH_CREATION_PRICE,
             'payment_id': payment_id
         })
         
