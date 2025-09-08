@@ -16,7 +16,7 @@ app = Flask(__name__)
 app.secret_key = 'myprabh_mvp_2024_secret_key'
 
 # Razorpay Configuration
-RAZORPAY_KEY_ID = 'rzp_live_418y23ojmn2iZy'
+RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', '')  # Set this in environment
 RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', '')  # Set this in environment
 PRABH_CREATION_PRICE = 399900  # ₹3,999 in paise
 
