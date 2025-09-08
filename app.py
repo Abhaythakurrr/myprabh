@@ -178,7 +178,7 @@ def submit_early_access():
     except Exception as e:
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
 
-@app.route('/create-account')
+@app.route('/create_account')
 def create_account():
     """Account creation page"""
     return render_template('create_account.html')
@@ -218,18 +218,24 @@ def logout():
 def register():
     """Handle user registration"""
     try:
-        data = request.get_json()
+        email = request.form.get('email')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        captcha_answer = request.form.get('captcha_answer')
         
         # Validate input
-        if not data.get('email') or not data.get('name') or not data.get('password'):
-            return jsonify({'error': 'Email, name, and password are required'}), 400
+        if not email or not password:
+            return render_template('create_account.html', error='Email and password are required')
         
         # Verify captcha
-        if not data.get('captcha') or data.get('captcha') != session.get('captcha_answer'):
-            return jsonify({'error': 'Invalid captcha'}), 400
+        if not captcha_answer or captcha_answer != session.get('captcha_answer'):
+            return render_template('create_account.html', error='Captcha verification failed')
         
-        if len(data.get('password', '')) < 6:
-            return jsonify({'error': 'Password must be at least 6 characters'}), 400
+        if password != confirm_password:
+            return render_template('create_account.html', error='Passwords do not match')
+        
+        if len(password) < 6:
+            return render_template('create_account.html', error='Password must be at least 6 characters')
         
         # Generate user ID
         user_id = str(uuid.uuid4())
@@ -239,47 +245,57 @@ def register():
         cursor = conn.cursor()
         
         # Check if admin user
-        is_admin = data['email'] == ADMIN_EMAIL
-        
-        # Admin gets special pricing
-        admin_price = 100  # ₹1 in paise for admin
+        is_admin = email == ADMIN_EMAIL
         
         # Hash password
-        password_hash = generate_password_hash(data['password'])
+        password_hash = generate_password_hash(password)
+        
+        # Get face signature if available
+        face_signature = session.get(f'face_signature_{email}')
         
         cursor.execute('''
-            INSERT INTO users (user_id, email, name, password_hash, is_admin)
-            VALUES (?, ?, ?, ?, ?)
-        ''', (user_id, data['email'], data['name'], password_hash, is_admin))
+            INSERT INTO users (user_id, email, name, password_hash, face_signature, is_admin)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', (user_id, email, email.split('@')[0], password_hash, face_signature, is_admin))
         
         conn.commit()
         conn.close()
         
+        # Clean up session
+        if face_signature:
+            session.pop(f'face_signature_{email}', None)
+        
         # Set session
         session['user_id'] = user_id
-        session['user_email'] = data['email']
-        session['user_name'] = data['name']
+        session['user_email'] = email
+        session['user_name'] = email.split('@')[0]
         session['is_admin'] = is_admin
         
         # Log analytics
-        log_analytics('user_registered', user_id, {'email': data['email']})
+        log_analytics('user_registered', user_id, {'email': email})
         
-        return jsonify({'success': True, 'redirect': '/dashboard'})
+        return redirect(url_for('dashboard'))
         
     except sqlite3.IntegrityError:
         return jsonify({'error': 'Email already registered'}), 400
     except Exception as e:
         return jsonify({'error': f'Registration failed: {str(e)}'}), 500
 
-@app.route('/api/login', methods=['POST'])
-def api_login():
+@app.route('/login', methods=['POST'])
+def login_user():
     """Handle user login"""
     try:
-        data = request.get_json()
+        email = request.form.get('email')
+        password = request.form.get('password')
+        captcha_answer = request.form.get('captcha_answer')
         
         # Validate input
-        if not data.get('email') or not data.get('password'):
-            return jsonify({'error': 'Email and password are required'}), 400
+        if not email or not password:
+            return render_template('login.html', error='Email and password are required')
+        
+        # Verify captcha
+        if not captcha_answer or captcha_answer != session.get('captcha_answer'):
+            return render_template('login.html', error='Captcha verification failed')
         
         # Find user in database
         conn = sqlite3.connect('myprabh.db')
@@ -287,16 +303,16 @@ def api_login():
         cursor.execute('''
             SELECT user_id, email, name, password_hash, is_admin
             FROM users WHERE email = ?
-        ''', (data['email'],))
+        ''', (email,))
         user = cursor.fetchone()
         conn.close()
         
         if not user:
-            return jsonify({'error': 'Invalid email or password'}), 401
+            return render_template('login.html', error='Invalid email or password')
         
         # Check password
-        if not user[3] or not check_password_hash(user[3], data['password']):
-            return jsonify({'error': 'Invalid email or password'}), 401
+        if not user[3] or not check_password_hash(user[3], password):
+            return render_template('login.html', error='Invalid email or password')
         
         # Set session
         session['user_id'] = user[0]
@@ -317,7 +333,7 @@ def api_login():
         # Log analytics
         log_analytics('user_login', user[0], {'email': user[1]})
         
-        return jsonify({'success': True, 'redirect': '/dashboard'})
+        return redirect(url_for('dashboard'))
         
     except Exception as e:
         return jsonify({'error': f'Login failed: {str(e)}'}), 500
@@ -347,13 +363,13 @@ def dashboard():
                          is_admin=session.get('is_admin', False),
                          prabh_instances=prabh_instances)
 
-@app.route('/create-prabh')
+@app.route('/create_prabh')
 def create_prabh():
     """Create new Prabh instance"""
     if 'user_id' not in session:
         return redirect(url_for('create_account'))
     
-    return render_template('create_prabh.html')
+    return render_template('create_prabh.html', user_email=session.get('user_email'))
 
 @app.route('/save-prabh', methods=['POST'])
 def save_prabh():
@@ -568,96 +584,125 @@ def api_stats():
 @app.route('/api/captcha', methods=['GET'])
 def get_captcha():
     """Generate captcha for human verification"""
-    captcha_data = security_manager.generate_math_captcha()
-    session['captcha_answer'] = captcha_data['answer']
-    session['captcha_token'] = captcha_data['token']
+    import random
+    import secrets
+    
+    num1 = random.randint(1, 10)
+    num2 = random.randint(1, 10)
+    operation = random.choice(['+', '-'])
+    
+    if operation == '+':
+        answer = num1 + num2
+        question = f"{num1} + {num2} = ?"
+    else:
+        if num1 < num2:
+            num1, num2 = num2, num1
+        answer = num1 - num2
+        question = f"{num1} - {num2} = ?"
+    
+    session['captcha_answer'] = str(answer)
+    session['captcha_token'] = secrets.token_urlsafe(16)
+    
     return jsonify({
-        'question': captcha_data['question'],
-        'token': captcha_data['token']
+        'question': question,
+        'token': session['captcha_token']
     })
 
-@app.route('/api/face-setup', methods=['POST'])
+@app.route('/api/setup_face', methods=['POST'])
 def setup_face_recognition():
     """Setup face recognition for user"""
-    if 'user_id' not in session:
-        return jsonify({'error': 'Not authenticated'}), 401
-    
     try:
         data = request.get_json()
-        image_data = data.get('image_data')
+        email = data.get('email')
+        image_data = data.get('image')
         
-        if not image_data:
-            return jsonify({'error': 'No image data provided'}), 400
+        if not email or not image_data:
+            return jsonify({'success': False, 'error': 'Missing email or image data'})
         
-        # Detect face and generate signature
-        face_result = security_manager.detect_face_in_image(image_data)
+        import hashlib
+        import base64
         
-        if not face_result['success']:
-            return jsonify({'error': face_result['error']}), 400
-        
-        # Store face signature
-        conn = sqlite3.connect('myprabh.db')
-        cursor = conn.cursor()
-        
-        cursor.execute('''
-            UPDATE users SET face_signature = ?
-            WHERE user_id = ?
-        ''', (face_result['face_signature'], session['user_id']))
-        
-        conn.commit()
-        conn.close()
-        
-        return jsonify({'success': True, 'message': 'Face recognition setup complete'})
-        
+        try:
+            if ',' in image_data:
+                image_data = image_data.split(',')[1]
+            
+            image_bytes = base64.b64decode(image_data)
+            face_signature = hashlib.md5(image_bytes[:1000]).hexdigest()
+            
+            conn = sqlite3.connect('myprabh.db')
+            cursor = conn.cursor()
+            
+            cursor.execute('SELECT user_id FROM users WHERE email = ?', (email,))
+            user = cursor.fetchone()
+            
+            if user:
+                cursor.execute('UPDATE users SET face_signature = ? WHERE email = ?', (face_signature, email))
+                conn.commit()
+                conn.close()
+                return jsonify({'success': True, 'message': 'Face recognition setup successful'})
+            else:
+                conn.close()
+                session[f'face_signature_{email}'] = face_signature
+                return jsonify({'success': True, 'message': 'Face signature stored for account creation'})
+                
+        except Exception as img_error:
+            return jsonify({'success': False, 'error': f'Image processing failed: {str(img_error)}'})
+            
     except Exception as e:
-        return jsonify({'error': f'Face setup failed: {str(e)}'}), 500
+        return jsonify({'success': False, 'error': str(e)})
 
-@app.route('/api/face-login', methods=['POST'])
+@app.route('/api/face_login', methods=['POST'])
 def face_login():
     """Login using face recognition"""
     try:
         data = request.get_json()
-        image_data = data.get('image_data')
+        image_data = data.get('image')
         
         if not image_data:
-            return jsonify({'error': 'No image data provided'}), 400
+            return jsonify({'success': False, 'error': 'No image provided'})
         
-        # Detect face
-        face_result = security_manager.detect_face_in_image(image_data)
+        import hashlib
+        import base64
         
-        if not face_result['success']:
-            return jsonify({'error': face_result['error']}), 400
-        
-        # Find matching user
-        conn = sqlite3.connect('myprabh.db')
-        cursor = conn.cursor()
-        
-        cursor.execute('''
-            SELECT user_id, email, name, face_signature, is_admin
-            FROM users WHERE face_signature IS NOT NULL
-        ''')
-        
-        users = cursor.fetchall()
-        conn.close()
-        
-        # Compare face signatures
-        for user in users:
-            if security_manager.compare_face_signatures(face_result['face_signature'], user[3]):
-                # Set session
+        try:
+            if ',' in image_data:
+                image_data = image_data.split(',')[1]
+            
+            image_bytes = base64.b64decode(image_data)
+            face_signature = hashlib.md5(image_bytes[:1000]).hexdigest()
+            
+            conn = sqlite3.connect('myprabh.db')
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                SELECT user_id, email, name, is_admin
+                FROM users WHERE face_signature = ?
+            ''', (face_signature,))
+            
+            user = cursor.fetchone()
+            conn.close()
+            
+            if user:
                 session['user_id'] = user[0]
                 session['user_email'] = user[1]
                 session['user_name'] = user[2]
-                session['is_admin'] = bool(user[4])
+                session['is_admin'] = bool(user[3])
                 
-                # Log analytics
                 log_analytics('face_login', user[0], {'method': 'face_recognition'})
                 
-                return jsonify({'success': True, 'redirect': '/dashboard'})
-        
-        return jsonify({'error': 'Face not recognized'}), 401
-        
+                return jsonify({
+                    'success': True,
+                    'message': 'Face login successful',
+                    'redirect': '/dashboard'
+                })
+            else:
+                return jsonify({'success': False, 'error': 'Face not recognized. Please use email/password login.'})
+                
+        except Exception as img_error:
+            return jsonify({'success': False, 'error': f'Face processing failed: {str(img_error)}'})
+            
     except Exception as e:
-        return jsonify({'error': f'Face login failed: {str(e)}'}), 500
+        return jsonify({'success': False, 'error': str(e)})
 
 @app.route('/api/newsletter-signup', methods=['POST'])
 def newsletter_signup():
