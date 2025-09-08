@@ -20,6 +20,9 @@ RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', '')  # Set this in environme
 RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', '')  # Set this in environment
 PRABH_CREATION_PRICE = 399900  # ₹3,999 in paise
 
+# Admin Configuration
+ADMIN_EMAIL = 'abhaythakurr17@gmail.com'  # Full access admin user
+
 # Email configuration - DISABLED for MVP deployment
 # SMTP_SERVER = "smtp.gmail.com"
 # SMTP_PORT = 587
@@ -38,6 +41,8 @@ def init_db():
             user_id TEXT UNIQUE NOT NULL,
             email TEXT UNIQUE NOT NULL,
             name TEXT NOT NULL,
+            password_hash TEXT,
+            is_admin BOOLEAN DEFAULT FALSE,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             last_active TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
@@ -107,11 +112,16 @@ def init_db():
 init_db()
 
 @app.route('/')
-def landing_page():
+def index():
     """Main landing page"""
     # Get real-time stats
     stats = get_live_stats()
     return render_template('landing.html', stats=stats)
+
+@app.route('/index')
+def landing_page():
+    """Alternative landing page route"""
+    return redirect(url_for('index'))
 
 @app.route('/early-access')
 def early_access():
@@ -170,6 +180,37 @@ def create_account():
     """Account creation page"""
     return render_template('create_account.html')
 
+@app.route('/login')
+def login():
+    """Login page"""
+    return render_template('login.html')
+
+@app.route('/cookies')
+def cookies():
+    """Cookie policy page"""
+    return render_template('cookies.html')
+
+@app.route('/about')
+def about():
+    """About us page"""
+    return render_template('about.html')
+
+@app.route('/careers')
+def careers():
+    """Careers page"""
+    return render_template('careers.html')
+
+@app.route('/blog')
+def blog():
+    """Blog page"""
+    return render_template('blog.html')
+
+@app.route('/logout')
+def logout():
+    """Logout user"""
+    session.clear()
+    return redirect(url_for('index'))
+
 @app.route('/register', methods=['POST'])
 def register():
     """Handle user registration"""
@@ -187,10 +228,18 @@ def register():
         conn = sqlite3.connect('myprabh.db')
         cursor = conn.cursor()
         
+        # Check if admin user
+        is_admin = data['email'] == ADMIN_EMAIL
+        
+        # Hash password if provided
+        password_hash = None
+        if data.get('password'):
+            password_hash = generate_password_hash(data['password'])
+        
         cursor.execute('''
-            INSERT INTO users (user_id, email, name)
-            VALUES (?, ?, ?)
-        ''', (user_id, data['email'], data['name']))
+            INSERT INTO users (user_id, email, name, password_hash, is_admin)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (user_id, data['email'], data['name'], password_hash, is_admin))
         
         conn.commit()
         conn.close()
@@ -199,6 +248,7 @@ def register():
         session['user_id'] = user_id
         session['user_email'] = data['email']
         session['user_name'] = data['name']
+        session['is_admin'] = is_admin
         
         # Log analytics
         log_analytics('user_registered', user_id, {'email': data['email']})
@@ -209,6 +259,58 @@ def register():
         return jsonify({'error': 'Email already registered'}), 400
     except Exception as e:
         return jsonify({'error': f'Registration failed: {str(e)}'}), 500
+
+@app.route('/api/login', methods=['POST'])
+def api_login():
+    """Handle user login"""
+    try:
+        data = request.get_json()
+        
+        # Validate input
+        if not data.get('email'):
+            return jsonify({'error': 'Email is required'}), 400
+        
+        # Find user in database
+        conn = sqlite3.connect('myprabh.db')
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT user_id, email, name, password_hash, is_admin
+            FROM users WHERE email = ?
+        ''', (data['email'],))
+        user = cursor.fetchone()
+        conn.close()
+        
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+        
+        # Check password if provided
+        if data.get('password') and user[3]:  # password_hash exists
+            if not check_password_hash(user[3], data['password']):
+                return jsonify({'error': 'Invalid password'}), 401
+        
+        # Set session
+        session['user_id'] = user[0]
+        session['user_email'] = user[1]
+        session['user_name'] = user[2]
+        session['is_admin'] = bool(user[4])
+        
+        # Update last active
+        conn = sqlite3.connect('myprabh.db')
+        cursor = conn.cursor()
+        cursor.execute('''
+            UPDATE users SET last_active = CURRENT_TIMESTAMP
+            WHERE user_id = ?
+        ''', (user[0],))
+        conn.commit()
+        conn.close()
+        
+        # Log analytics
+        log_analytics('user_login', user[0], {'email': user[1]})
+        
+        return jsonify({'success': True, 'redirect': '/dashboard'})
+        
+    except Exception as e:
+        return jsonify({'error': f'Login failed: {str(e)}'}), 500
 
 @app.route('/dashboard')
 def dashboard():
@@ -232,6 +334,7 @@ def dashboard():
     
     return render_template('dashboard.html', 
                          user_name=session['user_name'],
+                         is_admin=session.get('is_admin', False),
                          prabh_instances=prabh_instances)
 
 @app.route('/create-prabh')
@@ -442,6 +545,47 @@ def verify_payment():
 def api_stats():
     """Get live statistics"""
     return jsonify(get_live_stats())
+
+@app.route('/api/newsletter-signup', methods=['POST'])
+def newsletter_signup():
+    """Handle newsletter signup"""
+    try:
+        data = request.get_json()
+        email = data.get('email')
+        
+        if not email:
+            return jsonify({'error': 'Email is required'}), 400
+        
+        # Store newsletter signup in database
+        conn = sqlite3.connect('myprabh.db')
+        cursor = conn.cursor()
+        
+        # Create newsletter table if it doesn't exist
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS newsletter_signups (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                email TEXT UNIQUE NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        
+        cursor.execute('''
+            INSERT INTO newsletter_signups (email)
+            VALUES (?)
+        ''', (email,))
+        
+        conn.commit()
+        conn.close()
+        
+        # Log analytics
+        log_analytics('newsletter_signup', None, {'email': email})
+        
+        return jsonify({'success': True, 'message': 'Successfully subscribed to newsletter'})
+        
+    except sqlite3.IntegrityError:
+        return jsonify({'error': 'Email already subscribed'}), 400
+    except Exception as e:
+        return jsonify({'error': f'Subscription failed: {str(e)}'}), 500
 
 @app.route('/terms')
 def terms():
