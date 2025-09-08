@@ -36,18 +36,22 @@
                     <a href="#demo" class="btn btn-secondary btn-large">🎭 Watch Demo</a>
                 </div>
 
-                <div class="stats">
+                <div class="stats" id="liveStats">
                     <div class="stat">
-                        <span class="stat-number">10,000+</span>
-                        <span class="stat-label">💕 People Interested</span>
+                        <span class="stat-number" id="visitorsCount">0</span>
+                        <span class="stat-label">👥 Visitors</span>
                     </div>
                     <div class="stat">
-                        <span class="stat-number">500+</span>
-                        <span class="stat-label">🤖 AI Companions Created</span>
+                        <span class="stat-number" id="prabhsCount">0</span>
+                        <span class="stat-label">🤖 Prabhs Created</span>
                     </div>
                     <div class="stat">
-                        <span class="stat-number">50,000+</span>
-                        <span class="stat-label">💬 Meaningful Conversations</span>
+                        <span class="stat-number" id="usersCount">0</span>
+                        <span class="stat-label">💕 Users Joined</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" id="earlyAccessCount">0</span>
+                        <span class="stat-label">✨ Early Access</span>
                     </div>
                 </div>
             </div>
@@ -272,6 +276,41 @@
     </footer>
 
     <script>
+        // Real-time stats update
+        async function updateLiveStats() {
+            try {
+                const response = await fetch('/api/live-stats');
+                const stats = await response.json();
+                
+                // Animate number changes
+                animateNumber('visitorsCount', stats.visitors);
+                animateNumber('prabhsCount', stats.prabhs_created);
+                animateNumber('usersCount', stats.users);
+                animateNumber('earlyAccessCount', stats.early_access);
+                
+            } catch (error) {
+                console.log('Stats update failed:', error);
+            }
+        }
+        
+        function animateNumber(elementId, targetValue) {
+            const element = document.getElementById(elementId);
+            const currentValue = parseInt(element.textContent) || 0;
+            const increment = Math.ceil((targetValue - currentValue) / 10);
+            
+            if (currentValue < targetValue) {
+                element.textContent = Math.min(currentValue + increment, targetValue);
+                setTimeout(() => animateNumber(elementId, targetValue), 100);
+            } else {
+                element.textContent = targetValue;
+            }
+        }
+        
+        // Update stats on page load and every 30 seconds
+        updateLiveStats();
+        setInterval(updateLiveStats, 30000);
+        
+        // Early access form submission
         document.getElementById('earlyAccessForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -290,6 +329,8 @@
                 if (result.success) {
                     alert('🎉 Thank you for joining early access! We\'ll keep you updated on our progress.');
                     this.reset();
+                    // Update stats immediately after signup
+                    setTimeout(updateLiveStats, 1000);
                 } else {
                     alert('Error: ' + result.error);
                 }

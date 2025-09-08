@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyPrabh Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <style>
+        .admin-header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            border-color: var(--primary-pink);
+            transform: translateY(-5px);
+        }
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        .stat-label {
+            color: var(--medium-gray);
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        .stat-change {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+        .stat-change.positive { color: var(--primary-teal); }
+        .stat-change.negative { color: #e74c3c; }
+        .refresh-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        .refresh-btn:hover {
+            transform: scale(1.05);
+        }
+        .last-updated {
+            text-align: center;
+            color: var(--medium-gray);
+            font-size: 0.875rem;
+            margin-top: 1rem;
+        }
+        .data-table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+        }
+        .data-table h3 {
+            background: var(--gradient-secondary);
+            color: var(--dark-gray);
+            padding: 1rem 2rem;
+            margin: 0;
+            font-size: 1.25rem;
+        }
+        .table-content {
+            padding: 1rem 2rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .user-item:last-child {
+            border-bottom: none;
+        }
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .user-email {
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        .user-meta {
+            font-size: 0.875rem;
+            color: var(--medium-gray);
+        }
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .status-paid {
+            background: var(--lofi-mint);
+            color: var(--dark-gray);
+        }
+        .status-pending {
+            background: var(--lofi-peach);
+            color: var(--dark-gray);
+        }
+        .status-admin {
+            background: var(--gradient-primary);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-header">
+        <div class="container">
+            <h1>🛡️ MyPrabh Admin Dashboard</h1>
+            <p>Real-time platform analytics and user management</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Live Stats -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <span class="stat-number" id="totalVisitors">0</span>
+                <span class="stat-label">👥 Total Visitors</span>
+                <div class="stat-change" id="visitorsChange"></div>
+            </div>
+            
+            <div class="stat-card">
+                <span class="stat-number" id="totalUsers">0</span>
+                <span class="stat-label">🙋‍♂️ Registered Users</span>
+                <div class="stat-change" id="usersChange"></div>
+            </div>
+            
+            <div class="stat-card">
+                <span class="stat-number" id="totalPrabhs">0</span>
+                <span class="stat-label">🤖 Prabhs Created</span>
+                <div class="stat-change" id="prabhsChange"></div>
+            </div>
+            
+            <div class="stat-card">
+                <span class="stat-number" id="earlyAccess">0</span>
+                <span class="stat-label">✨ Early Access</span>
+                <div class="stat-change" id="earlyAccessChange"></div>
+            </div>
+            
+            <div class="stat-card">
+                <span class="stat-number" id="activeUsers">0</span>
+                <span class="stat-label">🔥 Active (24h)</span>
+                <div class="stat-change" id="activeUsersChange"></div>
+            </div>
+            
+            <div class="stat-card">
+                <span class="stat-number" id="visitorsToday">0</span>
+                <span class="stat-label">📈 Visitors Today</span>
+                <div class="stat-change" id="visitorsTodayChange"></div>
+            </div>
+        </div>
+
+        <div class="last-updated" id="lastUpdated">
+            Last updated: Never
+        </div>
+
+        <!-- Recent Users -->
+        <div class="data-table">
+            <h3>👥 Recent Users</h3>
+            <div class="table-content" id="recentUsers">
+                <div class="user-item">
+                    <div class="user-info">
+                        <span class="user-email">Loading...</span>
+                        <span class="user-meta">Please wait</span>
+                    </div>
+                    <span class="status-badge status-pending">Loading</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Prabhs -->
+        <div class="data-table">
+            <h3>🤖 Recent Prabh Creations</h3>
+            <div class="table-content" id="recentPrabhs">
+                <div class="user-item">
+                    <div class="user-info">
+                        <span class="user-email">Loading...</span>
+                        <span class="user-meta">Please wait</span>
+                    </div>
+                    <span class="status-badge status-pending">Loading</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Early Access Signups -->
+        <div class="data-table">
+            <h3>✨ Early Access Signups</h3>
+            <div class="table-content" id="earlyAccessList">
+                <div class="user-item">
+                    <div class="user-info">
+                        <span class="user-email">Loading...</span>
+                        <span class="user-meta">Please wait</span>
+                    </div>
+                    <span class="status-badge status-pending">Loading</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="refresh-btn" onclick="refreshAllData()">
+        🔄 Refresh Data
+    </button>
+
+    <script>
+        let previousStats = {};
+
+        async function updateStats() {
+            try {
+                const response = await fetch('/api/admin-stats');
+                const data = await response.json();
+                
+                // Update numbers with animation
+                updateStatWithChange('totalVisitors', data.stats.total_visitors);
+                updateStatWithChange('totalUsers', data.stats.total_users);
+                updateStatWithChange('totalPrabhs', data.stats.total_prabhs);
+                updateStatWithChange('earlyAccess', data.stats.early_signups);
+                updateStatWithChange('activeUsers', data.stats.active_users);
+                updateStatWithChange('visitorsToday', data.stats.visitors_today);
+                
+                // Update last updated time
+                document.getElementById('lastUpdated').textContent = 
+                    `Last updated: ${new Date().toLocaleTimeString()}`;
+                
+                // Update data tables
+                updateRecentUsers(data.recent_users);
+                updateRecentPrabhs(data.recent_prabhs);
+                updateEarlyAccessList(data.early_access);
+                
+            } catch (error) {
+                console.error('Failed to update stats:', error);
+            }
+        }
+
+        function updateStatWithChange(elementId, newValue) {
+            const element = document.getElementById(elementId);
+            const changeElement = document.getElementById(elementId.replace('total', '').replace('early', 'earlyAccess').replace('active', 'activeUsers').replace('visitors', 'visitors') + 'Change');
+            
+            const oldValue = parseInt(element.textContent) || 0;
+            const change = newValue - oldValue;
+            
+            // Animate number
+            animateNumber(elementId, newValue);
+            
+            // Show change
+            if (change > 0) {
+                changeElement.textContent = `+${change}`;
+                changeElement.className = 'stat-change positive';
+            } else if (change < 0) {
+                changeElement.textContent = `${change}`;
+                changeElement.className = 'stat-change negative';
+            } else {
+                changeElement.textContent = '';
+            }
+        }
+
+        function animateNumber(elementId, targetValue) {
+            const element = document.getElementById(elementId);
+            const currentValue = parseInt(element.textContent) || 0;
+            const increment = Math.ceil((targetValue - currentValue) / 10);
+            
+            if (currentValue < targetValue) {
+                element.textContent = Math.min(currentValue + increment, targetValue);
+                setTimeout(() => animateNumber(elementId, targetValue), 50);
+            } else {
+                element.textContent = targetValue;
+            }
+        }
+
+        function updateRecentUsers(users) {
+            const container = document.getElementById('recentUsers');
+            if (!users || users.length === 0) {
+                container.innerHTML = '<div class="user-item"><div class="user-info"><span class="user-email">No users yet</span></div></div>';
+                return;
+            }
+            
+            container.innerHTML = users.map(user => `
+                <div class="user-item">
+                    <div class="user-info">
+                        <span class="user-email">${user.email}</span>
+                        <span class="user-meta">Joined: ${new Date(user.created_at).toLocaleDateString()}</span>
+                    </div>
+                    <span class="status-badge ${user.is_admin ? 'status-admin' : 'status-paid'}">${user.is_admin ? 'Admin' : 'User'}</span>
+                </div>
+            `).join('');
+        }
+
+        function updateRecentPrabhs(prabhs) {
+            const container = document.getElementById('recentPrabhs');
+            if (!prabhs || prabhs.length === 0) {
+                container.innerHTML = '<div class="user-item"><div class="user-info"><span class="user-email">No Prabhs created yet</span></div></div>';
+                return;
+            }
+            
+            container.innerHTML = prabhs.map(prabh => `
+                <div class="user-item">
+                    <div class="user-info">
+                        <span class="user-email">${prabh.prabh_name}</span>
+                        <span class="user-meta">Created: ${new Date(prabh.created_at).toLocaleDateString()} | Status: ${prabh.payment_status}</span>
+                    </div>
+                    <span class="status-badge ${prabh.payment_status === 'PAID' ? 'status-paid' : 'status-pending'}">${prabh.payment_status}</span>
+                </div>
+            `).join('');
+        }
+
+        function updateEarlyAccessList(signups) {
+            const container = document.getElementById('earlyAccessList');
+            if (!signups || signups.length === 0) {
+                container.innerHTML = '<div class="user-item"><div class="user-info"><span class="user-email">No early access signups yet</span></div></div>';
+                return;
+            }
+            
+            container.innerHTML = signups.map(signup => `
+                <div class="user-item">
+                    <div class="user-info">
+                        <span class="user-email">${signup.name} (${signup.email})</span>
+                        <span class="user-meta">Interest: ${signup.interest_level}/10 | ${signup.age_range} | ${signup.relationship_status}</span>
+                    </div>
+                    <span class="status-badge status-pending">Early Access</span>
+                </div>
+            `).join('');
+        }
+
+        function refreshAllData() {
+            updateStats();
+        }
+
+        // Auto-refresh every 30 seconds
+        updateStats();
+        setInterval(updateStats, 30000);
+    </script>
+</body>
+</html>

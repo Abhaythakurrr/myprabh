@@ -110,6 +110,38 @@ def init_db():
         )
     ''')
     
+    # Visitor tracking
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS visitors (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ip_address TEXT,
+            user_agent TEXT,
+            page_visited TEXT,
+            visit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            session_id TEXT
+        )
+    ''')
+    
+    # Live stats cache
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS stats_cache (
+            id INTEGER PRIMARY KEY,
+            total_visitors INTEGER DEFAULT 0,
+            total_users INTEGER DEFAULT 0,
+            total_prabhs INTEGER DEFAULT 0,
+            early_signups INTEGER DEFAULT 0,
+            last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    
+    # Initialize stats cache if empty
+    cursor.execute('SELECT COUNT(*) FROM stats_cache')
+    if cursor.fetchone()[0] == 0:
+        cursor.execute('''
+            INSERT INTO stats_cache (id, total_visitors, total_users, total_prabhs, early_signups)
+            VALUES (1, 0, 0, 0, 0)
+        ''')
+    
     conn.commit()
     conn.close()
 
@@ -118,7 +150,8 @@ init_db()
 
 @app.route('/')
 def index():
-    """MVP Landing page"""
+    """MVP Landing page with visitor tracking"""
+    track_visitor(request)
     return render_template('mvp_landing.html')
 
 @app.route('/index')
@@ -343,6 +376,10 @@ def dashboard():
     """User dashboard"""
     if 'user_id' not in session:
         return redirect(url_for('create_account'))
+    
+    # Check if admin wants to go to admin dashboard
+    if session.get('is_admin') and request.args.get('admin') == 'true':
+        return redirect(url_for('admin_dashboard'))
     
     # Get user's Prabh instances
     conn = sqlite3.connect('myprabh.db')
@@ -618,6 +655,93 @@ def verify_payment():
 def api_stats():
     """Get live statistics"""
     return jsonify(get_live_stats())
+
+@app.route('/api/live-stats')
+def api_live_stats():
+    """Get real-time live statistics for public display"""
+    stats = get_live_stats()
+    return jsonify({
+        'visitors': stats['total_visitors'],
+        'users': stats['total_users'], 
+        'prabhs_created': stats['total_prabhs'],
+        'early_access': stats['early_signups'],
+        'active_now': stats['active_users'],
+        'last_updated': datetime.now().isoformat()
+    })
+
+@app.route('/admin')
+def admin_dashboard():
+    """Admin dashboard - requires admin access"""
+    if 'user_id' not in session or not session.get('is_admin'):
+        return redirect(url_for('login'))
+    
+    return render_template('admin_dashboard.html')
+
+@app.route('/api/admin-stats')
+def api_admin_stats():
+    """Get detailed admin statistics"""
+    if 'user_id' not in session or not session.get('is_admin'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    conn = sqlite3.connect('myprabh.db')
+    cursor = conn.cursor()
+    
+    # Get main stats
+    stats = get_live_stats()
+    
+    # Get recent users (last 10)
+    cursor.execute('''
+        SELECT email, name, is_admin, created_at
+        FROM users 
+        ORDER BY created_at DESC 
+        LIMIT 10
+    ''')
+    recent_users = [{
+        'email': row[0],
+        'name': row[1],
+        'is_admin': bool(row[2]),
+        'created_at': row[3]
+    } for row in cursor.fetchall()]
+    
+    # Get recent Prabhs (last 10)
+    cursor.execute('''
+        SELECT p.prabh_name, p.payment_status, p.created_at, u.email
+        FROM prabh_instances p
+        JOIN users u ON p.user_id = u.user_id
+        ORDER BY p.created_at DESC 
+        LIMIT 10
+    ''')
+    recent_prabhs = [{
+        'prabh_name': row[0],
+        'payment_status': row[1],
+        'created_at': row[2],
+        'user_email': row[3]
+    } for row in cursor.fetchall()]
+    
+    # Get recent early access signups (last 10)
+    cursor.execute('''
+        SELECT name, email, age_range, relationship_status, interest_level, created_at
+        FROM early_signups 
+        ORDER BY created_at DESC 
+        LIMIT 10
+    ''')
+    early_access = [{
+        'name': row[0],
+        'email': row[1],
+        'age_range': row[2],
+        'relationship_status': row[3],
+        'interest_level': row[4],
+        'created_at': row[5]
+    } for row in cursor.fetchall()]
+    
+    conn.close()
+    
+    return jsonify({
+        'stats': stats,
+        'recent_users': recent_users,
+        'recent_prabhs': recent_prabhs,
+        'early_access': early_access
+    })
 
 @app.route('/api/captcha', methods=['GET'])
 def get_captcha():
@@ -948,37 +1072,114 @@ def send_early_access_email(data):
     print(f"Early access signup received: {data['name']} ({data['email']})")
     return
 
+def track_visitor(request):
+    """Track website visitor"""
+    try:
+        import hashlib
+        
+        # Create session ID from IP + User Agent
+        ip = request.environ.get('HTTP_X_FORWARDED_FOR', request.environ.get('REMOTE_ADDR', 'unknown'))
+        user_agent = request.headers.get('User-Agent', '')
+        session_id = hashlib.md5(f"{ip}_{user_agent}".encode()).hexdigest()
+        
+        conn = sqlite3.connect('myprabh.db')
+        cursor = conn.cursor()
+        
+        # Check if this session visited in last hour (avoid spam)
+        cursor.execute('''
+            SELECT COUNT(*) FROM visitors 
+            WHERE session_id = ? AND visit_timestamp > datetime('now', '-1 hour')
+        ''', (session_id,))
+        
+        if cursor.fetchone()[0] == 0:
+            # New visitor or returning after 1 hour
+            cursor.execute('''
+                INSERT INTO visitors (ip_address, user_agent, page_visited, session_id)
+                VALUES (?, ?, ?, ?)
+            ''', (ip[:50], user_agent[:200], request.path, session_id))
+            
+            # Update stats cache
+            cursor.execute('''
+                UPDATE stats_cache SET 
+                total_visitors = (SELECT COUNT(DISTINCT session_id) FROM visitors),
+                last_updated = CURRENT_TIMESTAMP
+                WHERE id = 1
+            ''')
+            
+            conn.commit()
+        
+        conn.close()
+        
+    except Exception as e:
+        print(f"Visitor tracking error: {e}")
+
 def get_live_stats():
-    """Get real-time statistics"""
+    """Get real-time statistics with caching"""
     conn = sqlite3.connect('myprabh.db')
     cursor = conn.cursor()
     
-    # Total users
-    cursor.execute('SELECT COUNT(*) FROM users')
-    total_users = cursor.fetchone()[0]
+    # Get cached stats first
+    cursor.execute('SELECT * FROM stats_cache WHERE id = 1')
+    cache = cursor.fetchone()
     
-    # Total Prabh instances
-    cursor.execute('SELECT COUNT(*) FROM prabh_instances')
-    total_prabhs = cursor.fetchone()[0]
+    # Update cache if older than 5 minutes or missing data
+    if not cache or datetime.now().timestamp() - datetime.fromisoformat(cache[5].replace('Z', '+00:00')).timestamp() > 300:
+        
+        # Total unique visitors
+        cursor.execute('SELECT COUNT(DISTINCT session_id) FROM visitors')
+        total_visitors = cursor.fetchone()[0]
+        
+        # Total users
+        cursor.execute('SELECT COUNT(*) FROM users')
+        total_users = cursor.fetchone()[0]
+        
+        # Total Prabh instances
+        cursor.execute('SELECT COUNT(*) FROM prabh_instances')
+        total_prabhs = cursor.fetchone()[0]
+        
+        # Early access signups
+        cursor.execute('SELECT COUNT(*) FROM early_signups')
+        early_signups = cursor.fetchone()[0]
+        
+        # Update cache
+        cursor.execute('''
+            UPDATE stats_cache SET 
+            total_visitors = ?, total_users = ?, total_prabhs = ?, early_signups = ?,
+            last_updated = CURRENT_TIMESTAMP
+            WHERE id = 1
+        ''', (total_visitors, total_users, total_prabhs, early_signups))
+        
+        conn.commit()
+    else:
+        # Use cached values
+        total_visitors = cache[1]
+        total_users = cache[2] 
+        total_prabhs = cache[3]
+        early_signups = cache[4]
     
-    # Early access signups
-    cursor.execute('SELECT COUNT(*) FROM early_signups')
-    early_signups = cursor.fetchone()[0]
-    
-    # Active users (last 24 hours)
+    # Active users (last 24 hours) - always fresh
     cursor.execute('''
         SELECT COUNT(*) FROM users 
         WHERE last_active > datetime('now', '-1 day')
     ''')
     active_users = cursor.fetchone()[0]
     
+    # Visitors today
+    cursor.execute('''
+        SELECT COUNT(DISTINCT session_id) FROM visitors 
+        WHERE visit_timestamp > datetime('now', '-1 day')
+    ''')
+    visitors_today = cursor.fetchone()[0]
+    
     conn.close()
     
     return {
+        'total_visitors': total_visitors,
         'total_users': total_users,
         'total_prabhs': total_prabhs,
         'early_signups': early_signups,
-        'active_users': active_users
+        'active_users': active_users,
+        'visitors_today': visitors_today
     }
 
 def log_analytics(event_type, user_id, data):
