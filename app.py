@@ -248,6 +248,7 @@ def logout():
     return redirect(url_for('index'))
 
 @app.route('/register', methods=['POST'])
+@app.route('/create_account', methods=['POST'])
 def register():
     """Handle user registration"""
     try:
