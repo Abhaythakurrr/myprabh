@@ -77,6 +77,8 @@ def init_db():
             character_tags TEXT,
             personality_traits TEXT,
             payment_status TEXT DEFAULT 'PENDING',
+            model_status TEXT DEFAULT 'PENDING',
+            model_path TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             last_used TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users (user_id)
@@ -116,10 +118,8 @@ init_db()
 
 @app.route('/')
 def index():
-    """Main landing page"""
-    # Get real-time stats
-    stats = get_live_stats()
-    return render_template('landing.html', stats=stats)
+    """MVP Landing page"""
+    return render_template('mvp_landing.html')
 
 @app.route('/index')
 def landing_page():
@@ -128,8 +128,8 @@ def landing_page():
 
 @app.route('/early-access')
 def early_access():
-    """Early access signup page"""
-    return render_template('early_access.html')
+    """Redirect to main page early access section"""
+    return redirect('/#early-access')
 
 @app.route('/submit-early-access', methods=['POST'])
 def submit_early_access():
@@ -539,7 +539,7 @@ def chat_message():
 
 @app.route('/verify-payment', methods=['POST'])
 def verify_payment():
-    """Verify Razorpay payment"""
+    """Verify Razorpay payment and start model training"""
     if 'user_id' not in session:
         return jsonify({'error': 'Not authenticated'}), 401
     
@@ -551,18 +551,56 @@ def verify_payment():
         if not prabh_id or not payment_id:
             return jsonify({'error': 'Missing payment data'}), 400
         
-        # Mark Prabh as PAID and activate
+        # Get Prabh data for model training
         conn = sqlite3.connect('myprabh.db')
         cursor = conn.cursor()
         
         cursor.execute('''
+            SELECT prabh_name, character_description, story_content, character_tags, personality_traits
+            FROM prabh_instances WHERE id = ? AND user_id = ?
+        ''', (prabh_id, session['user_id']))
+        
+        prabh_data = cursor.fetchone()
+        
+        if not prabh_data:
+            return jsonify({'error': 'Prabh not found'}), 404
+        
+        # Mark as PAID and set training status
+        cursor.execute('''
             UPDATE prabh_instances 
-            SET payment_status = 'PAID', last_used = CURRENT_TIMESTAMP 
+            SET payment_status = 'PAID', model_status = 'TRAINING', last_used = CURRENT_TIMESTAMP 
             WHERE id = ? AND user_id = ?
         ''', (prabh_id, session['user_id']))
         
         conn.commit()
         conn.close()
+        
+        # Start background model training (in production, use Celery/Redis)
+        try:
+            from dynamic_training import create_personalized_model
+            model_path = create_personalized_model(session['user_id'], prabh_data)
+            
+            # Update model status to READY
+            conn = sqlite3.connect('myprabh.db')
+            cursor = conn.cursor()
+            cursor.execute('''
+                UPDATE prabh_instances 
+                SET model_status = 'READY', model_path = ?
+                WHERE id = ?
+            ''', (model_path, prabh_id))
+            conn.commit()
+            conn.close()
+            
+        except Exception as training_error:
+            print(f"Model training failed: {training_error}")
+            # Set fallback status
+            conn = sqlite3.connect('myprabh.db')
+            cursor = conn.cursor()
+            cursor.execute('''
+                UPDATE prabh_instances SET model_status = 'FALLBACK' WHERE id = ?
+            ''', (prabh_id,))
+            conn.commit()
+            conn.close()
         
         # Log analytics
         log_analytics('payment_completed', session['user_id'], {
