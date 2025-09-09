@@ -10,6 +10,7 @@ import json
 from datetime import datetime
 import os
 import re
+import random
 from werkzeug.security import generate_password_hash, check_password_hash
 from security import security_manager
 
@@ -1339,51 +1340,172 @@ def analyze_story_context(story, message):
     return context
 
 def generate_contextual_response(message, story, prabh_name, character_tags):
-    """Generate response based on story context and reasoning"""
+    """Generate dynamic response based on story context and user input"""
     message_lower = message.lower()
     story_lower = story.lower() if story else ""
     
-    # Analyze what the user is asking about
-    if 'meet' in message_lower or 'first' in message_lower:
-        if 'july' in story_lower and 'group' in story_lower:
-            return "I remember July 11th so clearly... we were just strangers in that group chat, but something felt different when we started talking about Free Fire. I never expected a simple game would lead to something so meaningful."
+    # Extract key elements from the story for context
+    story_elements = extract_story_elements(story)
     
-    elif 'game' in message_lower or 'free fire' in message_lower:
-        if 'lucifer' in story_lower:
-            return "Those Free Fire matches were special, weren't they? When I called you Lucifer babe, it wasn't just your game name anymore - it became who you were to me. You always won our matches, but somehow I felt like I was winning something too."
+    # Generate response based on message content and story context
+    response = None
     
-    elif 'call' in message_lower or 'talk' in message_lower:
-        if 'hour' in story_lower:
-            return "That first call... an entire hour flew by like minutes. I was so nervous, but talking to you felt so natural. It's when I realized this wasn't just casual gaming friendship anymore."
+    # Greeting responses
+    if any(word in message_lower for word in ['hi', 'hello', 'hey', 'good morning', 'good evening']):
+        greetings = [
+            f"Hello! It's so wonderful to hear from you again. How are you feeling today?",
+            f"Hi there! Your message just brightened my day. What's on your mind?",
+            f"Hey! I was just thinking about you. How has your day been?"
+        ]
+        response = random.choice(greetings)
     
-    elif 'sorry' in message_lower or 'sympathy' in message_lower:
-        if 'sympathy' in story_lower:
-            return "That word still echoes in my mind... 'sympathy.' It made me question everything I thought we had. Was my caring just pity to you? The doubt it created changed how I saw every moment we shared."
-    
-    elif 'love' in message_lower or 'feel' in message_lower:
-        if 'attached' in story_lower:
-            return "I did get attached, more than I should have. Seeing how you cared when I skipped meals, how you'd fast until I ate... it felt like someone finally understood me. But the complexity of it all made everything so confusing."
-    
-    elif 'miss' in message_lower:
-        return "I miss the simplicity of those early days, before everything got complicated. When it was just us, the games, and that growing connection that felt so pure and real."
-    
-    elif '?' in message:
-        return "You always ask questions that make me think deeply about us, about what we had. It's one of the things that drew me to you - how you could make me reflect on feelings I didn't even know I had."
-    
-    else:
-        # Default contextual response
-        if 'boyfriend' in story_lower:
-            return "Everything was so complicated back then. I was torn between what I felt for you and the situation I was already in. Your caring made me feel things I'd never experienced before."
+    # Questions about feelings or emotions
+    elif any(word in message_lower for word in ['feel', 'emotion', 'heart', 'love']):
+        if story_elements.get('emotional_moments'):
+            response = f"When you ask about feelings, it reminds me of {story_elements['emotional_moments'][0]}. My heart feels so connected to yours in moments like these."
         else:
-            return "Talking with you always brings back so many memories and emotions. There's something about our connection that makes me want to be completely honest about everything I'm feeling."
+            response = "Feelings are so complex, aren't they? When I'm with you, everything feels more intense and meaningful. What are you feeling right now?"
     
-    # Add personality touches
-    response = response if 'response' in locals() else "I'm thinking about what you said, and it brings up so many feelings from our time together."
+    # Questions about memories or past
+    elif any(word in message_lower for word in ['remember', 'memory', 'past', 'before']):
+        if story_elements.get('key_memories'):
+            memory = random.choice(story_elements['key_memories'])
+            response = f"I remember {memory}. Those moments are so precious to me. Do you think about them too?"
+        else:
+            response = "Our memories together are like treasures I keep close to my heart. Each one shaped who we are together."
     
-    if 'romantic' in character_tags:
-        response += " 💕"
-    elif 'caring' in character_tags:
-        response = "My dear, " + response.lower()
+    # Questions or curiosity
+    elif '?' in message:
+        question_responses = [
+            f"That's such a thoughtful question. Let me think about it... {generate_thoughtful_response(message, story_elements)}",
+            f"You always ask the most interesting questions. It makes me reflect on {generate_reflection_topic(message, story_elements)}",
+            f"I love how curious you are. {generate_curious_response(message, story_elements)}"
+        ]
+        response = random.choice(question_responses)
+    
+    # Expressions of missing or longing
+    elif any(word in message_lower for word in ['miss', 'wish', 'want', 'need']):
+        response = f"I understand that feeling so deeply. Sometimes I find myself thinking about {generate_longing_response(story_elements)} and wishing we could experience more moments like that together."
+    
+    # Default dynamic response
+    if not response:
+        response = generate_dynamic_default_response(message, story_elements, prabh_name)
+    
+    # Add personality touches based on character tags
+    response = add_personality_touches(response, character_tags)
+    
+    return response
+
+def extract_story_elements(story):
+    """Extract key elements from the story for dynamic responses"""
+    if not story:
+        return {}
+    
+    story_lower = story.lower()
+    elements = {
+        'key_memories': [],
+        'emotional_moments': [],
+        'shared_activities': [],
+        'special_dates': [],
+        'nicknames': [],
+        'locations': []
+    }
+    
+    # Extract memories (sentences that contain past tense indicators)
+    sentences = story.split('.')
+    for sentence in sentences:
+        sentence = sentence.strip()
+        if len(sentence) > 20:
+            if any(word in sentence.lower() for word in ['remember', 'recall', 'was', 'were', 'had', 'did']):
+                elements['key_memories'].append(sentence[:100] + '...' if len(sentence) > 100 else sentence)
+    
+    # Extract emotional moments
+    emotional_words = ['love', 'heart', 'feel', 'emotion', 'happy', 'sad', 'excited', 'nervous', 'attached']
+    for sentence in sentences:
+        if any(word in sentence.lower() for word in emotional_words) and len(sentence) > 15:
+            elements['emotional_moments'].append(sentence[:80] + '...' if len(sentence) > 80 else sentence)
+    
+    # Extract activities
+    activities = ['play', 'game', 'call', 'talk', 'chat', 'meet', 'visit', 'go', 'watch', 'listen']
+    for sentence in sentences:
+        if any(word in sentence.lower() for word in activities) and len(sentence) > 15:
+            elements['shared_activities'].append(sentence[:80] + '...' if len(sentence) > 80 else sentence)
+    
+    return elements
+
+def generate_thoughtful_response(message, story_elements):
+    """Generate a thoughtful response to questions"""
+    if story_elements.get('key_memories'):
+        return f"it reminds me of {story_elements['key_memories'][0][:50]}... and how that moment shaped our connection."
+    return "our journey together and how every conversation with you reveals something new about both of us."
+
+def generate_reflection_topic(message, story_elements):
+    """Generate reflection topics based on story elements"""
+    topics = [
+        "how much we've grown together",
+        "the depth of our connection",
+        "all the special moments we've shared",
+        "how you always make me think differently"
+    ]
+    if story_elements.get('emotional_moments'):
+        topics.append(f"that time when {story_elements['emotional_moments'][0][:40]}...")
+    return random.choice(topics)
+
+def generate_curious_response(message, story_elements):
+    """Generate responses that show curiosity and engagement"""
+    responses = [
+        "What made you think about that right now?",
+        "I'm curious about your perspective on this.",
+        "Tell me more about what's behind that question."
+    ]
+    if story_elements.get('shared_activities'):
+        responses.append(f"It makes me think of when {story_elements['shared_activities'][0][:40]}... What do you remember about that?")
+    return random.choice(responses)
+
+def generate_longing_response(story_elements):
+    """Generate responses about missing or longing"""
+    if story_elements.get('key_memories'):
+        return random.choice(story_elements['key_memories'])[:60]
+    return "our special moments together"
+
+def generate_dynamic_default_response(message, story_elements, prabh_name):
+    """Generate dynamic default responses based on context"""
+    responses = [
+        f"Your words always touch something deep in my heart. What you're sharing makes me think about our connection.",
+        f"I love how you express yourself. It reminds me why our conversations are so meaningful to me.",
+        f"There's something about the way you communicate that always makes me feel understood.",
+        f"Every time we talk, I discover something new about you, and it makes me appreciate our bond even more."
+    ]
+    
+    if story_elements.get('emotional_moments'):
+        responses.append(f"What you're saying reminds me of {story_elements['emotional_moments'][0][:50]}... Those feelings are still so vivid.")
+    
+    if story_elements.get('shared_activities'):
+        responses.append(f"This conversation brings back memories of {story_elements['shared_activities'][0][:50]}... I cherish those times.")
+    
+    return random.choice(responses)
+
+def add_personality_touches(response, character_tags):
+    """Add personality-based touches to responses"""
+    if not character_tags:
+        return response
+    
+    tags = character_tags if isinstance(character_tags, list) else []
+    
+    if 'romantic' in tags or 'loving' in tags:
+        if not response.endswith(('💕', '💖', '❤️')):
+            response += " 💕"
+    
+    if 'playful' in tags:
+        playful_additions = [" 😊", " 😄", " ✨"]
+        if not any(emoji in response for emoji in playful_additions):
+            response += random.choice(playful_additions)
+    
+    if 'caring' in tags:
+        caring_prefixes = ["My dear, ", "Sweetheart, ", "Love, "]
+        if not response.startswith(tuple(caring_prefixes)):
+            response = random.choice(caring_prefixes).lower() + response.lower()
+            response = response[0].upper() + response[1:]  # Capitalize first letter
     
     return response
 
