@@ -45,7 +45,7 @@ else:
 # Razorpay Configuration
 RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', '')  # Set this in environment
 RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', '')  # Set this in environment
-PRABH_CREATION_PRICE = 1000  # ₹10 in paise (prototype testing)
+PRABH_CREATION_PRICE = 0  # Free for now
 
 # Admin Configuration
 ADMIN_EMAIL = 'abhaythakurr17@gmail.com'  # Full access admin user
@@ -714,8 +714,20 @@ def create_prabh():
             # Log analytics
             log_analytics('prabh_created_pending_payment', session['user_id'], {'prabh_id': prabh_id})
             
-            # Redirect to payment
-            return redirect(url_for('payment_page', prabh_id=prabh_id))
+            # Mark as PAID since it's free
+            cursor.execute('''
+                UPDATE prabh_instances 
+                SET payment_status = 'PAID', model_status = 'READY'
+                WHERE id = ?
+            ''', (prabh_id,))
+            conn.commit()
+            conn.close()
+            
+            # Log analytics
+            log_analytics('prabh_created_free', session['user_id'], {'prabh_id': prabh_id})
+            
+            # Redirect to chat
+            return redirect(url_for('chat_interface', prabh_id=prabh_id))
             
         except Exception as e:
             return render_template('create_prabh.html', 
@@ -801,9 +813,8 @@ def payment_page(prabh_id):
     if not prabh_data:
         return redirect(url_for('dashboard'))
     
-    # Check if admin user for special pricing
-    is_admin = session.get('is_admin', False)
-    amount = 100 if is_admin else PRABH_CREATION_PRICE  # ₹1 for admin, ₹10 for users
+    # Creation is now free
+    amount = 0
     
     return render_template('payment.html', 
                          prabh_id=prabh_id,
