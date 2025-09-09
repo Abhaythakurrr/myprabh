@@ -1368,13 +1368,14 @@ def start_voice_call():
         # Initialize TTS manager
         try:
             from tts_manager import tts_manager
-            from enhanced_ai_engine import enhanced_ai_engine
+            from intelligent_ai_engine import intelligent_ai
             
             # Initialize character if needed
-            if not enhanced_ai_engine.memory_manager.character_profile:
-                enhanced_ai_engine.initialize_character(prabh_data[2], prabh_data[0])
+            if not intelligent_ai.character_profile:
+                user_name = intelligent_ai._extract_user_name(prabh_data[2])
+                intelligent_ai.process_story_realtime(prabh_data[2], prabh_data[0], user_name)
             
-            character_profile = enhanced_ai_engine.memory_manager.character_profile
+            character_profile = intelligent_ai.character_profile
             call_session = tts_manager.start_voice_call(character_profile)
             
             return jsonify({
@@ -1433,23 +1434,24 @@ def get_conversation_context(prabh_id):
         
         # Get conversation context
         try:
-            from enhanced_ai_engine import enhanced_ai_engine
+            from intelligent_ai_engine import intelligent_ai
             
             # Initialize if needed
-            if not enhanced_ai_engine.memory_manager.character_profile:
-                enhanced_ai_engine.initialize_character(prabh_data[1], prabh_data[0])
+            if not intelligent_ai.character_profile:
+                user_name = intelligent_ai._extract_user_name(prabh_data[1])
+                intelligent_ai.process_story_realtime(prabh_data[1], prabh_data[0], user_name)
             
             context_data = {
-                'character_profile': enhanced_ai_engine.memory_manager.character_profile,
-                'conversation_history': enhanced_ai_engine.memory_manager.conversation_context[-10:],
-                'memory_bank': enhanced_ai_engine.memory_manager.memory_bank[:5],  # Top 5 memories
-                'character_state': enhanced_ai_engine.character_state
+                'character_profile': intelligent_ai.character_profile,
+                'conversation_history': intelligent_ai.conversation_history[-10:],
+                'memory_bank': intelligent_ai.memory_bank[:5],  # Top 5 memories
+                'character_state': intelligent_ai.emotional_state
             }
             
             return jsonify(context_data)
             
         except ImportError:
-            return jsonify({'error': 'Enhanced AI system not available'}), 503
+            return jsonify({'error': 'Intelligent AI system not available'}), 503
         
     except Exception as e:
         return jsonify({'error': f'Failed to get context: {str(e)}'}), 500
