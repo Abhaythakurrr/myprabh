@@ -1299,70 +1299,14 @@ def refund():
     return render_template('refund.html')
 
 def generate_prabh_response(message, prabh_data):
-    """Generate response using the sophisticated AI system with fine-tuned models"""
+    """Generate response using the lightweight AI engine"""
     try:
-        # Import systems
-        import sys
-        import os
-        sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-        
-        from model_manager import model_manager
-        
-        # Initialize model manager if needed
-        if not hasattr(generate_prabh_response, 'models_loaded'):
-            model_manager.load_available_models()
-            generate_prabh_response.models_loaded = True
-        
-        # Process input through AI system if available
-        try:
-            from prabh_ai_core import PrabhAI
-            
-            if not hasattr(generate_prabh_response, 'ai_system'):
-                generate_prabh_response.ai_system = PrabhAI()
-            
-            ai_system = generate_prabh_response.ai_system
-            
-            # Create context from character data
-            prabh_name, description, story, tags_json, traits_json = prabh_data
-            context = {
-                'character_name': prabh_name,
-                'character_description': description,
-                'character_story': story,
-                'character_tags': json.loads(tags_json) if tags_json else [],
-                'personality_traits': json.loads(traits_json) if traits_json else {}
-            }
-            
-            # Process through AI system for thinking and emotional processing
-            ai_response = ai_system.process_input(message, context)
-            
-            # Use fine-tuned model for final generation if available
-            if model_manager.models:
-                best_model = model_manager.get_best_model_for_context({
-                    'emotional_tone': ai_response.get('emotional_tone', 'neutral')
-                })
-                
-                # Combine AI thinking with model generation
-                model_response = model_manager.generate_response(
-                    message, best_model, max_length=100, temperature=0.8
-                )
-                
-                # Blend responses for more natural output
-                if model_response and len(model_response.strip()) > 10:
-                    return model_response
-            
-            return ai_response['text']
-            
-        except ImportError:
-            # AI system not available, use model directly
-            if model_manager.models:
-                best_model = list(model_manager.models.keys())[0]
-                return model_manager.generate_response(message, best_model)
-        
+        from simple_ai_engine import ai_engine
+        return ai_engine.process_message(message, prabh_data)
     except Exception as e:
-        print(f"AI system error: {e}")
-    
-    # Fallback to simple response system
-    return generate_simple_response(message, prabh_data)
+        print(f"AI engine error: {e}")
+        # Fallback to simple response
+        return generate_simple_response(message, prabh_data)
 
 def generate_simple_response(message, prabh_data):
     """AI-powered response system using story context and reasoning"""
