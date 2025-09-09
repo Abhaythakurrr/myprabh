@@ -260,6 +260,12 @@
                 </div>
             </div>
             <div class="chat-actions">
+                <button id="voiceCallBtn" class="action-btn">
+                    <i class="fas fa-phone"></i> Call
+                </button>
+                <button id="contextBtn" class="action-btn">
+                    <i class="fas fa-brain"></i> Memory
+                </button>
                 <a href="/dashboard" class="action-btn">
                     <i class="fas fa-arrow-left"></i> Dashboard
                 </a>
@@ -308,7 +314,12 @@
         const sendButton = document.getElementById('sendButton');
         const typingIndicator = document.getElementById('typingIndicator');
         const emptyChat = document.getElementById('emptyChat');
+        const voiceCallBtn = document.getElementById('voiceCallBtn');
+        const contextBtn = document.getElementById('contextBtn');
         const prabhId = {{ prabh_id }};
+        
+        let isCallActive = false;
+        let conversationContext = null;
 
         // Auto-resize textarea
         chatInput.addEventListener('input', function() {
@@ -326,6 +337,12 @@
 
         // Send button click
         sendButton.addEventListener('click', sendMessage);
+        
+        // Voice call button
+        voiceCallBtn.addEventListener('click', toggleVoiceCall);
+        
+        // Context button
+        contextBtn.addEventListener('click', showConversationContext);
 
         async function sendMessage() {
             const message = chatInput.value.trim();
@@ -355,7 +372,8 @@
                     },
                     body: JSON.stringify({
                         prabh_id: prabhId,
-                        message: message
+                        message: message,
+                        enable_tts: isCallActive
                     })
                 });
 
@@ -426,6 +444,153 @@
             chatInput.focus();
         });
 
+        // Voice call functions
+        async function toggleVoiceCall() {
+            if (!isCallActive) {
+                await startVoiceCall();
+            } else {
+                await endVoiceCall();
+            }
+        }
+        
+        async function startVoiceCall() {
+            try {
+                const response = await fetch('/api/start-voice-call', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prabh_id: prabhId })
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    isCallActive = true;
+                    voiceCallBtn.innerHTML = '<i class="fas fa-phone-slash"></i> End Call';
+                    voiceCallBtn.style.background = '#ff4444';
+                    addMessage('Voice call started! I can now speak to you.', 'prabh');
+                } else {
+                    alert('Failed to start voice call: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Voice call error:', error);
+                alert('Voice call feature is not available right now.');
+            }
+        }
+        
+        async function endVoiceCall() {
+            try {
+                const response = await fetch('/api/end-voice-call', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const result = await response.json();
+                isCallActive = false;
+                voiceCallBtn.innerHTML = '<i class="fas fa-phone"></i> Call';
+                voiceCallBtn.style.background = '';
+                addMessage('Voice call ended. Thanks for talking with me!', 'prabh');
+            } catch (error) {
+                console.error('End call error:', error);
+            }
+        }
+        
+        // Context functions
+        async function showConversationContext() {
+            try {
+                const response = await fetch(`/api/conversation-context/${prabhId}`);
+                const context = await response.json();
+                
+                if (context.character_profile) {
+                    displayContextModal(context);
+                } else {
+                    alert('Context not available: ' + context.error);
+                }
+            } catch (error) {
+                console.error('Context error:', error);
+                alert('Memory context is not available right now.');
+            }
+        }
+        
+        function displayContextModal(context) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.8); z-index: 1000; display: flex;
+                align-items: center; justify-content: center; padding: 20px;
+            `;
+            
+            const content = document.createElement('div');
+            content.style.cssText = `
+                background: white; border-radius: 15px; padding: 30px;
+                max-width: 600px; max-height: 80vh; overflow-y: auto;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            `;
+            
+            const profile = context.character_profile;
+            const memories = context.memory_bank || [];
+            
+            content.innerHTML = `
+                <h2 style="color: var(--primary-color); margin-bottom: 20px;">
+                    <i class="fas fa-brain"></i> ${profile.name}'s Memory & Context
+                </h2>
+                
+                <div style="margin-bottom: 20px;">
+                    <h3>Personality Traits:</h3>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        ${profile.personality_traits?.map(trait => 
+                            `<span style="background: #f0f8ff; padding: 5px 10px; border-radius: 15px; font-size: 0.9rem;">
+                                ${trait[0]} (${trait[1]})
+                            </span>`
+                        ).join('') || 'No traits identified'}
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h3>Core Memories:</h3>
+                    <div style="max-height: 200px; overflow-y: auto;">
+                        ${memories.slice(0, 3).map(memory => 
+                            `<div style="background: #f9f9f9; padding: 10px; margin: 5px 0; border-radius: 8px; font-size: 0.9rem;">
+                                ${memory.first_person || memory.text}
+                            </div>`
+                        ).join('') || 'No memories available'}
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h3>Current Mood:</h3>
+                    <p style="font-size: 1.1rem; color: var(--primary-color);">
+                        ${context.character_state?.mood || 'Warm and caring'}
+                    </p>
+                </div>
+                
+                <button onclick="this.parentElement.parentElement.remove()" 
+                        style="background: var(--primary-color); color: white; border: none; 
+                               padding: 10px 20px; border-radius: 20px; cursor: pointer; float: right;">
+                    Close
+                </button>
+            `;
+            
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+            
+            // Close on background click
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        }
+        
+        // Load conversation context on page load
+        document.addEventListener('DOMContentLoaded', async function() {
+            chatInput.focus();
+            
+            // Load context
+            try {
+                const response = await fetch(`/api/conversation-context/${prabhId}`);
+                conversationContext = await response.json();
+            } catch (error) {
+                console.log('Context loading failed:', error);
+            }
+        });
+        
         // Add welcome message after a short delay
         setTimeout(() => {
             if (chatMessages.children.length === 1) { // Only empty chat message

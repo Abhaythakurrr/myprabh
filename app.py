@@ -856,7 +856,7 @@ def chat_interface(prabh_id):
 
 @app.route('/chat-message', methods=['POST'])
 def chat_message():
-    """Handle chat messages"""
+    """Handle chat messages with enhanced AI and TTS support"""
     if 'user_id' not in session:
         return jsonify({'error': 'Not authenticated'}), 401
     
@@ -864,6 +864,7 @@ def chat_message():
         data = request.get_json()
         prabh_id = data.get('prabh_id')
         message = data.get('message', '').strip()
+        enable_tts = data.get('enable_tts', False)
         
         if not message:
             return jsonify({'error': 'Empty message'}), 400
@@ -884,20 +885,39 @@ def chat_message():
         if not prabh_data:
             return jsonify({'error': 'Prabh not found'}), 404
         
-        # Generate response using simple AI
+        # Generate response using enhanced AI
         response = generate_prabh_response(message, prabh_data)
+        
+        # Prepare response data
+        response_data = {
+            'response': response,
+            'emotional_tone': 'loving',
+            'timestamp': datetime.now().isoformat(),
+            'character_name': prabh_data[0]
+        }
+        
+        # Add TTS data if requested
+        if enable_tts:
+            try:
+                from tts_manager import tts_manager
+                from enhanced_ai_engine import enhanced_ai_engine
+                
+                character_profile = enhanced_ai_engine.memory_manager.character_profile
+                speech_data = tts_manager.generate_voice_response(
+                    response, character_profile, {'emotional_tone': 'loving'}
+                )
+                response_data['tts'] = speech_data
+            except ImportError:
+                response_data['tts'] = {'error': 'TTS not available'}
         
         # Log analytics
         log_analytics('chat_message', session['user_id'], {
             'prabh_id': prabh_id,
-            'message_length': len(message)
+            'message_length': len(message),
+            'tts_enabled': enable_tts
         })
         
-        return jsonify({
-            'response': response,
-            'emotional_tone': 'loving',
-            'timestamp': datetime.now().isoformat()
-        })
+        return jsonify(response_data)
         
     except Exception as e:
         return jsonify({'error': f'Chat error: {str(e)}'}), 500
@@ -1284,6 +1304,118 @@ def face_login():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 
+@app.route('/api/start-voice-call', methods=['POST'])
+def start_voice_call():
+    """Start a voice call session"""
+    if 'user_id' not in session:
+        return jsonify({'error': 'Not authenticated'}), 401
+    
+    try:
+        data = request.get_json()
+        prabh_id = data.get('prabh_id')
+        
+        # Get character profile
+        conn = sqlite3.connect('myprabh.db')
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT prabh_name, character_description, story_content, character_tags, personality_traits
+            FROM prabh_instances WHERE id = ? AND user_id = ?
+        ''', (prabh_id, session['user_id']))
+        prabh_data = cursor.fetchone()
+        conn.close()
+        
+        if not prabh_data:
+            return jsonify({'error': 'Prabh not found'}), 404
+        
+        # Initialize TTS manager
+        try:
+            from tts_manager import tts_manager
+            from enhanced_ai_engine import enhanced_ai_engine
+            
+            # Initialize character if needed
+            if not enhanced_ai_engine.memory_manager.character_profile:
+                enhanced_ai_engine.initialize_character(prabh_data[2], prabh_data[0])
+            
+            character_profile = enhanced_ai_engine.memory_manager.character_profile
+            call_session = tts_manager.start_voice_call(character_profile)
+            
+            return jsonify({
+                'success': True,
+                'call_session': call_session,
+                'character_name': prabh_data[0]
+            })
+            
+        except ImportError:
+            return jsonify({'error': 'Voice call system not available'}), 503
+        
+    except Exception as e:
+        return jsonify({'error': f'Failed to start call: {str(e)}'}), 500
+
+@app.route('/api/end-voice-call', methods=['POST'])
+def end_voice_call():
+    """End voice call session"""
+    if 'user_id' not in session:
+        return jsonify({'error': 'Not authenticated'}), 401
+    
+    try:
+        from tts_manager import tts_manager
+        tts_manager.end_voice_call()
+        
+        call_stats = tts_manager.get_call_statistics()
+        
+        return jsonify({
+            'success': True,
+            'call_statistics': call_stats
+        })
+        
+    except ImportError:
+        return jsonify({'error': 'Voice call system not available'}), 503
+    except Exception as e:
+        return jsonify({'error': f'Failed to end call: {str(e)}'}), 500
+
+@app.route('/api/conversation-context/<int:prabh_id>')
+def get_conversation_context(prabh_id):
+    """Get conversation context and memory for a Prabh"""
+    if 'user_id' not in session:
+        return jsonify({'error': 'Not authenticated'}), 401
+    
+    try:
+        # Verify ownership
+        conn = sqlite3.connect('myprabh.db')
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT prabh_name, story_content FROM prabh_instances 
+            WHERE id = ? AND user_id = ?
+        ''', (prabh_id, session['user_id']))
+        prabh_data = cursor.fetchone()
+        conn.close()
+        
+        if not prabh_data:
+            return jsonify({'error': 'Prabh not found'}), 404
+        
+        # Get conversation context
+        try:
+            from enhanced_ai_engine import enhanced_ai_engine
+            
+            # Initialize if needed
+            if not enhanced_ai_engine.memory_manager.character_profile:
+                enhanced_ai_engine.initialize_character(prabh_data[1], prabh_data[0])
+            
+            context_data = {
+                'character_profile': enhanced_ai_engine.memory_manager.character_profile,
+                'conversation_history': enhanced_ai_engine.memory_manager.conversation_context[-10:],
+                'memory_bank': enhanced_ai_engine.memory_manager.memory_bank[:5],  # Top 5 memories
+                'character_state': enhanced_ai_engine.character_state
+            }
+            
+            return jsonify(context_data)
+            
+        except ImportError:
+            return jsonify({'error': 'Enhanced AI system not available'}), 503
+        
+    except Exception as e:
+        return jsonify({'error': f'Failed to get context: {str(e)}'}), 500
+
 @app.route('/api/newsletter-signup', methods=['POST'])
 def newsletter_signup():
     """Handle newsletter signup"""
@@ -1341,9 +1473,16 @@ def refund():
     return render_template('refund.html')
 
 def generate_prabh_response(message, prabh_data):
-    """Generate response using brain, heart, and AI engine with character adaptation"""
+    """Generate response using enhanced AI system with full character adaptation"""
     try:
-        # Try to use brain and heart systems first
+        # Try enhanced AI engine first
+        try:
+            from enhanced_ai_engine import enhanced_ai_engine
+            return enhanced_ai_engine.process_message_with_character(message, prabh_data)
+        except ImportError:
+            print("Enhanced AI engine not available, using fallback")
+        
+        # Fallback to brain/heart systems
         try:
             from brain.cognitive_processor import CognitiveProcessor
             from heart.emotional_core import EmotionalCore
