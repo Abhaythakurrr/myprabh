@@ -47,9 +47,47 @@ except ImportError:
 
 EMAIL_ENABLED = EMAIL_LIBS_AVAILABLE and bool(EMAIL_PASSWORD)
 
+# Database connection helper
+def get_db_connection():
+    """Get database connection with proper timeout and retry logic"""
+    import time
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            conn = sqlite3.connect('myprabh.db', timeout=30.0)
+            conn.execute('PRAGMA journal_mode=WAL;')  # Enable WAL mode for better concurrency
+            conn.execute('PRAGMA synchronous=NORMAL;')  # Faster writes
+            conn.execute('PRAGMA cache_size=10000;')  # Larger cache
+            conn.execute('PRAGMA temp_store=MEMORY;')  # Use memory for temp storage
+            return conn
+        except sqlite3.OperationalError as e:
+            if "database is locked" in str(e) and attempt < max_retries - 1:
+                time.sleep(0.1 * (attempt + 1))  # Exponential backoff
+                continue
+            raise e
+    return None
+
+class DatabaseManager:
+    """Context manager for database operations"""
+    def __init__(self):
+        self.conn = None
+        self.cursor = None
+    
+    def __enter__(self):
+        self.conn = get_db_connection()
+        self.cursor = self.conn.cursor()
+        return self.cursor
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type is None:
+            self.conn.commit()
+        else:
+            self.conn.rollback()
+        self.conn.close()
+
 # Database initialization
 def init_db():
-    conn = sqlite3.connect('myprabh.db')
+    conn = get_db_connection()
     cursor = conn.cursor()
     
     # Users table
@@ -362,7 +400,7 @@ def create_account():
         user_id = str(uuid.uuid4())
         
         # Insert user
-        conn = sqlite3.connect('myprabh.db')
+        conn = get_db_connection()
         cursor = conn.cursor()
         
         # Check if admin user
@@ -434,7 +472,7 @@ def login():
             return render_template('login.html', error='Captcha verification failed')
         
         # Find user in database
-        conn = sqlite3.connect('myprabh.db')
+        conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute('''
             SELECT user_id, email, name, password_hash, is_admin
@@ -457,7 +495,7 @@ def login():
         session['is_admin'] = bool(user[4])
         
         # Update last active
-        conn = sqlite3.connect('myprabh.db')
+        conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute('''
             UPDATE users SET last_active = CURRENT_TIMESTAMP
