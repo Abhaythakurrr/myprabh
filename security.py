@@ -1,9 +1,15 @@
 # Security Module - Human verification and face recognition
-import cv2
-import numpy as np
+try:
+    import cv2
+    import numpy as np
+    from PIL import Image
+    CV2_AVAILABLE = True
+except ImportError:
+    CV2_AVAILABLE = False
+    print("⚠️ OpenCV not available - face recognition disabled")
+
 import base64
 from io import BytesIO
-from PIL import Image
 import hashlib
 import secrets
 import time
@@ -17,6 +23,9 @@ class SecurityManager:
     
     def load_face_detector(self):
         """Load OpenCV face detector"""
+        if not CV2_AVAILABLE:
+            print("OpenCV not available - face detection disabled")
+            return
         try:
             self.face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
         except Exception as e:
@@ -56,6 +65,9 @@ class SecurityManager:
     
     def detect_face_in_image(self, image_data: str) -> dict:
         """Detect face in base64 image data"""
+        if not CV2_AVAILABLE:
+            return {'success': False, 'error': 'OpenCV not available'}
+            
         try:
             if not self.face_cascade:
                 return {'success': False, 'error': 'Face detection not available'}
@@ -84,10 +96,13 @@ class SecurityManager:
                 return {'success': False, 'error': 'No face detected'}
                 
         except Exception as e:
-            return {'success': False, 'error': f'Face detection failed: {str(e)}'}
+            return {'success': False, 'error': f'Face detection failed: {str(e)}'
     
     def generate_face_signature(self, gray_image, face_coords) -> str:
         """Generate simple face signature for comparison"""
+        if not CV2_AVAILABLE:
+            return hashlib.md5(str(face_coords).encode()).hexdigest()
+            
         x, y, w, h = face_coords
         face_roi = gray_image[y:y+h, x:x+w]
         

@@ -21,7 +21,14 @@ import os
 import re
 import random
 from werkzeug.security import generate_password_hash, check_password_hash
-from security import security_manager
+# Try to import security manager, fallback if not available
+try:
+    from security import security_manager
+    SECURITY_AVAILABLE = True
+except ImportError as e:
+    print(f"⚠️ Security module not available: {e}")
+    SECURITY_AVAILABLE = False
+    security_manager = None
 
 app = Flask(__name__)
 app.secret_key = 'myprabh_mvp_2024_secret_key'
