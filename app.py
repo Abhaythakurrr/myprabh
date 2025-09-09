@@ -543,6 +543,11 @@ def create_prabh():
     
     return render_template('create_prabh.html', user_email=session.get('user_email'))
 
+@app.route('/create-prabh')
+def create_prabh_alt():
+    """Alternative route for create Prabh"""
+    return redirect(url_for('create_prabh'))
+
 @app.route('/save-prabh', methods=['POST'])
 def save_prabh():
     """Save new Prabh instance - REQUIRES PAYMENT"""
