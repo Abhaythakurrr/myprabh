@@ -1513,58 +1513,25 @@ def refund():
     return render_template('refund.html')
 
 def generate_prabh_response(message, prabh_data):
-    """Generate response using enhanced AI system with full character adaptation"""
+    """Generate response using character injection engine"""
     try:
-        # Try enhanced AI engine first
-        try:
-            from enhanced_ai_engine import enhanced_ai_engine
-            return enhanced_ai_engine.process_message_with_character(message, prabh_data)
-        except ImportError:
-            print("Enhanced AI engine not available, using fallback")
+        # Use character injection engine for proper personality injection
+        from character_injection_engine import character_injector
         
-        # Fallback to brain/heart systems
-        try:
-            from brain.cognitive_processor import CognitiveProcessor
-            from heart.emotional_core import EmotionalCore
-            from simple_ai_engine import ai_engine
-            
-            # Initialize brain and heart
-            brain = CognitiveProcessor()
-            heart = EmotionalCore()
-            
-            # Extract character data
-            prabh_name, description, story, tags_json, traits_json = prabh_data
-            
-            # Create enhanced context with character adaptation
-            context = {
-                'character_name': prabh_name,
-                'character_description': description,
-                'character_story': story,
-                'character_tags': json.loads(tags_json) if tags_json else [],
-                'personality_traits': json.loads(traits_json) if traits_json else {},
-                'user_message': message
-            }
-            
-            # Process through brain (cognitive analysis)
-            cognitive_analysis = brain.process_input(message, context)
-            
-            # Process through heart (emotional processing)
-            emotional_response = heart.process_emotion(message, context, cognitive_analysis)
-            
-            # Generate final response using AI engine with brain/heart insights
-            response = ai_engine.process_message_with_systems(
-                message, prabh_data, cognitive_analysis, emotional_response
-            )
-            
-            return response
-            
-        except ImportError:
-            # Brain/heart systems not available, use AI engine only
-            from simple_ai_engine import ai_engine
-            return ai_engine.process_message(message, prabh_data)
-            
+        # Extract character data
+        prabh_name, description, story, tags_json, traits_json = prabh_data
+        
+        # Initialize character if not already done
+        if not character_injector.character_data or character_injector.character_data.get("name") != prabh_name:
+            user_name = character_injector._extract_user_name(story)
+            character_injector.inject_character(story, prabh_name, user_name)
+        
+        # Generate character-based response
+        response = character_injector.generate_character_response(message)
+        return response
+        
     except Exception as e:
-        print(f"AI system error: {e}")
+        print(f"Character injection error: {e}")
         # Fallback to enhanced simple response
         return generate_enhanced_simple_response(message, prabh_data)
 
