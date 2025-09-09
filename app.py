@@ -275,55 +275,70 @@ def sitemap():
     """Generate dynamic sitemap for SEO"""
     from flask import make_response
     
-    sitemap_xml = '''<?xml version="1.0" encoding="UTF-8"?>
+    base_url = request.host_url.rstrip('/')
+    current_date = datetime.now().strftime('%Y-%m-%d')
+    
+    sitemap_xml = f'''<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>https://aiprabh.com/</loc>
-        <lastmod>2024-12-15</lastmod>
+        <loc>{base_url}/</loc>
+        <lastmod>{current_date}</lastmod>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://aiprabh.com/about</loc>
-        <lastmod>2024-12-15</lastmod>
+        <loc>{base_url}/about</loc>
+        <lastmod>{current_date}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://aiprabh.com/blog</loc>
-        <lastmod>2024-12-15</lastmod>
+        <loc>{base_url}/blog</loc>
+        <lastmod>{current_date}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://aiprabh.com/careers</loc>
-        <lastmod>2024-12-15</lastmod>
+        <loc>{base_url}/careers</loc>
+        <lastmod>{current_date}</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://aiprabh.com/create_account</loc>
-        <lastmod>2024-12-15</lastmod>
+        <loc>{base_url}/create_account</loc>
+        <lastmod>{current_date}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://aiprabh.com/login</loc>
-        <lastmod>2024-12-15</lastmod>
+        <loc>{base_url}/login</loc>
+        <lastmod>{current_date}</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
     <url>
-        <loc>https://aiprabh.com/privacy</loc>
-        <lastmod>2024-12-15</lastmod>
+        <loc>{base_url}/privacy</loc>
+        <lastmod>{current_date}</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>
     <url>
-        <loc>https://aiprabh.com/terms</loc>
-        <lastmod>2024-12-15</lastmod>
+        <loc>{base_url}/terms</loc>
+        <lastmod>{current_date}</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>{base_url}/refund</loc>
+        <lastmod>{current_date}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.4</priority>
+    </url>
+    <url>
+        <loc>{base_url}/cookies</loc>
+        <lastmod>{current_date}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.3</priority>
     </url>
 </urlset>'''
     
@@ -343,12 +358,20 @@ Allow: /blog
 Allow: /careers
 Allow: /create_account
 Allow: /login
+Allow: /privacy
+Allow: /terms
+Allow: /refund
 Disallow: /admin
 Disallow: /dashboard
 Disallow: /chat/*
 Disallow: /api/*
+Disallow: /payment/*
+Disallow: /verify-payment
+Disallow: /save-prabh
+Disallow: /chat-message
 
-Sitemap: https://aiprabh.com/sitemap.xml'''
+Sitemap: https://aiprabh.com/sitemap.xml
+Sitemap: https://myprabh.onrender.com/sitemap.xml'''
     
     response = make_response(robots_txt)
     response.headers['Content-Type'] = 'text/plain'
