@@ -29,10 +29,10 @@ SUPPORT_EMAIL = "abhay@aiprabh.com"  # Support and founder contact email
 CONTACT_EMAIL = "abhay@aiprabh.com"  # General contact email
 FROM_EMAIL = "abhay@aiprabh.com"  # Sender email
 
-# SMTP configuration
-SMTP_SERVER = "smtp.gmail.com"
+# SMTP configuration for PrivateMail
+SMTP_SERVER = "mail.privateemail.com"
 SMTP_PORT = 587
-EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', '')  # Set this in environment
+EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', '')  # Your PrivateMail password
 
 # Import email libraries
 try:
