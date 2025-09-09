@@ -96,7 +96,7 @@ class SecurityManager:
                 return {'success': False, 'error': 'No face detected'}
                 
         except Exception as e:
-            return {'success': False, 'error': f'Face detection failed: {str(e)}'
+            return {'success': False, 'error': f'Face detection failed: {str(e)}'}
     
     def generate_face_signature(self, gray_image, face_coords) -> str:
         """Generate simple face signature for comparison"""
