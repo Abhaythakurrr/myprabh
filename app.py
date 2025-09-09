@@ -535,11 +535,69 @@ def dashboard():
                          is_admin=session.get('is_admin', False),
                          prabh_instances=prabh_instances)
 
-@app.route('/create_prabh')
+@app.route('/create_prabh', methods=['GET', 'POST'])
 def create_prabh():
     """Create new Prabh instance"""
     if 'user_id' not in session:
         return redirect(url_for('create_account'))
+    
+    if request.method == 'POST':
+        try:
+            # Get form data
+            prabh_name = request.form.get('name', '').strip()
+            relationship = request.form.get('relationship', '').strip()
+            personality = request.form.get('personality', '').strip()
+            story = request.form.get('story', '').strip()
+            tags = request.form.get('tags', '').strip()
+            
+            # Validate required fields
+            if not prabh_name or not story or not personality:
+                return render_template('create_prabh.html', 
+                                     user_email=session.get('user_email'),
+                                     error='Please fill in all required fields')
+            
+            if len(story) < 100:
+                return render_template('create_prabh.html', 
+                                     user_email=session.get('user_email'),
+                                     error='Please provide a more detailed story (at least 100 characters)')
+            
+            # Create character description
+            character_description = f"Relationship: {relationship}\nPersonality: {personality}"
+            if tags:
+                character_description += f"\nTraits: {tags}"
+            
+            # Insert Prabh instance
+            conn = sqlite3.connect('myprabh.db')
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                INSERT INTO prabh_instances 
+                (user_id, prabh_name, character_description, story_content, character_tags, personality_traits, payment_status)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                session['user_id'],
+                prabh_name,
+                character_description,
+                story,
+                json.dumps(tags.split(',') if tags else []),
+                json.dumps({'relationship': relationship, 'personality': personality}),
+                'PENDING'
+            ))
+            
+            prabh_id = cursor.lastrowid
+            conn.commit()
+            conn.close()
+            
+            # Log analytics
+            log_analytics('prabh_created_pending_payment', session['user_id'], {'prabh_id': prabh_id})
+            
+            # Redirect to payment
+            return redirect(url_for('payment_page', prabh_id=prabh_id))
+            
+        except Exception as e:
+            return render_template('create_prabh.html', 
+                                 user_email=session.get('user_email'),
+                                 error=f'Failed to create companion: {str(e)}')
     
     return render_template('create_prabh.html', user_email=session.get('user_email'))
 
