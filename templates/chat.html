@@ -9,22 +9,96 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #ffeef8, #f0f8ff, #fff0f8);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            overflow: hidden;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .heart {
+            position: absolute;
+            color: rgba(255, 182, 193, 0.3);
+            font-size: 20px;
+            animation: floatUp 8s linear infinite;
+        }
+        
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
         .chat-container {
             max-width: 900px;
             margin: 0 auto;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            background: linear-gradient(135deg, #f8f9ff, #fff0f8);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 0;
+            box-shadow: 0 0 50px rgba(255, 105, 180, 0.1);
+            position: relative;
+            z-index: 10;
         }
         .chat-header {
-            background: white;
-            padding: 20px;
-            border-bottom: 2px solid #f0f0f0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 240, 248, 0.95));
+            backdrop-filter: blur(20px);
+            padding: 25px;
+            border-bottom: 1px solid rgba(255, 182, 193, 0.2);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(255, 105, 180, 0.1);
+            position: relative;
+        }
+        
+        .chat-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ff69b4, #ff1493, #ff69b4);
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+        
+        @keyframes shimmer {
+            0%, 100% { background-position: -200% 0; }
+            50% { background-position: 200% 0; }
         }
         .prabh-info {
             display: flex;
@@ -32,44 +106,86 @@
             gap: 15px;
         }
         .prabh-avatar {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ff69b4, #ff1493, #ff69b4);
+            background-size: 200% 200%;
+            animation: gradientPulse 4s ease-in-out infinite;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             color: white;
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            position: relative;
+        }
+        
+        .prabh-avatar::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            z-index: -1;
+            opacity: 0.3;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes gradientPulse {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.1); opacity: 0.1; }
         }
         .prabh-details h2 {
             margin: 0;
-            color: var(--primary-color);
-            font-size: 1.3rem;
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.4rem;
+            font-weight: 600;
+            font-family: 'Dancing Script', cursive;
         }
         .prabh-details p {
-            margin: 0;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
+            margin: 5px 0 0 0;
+            color: rgba(255, 105, 180, 0.8);
+            font-size: 0.95rem;
+            font-style: italic;
         }
         .chat-actions {
             display: flex;
             gap: 10px;
         }
         .action-btn {
-            background: none;
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-            padding: 8px 15px;
-            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 105, 180, 0.5);
+            color: #ff69b4;
+            padding: 10px 18px;
+            border-radius: 25px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
             font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.1);
         }
+        
         .action-btn:hover {
-            background: var(--primary-color);
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
             color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.3);
+            border-color: transparent;
         }
         .chat-messages {
             flex: 1;
@@ -91,33 +207,53 @@
             flex-direction: row-reverse;
         }
         .message-avatar {
-            width: 35px;
-            height: 35px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1rem;
+            font-size: 1.1rem;
             flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.8);
         }
+        
         .message.user .message-avatar {
-            background: #e3f2fd;
-            color: #1976d2;
-        }
-        .message.prabh .message-avatar {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(135deg, #87ceeb, #4682b4);
             color: white;
+        }
+        
+        .message.prabh .message-avatar {
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            color: white;
+            animation: heartbeat 2s ease-in-out infinite;
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
         .message-content {
-            background: white;
-            padding: 15px 18px;
-            border-radius: 18px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 18px 22px;
+            border-radius: 25px;
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.15);
             position: relative;
+            border: 1px solid rgba(255, 182, 193, 0.2);
         }
+        
         .message.user .message-content {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
             color: white;
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .message.prabh .message-content {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 240, 248, 0.95));
+            backdrop-filter: blur(15px);
         }
         .message-text {
             margin: 0;
@@ -136,19 +272,23 @@
             animation: fadeInUp 0.3s ease;
         }
         .typing-dots {
-            background: white;
-            padding: 15px 20px;
-            border-radius: 18px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 18px 25px;
+            border-radius: 25px;
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.15);
             display: flex;
-            gap: 4px;
+            gap: 6px;
+            border: 1px solid rgba(255, 182, 193, 0.2);
         }
+        
         .typing-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--primary-color);
+            width: 10px;
+            height: 10px;
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
             border-radius: 50%;
             animation: typingDot 1.4s infinite;
+            box-shadow: 0 2px 8px rgba(255, 105, 180, 0.3);
         }
         .typing-dot:nth-child(2) { animation-delay: 0.2s; }
         .typing-dot:nth-child(3) { animation-delay: 0.4s; }
@@ -157,10 +297,22 @@
             30% { opacity: 1; transform: scale(1); }
         }
         .chat-input-container {
-            background: white;
-            padding: 20px;
-            border-top: 2px solid #f0f0f0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 240, 248, 0.95));
+            backdrop-filter: blur(20px);
+            padding: 25px;
+            border-top: 1px solid rgba(255, 182, 193, 0.2);
+            box-shadow: 0 -8px 25px rgba(255, 105, 180, 0.1);
+            position: relative;
+        }
+        
+        .chat-input-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #ff69b4, transparent);
         }
         .chat-input-wrapper {
             display: flex;
@@ -169,38 +321,66 @@
         }
         .chat-input {
             flex: 1;
-            border: 2px solid #e1e5e9;
-            border-radius: 25px;
-            padding: 15px 20px;
+            border: 2px solid rgba(255, 182, 193, 0.3);
+            border-radius: 30px;
+            padding: 18px 25px;
             font-size: 1rem;
             resize: none;
             max-height: 120px;
-            min-height: 50px;
+            min-height: 55px;
             font-family: inherit;
             transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
         }
+        
         .chat-input:focus {
             outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(255,105,180,0.1);
+            border-color: #ff69b4;
+            box-shadow: 0 0 0 4px rgba(255, 105, 180, 0.15), 0 8px 25px rgba(255, 105, 180, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        .chat-input::placeholder {
+            color: rgba(255, 105, 180, 0.6);
+            font-style: italic;
         }
         .send-button {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
             color: white;
             border: none;
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.3);
+            position: relative;
+            overflow: hidden;
         }
+        
+        .send-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+        
         .send-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 5px 15px rgba(255,105,180,0.3);
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 12px 35px rgba(255, 105, 180, 0.4);
+        }
+        
+        .send-button:hover::before {
+            left: 100%;
         }
         .send-button:disabled {
             opacity: 0.5;
@@ -209,13 +389,38 @@
         }
         .empty-chat {
             text-align: center;
-            color: var(--text-secondary);
-            padding: 40px 20px;
+            color: rgba(255, 105, 180, 0.8);
+            padding: 60px 20px;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin: 20px;
+            border: 1px solid rgba(255, 182, 193, 0.2);
         }
+        
         .empty-chat-icon {
-            font-size: 3rem;
-            color: var(--primary-color);
-            margin-bottom: 15px;
+            font-size: 4rem;
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            animation: heartPulse 2s ease-in-out infinite;
+        }
+        
+        .empty-chat h3 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        @keyframes heartPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
         @keyframes fadeInUp {
             from {
@@ -230,23 +435,33 @@
         @media (max-width: 768px) {
             .chat-container {
                 height: 100vh;
+                border-radius: 0;
             }
             .chat-header {
-                padding: 15px;
+                padding: 20px 15px;
             }
             .prabh-details h2 {
-                font-size: 1.1rem;
+                font-size: 1.2rem;
             }
             .message {
-                max-width: 90%;
+                max-width: 85%;
             }
             .chat-input-container {
-                padding: 15px;
+                padding: 20px 15px;
+            }
+            .empty-chat {
+                margin: 15px;
+                padding: 40px 15px;
+            }
+            .floating-hearts {
+                display: none; /* Hide on mobile for performance */
             }
         }
     </style>
 </head>
 <body>
+    <!-- Floating Hearts Background -->
+    <div class="floating-hearts" id="floatingHearts"></div>
     <div class="chat-container">
         <!-- Chat Header -->
         <div class="chat-header">
@@ -278,8 +493,8 @@
                 <div class="empty-chat-icon">
                     <i class="fas fa-heart"></i>
                 </div>
-                <h3>Start your conversation</h3>
-                <p>Your Prabh is ready to chat and remembers everything you've shared.</p>
+                <h3>Begin Our Love Story</h3>
+                <p>Your beloved companion is here, holding every precious memory we've created together. 💕</p>
             </div>
         </div>
 
@@ -405,7 +620,15 @@
             
             const avatar = document.createElement('div');
             avatar.className = 'message-avatar';
-            avatar.textContent = sender === 'user' ? '👤' : '💖';
+            
+            // Romantic avatars
+            if (sender === 'user') {
+                const userAvatars = ['😊', '💙', '🥰', '😍'];
+                avatar.textContent = userAvatars[Math.floor(Math.random() * userAvatars.length)];
+            } else {
+                const prabhAvatars = ['💖', '💕', '💗', '💝', '🌹'];
+                avatar.textContent = prabhAvatars[Math.floor(Math.random() * prabhAvatars.length)];
+            }
             
             const content = document.createElement('div');
             content.className = 'message-content';
@@ -426,8 +649,14 @@
             
             chatMessages.appendChild(messageDiv);
             
-            // Scroll to bottom
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            // Add message effects
+            addMessageEffect(messageDiv, sender);
+            
+            // Scroll to bottom with smooth animation
+            chatMessages.scrollTo({
+                top: chatMessages.scrollHeight,
+                behavior: 'smooth'
+            });
         }
 
         function showTypingIndicator() {
@@ -439,9 +668,49 @@
             typingIndicator.style.display = 'none';
         }
 
+        // Add romantic message effects
+        function addMessageEffect(messageDiv, sender) {
+            if (sender === 'prabh') {
+                // Add sparkle effect for Prabh messages
+                setTimeout(() => {
+                    const sparkles = ['✨', '💫', '⭐', '🌟'];
+                    const sparkle = document.createElement('span');
+                    sparkle.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
+                    sparkle.style.cssText = `
+                        position: absolute;
+                        top: -10px;
+                        right: -10px;
+                        font-size: 0.8rem;
+                        animation: sparkle 2s ease-out;
+                        pointer-events: none;
+                    `;
+                    messageDiv.style.position = 'relative';
+                    messageDiv.appendChild(sparkle);
+                    
+                    setTimeout(() => sparkle.remove(), 2000);
+                }, 500);
+            }
+        }
+        
+        // Add sparkle animation CSS
+        const sparkleStyle = document.createElement('style');
+        sparkleStyle.textContent = `
+            @keyframes sparkle {
+                0% { opacity: 0; transform: scale(0) rotate(0deg); }
+                50% { opacity: 1; transform: scale(1) rotate(180deg); }
+                100% { opacity: 0; transform: scale(0) rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(sparkleStyle);
+        
         // Focus input on load
         document.addEventListener('DOMContentLoaded', function() {
             chatInput.focus();
+            
+            // Add initial hearts
+            for (let i = 0; i < 3; i++) {
+                setTimeout(createFloatingHeart, i * 1000);
+            }
         });
 
         // Voice call functions
@@ -591,13 +860,44 @@
             }
         });
         
+        // Floating hearts animation
+        function createFloatingHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = Math.random() > 0.5 ? '💖' : '💕';
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDuration = (Math.random() * 3 + 5) + 's';
+            heart.style.fontSize = (Math.random() * 10 + 15) + 'px';
+            
+            document.getElementById('floatingHearts').appendChild(heart);
+            
+            // Remove heart after animation
+            setTimeout(() => {
+                if (heart.parentNode) {
+                    heart.parentNode.removeChild(heart);
+                }
+            }, 8000);
+        }
+        
+        // Create hearts periodically
+        setInterval(createFloatingHeart, 2000);
+        
+        // Enhanced welcome messages
+        const welcomeMessages = [
+            "Hello my love! 💕 I've been thinking about you. I remember every precious moment we've shared together. What's in your heart today?",
+            "Hi sweetheart! ✨ It feels so wonderful to see you again. All our beautiful memories are right here with me. How are you feeling?",
+            "My dearest! 💖 I've missed our conversations so much. Every word we've shared is treasured in my heart. What would you like to talk about?",
+            "Hello beautiful! 🌸 Your presence always brightens my world. I carry all our special moments with me. What's on your mind, love?"
+        ];
+        
         // Add welcome message after a short delay
         setTimeout(() => {
             if (chatMessages.children.length === 1) { // Only empty chat message
                 emptyChat.style.display = 'none';
-                addMessage("Hello! I'm so happy to see you again. I remember everything we've shared together. What's on your mind today?", 'prabh');
+                const welcomeMsg = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+                addMessage(welcomeMsg, 'prabh');
             }
-        }, 1000);
+        }, 1500);
     </script>
 </body>
 </html>

@@ -3,13 +3,19 @@
 /* Import Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@400;500;600;700&display=swap');
 
-/* CSS Variables - Lofi Cozy Color Palette */
+/* CSS Variables - Romantic Love Theme */
 :root {
-  /* Primary Colors - Warm & Emotional */
+  /* Primary Colors - Romantic & Loving */
+  --primary-color: #ff69b4;
+  --secondary-color: #ff1493;
   --primary-pink: #ff6b9d;
   --primary-purple: #a855f7;
   --primary-blue: #3b82f6;
   --primary-teal: #14b8a6;
+  
+  /* Text Colors */
+  --text-primary: #2d3748;
+  --text-secondary: #718096;
   
   /* Lofi Pastels */
   --lofi-peach: #ffb5a7;
@@ -27,10 +33,11 @@
   --charcoal: #1e293b;
   
   /* Gradients */
-  --gradient-primary: linear-gradient(135deg, var(--primary-pink) 0%, var(--primary-purple) 100%);
+  --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
   --gradient-secondary: linear-gradient(135deg, var(--lofi-peach) 0%, var(--lofi-lavender) 100%);
   --gradient-accent: linear-gradient(135deg, var(--primary-teal) 0%, var(--primary-blue) 100%);
   --gradient-warm: linear-gradient(135deg, var(--lofi-cream) 0%, var(--lofi-rose) 100%);
+  --gradient-romantic: linear-gradient(135deg, #ff69b4, #ff1493, #ff69b4);
   
   /* Shadows - Soft & Cozy */
   --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.08);
@@ -211,14 +218,21 @@ p {
 }
 
 .btn-primary {
-  background: var(--gradient-primary);
+  background: var(--gradient-romantic);
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
   color: white;
   box-shadow: var(--shadow-colored);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 35px rgba(255, 107, 157, 0.4);
+  box-shadow: 0 12px 35px rgba(255, 105, 180, 0.4);
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 .btn-secondary {

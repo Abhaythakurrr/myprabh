@@ -419,26 +419,32 @@ def submit_early_access():
                 return jsonify({'error': f'Missing required field: {field}'}), 400
         
         # Insert into database
-        conn = sqlite3.connect('myprabh.db')
-        cursor = conn.cursor()
-        
-        cursor.execute('''
-            INSERT INTO early_signups 
-            (email, name, age_range, relationship_status, interest_level, use_case, expectations, feedback)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (
-            data['email'],
-            data['name'],
-            data['age_range'],
-            data['relationship_status'],
-            data['interest_level'],
-            data.get('use_case', ''),
-            data.get('expectations', ''),
-            data.get('feedback', '')
-        ))
-        
-        conn.commit()
-        conn.close()
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                INSERT INTO early_signups 
+                (email, name, age_range, relationship_status, interest_level, use_case, expectations, feedback)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                data['email'],
+                data['name'],
+                data['age_range'],
+                data['relationship_status'],
+                data['interest_level'],
+                data.get('use_case', ''),
+                data.get('expectations', ''),
+                data.get('feedback', '')
+            ))
+            
+            conn.commit()
+            conn.close()
+            
+        except Exception as db_error:
+            if 'UNIQUE constraint failed' in str(db_error):
+                return jsonify({'error': 'Email already registered for early access'}), 400
+            return jsonify({'error': f'Database error: {str(db_error)}'}), 500
         
         # Send email notification
         send_early_access_email(data)
@@ -639,19 +645,24 @@ def dashboard():
     if session.get('is_admin') and request.args.get('admin') == 'true':
         return redirect(url_for('admin_dashboard'))
     
-    # Get user's Prabh instances
-    conn = sqlite3.connect('myprabh.db')
-    cursor = conn.cursor()
-    
-    cursor.execute('''
-        SELECT id, prabh_name, character_description, created_at, last_used, payment_status
-        FROM prabh_instances 
-        WHERE user_id = ?
-        ORDER BY last_used DESC
-    ''', (session['user_id'],))
-    
-    prabh_instances = cursor.fetchall()
-    conn.close()
+    # Get user's Prabh instances with proper connection handling
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            SELECT id, prabh_name, character_description, created_at, last_used, payment_status
+            FROM prabh_instances 
+            WHERE user_id = ?
+            ORDER BY last_used DESC
+        ''', (session['user_id'],))
+        
+        prabh_instances = cursor.fetchall()
+        conn.close()
+        
+    except Exception as e:
+        print(f"Dashboard database error: {e}")
+        prabh_instances = []
     
     return render_template('dashboard.html', 
                          user_name=session['user_name'],
@@ -690,38 +701,36 @@ def create_prabh():
                 character_description += f"\nTraits: {tags}"
             
             # Insert Prabh instance
-            conn = sqlite3.connect('myprabh.db')
-            cursor = conn.cursor()
-            
-            cursor.execute('''
-                INSERT INTO prabh_instances 
-                (user_id, prabh_name, character_description, story_content, character_tags, personality_traits, payment_status)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            ''', (
-                session['user_id'],
-                prabh_name,
-                character_description,
-                story,
-                json.dumps(tags.split(',') if tags else []),
-                json.dumps({'relationship': relationship, 'personality': personality}),
-                'PENDING'
-            ))
-            
-            prabh_id = cursor.lastrowid
-            conn.commit()
-            conn.close()
-            
-            # Log analytics
-            log_analytics('prabh_created_pending_payment', session['user_id'], {'prabh_id': prabh_id})
-            
-            # Mark as PAID since it's free
-            cursor.execute('''
-                UPDATE prabh_instances 
-                SET payment_status = 'PAID', model_status = 'READY'
-                WHERE id = ?
-            ''', (prabh_id,))
-            conn.commit()
-            conn.close()
+            try:
+                conn = get_db_connection()
+                cursor = conn.cursor()
+                
+                cursor.execute('''
+                    INSERT INTO prabh_instances 
+                    (user_id, prabh_name, character_description, story_content, character_tags, personality_traits, payment_status, model_status)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (
+                    session['user_id'],
+                    prabh_name,
+                    character_description,
+                    story,
+                    json.dumps(tags.split(',') if tags else []),
+                    json.dumps({'relationship': relationship, 'personality': personality}),
+                    'PAID',
+                    'READY'
+                ))
+                
+                prabh_id = cursor.lastrowid
+                conn.commit()
+                conn.close()
+                
+                # Log analytics
+                log_analytics('prabh_created_free', session['user_id'], {'prabh_id': prabh_id})
+                
+            except Exception as db_error:
+                return render_template('create_prabh.html', 
+                                     user_email=session.get('user_email'),
+                                     error=f'Database error: {str(db_error)}')
             
             # Log analytics
             log_analytics('prabh_created_free', session['user_id'], {'prabh_id': prabh_id})
@@ -755,26 +764,30 @@ def save_prabh():
             return jsonify({'error': 'Prabh name and story are required'}), 400
         
         # Insert Prabh instance with PENDING payment status
-        conn = sqlite3.connect('myprabh.db')
-        cursor = conn.cursor()
-        
-        cursor.execute('''
-            INSERT INTO prabh_instances 
-            (user_id, prabh_name, character_description, story_content, character_tags, personality_traits, payment_status)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        ''', (
-            session['user_id'],
-            data['prabh_name'],
-            data.get('character_description', ''),
-            data['story_content'],
-            json.dumps(data.get('character_tags', [])),
-            json.dumps(data.get('personality_traits', {})),
-            'PENDING'
-        ))
-        
-        prabh_id = cursor.lastrowid
-        conn.commit()
-        conn.close()
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                INSERT INTO prabh_instances 
+                (user_id, prabh_name, character_description, story_content, character_tags, personality_traits, payment_status)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                session['user_id'],
+                data['prabh_name'],
+                data.get('character_description', ''),
+                data['story_content'],
+                json.dumps(data.get('character_tags', [])),
+                json.dumps(data.get('personality_traits', {})),
+                'PENDING'
+            ))
+            
+            prabh_id = cursor.lastrowid
+            conn.commit()
+            conn.close()
+            
+        except Exception as db_error:
+            return jsonify({'error': f'Database error: {str(db_error)}'}), 500
         
         # Log analytics
         log_analytics('prabh_created_pending_payment', session['user_id'], {'prabh_id': prabh_id})
@@ -798,17 +811,22 @@ def payment_page(prabh_id):
         return redirect(url_for('create_account'))
     
     # Get Prabh instance
-    conn = sqlite3.connect('myprabh.db')
-    cursor = conn.cursor()
-    
-    cursor.execute('''
-        SELECT id, prabh_name, character_description
-        FROM prabh_instances 
-        WHERE id = ? AND user_id = ?
-    ''', (prabh_id, session['user_id']))
-    
-    prabh_data = cursor.fetchone()
-    conn.close()
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            SELECT id, prabh_name, character_description
+            FROM prabh_instances 
+            WHERE id = ? AND user_id = ?
+        ''', (prabh_id, session['user_id']))
+        
+        prabh_data = cursor.fetchone()
+        conn.close()
+        
+    except Exception as e:
+        print(f"Payment page database error: {e}")
+        return redirect(url_for('dashboard'))
     
     if not prabh_data:
         return redirect(url_for('dashboard'))
@@ -830,35 +848,40 @@ def chat_interface(prabh_id):
         return redirect(url_for('create_account'))
     
     # Get Prabh instance
-    conn = sqlite3.connect('myprabh.db')
-    cursor = conn.cursor()
-    
-    cursor.execute('''
-        SELECT id, prabh_name, character_description, story_content, character_tags, personality_traits, payment_status
-        FROM prabh_instances 
-        WHERE id = ? AND user_id = ?
-    ''', (prabh_id, session['user_id']))
-    
-    prabh_data = cursor.fetchone()
-    
-    if not prabh_data:
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            SELECT id, prabh_name, character_description, story_content, character_tags, personality_traits, payment_status
+            FROM prabh_instances 
+            WHERE id = ? AND user_id = ?
+        ''', (prabh_id, session['user_id']))
+        
+        prabh_data = cursor.fetchone()
+        
+        if not prabh_data:
+            conn.close()
+            return redirect(url_for('dashboard'))
+        
+        # Check payment status
+        if prabh_data[6] != 'PAID':
+            conn.close()
+            return redirect(url_for('payment_page', prabh_id=prabh_id))
+        
+        # Update last used
+        cursor.execute('''
+            UPDATE prabh_instances 
+            SET last_used = CURRENT_TIMESTAMP 
+            WHERE id = ?
+        ''', (prabh_id,))
+        
+        conn.commit()
         conn.close()
+        
+    except Exception as e:
+        print(f"Chat interface database error: {e}")
         return redirect(url_for('dashboard'))
-    
-    # Check payment status
-    if prabh_data[6] != 'PAID':
-        conn.close()
-        return redirect(url_for('payment_page', prabh_id=prabh_id))
-    
-    # Update last used
-    cursor.execute('''
-        UPDATE prabh_instances 
-        SET last_used = CURRENT_TIMESTAMP 
-        WHERE id = ?
-    ''', (prabh_id,))
-    
-    conn.commit()
-    conn.close()
     
     return render_template('chat.html', 
                          prabh_id=prabh_id,
@@ -881,17 +904,21 @@ def chat_message():
             return jsonify({'error': 'Empty message'}), 400
         
         # Get Prabh data
-        conn = sqlite3.connect('myprabh.db')
-        cursor = conn.cursor()
-        
-        cursor.execute('''
-            SELECT prabh_name, character_description, story_content, character_tags, personality_traits
-            FROM prabh_instances 
-            WHERE id = ? AND user_id = ?
-        ''', (prabh_id, session['user_id']))
-        
-        prabh_data = cursor.fetchone()
-        conn.close()
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                SELECT prabh_name, character_description, story_content, character_tags, personality_traits
+                FROM prabh_instances 
+                WHERE id = ? AND user_id = ?
+            ''', (prabh_id, session['user_id']))
+            
+            prabh_data = cursor.fetchone()
+            conn.close()
+            
+        except Exception as e:
+            return jsonify({'error': f'Database error: {str(e)}'}), 500
         
         if not prabh_data:
             return jsonify({'error': 'Prabh not found'}), 404
