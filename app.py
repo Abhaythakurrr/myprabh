@@ -1299,12 +1299,50 @@ def refund():
     return render_template('refund.html')
 
 def generate_prabh_response(message, prabh_data):
-    """Generate response using the lightweight AI engine"""
+    """Generate response using brain, heart, and AI engine"""
     try:
-        from simple_ai_engine import ai_engine
-        return ai_engine.process_message(message, prabh_data)
+        # Try to use brain and heart systems first
+        try:
+            from brain.cognitive_processor import CognitiveProcessor
+            from heart.emotional_core import EmotionalCore
+            from simple_ai_engine import ai_engine
+            
+            # Initialize brain and heart
+            brain = CognitiveProcessor()
+            heart = EmotionalCore()
+            
+            # Extract character data
+            prabh_name, description, story, tags_json, traits_json = prabh_data
+            
+            # Create context
+            context = {
+                'character_name': prabh_name,
+                'character_description': description,
+                'character_story': story,
+                'character_tags': json.loads(tags_json) if tags_json else [],
+                'personality_traits': json.loads(traits_json) if traits_json else {}
+            }
+            
+            # Process through brain (cognitive analysis)
+            cognitive_analysis = brain.process_input(message, context)
+            
+            # Process through heart (emotional processing)
+            emotional_response = heart.process_emotion(message, context, cognitive_analysis)
+            
+            # Generate final response using AI engine with brain/heart insights
+            response = ai_engine.process_message_with_systems(
+                message, prabh_data, cognitive_analysis, emotional_response
+            )
+            
+            return response
+            
+        except ImportError:
+            # Brain/heart systems not available, use AI engine only
+            from simple_ai_engine import ai_engine
+            return ai_engine.process_message(message, prabh_data)
+            
     except Exception as e:
-        print(f"AI engine error: {e}")
+        print(f"AI system error: {e}")
         # Fallback to simple response
         return generate_simple_response(message, prabh_data)
 
