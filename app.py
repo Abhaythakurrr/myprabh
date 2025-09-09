@@ -1434,24 +1434,24 @@ def get_conversation_context(prabh_id):
         
         # Get conversation context
         try:
-            from intelligent_ai_engine import intelligent_ai
+            from model_injection_engine import model_injector
             
             # Initialize if needed
-            if not intelligent_ai.character_profile:
-                user_name = intelligent_ai._extract_user_name(prabh_data[1])
-                intelligent_ai.process_story_realtime(prabh_data[1], prabh_data[0], user_name)
+            if not model_injector.character_context:
+                user_name = model_injector._extract_user_name(prabh_data[1])
+                model_injector.normalize_story_text(prabh_data[1], prabh_data[0], user_name)
             
             context_data = {
-                'character_profile': intelligent_ai.character_profile,
-                'conversation_history': intelligent_ai.conversation_history[-10:],
-                'memory_bank': intelligent_ai.memory_bank[:5],  # Top 5 memories
-                'character_state': intelligent_ai.emotional_state
+                'character_profile': model_injector.character_context,
+                'conversation_history': model_injector.conversation_history[-10:],
+                'memory_bank': model_injector.normalized_memories[:5],  # Top 5 memories
+                'character_state': {'mood': 'loving', 'model_loaded': model_injector.model is not None}
             }
             
             return jsonify(context_data)
             
         except ImportError:
-            return jsonify({'error': 'Intelligent AI system not available'}), 503
+            return jsonify({'error': 'Model injection system not available'}), 503
         
     except Exception as e:
         return jsonify({'error': f'Failed to get context: {str(e)}'}), 500
@@ -1513,25 +1513,30 @@ def refund():
     return render_template('refund.html')
 
 def generate_prabh_response(message, prabh_data):
-    """Generate response using character injection engine"""
+    """Generate response using model injection engine with pre-trained models"""
     try:
-        # Use character injection engine for proper personality injection
-        from character_injection_engine import character_injector
+        # Use model injection engine for proper AI model integration
+        from model_injection_engine import model_injector
         
         # Extract character data
         prabh_name, description, story, tags_json, traits_json = prabh_data
         
-        # Initialize character if not already done
-        if not character_injector.character_data or character_injector.character_data.get("name") != prabh_name:
-            user_name = character_injector._extract_user_name(story)
-            character_injector.inject_character(story, prabh_name, user_name)
+        # Initialize model if not already done
+        if not model_injector.model:
+            if not model_injector.initialize_model():
+                return generate_enhanced_simple_response(message, prabh_data)
         
-        # Generate character-based response
-        response = character_injector.generate_character_response(message)
+        # Normalize and inject character if not already done
+        if not model_injector.character_context or model_injector.character_context.get("name") != prabh_name:
+            user_name = model_injector._extract_user_name(story)
+            model_injector.normalize_story_text(story, prabh_name, user_name)
+        
+        # Generate response using injected model
+        response = model_injector.generate_response(message)
         return response
         
     except Exception as e:
-        print(f"Character injection error: {e}")
+        print(f"Model injection error: {e}")
         # Fallback to enhanced simple response
         return generate_enhanced_simple_response(message, prabh_data)
 
