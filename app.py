@@ -34,15 +34,17 @@ SMTP_SERVER = "mail.privateemail.com"
 SMTP_PORT = 587
 EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', '')  # Your PrivateMail password
 
-# Import email libraries
+# Import email libraries with fallback
 try:
     import smtplib
     from email.mime.text import MimeText
     from email.mime.multipart import MimeMultipart
-    EMAIL_ENABLED = bool(EMAIL_PASSWORD)
+    EMAIL_LIBS_AVAILABLE = True
 except ImportError:
-    EMAIL_ENABLED = False
-    print("⚠️ Email libraries not available")
+    EMAIL_LIBS_AVAILABLE = False
+    print("⚠️ Email libraries not available - emails disabled")
+
+EMAIL_ENABLED = EMAIL_LIBS_AVAILABLE and bool(EMAIL_PASSWORD)
 
 # Database initialization
 def init_db():
@@ -167,6 +169,109 @@ def index():
     """MVP Landing page with visitor tracking"""
     track_visitor(request)
     return render_template('mvp_landing.html')
+
+@app.route('/sitemap.xml')
+def sitemap():
+    """Generate dynamic sitemap for SEO"""
+    from flask import make_response
+    
+    sitemap_xml = '''<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://aiprabh.com/</loc>
+        <lastmod>2024-12-15</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>https://aiprabh.com/about</loc>
+        <lastmod>2024-12-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://aiprabh.com/blog</loc>
+        <lastmod>2024-12-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://aiprabh.com/careers</loc>
+        <lastmod>2024-12-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://aiprabh.com/create_account</loc>
+        <lastmod>2024-12-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://aiprabh.com/login</loc>
+        <lastmod>2024-12-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://aiprabh.com/privacy</loc>
+        <lastmod>2024-12-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>https://aiprabh.com/terms</loc>
+        <lastmod>2024-12-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+</urlset>'''
+    
+    response = make_response(sitemap_xml)
+    response.headers['Content-Type'] = 'application/xml'
+    return response
+
+@app.route('/robots.txt')
+def robots():
+    """Robots.txt for search engine crawling"""
+    from flask import make_response
+    
+    robots_txt = '''User-agent: *
+Allow: /
+Allow: /about
+Allow: /blog
+Allow: /careers
+Allow: /create_account
+Allow: /login
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /chat/*
+Disallow: /api/*
+
+Sitemap: https://aiprabh.com/sitemap.xml'''
+    
+    response = make_response(robots_txt)
+    response.headers['Content-Type'] = 'text/plain'
+    return response
+
+@app.route('/google<verification_code>.html')
+def google_verification(verification_code):
+    """Google Search Console verification"""
+    return f"google-site-verification: google{verification_code}.html"
+
+@app.route('/.well-known/security.txt')
+def security_txt():
+    """Security.txt for responsible disclosure"""
+    from flask import make_response
+    
+    security_txt = '''Contact: mailto:abhay@aiprabh.com
+Expires: 2025-12-31T23:59:59.000Z
+Preferred-Languages: en
+Canonical: https://aiprabh.com/.well-known/security.txt'''
+    
+    response = make_response(security_txt)
+    response.headers['Content-Type'] = 'text/plain'
+    return response
 
 @app.route('/index')
 def landing_page():
@@ -1545,6 +1650,8 @@ if __name__ == '__main__':
     
     if EMAIL_ENABLED:
         print(f"📧 Email notifications enabled: {FROM_EMAIL}")
+    elif not EMAIL_LIBS_AVAILABLE:
+        print("⚠️ Email libraries not available - install email dependencies")
     else:
         print("⚠️ Email notifications disabled (set EMAIL_PASSWORD environment variable)")
     
