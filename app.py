@@ -2,6 +2,8 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 import sqlite3
 import uuid
+import psycopg2
+from psycopg2.extras import RealDictCursor
 # Email functionality disabled for MVP deployment
 # import smtplib
 # from email.mime.text import MimeText
@@ -16,6 +18,15 @@ from security import security_manager
 
 app = Flask(__name__)
 app.secret_key = 'myprabh_mvp_2024_secret_key'
+
+# Database Configuration
+DATABASE_URL = os.environ.get('DATABASE_URL')  # Render provides this
+USE_POSTGRES = DATABASE_URL is not None
+
+if USE_POSTGRES:
+    print("🐘 Using PostgreSQL database (Render)")
+else:
+    print("🗃️ Using SQLite database (Local development)")
 
 # Razorpay Configuration
 RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', '')  # Set this in environment
@@ -52,19 +63,34 @@ def get_db_connection():
     """Get database connection with proper timeout and retry logic"""
     import time
     max_retries = 3
-    for attempt in range(max_retries):
-        try:
-            conn = sqlite3.connect('myprabh.db', timeout=30.0)
-            conn.execute('PRAGMA journal_mode=WAL;')  # Enable WAL mode for better concurrency
-            conn.execute('PRAGMA synchronous=NORMAL;')  # Faster writes
-            conn.execute('PRAGMA cache_size=10000;')  # Larger cache
-            conn.execute('PRAGMA temp_store=MEMORY;')  # Use memory for temp storage
-            return conn
-        except sqlite3.OperationalError as e:
-            if "database is locked" in str(e) and attempt < max_retries - 1:
-                time.sleep(0.1 * (attempt + 1))  # Exponential backoff
-                continue
-            raise e
+    
+    if USE_POSTGRES:
+        # PostgreSQL connection for Render
+        for attempt in range(max_retries):
+            try:
+                conn = psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
+                conn.autocommit = False
+                return conn
+            except psycopg2.OperationalError as e:
+                if attempt < max_retries - 1:
+                    time.sleep(0.1 * (attempt + 1))
+                    continue
+                raise e
+    else:
+        # SQLite connection for local development
+        for attempt in range(max_retries):
+            try:
+                conn = sqlite3.connect('myprabh.db', timeout=30.0)
+                conn.execute('PRAGMA journal_mode=WAL;')
+                conn.execute('PRAGMA synchronous=NORMAL;')
+                conn.execute('PRAGMA cache_size=10000;')
+                conn.execute('PRAGMA temp_store=MEMORY;')
+                return conn
+            except sqlite3.OperationalError as e:
+                if "database is locked" in str(e) and attempt < max_retries - 1:
+                    time.sleep(0.1 * (attempt + 1))
+                    continue
+                raise e
     return None
 
 class DatabaseManager:
@@ -90,20 +116,36 @@ def init_db():
     conn = get_db_connection()
     cursor = conn.cursor()
     
-    # Users table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id TEXT UNIQUE NOT NULL,
-            email TEXT UNIQUE NOT NULL,
-            name TEXT NOT NULL,
-            password_hash TEXT,
-            face_signature TEXT,
-            is_admin BOOLEAN DEFAULT FALSE,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            last_active TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
+    if USE_POSTGRES:
+        # PostgreSQL schema
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id SERIAL PRIMARY KEY,
+                user_id TEXT UNIQUE NOT NULL,
+                email TEXT UNIQUE NOT NULL,
+                name TEXT NOT NULL,
+                password_hash TEXT,
+                face_signature TEXT,
+                is_admin BOOLEAN DEFAULT FALSE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                last_active TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+    else:
+        # SQLite schema
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id TEXT UNIQUE NOT NULL,
+                email TEXT UNIQUE NOT NULL,
+                name TEXT NOT NULL,
+                password_hash TEXT,
+                face_signature TEXT,
+                is_admin BOOLEAN DEFAULT FALSE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                last_active TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
     
     # Early access signups
     cursor.execute('''

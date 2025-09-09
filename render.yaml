@@ -2,10 +2,19 @@ services:
   - type: web
     name: myprabh
     env: python
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "python app.py"
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
     envVars:
       - key: FLASK_ENV
         value: production
-      - key: PORT
-        value: 5000
+      - key: EMAIL_PASSWORD
+        sync: false
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+
+databases:
+  - name: myprabh-db
+    databaseName: myprabh
+    user: myprabh_user
