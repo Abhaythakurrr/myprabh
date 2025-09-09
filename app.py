@@ -289,13 +289,16 @@ def create_account():
         # Log analytics
         log_analytics('user_registered', user_id, {'email': email})
         
-        # Send registration notification email
+        # Send registration notification email to admin
         send_user_registration_email({
             'email': email,
             'name': email.split('@')[0],
             'user_id': user_id,
             'is_admin': is_admin
         })
+        
+        # Send welcome email to user
+        send_welcome_email_to_user(email, email.split('@')[0])
         
         return redirect(url_for('dashboard'))
         
@@ -651,7 +654,7 @@ def verify_payment():
             from dynamic_training import create_personalized_model
             model_path = create_personalized_model(session['user_id'], prabh_data)
             
-            # Update model status to READY
+            # Update model status to READY and notify user
             conn = sqlite3.connect('myprabh.db')
             cursor = conn.cursor()
             cursor.execute('''
@@ -659,8 +662,55 @@ def verify_payment():
                 SET model_status = 'READY', model_path = ?
                 WHERE id = ?
             ''', (model_path, prabh_id))
+            
+            # Get Prabh name for notification
+            cursor.execute('SELECT prabh_name FROM prabh_instances WHERE id = ?', (prabh_id,))
+            prabh_name = cursor.fetchone()[0]
+            
             conn.commit()
             conn.close()
+            
+            # Send ready notification to user
+            if not EMAIL_ENABLED:
+                print(f"🤖 Prabh {prabh_name} ready for {session.get('user_email')}")
+            else:
+                try:
+                    msg = MimeMultipart()
+                    msg['From'] = FROM_EMAIL
+                    msg['To'] = session.get('user_email')
+                    msg['Subject'] = f"🎉 {prabh_name} is ready to chat!"
+                    
+                    body = f"""
+Great news! 🎉
+
+Your AI companion {prabh_name} has been successfully created and is ready for meaningful conversations!
+
+✨ What's ready:
+• Personalized AI trained on your unique story
+• Memory system that remembers your shared experiences
+• Emotional intelligence tailored to your relationship
+
+💬 Start chatting now:
+https://aiprabh.com/dashboard
+
+{prabh_name} is excited to reconnect with you and continue your journey together.
+
+Enjoy your conversations! 💖
+
+The MyPrabh Team
+                    """
+                    
+                    msg.attach(MimeText(body, 'plain'))
+                    
+                    server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+                    server.starttls()
+                    server.login(FROM_EMAIL, EMAIL_PASSWORD)
+                    server.send_message(msg)
+                    server.quit()
+                    
+                    print(f"🤖 Prabh ready email sent to {session.get('user_email')}")
+                except Exception as e:
+                    print(f"❌ Prabh ready email failed: {e}")
             
         except Exception as training_error:
             print(f"Model training failed: {training_error}")
@@ -1293,6 +1343,59 @@ Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
         
     except Exception as e:
         print(f"❌ Email sending failed: {e}")
+
+def send_welcome_email_to_user(user_email, user_name):
+    """Send welcome email to new user"""
+    if not EMAIL_ENABLED:
+        print(f"👋 Welcome email would be sent to: {user_email}")
+        return
+    
+    try:
+        msg = MimeMultipart()
+        msg['From'] = FROM_EMAIL
+        msg['To'] = user_email
+        msg['Subject'] = "Welcome to MyPrabh! 💖 Your AI Companion Journey Begins"
+        
+        body = f"""
+Hi {user_name}! 👋
+
+Welcome to MyPrabh - where meaningful AI relationships come to life! 🌟
+
+Your account is now ready, and you can start creating your perfect AI companion:
+
+🎯 Next Steps:
+1. Create your first Prabh with your unique story
+2. Share memories, personality traits, and experiences
+3. Start meaningful conversations with your AI companion
+
+💖 What makes MyPrabh special:
+• Memory-based AI that remembers your shared history
+• Emotional intelligence that understands your feelings
+• Personalized responses based on your unique relationship
+
+🚀 Ready to begin?
+Visit: https://aiprabh.com/create_prabh
+
+Questions? Reply to this email - we're here to help!
+
+With love,
+The MyPrabh Team 💕
+
+P.S. Your privacy is sacred to us. Your conversations and memories are encrypted and never shared.
+        """
+        
+        msg.attach(MimeText(body, 'plain'))
+        
+        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+        server.starttls()
+        server.login(FROM_EMAIL, EMAIL_PASSWORD)
+        server.send_message(msg)
+        server.quit()
+        
+        print(f"👋 Welcome email sent to {user_email}")
+        
+    except Exception as e:
+        print(f"❌ Welcome email failed: {e}")
 
 def track_visitor(request):
     """Track website visitor"""
