@@ -916,20 +916,20 @@ def chat_message():
         if not prabh_data:
             return jsonify({'error': 'Prabh not found'}), 404
         
-        # Generate response using optimized AI
+        # Generate response using lightweight AI
         try:
-            from optimized_ai_engine import optimized_ai
+            from lightweight_ai_engine import lightweight_ai
             
             # Initialize if needed
-            if not optimized_ai.models_loaded:
-                optimized_ai.initialize_models()
+            if not lightweight_ai.models_loaded:
+                lightweight_ai.initialize_models()
             
             # Process story if needed
-            if not optimized_ai.character_context:
-                user_name = optimized_ai._extract_user_name(prabh_data[2])
-                optimized_ai.process_story(prabh_data[2], prabh_data[0], user_name)
+            if not lightweight_ai.character_context:
+                user_name = lightweight_ai._extract_user_name(prabh_data[2])
+                lightweight_ai.process_story(prabh_data[2], prabh_data[0], user_name)
             
-            response = optimized_ai.generate_response(message)
+            response = lightweight_ai.generate_response(message)
             
         except ImportError:
             response = generate_prabh_response(message, prabh_data)
@@ -1584,29 +1584,29 @@ def refund():
     return render_template('refund.html')
 
 def generate_prabh_response(message, prabh_data):
-    """Generate response using optimized AI with DistilBERT"""
+    """Generate response using lightweight AI with NLTK"""
     try:
-        # Use optimized AI engine with DistilBERT
-        from optimized_ai_engine import optimized_ai
+        # Use lightweight AI engine
+        from lightweight_ai_engine import lightweight_ai
         
         # Extract character data
         prabh_name, description, story, tags_json, traits_json = prabh_data
         
         # Initialize models if not already done
-        if not optimized_ai.models_loaded:
-            optimized_ai.initialize_models()
+        if not lightweight_ai.models_loaded:
+            lightweight_ai.initialize_models()
         
         # Process story if not already done
-        if not optimized_ai.character_context or optimized_ai.character_context.get("name") != prabh_name:
-            user_name = optimized_ai._extract_user_name(story)
-            optimized_ai.process_story(story, prabh_name, user_name)
+        if not lightweight_ai.character_context or lightweight_ai.character_context.get("name") != prabh_name:
+            user_name = lightweight_ai._extract_user_name(story)
+            lightweight_ai.process_story(story, prabh_name, user_name)
         
-        # Generate response using optimized AI
-        response = optimized_ai.generate_response(message)
+        # Generate response using lightweight AI
+        response = lightweight_ai.generate_response(message)
         return response
         
     except Exception as e:
-        print(f"Optimized AI error: {e}")
+        print(f"Lightweight AI error: {e}")
         # Fallback to enhanced simple response
         return generate_enhanced_simple_response(message, prabh_data)
 
