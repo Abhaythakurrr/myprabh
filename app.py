@@ -68,6 +68,7 @@ EMAIL_ENABLED = EMAIL_LIBS_AVAILABLE and bool(EMAIL_PASSWORD)
 # Database connection helper
 def get_db_connection():
     """Get database connection with proper timeout and retry logic"""
+    global USE_POSTGRES
     import time
     max_retries = 3
     
@@ -85,7 +86,6 @@ def get_db_connection():
                     continue
                 # Fallback to SQLite
                 print("Falling back to SQLite database")
-                global USE_POSTGRES
                 USE_POSTGRES = False
                 break
     else:
