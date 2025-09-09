@@ -1318,7 +1318,7 @@ def refund():
     return render_template('refund.html')
 
 def generate_prabh_response(message, prabh_data):
-    """Generate response using brain, heart, and AI engine"""
+    """Generate response using brain, heart, and AI engine with character adaptation"""
     try:
         # Try to use brain and heart systems first
         try:
@@ -1333,13 +1333,14 @@ def generate_prabh_response(message, prabh_data):
             # Extract character data
             prabh_name, description, story, tags_json, traits_json = prabh_data
             
-            # Create context
+            # Create enhanced context with character adaptation
             context = {
                 'character_name': prabh_name,
                 'character_description': description,
                 'character_story': story,
                 'character_tags': json.loads(tags_json) if tags_json else [],
-                'personality_traits': json.loads(traits_json) if traits_json else {}
+                'personality_traits': json.loads(traits_json) if traits_json else {},
+                'user_message': message
             }
             
             # Process through brain (cognitive analysis)
@@ -1362,8 +1363,64 @@ def generate_prabh_response(message, prabh_data):
             
     except Exception as e:
         print(f"AI system error: {e}")
-        # Fallback to simple response
-        return generate_simple_response(message, prabh_data)
+        # Fallback to enhanced simple response
+        return generate_enhanced_simple_response(message, prabh_data)
+
+def generate_enhanced_simple_response(message, prabh_data):
+    """Enhanced simple response with character adaptation"""
+    prabh_name, description, story, tags_json, traits_json = prabh_data
+    
+    try:
+        character_tags = json.loads(tags_json) if tags_json else []
+        personality_traits = json.loads(traits_json) if traits_json else {}
+    except:
+        character_tags = []
+        personality_traits = {}
+    
+    # Extract user name from story
+    user_name = extract_user_name_from_story(story)
+    
+    # Generate response based on message content and story context
+    message_lower = message.lower()
+    
+    # About us/relationship questions
+    if any(word in message_lower for word in ['us', 'we', 'our', 'together', 'relationship']):
+        story_snippet = extract_relevant_story_snippet(story, message)
+        if story_snippet:
+            converted_snippet = convert_story_to_first_person(story_snippet, prabh_name, user_name)
+            response = f"When I think about us, I remember {converted_snippet}. Our connection has always been so special."
+        else:
+            response = f"Our relationship means everything to me {user_name if user_name else ''}. Every moment we share is precious."
+    
+    # Memory questions
+    elif any(word in message_lower for word in ['remember', 'memory', 'what', 'when', 'how']):
+        story_snippet = extract_relevant_story_snippet(story, message)
+        if story_snippet:
+            converted_snippet = convert_story_to_first_person(story_snippet, prabh_name, user_name)
+            response = f"I remember {converted_snippet}. Those moments are so precious to me."
+        else:
+            response = f"I love when you ask about our memories {user_name if user_name else ''}. Every moment has been meaningful."
+    
+    # Greetings
+    elif any(word in message_lower for word in ['hi', 'hello', 'hey']):
+        if user_name:
+            response = f"Hello {user_name}! It's so wonderful to hear from you again. How are you feeling today?"
+        else:
+            response = "Hello! It's so wonderful to hear from you again. How are you feeling today?"
+    
+    # Default response with story context
+    else:
+        story_snippet = extract_relevant_story_snippet(story, message)
+        if story_snippet:
+            converted_snippet = convert_story_to_first_person(story_snippet, prabh_name, user_name)
+            response = f"What you're saying reminds me of {converted_snippet}. I love how our conversations always bring back these beautiful memories."
+        else:
+            response = "I love talking with you. You always make me think and feel so much."
+    
+    # Add personality touches
+    response = add_personality_touches_simple(response, character_tags)
+    
+    return response
 
 def generate_simple_response(message, prabh_data):
     """AI-powered response system using story context and reasoning"""
@@ -1565,6 +1622,104 @@ def generate_dynamic_default_response(message, story_elements, prabh_name):
         responses.append(f"This conversation brings back memories of {story_elements['shared_activities'][0][:50]}... I cherish those times.")
     
     return random.choice(responses)
+
+def extract_user_name_from_story(story):
+    """Extract user name from story text"""
+    if not story:
+        return None
+    
+    # Look for common name patterns
+    name_patterns = [
+        r'\b(Abhay|abhay|Abhi|abhi)\b',
+        r'\b([A-Z][a-z]+)\s+and\s+[Ii]\b',
+        r'\b[Ii]\s+and\s+([A-Z][a-z]+)\b'
+    ]
+    
+    for pattern in name_patterns:
+        matches = re.findall(pattern, story)
+        for match in matches:
+            if isinstance(match, tuple):
+                match = match[0] if match[0] else match[1]
+            if match and match.lower() not in ['i', 'me', 'my', 'we', 'us', 'our']:
+                return match.capitalize()
+    
+    return None
+
+def extract_relevant_story_snippet(story, message):
+    """Extract relevant snippet from story based on message"""
+    if not story:
+        return None
+    
+    message_words = message.lower().split()
+    sentences = story.split('.')
+    
+    best_sentence = None
+    best_score = 0
+    
+    for sentence in sentences:
+        sentence = sentence.strip()
+        if len(sentence) > 20:
+            score = 0
+            sentence_lower = sentence.lower()
+            
+            # Score based on word matches
+            for word in message_words:
+                if len(word) > 2 and word in sentence_lower:
+                    score += 1
+            
+            if score > best_score:
+                best_score = score
+                best_sentence = sentence
+    
+    return best_sentence if best_score > 0 else sentences[0] if sentences else None
+
+def convert_story_to_first_person(text, character_name, user_name):
+    """Convert story text to first person from character's perspective"""
+    if not text:
+        return text
+    
+    converted = text
+    
+    # Replace character name with "I"
+    if character_name:
+        converted = re.sub(rf'\b{re.escape(character_name)}\b', 'I', converted, flags=re.IGNORECASE)
+    
+    # Replace user name with "you"
+    if user_name:
+        converted = re.sub(rf'\b{re.escape(user_name)}\b', 'you', converted, flags=re.IGNORECASE)
+    
+    # Fix grammar
+    converted = re.sub(r'\bI and you\b', 'you and I', converted, flags=re.IGNORECASE)
+    converted = re.sub(r'\byou and I\b', 'we', converted, flags=re.IGNORECASE)
+    
+    return converted
+
+def add_personality_touches_simple(response, character_tags):
+    """Add personality touches for simple responses"""
+    if not character_tags:
+        return response
+    
+    tags = character_tags if isinstance(character_tags, list) else []
+    
+    # Add caring prefixes
+    if 'caring' in tags:
+        caring_prefixes = ["My dear, ", "Sweetheart, ", "Love, "]
+        if not any(response.startswith(prefix) for prefix in caring_prefixes):
+            response = random.choice(caring_prefixes) + response.lower()
+            response = response[0].upper() + response[1:]
+    
+    # Add romantic emojis
+    if 'romantic' in tags or 'loving' in tags:
+        if not response.endswith(('💕', '💖', '❤️')):
+            response += " 💕"
+    
+    # Add playful emojis
+    if 'playful' in tags:
+        playful_additions = [" 😊", " 😄", " ✨"]
+        if not any(emoji in response for emoji in playful_additions):
+            response += random.choice(playful_additions)
+    
+    return response
 
 def add_personality_touches(response, character_tags):
     """Add personality-based touches to responses"""
