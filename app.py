@@ -2,8 +2,15 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 import sqlite3
 import uuid
-import psycopg2
-from psycopg2.extras import RealDictCursor
+
+# Try to import PostgreSQL, fallback to SQLite if not available
+try:
+    import psycopg2
+    from psycopg2.extras import RealDictCursor
+    POSTGRES_AVAILABLE = True
+except ImportError:
+    POSTGRES_AVAILABLE = False
+    print("⚠️ PostgreSQL not available, using SQLite")
 # Email functionality disabled for MVP deployment
 # import smtplib
 # from email.mime.text import MimeText
@@ -21,12 +28,12 @@ app.secret_key = 'myprabh_mvp_2024_secret_key'
 
 # Database Configuration
 DATABASE_URL = os.environ.get('DATABASE_URL')  # Render provides this
-USE_POSTGRES = DATABASE_URL is not None
+USE_POSTGRES = DATABASE_URL is not None and POSTGRES_AVAILABLE
 
 if USE_POSTGRES:
     print("🐘 Using PostgreSQL database (Render)")
 else:
-    print("🗃️ Using SQLite database (Local development)")
+    print("🗃️ Using SQLite database (Local/Fallback)")
 
 # Razorpay Configuration
 RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', '')  # Set this in environment
@@ -71,11 +78,16 @@ def get_db_connection():
                 conn = psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
                 conn.autocommit = False
                 return conn
-            except psycopg2.OperationalError as e:
+            except Exception as e:
+                print(f"PostgreSQL connection failed: {e}")
                 if attempt < max_retries - 1:
                     time.sleep(0.1 * (attempt + 1))
                     continue
-                raise e
+                # Fallback to SQLite
+                print("Falling back to SQLite database")
+                global USE_POSTGRES
+                USE_POSTGRES = False
+                break
     else:
         # SQLite connection for local development
         for attempt in range(max_retries):
