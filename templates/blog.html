@@ -46,6 +46,10 @@
             transition: var(--transition-normal);
         }
         
+        .blog-card {
+            cursor: pointer;
+        }
+        
         .blog-card:hover {
             transform: translateY(-5px);
             box-shadow: var(--shadow-strong);
@@ -151,9 +155,55 @@
             border-color: var(--primary-purple);
         }
         
+        .blog-modal {
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+        }
+        
+        .blog-modal-content {
+            background-color: var(--warm-white);
+            margin: 2% auto;
+            padding: 2rem;
+            border-radius: var(--radius-xl);
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: var(--shadow-strong);
+        }
+        
+        .blog-close {
+            color: var(--medium-gray);
+            float: right;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            z-index: 1;
+        }
+        
+        .blog-close:hover {
+            color: var(--primary-pink);
+        }
+        
         @media (max-width: 768px) {
             .newsletter-form {
                 flex-direction: column;
+            }
+            
+            .blog-modal-content {
+                width: 95%;
+                margin: 5% auto;
+                padding: 1.5rem;
             }
         }
     </style>
@@ -188,7 +238,7 @@
     <section class="content-section">
         <div class="container">
             <div class="blog-grid">
-                <article class="blog-card">
+                <article class="blog-card" onclick="openBlogPost('ai-companionship-science')">
                     <div class="blog-image">🧠💖</div>
                     <div class="blog-content">
                         <span class="blog-category">AI Technology</span>
@@ -198,7 +248,7 @@
                             and persistent memory to create companions that truly understand you.
                         </p>
                         <div class="blog-meta">
-                            <span>📅 Coming Soon</span>
+                            <span>📅 Dec 15, 2024</span>
                             <span>⏱️ 5 min read</span>
                         </div>
                     </div>
@@ -378,6 +428,37 @@
                 console.error('Newsletter subscription error:', error);
                 alert('❌ Something went wrong. Please try again later.');
             });
+        }
+        
+        function openBlogPost(postId) {
+            const posts = {
+                'ai-companionship-science': {
+                    content: `<h1>The Science Behind AI Companionship 🧠💖</h1>
+                    <p>At MyPrabh, we're building AI companions that understand, remember, and genuinely care. Here's how the magic happens...</p>
+                    <h2>The Three-System Architecture</h2>
+                    <p>Our AI uses three integrated systems: Brain (cognitive processing), Heart (emotional intelligence), and Memory (persistent relationships).</p>
+                    <p><a href="/create_account">Ready to experience it yourself?</a></p>`
+                }
+            };
+            
+            const post = posts[postId];
+            if (post) {
+                document.getElementById('blogPostContent').innerHTML = post.content;
+                document.getElementById('blogModal').style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        function closeBlogPost() {
+            document.getElementById('blogModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        window.onclick = function(event) {
+            const modal = document.getElementById('blogModal');
+            if (event.target == modal) {
+                closeBlogPost();
+            }
         }
     </script>
 </body>

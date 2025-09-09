@@ -27,11 +27,22 @@ ADMIN_EMAIL = 'abhaythakurr17@gmail.com'  # Full access admin user
 # Email configuration
 SUPPORT_EMAIL = "abhay@aiprabh.com"  # Support and founder contact email
 CONTACT_EMAIL = "abhay@aiprabh.com"  # General contact email
+FROM_EMAIL = "abhay@aiprabh.com"  # Sender email
 
-# SMTP configuration - DISABLED for MVP deployment
-# SMTP_SERVER = "smtp.gmail.com"
-# SMTP_PORT = 587
-# EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', '')  # Set this in environment
+# SMTP configuration
+SMTP_SERVER = "smtp.gmail.com"
+SMTP_PORT = 587
+EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', '')  # Set this in environment
+
+# Import email libraries
+try:
+    import smtplib
+    from email.mime.text import MimeText
+    from email.mime.multipart import MimeMultipart
+    EMAIL_ENABLED = bool(EMAIL_PASSWORD)
+except ImportError:
+    EMAIL_ENABLED = False
+    print("⚠️ Email libraries not available")
 
 # Database initialization
 def init_db():
@@ -278,6 +289,14 @@ def create_account():
         # Log analytics
         log_analytics('user_registered', user_id, {'email': email})
         
+        # Send registration notification email
+        send_user_registration_email({
+            'email': email,
+            'name': email.split('@')[0],
+            'user_id': user_id,
+            'is_admin': is_admin
+        })
+        
         return redirect(url_for('dashboard'))
         
     except sqlite3.IntegrityError:
@@ -453,6 +472,13 @@ def save_prabh():
         
         # Log analytics
         log_analytics('prabh_created_pending_payment', session['user_id'], {'prabh_id': prabh_id})
+        
+        # Send Prabh creation notification email
+        send_prabh_creation_email({
+            'prabh_name': data['prabh_name'],
+            'character_description': data.get('character_description', ''),
+            'payment_status': 'PENDING'
+        }, session.get('user_email', 'Unknown'))
         
         return jsonify({'success': True, 'prabh_id': prabh_id, 'redirect': f'/payment/{prabh_id}'})
         
@@ -685,6 +711,38 @@ def admin_dashboard():
     
     return render_template('admin_dashboard.html')
 
+@app.route('/api/export-users')
+def export_users():
+    """Export all users data for admin"""
+    if 'user_id' not in session or not session.get('is_admin'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    conn = sqlite3.connect('myprabh.db')
+    cursor = conn.cursor()
+    
+    # Get all users with their Prabh count
+    cursor.execute('''
+        SELECT u.email, u.name, u.is_admin, u.created_at, u.last_active,
+               COUNT(p.id) as prabh_count
+        FROM users u
+        LEFT JOIN prabh_instances p ON u.user_id = p.user_id
+        GROUP BY u.user_id
+        ORDER BY u.created_at DESC
+    ''')
+    
+    users_data = [{
+        'email': row[0],
+        'name': row[1],
+        'is_admin': bool(row[2]),
+        'created_at': row[3],
+        'last_active': row[4],
+        'prabh_count': row[5]
+    } for row in cursor.fetchall()]
+    
+    conn.close()
+    
+    return jsonify({'users': users_data})
+
 @app.route('/api/admin-stats')
 def api_admin_stats():
     """Get detailed admin statistics"""
@@ -697,50 +755,58 @@ def api_admin_stats():
     # Get main stats
     stats = get_live_stats()
     
-    # Get recent users (last 10)
+    # Get all users
     cursor.execute('''
-        SELECT email, name, is_admin, created_at
+        SELECT email, name, is_admin, created_at, last_active
         FROM users 
-        ORDER BY created_at DESC 
-        LIMIT 10
+        ORDER BY created_at DESC
     ''')
-    recent_users = [{
+    all_users = [{
         'email': row[0],
         'name': row[1],
         'is_admin': bool(row[2]),
-        'created_at': row[3]
+        'created_at': row[3],
+        'last_active': row[4]
     } for row in cursor.fetchall()]
     
-    # Get recent Prabhs (last 10)
+    # Get recent users (last 10)
+    recent_users = all_users[:10]
+    
+    # Get all Prabhs
     cursor.execute('''
-        SELECT p.prabh_name, p.payment_status, p.created_at, u.email
+        SELECT p.prabh_name, p.payment_status, p.created_at, u.email, p.character_description
         FROM prabh_instances p
         JOIN users u ON p.user_id = u.user_id
-        ORDER BY p.created_at DESC 
-        LIMIT 10
+        ORDER BY p.created_at DESC
     ''')
-    recent_prabhs = [{
+    all_prabhs = [{
         'prabh_name': row[0],
         'payment_status': row[1],
         'created_at': row[2],
-        'user_email': row[3]
+        'user_email': row[3],
+        'description': row[4]
     } for row in cursor.fetchall()]
     
-    # Get recent early access signups (last 10)
+    recent_prabhs = all_prabhs[:10]
+    
+    # Get all early access signups
     cursor.execute('''
-        SELECT name, email, age_range, relationship_status, interest_level, created_at
+        SELECT name, email, age_range, relationship_status, interest_level, created_at, use_case, expectations
         FROM early_signups 
-        ORDER BY created_at DESC 
-        LIMIT 10
+        ORDER BY created_at DESC
     ''')
-    early_access = [{
+    all_early_access = [{
         'name': row[0],
         'email': row[1],
         'age_range': row[2],
         'relationship_status': row[3],
         'interest_level': row[4],
-        'created_at': row[5]
+        'created_at': row[5],
+        'use_case': row[6],
+        'expectations': row[7]
     } for row in cursor.fetchall()]
+    
+    early_access = all_early_access[:10]
     
     conn.close()
     
@@ -748,7 +814,10 @@ def api_admin_stats():
         'stats': stats,
         'recent_users': recent_users,
         'recent_prabhs': recent_prabhs,
-        'early_access': early_access
+        'early_access': early_access,
+        'all_users': all_users,
+        'all_prabhs': all_prabhs,
+        'all_early_access': all_early_access
     })
 
 @app.route('/api/captcha', methods=['GET'])
@@ -1101,12 +1170,129 @@ def generate_contextual_response(message, story, prabh_name, character_tags):
     return response
 
 def send_early_access_email(data):
-    """Send early access notification email - DISABLED for MVP deployment"""
-    # Email functionality disabled for deployment
-    # In production, this would send notification to abhay@aiprabh.com
-    print(f"📧 Early access signup received: {data['name']} ({data['email']})")
-    print(f"📬 Notification would be sent to: {SUPPORT_EMAIL}")
-    return
+    """Send early access notification email"""
+    if not EMAIL_ENABLED:
+        print(f"📧 Early access signup: {data['name']} ({data['email']})")
+        return
+    
+    try:
+        # Create message
+        msg = MimeMultipart()
+        msg['From'] = FROM_EMAIL
+        msg['To'] = SUPPORT_EMAIL
+        msg['Subject'] = f"New Early Access Signup - {data['name']}"
+        
+        # Email body
+        body = f"""
+New Early Access Signup!
+
+Name: {data['name']}
+Email: {data['email']}
+Age Range: {data['age_range']}
+Relationship Status: {data['relationship_status']}
+Interest Level: {data['interest_level']}/10
+Use Case: {data.get('use_case', 'Not specified')}
+
+Expectations:
+{data.get('expectations', 'Not provided')}
+
+Feedback:
+{data.get('feedback', 'Not provided')}
+
+Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+        """
+        
+        msg.attach(MimeText(body, 'plain'))
+        
+        # Send email
+        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+        server.starttls()
+        server.login(FROM_EMAIL, EMAIL_PASSWORD)
+        server.send_message(msg)
+        server.quit()
+        
+        print(f"📧 Early access notification sent to {SUPPORT_EMAIL}")
+        
+    except Exception as e:
+        print(f"❌ Email sending failed: {e}")
+
+def send_user_registration_email(user_data):
+    """Send user registration notification email"""
+    if not EMAIL_ENABLED:
+        print(f"👤 User registered: {user_data['email']}")
+        return
+    
+    try:
+        # Create message
+        msg = MimeMultipart()
+        msg['From'] = FROM_EMAIL
+        msg['To'] = SUPPORT_EMAIL
+        msg['Subject'] = f"New User Registration - {user_data['email']}"
+        
+        # Email body
+        body = f"""
+New User Registration!
+
+Email: {user_data['email']}
+Name: {user_data['name']}
+User ID: {user_data['user_id']}
+Admin: {user_data.get('is_admin', False)}
+
+Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+        """
+        
+        msg.attach(MimeText(body, 'plain'))
+        
+        # Send email
+        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+        server.starttls()
+        server.login(FROM_EMAIL, EMAIL_PASSWORD)
+        server.send_message(msg)
+        server.quit()
+        
+        print(f"📧 User registration notification sent to {SUPPORT_EMAIL}")
+        
+    except Exception as e:
+        print(f"❌ Email sending failed: {e}")
+
+def send_prabh_creation_email(prabh_data, user_email):
+    """Send Prabh creation notification email"""
+    if not EMAIL_ENABLED:
+        print(f"🤖 Prabh created: {prabh_data['prabh_name']} by {user_email}")
+        return
+    
+    try:
+        # Create message
+        msg = MimeMultipart()
+        msg['From'] = FROM_EMAIL
+        msg['To'] = SUPPORT_EMAIL
+        msg['Subject'] = f"New Prabh Created - {prabh_data['prabh_name']}"
+        
+        # Email body
+        body = f"""
+New Prabh Created!
+
+Prabh Name: {prabh_data['prabh_name']}
+User Email: {user_email}
+Description: {prabh_data.get('character_description', 'Not provided')}
+Payment Status: {prabh_data.get('payment_status', 'PENDING')}
+
+Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+        """
+        
+        msg.attach(MimeText(body, 'plain'))
+        
+        # Send email
+        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+        server.starttls()
+        server.login(FROM_EMAIL, EMAIL_PASSWORD)
+        server.send_message(msg)
+        server.quit()
+        
+        print(f"📧 Prabh creation notification sent to {SUPPORT_EMAIL}")
+        
+    except Exception as e:
+        print(f"❌ Email sending failed: {e}")
 
 def track_visitor(request):
     """Track website visitor"""
@@ -1253,5 +1439,10 @@ if __name__ == '__main__':
         print("⚠️ Running with basic systems")
     
     print(f"🌐 Running on port {port}")
+    
+    if EMAIL_ENABLED:
+        print(f"📧 Email notifications enabled: {FROM_EMAIL}")
+    else:
+        print("⚠️ Email notifications disabled (set EMAIL_PASSWORD environment variable)")
     
     app.run(debug=debug, host='0.0.0.0', port=port)
