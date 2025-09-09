@@ -3,467 +3,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Companion Blog - MyPrabh | Insights on AI Relationships & Technology</title>
+    <title>MyPrabh Blog - AI Companion Insights</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-    <meta name="description" content="Explore insights on AI companionship, emotional intelligence technology, and the future of human-AI relationships. Expert articles on personalized AI and memory-based companions.">
-    <meta name="keywords" content="AI companion blog, emotional AI articles, AI relationship insights, personalized AI technology, memory-based AI, AI companionship guide">
-    <link rel="canonical" href="https://aiprabh.com/blog">
-    <meta property="og:title" content="AI Companion Blog - Insights on AI Relationships & Technology">
-    <meta property="og:description" content="Expert insights on AI companionship, emotional intelligence, and building meaningful relationships with AI.">
-    <meta property="og:url" content="https://aiprabh.com/blog">
     <style>
-        .hero-section {
-            background: var(--gradient-warm);
-            color: white;
-            padding: 4rem 0;
-            text-align: center;
-        }
-        
-        .hero-title {
-            font-family: var(--font-script);
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        
-        .hero-subtitle {
-            font-size: 1.25rem;
-            opacity: 0.9;
-            max-width: 600px;
+        .blog-container {
+            max-width: 800px;
             margin: 0 auto;
+            padding: 20px;
         }
-        
-        .content-section {
-            padding: 3rem 0;
+        .blog-header {
+            text-align: center;
+            margin-bottom: 40px;
         }
-        
-        .blog-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
+        .blog-post {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        
-        .blog-card {
-            background: var(--warm-white);
-            border-radius: var(--radius-xl);
-            overflow: hidden;
-            box-shadow: var(--shadow-soft);
-            border: 1px solid rgba(168, 85, 247, 0.1);
-            transition: var(--transition-normal);
+        .post-title {
+            color: #ff6b9d;
+            font-size: 1.8em;
+            margin-bottom: 10px;
         }
-        
-        .blog-card {
-            cursor: pointer;
+        .post-meta {
+            color: #c9a9dd;
+            font-size: 0.9em;
+            margin-bottom: 20px;
         }
-        
-        .blog-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-strong);
-        }
-        
-        .blog-image {
-            height: 200px;
-            background: var(--gradient-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            color: white;
-        }
-        
-        .blog-content {
-            padding: 1.5rem;
-        }
-        
-        .blog-category {
-            background: var(--gradient-accent);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: var(--radius-full);
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            display: inline-block;
-            margin-bottom: 1rem;
-        }
-        
-        .blog-title {
-            color: var(--primary-purple);
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            line-height: 1.4;
-        }
-        
-        .blog-excerpt {
-            color: var(--medium-gray);
+        .post-content {
             line-height: 1.6;
-            margin-bottom: 1rem;
+            color: #fff;
         }
-        
-        .blog-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: var(--medium-gray);
-            font-size: 0.875rem;
-            padding-top: 1rem;
-            border-top: 1px solid rgba(168, 85, 247, 0.1);
+        .admin-controls {
+            background: rgba(255, 107, 157, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
         }
-        
-        .coming-soon {
-            background: var(--gradient-secondary);
-            padding: 3rem 0;
-            text-align: center;
+        .btn-create-post {
+            background: linear-gradient(45deg, #ff6b9d, #c9a9dd);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
         }
-        
-        .coming-soon-card {
-            background: var(--warm-white);
-            border-radius: var(--radius-xl);
-            padding: 2rem;
-            max-width: 600px;
-            margin: 0 auto;
-            box-shadow: var(--shadow-soft);
-        }
-        
-        .newsletter-section {
-            background: var(--cream);
-            padding: 3rem 0;
-        }
-        
-        .newsletter-card {
-            background: var(--warm-white);
-            border-radius: var(--radius-xl);
-            padding: 2rem;
-            text-align: center;
-            box-shadow: var(--shadow-soft);
-            border: 1px solid rgba(168, 85, 247, 0.1);
-        }
-        
-        .newsletter-form {
-            display: flex;
-            gap: 1rem;
-            max-width: 400px;
-            margin: 1.5rem auto 0;
-        }
-        
-        .newsletter-input {
-            flex: 1;
-            padding: 0.75rem 1rem;
-            border: 2px solid rgba(168, 85, 247, 0.1);
-            border-radius: var(--radius-md);
-            font-family: var(--font-primary);
-        }
-        
-        .newsletter-input:focus {
-            outline: none;
-            border-color: var(--primary-purple);
-        }
-        
-        .blog-modal {
+        .modal {
+            display: none;
             position: fixed;
-            z-index: 10000;
-            left: 0;
             top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.8);
-            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
         }
-        
-        .blog-modal-content {
-            background-color: var(--warm-white);
-            margin: 2% auto;
-            padding: 2rem;
-            border-radius: var(--radius-xl);
+        .modal-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 5% auto;
+            padding: 30px;
             width: 90%;
-            max-width: 800px;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            box-shadow: var(--shadow-strong);
+            max-width: 600px;
+            border-radius: 15px;
         }
-        
-        .blog-close {
-            color: var(--medium-gray);
-            float: right;
-            font-size: 2rem;
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            color: #fff;
+            margin-bottom: 5px;
             font-weight: bold;
-            cursor: pointer;
-            position: absolute;
-            right: 1rem;
-            top: 1rem;
-            z-index: 1;
         }
-        
-        .blog-close:hover {
-            color: var(--primary-pink);
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            backdrop-filter: blur(10px);
         }
-        
-        @media (max-width: 768px) {
-            .newsletter-form {
-                flex-direction: column;
-            }
-            
-            .blog-modal-content {
-                width: 95%;
-                margin: 5% auto;
-                padding: 1.5rem;
-            }
+        .form-group textarea {
+            height: 200px;
+            resize: vertical;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .no-posts {
+            text-align: center;
+            color: #c9a9dd;
+            font-size: 1.2em;
+            margin: 50px 0;
         }
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container">
-            <a href="/" class="nav-brand">
-                <span class="brand-text">MyPrabh</span>
-                <span class="brand-heart">💖</span>
-            </a>
-            <div class="nav-links">
-                <a href="/" class="nav-link">Home</a>
-                <a href="/about" class="nav-link">About</a>
-                <a href="/careers" class="nav-link">Careers</a>
-                <a href="/blog" class="nav-link active">Blog</a>
-                <a href="/login" class="nav-link">Login</a>
-                <a href="/create_account" class="btn btn-primary">Get Started</a>
-            </div>
+    <div class="blog-container">
+        <div class="blog-header">
+            <h1>💖 MyPrabh Blog</h1>
+            <p>Insights, stories, and updates from the world of AI companions</p>
         </div>
-    </nav>
 
-    <section class="hero-section">
-        <div class="container">
-            <h1 class="hero-title">MyPrabh Blog ✨</h1>
-            <p class="hero-subtitle">
-                Insights on AI companionship, technology, and building meaningful digital relationships
-            </p>
+        {% if is_admin %}
+        <div class="admin-controls">
+            <h3>Admin Controls</h3>
+            <button class="btn-create-post" onclick="openCreateModal()">✍️ Create New Post</button>
         </div>
-    </section>
+        {% endif %}
 
-    <section class="content-section">
-        <div class="container">
-            <div class="blog-grid">
-                <article class="blog-card" onclick="openBlogPost('ai-companionship-science')">
-                    <div class="blog-image">🧠💖</div>
-                    <div class="blog-content">
-                        <span class="blog-category">AI Technology</span>
-                        <h2 class="blog-title">The Science Behind AI Companionship</h2>
-                        <p class="blog-excerpt">
-                            Explore how our advanced AI system combines cognitive processing, emotional intelligence, 
-                            and persistent memory to create companions that truly understand you.
-                        </p>
-                        <div class="blog-meta">
-                            <span>📅 Dec 15, 2024</span>
-                            <span>⏱️ 5 min read</span>
-                        </div>
+        <div class="blog-feed">
+            {% if posts %}
+                {% for post in posts %}
+                <article class="blog-post">
+                    <h2 class="post-title">{{ post[1] }}</h2>
+                    <div class="post-meta">
+                        By {{ post[4] }} • {{ post[3][:10] }}
+                    </div>
+                    <div class="post-content">
+                        {{ post[2]|safe }}
                     </div>
                 </article>
-
-                <article class="blog-card">
-                    <div class="blog-image">🎯</div>
-                    <div class="blog-content">
-                        <span class="blog-category">Product</span>
-                        <h2 class="blog-title">Building Your Perfect AI Companion</h2>
-                        <p class="blog-excerpt">
-                            A comprehensive guide to creating and training your Prabh, from character design 
-                            to personality traits and memory integration.
-                        </p>
-                        <div class="blog-meta">
-                            <span>📅 Coming Soon</span>
-                            <span>⏱️ 8 min read</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="blog-card">
-                    <div class="blog-image">🔒</div>
-                    <div class="blog-content">
-                        <span class="blog-category">Privacy</span>
-                        <h2 class="blog-title">Privacy and Security in AI Relationships</h2>
-                        <p class="blog-excerpt">
-                            How we protect your most personal conversations and memories with enterprise-grade 
-                            security while maintaining the intimacy of AI companionship.
-                        </p>
-                        <div class="blog-meta">
-                            <span>📅 Coming Soon</span>
-                            <span>⏱️ 6 min read</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="blog-card">
-                    <div class="blog-image">🚀</div>
-                    <div class="blog-content">
-                        <span class="blog-category">Startup Journey</span>
-                        <h2 class="blog-title">From Idea to AI: The MyPrabh Story</h2>
-                        <p class="blog-excerpt">
-                            The journey of building MyPrabh, from the first lines of code to creating 
-                            a platform that brings meaningful AI relationships to everyone.
-                        </p>
-                        <div class="blog-meta">
-                            <span>📅 Coming Soon</span>
-                            <span>⏱️ 10 min read</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="blog-card">
-                    <div class="blog-image">💡</div>
-                    <div class="blog-content">
-                        <span class="blog-category">Innovation</span>
-                        <h2 class="blog-title">The Future of Human-AI Relationships</h2>
-                        <p class="blog-excerpt">
-                            Exploring the evolving landscape of AI companionship and how technology 
-                            will continue to enhance human connection and emotional well-being.
-                        </p>
-                        <div class="blog-meta">
-                            <span>📅 Coming Soon</span>
-                            <span>⏱️ 7 min read</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="blog-card">
-                    <div class="blog-image">🌱</div>
-                    <div class="blog-content">
-                        <span class="blog-category">Community</span>
-                        <h2 class="blog-title">User Stories: Real Connections with AI</h2>
-                        <p class="blog-excerpt">
-                            Heartwarming stories from our community about how AI companions have 
-                            provided support, understanding, and meaningful relationships.
-                        </p>
-                        <div class="blog-meta">
-                            <span>📅 Coming Soon</span>
-                            <span>⏱️ 12 min read</span>
-                        </div>
-                    </div>
-                </article>
-            </div>
-        </div>
-    </section>
-
-    <section class="coming-soon">
-        <div class="container">
-            <div class="coming-soon-card">
-                <h2 style="color: var(--primary-purple); margin-bottom: 1rem;">Blog Coming Soon! 📝</h2>
-                <p style="margin-bottom: 2rem;">
-                    We're working on creating valuable content about AI companionship, technology insights, 
-                    and the future of human-AI relationships. Our blog will feature technical deep-dives, 
-                    user stories, and updates on our journey building MyPrabh.
-                </p>
-                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                    <a href="mailto:abhay@aiprabh.com?subject=Blog Content Suggestions" class="btn btn-primary">
-                        💡 Suggest Topics
-                    </a>
-                    <a href="/create_account" class="btn btn-secondary">
-                        ✨ Try MyPrabh Now
-                    </a>
+                {% endfor %}
+            {% else %}
+                <div class="no-posts">
+                    <h3>📝 No blog posts yet</h3>
+                    <p>Check back soon for insights about AI companions and relationships!</p>
                 </div>
-            </div>
+            {% endif %}
         </div>
-    </section>
+    </div>
 
-    <section class="newsletter-section">
-        <div class="container">
-            <div class="newsletter-card">
-                <h3 style="color: var(--primary-purple); margin-bottom: 1rem;">Stay Updated 📬</h3>
-                <p style="color: var(--medium-gray); margin-bottom: 1.5rem;">
-                    Be the first to know when we publish new articles about AI companionship, 
-                    technology updates, and insights from the MyPrabh community.
-                </p>
-                <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
-                    <input type="email" class="newsletter-input" placeholder="Enter your email" required>
-                    <button type="submit" class="btn btn-primary">Subscribe</button>
-                </form>
-                <p style="color: var(--medium-gray); font-size: 0.875rem; margin-top: 1rem;">
-                    No spam, just valuable insights. Unsubscribe anytime.
-                </p>
-            </div>
+    <!-- Create Post Modal -->
+    <div id="createModal" class="modal">
+        <div class="modal-content">
+            <h2>✍️ Create New Blog Post</h2>
+            <form id="createPostForm">
+                <div class="form-group">
+                    <label for="postTitle">Title</label>
+                    <input type="text" id="postTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="postContent">Content (HTML supported)</label>
+                    <textarea id="postContent" required placeholder="Write your blog post content here..."></textarea>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="publishNow">
+                        <label for="publishNow">Publish immediately</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn-create-post">Create Post</button>
+                    <button type="button" onclick="closeCreateModal()" style="margin-left: 10px; background: #666;">Cancel</button>
+                </div>
+            </form>
         </div>
-    </section>
-
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>MyPrabh 💖</h4>
-                    <p>Creating meaningful AI relationships</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Company</h4>
-                    <a href="/about">About Us</a>
-                    <a href="/careers">Careers</a>
-                    <a href="/blog">Blog</a>
-                </div>
-                <div class="footer-section">
-                    <h4>Support</h4>
-                    <a href="mailto:abhay@aiprabh.com">Contact</a>
-                    <a href="/terms">Terms</a>
-                    <a href="/privacy">Privacy</a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 MyPrabh. Made with 💖 for meaningful connections.</p>
-            </div>
-        </div>
-    </footer>
+    </div>
 
     <script>
-        function subscribeNewsletter(event) {
-            event.preventDefault();
-            const email = event.target.querySelector('input[type="email"]').value;
+        function openCreateModal() {
+            document.getElementById('createModal').style.display = 'block';
+        }
+
+        function closeCreateModal() {
+            document.getElementById('createModal').style.display = 'none';
+            document.getElementById('createPostForm').reset();
+        }
+
+        document.getElementById('createPostForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
             
-            fetch('/api/newsletter-signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email: email })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('🎉 Thank you for subscribing! You\'ll be the first to know about our latest blog posts.');
-                    event.target.reset();
+            const title = document.getElementById('postTitle').value;
+            const content = document.getElementById('postContent').value;
+            const published = document.getElementById('publishNow').checked;
+            
+            try {
+                const response = await fetch('/api/create-blog-post', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title: title,
+                        content: content,
+                        published: published
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Blog post created successfully!');
+                    location.reload();
                 } else {
-                    alert('❌ ' + (data.error || 'Subscription failed. Please try again.'));
+                    alert('Error: ' + result.error);
                 }
-            })
-            .catch(error => {
-                console.error('Newsletter subscription error:', error);
-                alert('❌ Something went wrong. Please try again later.');
-            });
-        }
-        
-        function openBlogPost(postId) {
-            const posts = {
-                'ai-companionship-science': {
-                    content: `<h1>The Science Behind AI Companionship 🧠💖</h1>
-                    <p>At MyPrabh, we're building AI companions that understand, remember, and genuinely care. Here's how the magic happens...</p>
-                    <h2>The Three-System Architecture</h2>
-                    <p>Our AI uses three integrated systems: Brain (cognitive processing), Heart (emotional intelligence), and Memory (persistent relationships).</p>
-                    <p><a href="/create_account">Ready to experience it yourself?</a></p>`
-                }
-            };
-            
-            const post = posts[postId];
-            if (post) {
-                document.getElementById('blogPostContent').innerHTML = post.content;
-                document.getElementById('blogModal').style.display = 'block';
-                document.body.style.overflow = 'hidden';
+            } catch (error) {
+                alert('Failed to create post: ' + error.message);
             }
-        }
-        
-        function closeBlogPost() {
-            document.getElementById('blogModal').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-        
+        });
+
+        // Close modal when clicking outside
         window.onclick = function(event) {
-            const modal = document.getElementById('blogModal');
-            if (event.target == modal) {
-                closeBlogPost();
+            const modal = document.getElementById('createModal');
+            if (event.target === modal) {
+                closeCreateModal();
             }
         }
     </script>

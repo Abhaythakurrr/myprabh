@@ -33,14 +33,9 @@ except ImportError as e:
 app = Flask(__name__)
 app.secret_key = 'myprabh_mvp_2024_secret_key'
 
-# Database Configuration
-DATABASE_URL = os.environ.get('DATABASE_URL')  # Render provides this
-USE_POSTGRES = DATABASE_URL is not None and POSTGRES_AVAILABLE
-
-if USE_POSTGRES:
-    print("🐘 Using PostgreSQL database (Render)")
-else:
-    print("🗃️ Using SQLite database (Local/Fallback)")
+# Database Configuration - Always use SQLite for simplicity
+USE_POSTGRES = False
+print("🗃️ Using SQLite database")
 
 # Razorpay Configuration
 RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', '')  # Set this in environment
@@ -74,42 +69,23 @@ EMAIL_ENABLED = EMAIL_LIBS_AVAILABLE and bool(EMAIL_PASSWORD)
 
 # Database connection helper
 def get_db_connection():
-    """Get database connection with proper timeout and retry logic"""
-    global USE_POSTGRES
+    """Get SQLite database connection with proper timeout and retry logic"""
     import time
     max_retries = 3
     
-    if USE_POSTGRES:
-        # PostgreSQL connection for Render
-        for attempt in range(max_retries):
-            try:
-                conn = psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
-                conn.autocommit = False
-                return conn
-            except Exception as e:
-                print(f"PostgreSQL connection failed: {e}")
-                if attempt < max_retries - 1:
-                    time.sleep(0.1 * (attempt + 1))
-                    continue
-                # Fallback to SQLite
-                print("Falling back to SQLite database")
-                USE_POSTGRES = False
-                break
-    else:
-        # SQLite connection for local development
-        for attempt in range(max_retries):
-            try:
-                conn = sqlite3.connect('myprabh.db', timeout=30.0)
-                conn.execute('PRAGMA journal_mode=WAL;')
-                conn.execute('PRAGMA synchronous=NORMAL;')
-                conn.execute('PRAGMA cache_size=10000;')
-                conn.execute('PRAGMA temp_store=MEMORY;')
-                return conn
-            except sqlite3.OperationalError as e:
-                if "database is locked" in str(e) and attempt < max_retries - 1:
-                    time.sleep(0.1 * (attempt + 1))
-                    continue
-                raise e
+    for attempt in range(max_retries):
+        try:
+            conn = sqlite3.connect('myprabh.db', timeout=30.0)
+            conn.execute('PRAGMA journal_mode=WAL;')
+            conn.execute('PRAGMA synchronous=NORMAL;')
+            conn.execute('PRAGMA cache_size=10000;')
+            conn.execute('PRAGMA temp_store=MEMORY;')
+            return conn
+        except sqlite3.OperationalError as e:
+            if "database is locked" in str(e) and attempt < max_retries - 1:
+                time.sleep(0.1 * (attempt + 1))
+                continue
+            raise e
     return None
 
 class DatabaseManager:
@@ -135,36 +111,34 @@ def init_db():
     conn = get_db_connection()
     cursor = conn.cursor()
     
-    if USE_POSTGRES:
-        # PostgreSQL schema
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS users (
-                id SERIAL PRIMARY KEY,
-                user_id TEXT UNIQUE NOT NULL,
-                email TEXT UNIQUE NOT NULL,
-                name TEXT NOT NULL,
-                password_hash TEXT,
-                face_signature TEXT,
-                is_admin BOOLEAN DEFAULT FALSE,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                last_active TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
-    else:
-        # SQLite schema
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_id TEXT UNIQUE NOT NULL,
-                email TEXT UNIQUE NOT NULL,
-                name TEXT NOT NULL,
-                password_hash TEXT,
-                face_signature TEXT,
-                is_admin BOOLEAN DEFAULT FALSE,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                last_active TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
+    # SQLite schema
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id TEXT UNIQUE NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            name TEXT NOT NULL,
+            password_hash TEXT,
+            face_signature TEXT,
+            is_admin BOOLEAN DEFAULT FALSE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            last_active TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    
+    # Blog posts table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS blog_posts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            content TEXT NOT NULL,
+            author_id TEXT NOT NULL,
+            published BOOLEAN DEFAULT FALSE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (author_id) REFERENCES users (user_id)
+        )
+    ''')
     
     # Early access signups
     cursor.execute('''
@@ -619,8 +593,27 @@ def careers():
 
 @app.route('/blog')
 def blog():
-    """Blog page"""
-    return render_template('blog.html')
+    """Blog feed page"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            SELECT b.id, b.title, b.content, b.created_at, u.name as author_name
+            FROM blog_posts b
+            JOIN users u ON b.author_id = u.user_id
+            WHERE b.published = TRUE
+            ORDER BY b.created_at DESC
+        ''')
+        
+        posts = cursor.fetchall()
+        conn.close()
+        
+        return render_template('blog.html', posts=posts, is_admin=session.get('is_admin', False))
+        
+    except Exception as e:
+        print(f"Blog error: {e}")
+        return render_template('blog.html', posts=[], is_admin=session.get('is_admin', False))
 
 @app.route('/logout')
 def logout():
@@ -923,8 +916,23 @@ def chat_message():
         if not prabh_data:
             return jsonify({'error': 'Prabh not found'}), 404
         
-        # Generate response using enhanced AI
-        response = generate_prabh_response(message, prabh_data)
+        # Generate response using optimized AI
+        try:
+            from optimized_ai_engine import optimized_ai
+            
+            # Initialize if needed
+            if not optimized_ai.models_loaded:
+                optimized_ai.initialize_models()
+            
+            # Process story if needed
+            if not optimized_ai.character_context:
+                user_name = optimized_ai._extract_user_name(prabh_data[2])
+                optimized_ai.process_story(prabh_data[2], prabh_data[0], user_name)
+            
+            response = optimized_ai.generate_response(message)
+            
+        except ImportError:
+            response = generate_prabh_response(message, prabh_data)
         
         # Prepare response data
         response_data = {
@@ -1142,6 +1150,38 @@ def export_users():
     
     return jsonify({'users': users_data})
 
+@app.route('/api/create-blog-post', methods=['POST'])
+def create_blog_post():
+    """Create new blog post - Admin only"""
+    if 'user_id' not in session or not session.get('is_admin'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    try:
+        data = request.get_json()
+        title = data.get('title', '').strip()
+        content = data.get('content', '').strip()
+        published = data.get('published', False)
+        
+        if not title or not content:
+            return jsonify({'error': 'Title and content required'}), 400
+        
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            INSERT INTO blog_posts (title, content, author_id, published)
+            VALUES (?, ?, ?, ?)
+        ''', (title, content, session['user_id'], published))
+        
+        post_id = cursor.lastrowid
+        conn.commit()
+        conn.close()
+        
+        return jsonify({'success': True, 'post_id': post_id})
+        
+    except Exception as e:
+        return jsonify({'error': f'Failed to create post: {str(e)}'}), 500
+
 @app.route('/api/admin-stats')
 def api_admin_stats():
     """Get detailed admin statistics"""
@@ -1207,7 +1247,32 @@ def api_admin_stats():
     
     early_access = all_early_access[:10]
     
+    # Get blog posts
+    cursor.execute('''
+        SELECT b.id, b.title, b.published, b.created_at, u.name as author
+        FROM blog_posts b
+        JOIN users u ON b.author_id = u.user_id
+        ORDER BY b.created_at DESC
+    ''')
+    blog_posts = [{
+        'id': row[0],
+        'title': row[1],
+        'published': bool(row[2]),
+        'created_at': row[3],
+        'author': row[4]
+    } for row in cursor.fetchall()]
+    
     conn.close()
+    
+    # Get real-time activity stats
+    cursor.execute('SELECT COUNT(*) FROM visitors WHERE visit_timestamp > datetime("now", "-1 hour")')
+    active_visitors = cursor.fetchone()[0]
+    
+    cursor.execute('SELECT COUNT(*) FROM users WHERE last_active > datetime("now", "-1 hour")')
+    active_users_hour = cursor.fetchone()[0]
+    
+    cursor.execute('SELECT COUNT(*) FROM chat_sessions WHERE last_message > datetime("now", "-1 hour")')
+    active_chats = cursor.fetchone()[0]
     
     return jsonify({
         'stats': stats,
@@ -1216,7 +1281,13 @@ def api_admin_stats():
         'early_access': early_access,
         'all_users': all_users,
         'all_prabhs': all_prabhs,
-        'all_early_access': all_early_access
+        'all_early_access': all_early_access,
+        'blog_posts': blog_posts,
+        'real_time': {
+            'active_visitors': active_visitors,
+            'active_users_hour': active_users_hour,
+            'active_chats': active_chats
+        }
     })
 
 @app.route('/api/captcha', methods=['GET'])
@@ -1513,30 +1584,29 @@ def refund():
     return render_template('refund.html')
 
 def generate_prabh_response(message, prabh_data):
-    """Generate response using model injection engine with pre-trained models"""
+    """Generate response using optimized AI with DistilBERT"""
     try:
-        # Use model injection engine for proper AI model integration
-        from model_injection_engine import model_injector
+        # Use optimized AI engine with DistilBERT
+        from optimized_ai_engine import optimized_ai
         
         # Extract character data
         prabh_name, description, story, tags_json, traits_json = prabh_data
         
-        # Initialize model if not already done
-        if not model_injector.model:
-            if not model_injector.initialize_model():
-                return generate_enhanced_simple_response(message, prabh_data)
+        # Initialize models if not already done
+        if not optimized_ai.models_loaded:
+            optimized_ai.initialize_models()
         
-        # Normalize and inject character if not already done
-        if not model_injector.character_context or model_injector.character_context.get("name") != prabh_name:
-            user_name = model_injector._extract_user_name(story)
-            model_injector.normalize_story_text(story, prabh_name, user_name)
+        # Process story if not already done
+        if not optimized_ai.character_context or optimized_ai.character_context.get("name") != prabh_name:
+            user_name = optimized_ai._extract_user_name(story)
+            optimized_ai.process_story(story, prabh_name, user_name)
         
-        # Generate response using injected model
-        response = model_injector.generate_response(message)
+        # Generate response using optimized AI
+        response = optimized_ai.generate_response(message)
         return response
         
     except Exception as e:
-        print(f"Model injection error: {e}")
+        print(f"Optimized AI error: {e}")
         # Fallback to enhanced simple response
         return generate_enhanced_simple_response(message, prabh_data)
 
