@@ -1272,9 +1272,7 @@ def api_admin_stats():
             'author': row[4]
         } for row in cursor.fetchall()]
         print(f"Found {len(blog_posts)} blog posts")
-    
-    conn.close()
-    
+        
         # Get real-time activity stats
         cursor.execute('SELECT COUNT(*) FROM visitors WHERE visit_timestamp > datetime("now", "-1 hour")')
         active_visitors = cursor.fetchone()[0]
