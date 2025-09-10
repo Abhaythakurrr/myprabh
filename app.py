@@ -469,6 +469,7 @@ def create_account():
         
         # Check if admin user
         is_admin = email == ADMIN_EMAIL
+        print(f"User {email} admin status: {is_admin} (admin email: {ADMIN_EMAIL})")
         
         # Hash password
         password_hash = generate_password_hash(password)
@@ -493,6 +494,7 @@ def create_account():
         session['user_email'] = email
         session['user_name'] = email.split('@')[0]
         session['is_admin'] = is_admin
+        print(f"Account created for {email}, admin: {is_admin}")
         
         # Log analytics
         log_analytics('user_registered', user_id, {'email': email})
@@ -557,6 +559,7 @@ def login():
         session['user_email'] = user[1]
         session['user_name'] = user[2]
         session['is_admin'] = bool(user[4])
+        print(f"Login successful for {user[1]}, admin: {bool(user[4])}")
         
         # Update last active
         conn = get_db_connection()
@@ -1116,6 +1119,7 @@ def admin_dashboard():
     if 'user_id' not in session or not session.get('is_admin'):
         return redirect(url_for('login'))
     
+    print(f"Admin access granted to: {session.get('user_email')}")
     return render_template('admin_dashboard.html')
 
 @app.route('/api/export-users')
@@ -1188,107 +1192,123 @@ def api_admin_stats():
     if 'user_id' not in session or not session.get('is_admin'):
         return jsonify({'error': 'Unauthorized'}), 401
     
-    conn = sqlite3.connect('myprabh.db')
-    cursor = conn.cursor()
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        print(f"Admin stats requested by: {session.get('user_email')}")
     
-    # Get main stats
-    stats = get_live_stats()
-    
-    # Get all users
-    cursor.execute('''
-        SELECT email, name, is_admin, created_at, last_active
-        FROM users 
-        ORDER BY created_at DESC
-    ''')
-    all_users = [{
-        'email': row[0],
-        'name': row[1],
-        'is_admin': bool(row[2]),
-        'created_at': row[3],
-        'last_active': row[4]
-    } for row in cursor.fetchall()]
-    
-    # Get recent users (last 10)
-    recent_users = all_users[:10]
-    
-    # Get all Prabhs
-    cursor.execute('''
-        SELECT p.prabh_name, p.payment_status, p.created_at, u.email, p.character_description
-        FROM prabh_instances p
-        JOIN users u ON p.user_id = u.user_id
-        ORDER BY p.created_at DESC
-    ''')
-    all_prabhs = [{
-        'prabh_name': row[0],
-        'payment_status': row[1],
-        'created_at': row[2],
-        'user_email': row[3],
-        'description': row[4]
-    } for row in cursor.fetchall()]
-    
-    recent_prabhs = all_prabhs[:10]
-    
-    # Get all early access signups
-    cursor.execute('''
-        SELECT name, email, age_range, relationship_status, interest_level, created_at, use_case, expectations
-        FROM early_signups 
-        ORDER BY created_at DESC
-    ''')
-    all_early_access = [{
-        'name': row[0],
-        'email': row[1],
-        'age_range': row[2],
-        'relationship_status': row[3],
-        'interest_level': row[4],
-        'created_at': row[5],
-        'use_case': row[6],
-        'expectations': row[7]
-    } for row in cursor.fetchall()]
-    
-    early_access = all_early_access[:10]
-    
-    # Get blog posts
-    cursor.execute('''
-        SELECT b.id, b.title, b.published, b.created_at, u.name as author
-        FROM blog_posts b
-        JOIN users u ON b.author_id = u.user_id
-        ORDER BY b.created_at DESC
-    ''')
-    blog_posts = [{
-        'id': row[0],
-        'title': row[1],
-        'published': bool(row[2]),
-        'created_at': row[3],
-        'author': row[4]
-    } for row in cursor.fetchall()]
+        # Get main stats
+        stats = get_live_stats()
+        print(f"Stats retrieved: {stats}")
+        
+        # Get all users
+        cursor.execute('''
+            SELECT email, name, is_admin, created_at, last_active
+            FROM users 
+            ORDER BY created_at DESC
+        ''')
+        all_users = [{
+            'email': row[0],
+            'name': row[1],
+            'is_admin': bool(row[2]),
+            'created_at': row[3],
+            'last_active': row[4]
+        } for row in cursor.fetchall()]
+        print(f"Found {len(all_users)} users")
+        
+        # Get recent users (last 10)
+        recent_users = all_users[:10]
+        
+        # Get all Prabhs
+        cursor.execute('''
+            SELECT p.prabh_name, p.payment_status, p.created_at, u.email, p.character_description
+            FROM prabh_instances p
+            JOIN users u ON p.user_id = u.user_id
+            ORDER BY p.created_at DESC
+        ''')
+        all_prabhs = [{
+            'prabh_name': row[0],
+            'payment_status': row[1],
+            'created_at': row[2],
+            'user_email': row[3],
+            'description': row[4]
+        } for row in cursor.fetchall()]
+        print(f"Found {len(all_prabhs)} prabhs")
+        
+        recent_prabhs = all_prabhs[:10]
+        
+        # Get all early access signups
+        cursor.execute('''
+            SELECT name, email, age_range, relationship_status, interest_level, created_at, use_case, expectations
+            FROM early_signups 
+            ORDER BY created_at DESC
+        ''')
+        all_early_access = [{
+            'name': row[0],
+            'email': row[1],
+            'age_range': row[2],
+            'relationship_status': row[3],
+            'interest_level': row[4],
+            'created_at': row[5],
+            'use_case': row[6],
+            'expectations': row[7]
+        } for row in cursor.fetchall()]
+        print(f"Found {len(all_early_access)} early access signups")
+        
+        early_access = all_early_access[:10]
+        
+        # Get blog posts
+        cursor.execute('''
+            SELECT b.id, b.title, b.published, b.created_at, u.name as author
+            FROM blog_posts b
+            JOIN users u ON b.author_id = u.user_id
+            ORDER BY b.created_at DESC
+        ''')
+        blog_posts = [{
+            'id': row[0],
+            'title': row[1],
+            'published': bool(row[2]),
+            'created_at': row[3],
+            'author': row[4]
+        } for row in cursor.fetchall()]
+        print(f"Found {len(blog_posts)} blog posts")
     
     conn.close()
     
-    # Get real-time activity stats
-    cursor.execute('SELECT COUNT(*) FROM visitors WHERE visit_timestamp > datetime("now", "-1 hour")')
-    active_visitors = cursor.fetchone()[0]
-    
-    cursor.execute('SELECT COUNT(*) FROM users WHERE last_active > datetime("now", "-1 hour")')
-    active_users_hour = cursor.fetchone()[0]
-    
-    cursor.execute('SELECT COUNT(*) FROM chat_sessions WHERE last_message > datetime("now", "-1 hour")')
-    active_chats = cursor.fetchone()[0]
-    
-    return jsonify({
-        'stats': stats,
-        'recent_users': recent_users,
-        'recent_prabhs': recent_prabhs,
-        'early_access': early_access,
-        'all_users': all_users,
-        'all_prabhs': all_prabhs,
-        'all_early_access': all_early_access,
-        'blog_posts': blog_posts,
-        'real_time': {
-            'active_visitors': active_visitors,
-            'active_users_hour': active_users_hour,
-            'active_chats': active_chats
+        # Get real-time activity stats
+        cursor.execute('SELECT COUNT(*) FROM visitors WHERE visit_timestamp > datetime("now", "-1 hour")')
+        active_visitors = cursor.fetchone()[0]
+        
+        cursor.execute('SELECT COUNT(*) FROM users WHERE last_active > datetime("now", "-1 hour")')
+        active_users_hour = cursor.fetchone()[0]
+        
+        cursor.execute('SELECT COUNT(*) FROM chat_sessions WHERE last_message > datetime("now", "-1 hour")')
+        active_chats = cursor.fetchone()[0]
+        
+        conn.close()
+        
+        response_data = {
+            'stats': stats,
+            'recent_users': recent_users,
+            'recent_prabhs': recent_prabhs,
+            'early_access': early_access,
+            'all_users': all_users,
+            'all_prabhs': all_prabhs,
+            'all_early_access': all_early_access,
+            'blog_posts': blog_posts,
+            'real_time': {
+                'active_visitors': active_visitors,
+                'active_users_hour': active_users_hour,
+                'active_chats': active_chats
+            }
         }
-    })
+        
+        print(f"Returning admin stats with {len(recent_users)} recent users")
+        return jsonify(response_data)
+        
+    except Exception as e:
+        print(f"Admin stats error: {e}")
+        return jsonify({'error': f'Database error: {str(e)}'}), 500
 
 @app.route('/api/captcha', methods=['GET'])
 def get_captcha():
