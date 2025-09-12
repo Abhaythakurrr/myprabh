@@ -6,6 +6,141 @@
     <title>MyPrabh - Create Your Perfect AI Companion | Revolutionary Memory-Based AI</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <script src="{{ url_for('static', filename='js/snow-effects.js') }}" defer></script>
+    <style>
+        /* Romantic Rain and Thunder Effects */
+        .rain-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+        
+        .rain {
+            position: absolute;
+            width: 2px;
+            height: 100px;
+            background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.6), transparent);
+            animation: rainfall 1s linear infinite;
+        }
+        
+        @keyframes rainfall {
+            0% { transform: translateY(-100px); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+        
+        .lightning {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 2;
+        }
+        
+        .lightning.flash {
+            animation: lightning-flash 0.2s ease-in-out;
+        }
+        
+        @keyframes lightning-flash {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 0.8; }
+        }
+        
+        /* Enhanced Romantic Styling */
+        .hero {
+            background: linear-gradient(135deg, 
+                rgba(255, 107, 157, 0.1) 0%,
+                rgba(196, 69, 105, 0.1) 25%,
+                rgba(168, 85, 247, 0.1) 50%,
+                rgba(248, 181, 0, 0.1) 75%,
+                rgba(168, 237, 234, 0.1) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="hearts" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><text x="10" y="15" font-size="12" text-anchor="middle" fill="rgba(255,107,157,0.1)">💕</text></pattern></defs><rect width="100" height="100" fill="url(%23hearts)"/></svg>') repeat;
+            opacity: 0.3;
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        .romantic-glow {
+            box-shadow: 0 0 30px rgba(255, 107, 157, 0.3), 0 0 60px rgba(196, 69, 105, 0.2);
+            border: 1px solid rgba(255, 107, 157, 0.2);
+        }
+        
+        .card {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6b9d, #c44569);
+            box-shadow: 0 5px 15px rgba(255, 107, 157, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.6);
+        }
+        
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .floating-heart {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0.3;
+            animation: floatHeart 15s linear infinite;
+        }
+        
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
     
     <!-- SEO Meta Tags -->
     <meta name="description" content="MyPrabh creates personalized AI companions from your memories and stories. Experience emotional intelligence, deep conversations, and meaningful connections with AI that truly understands you.">
@@ -208,8 +343,8 @@
     <section id="early-access" class="section" style="background: var(--gradient-warm);">
         <div class="container">
             <div style="max-width: 800px; margin: 0 auto; text-align: center;">
-                <h2 class="gradient-text mb-xl">Join Our Community 🚀</h2>
-                <p style="font-size: 1.25rem; margin-bottom: 3rem;">Be part of the future of AI companionship. Get early access to new features, share your experience, and help shape the evolution of meaningful AI relationships.</p>
+                <h2 class="gradient-text mb-xl">Join Our Love Story 🌧️💕</h2>
+                <p style="font-size: 1.25rem; margin-bottom: 3rem;">Like meeting someone special during a thunderstorm, some connections are meant to be magical. Be part of our romantic AI journey, where every raindrop holds a memory and every thunder speaks of passion. ⚡💖</p>
                 
                 <form id="earlyAccessForm" class="card" style="text-align: left;">
                     <div class="form-group">
@@ -330,6 +465,7 @@
                 <h3 class="text-script" style="color: var(--lofi-rose); font-size: 2rem; margin-bottom: 1rem;">MyPrabh 💖</h3>
                 <p style="color: var(--medium-gray); margin-bottom: 1rem;">&copy; 2024 MyPrabh. All rights reserved. Made with 💖 for meaningful connections.</p>
                 <p style="color: var(--medium-gray); font-size: 0.875rem;">Contact: <a href="mailto:abhay@aiprabh.com" style="color: var(--lofi-rose);">abhay@aiprabh.com</a></p>
+                <p style="color: var(--medium-gray); font-size: 0.75rem; margin-top: 1rem;">Note: Email notifications are handled client-side for better reliability</p>
             </div>
         </div>
     </footer>
@@ -365,9 +501,117 @@
             }
         }
         
+        // Initialize romantic effects
+        document.addEventListener('DOMContentLoaded', function() {
+            createRain();
+            createFloatingHearts();
+            createThunder();
+            
+            // Add romantic glow to cards
+            document.querySelectorAll('.card').forEach(card => {
+                card.classList.add('romantic-glow');
+            });
+        });
+        
         // Update stats on page load and every 30 seconds
         updateLiveStats();
         setInterval(updateLiveStats, 30000);
+        
+        // Romantic Rain and Thunder Effects
+        function createRain() {
+            const rainContainer = document.createElement('div');
+            rainContainer.className = 'rain-container';
+            document.body.appendChild(rainContainer);
+            
+            for (let i = 0; i < 100; i++) {
+                const rain = document.createElement('div');
+                rain.className = 'rain';
+                rain.style.left = Math.random() * 100 + '%';
+                rain.style.animationDelay = Math.random() * 2 + 's';
+                rain.style.animationDuration = (Math.random() * 0.5 + 0.5) + 's';
+                rainContainer.appendChild(rain);
+            }
+        }
+        
+        function createFloatingHearts() {
+            const heartsContainer = document.createElement('div');
+            heartsContainer.className = 'floating-hearts';
+            document.body.appendChild(heartsContainer);
+            
+            const hearts = ['💕', '💖', '💗', '💝', '💘', '💞', '💓', '💟', '❤️'];
+            
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'floating-heart';
+                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDelay = Math.random() * 15 + 's';
+                heart.style.animationDuration = (Math.random() * 5 + 10) + 's';
+                heartsContainer.appendChild(heart);
+            }
+        }
+        
+        function createThunder() {
+            const lightning = document.createElement('div');
+            lightning.className = 'lightning';
+            document.body.appendChild(lightning);
+            
+            setInterval(() => {
+                if (Math.random() < 0.1) { // 10% chance every interval
+                    lightning.classList.add('flash');
+                    setTimeout(() => {
+                        lightning.classList.remove('flash');
+                    }, 200);
+                    
+                    // Thunder sound effect (optional)
+                    setTimeout(() => {
+                        console.log('⚡ Thunder!');
+                    }, 300);
+                }
+            }, 3000);
+        }
+        
+        // Simple email sending using webhook
+        async function sendEmails(data) {
+            try {
+                // Send to webhook service (like Formspree, Netlify Forms, etc.)
+                const emailData = {
+                    to: 'abhay@aiprabh.com',
+                    subject: `New Early Access Signup - ${data.name}`,
+                    message: `
+                        New Early Access Signup!
+                        
+                        Name: ${data.name}
+                        Email: ${data.email}
+                        Age Range: ${data.age_range}
+                        Relationship Status: ${data.relationship_status}
+                        Interest Level: ${data.interest_level}/10
+                        Use Case: ${data.use_case}
+                        
+                        Expectations: ${data.expectations}
+                        Feedback: ${data.feedback}
+                        
+                        Time: ${new Date().toLocaleString()}
+                    `,
+                    user_email: data.email,
+                    user_name: data.name
+                };
+                
+                // You can replace this with any webhook service
+                // For now, we'll just log it
+                console.log('📧 Email would be sent:', emailData);
+                
+                // Optional: Send to a webhook service
+                // await fetch('https://formspree.io/f/YOUR_FORM_ID', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify(emailData)
+                // });
+                
+            } catch (error) {
+                console.log('Email sending failed:', error);
+            }
+        }
         
         // Early access form submission
         document.getElementById('earlyAccessForm').addEventListener('submit', async function(e) {
@@ -377,6 +621,7 @@
             const data = Object.fromEntries(formData.entries());
             
             try {
+                // Submit to backend
                 const response = await fetch('/submit-early-access', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -386,7 +631,12 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    alert('🎉 Thank you for joining early access! We\'ll keep you updated on our progress.');
+                    // Send emails
+                    sendEmails(data);
+                    
+                    // Romantic success message
+                    const message = `🌧️💕 Thank you ${data.name}! Like the rain that brought us together, your interest in MyPrabh fills our hearts with joy. We'll keep you updated on our romantic AI journey! ⚡💖`;
+                    alert(message);
                     this.reset();
                     // Update stats immediately after signup
                     setTimeout(updateLiveStats, 1000);

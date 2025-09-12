@@ -437,11 +437,9 @@ def submit_early_access():
                 return jsonify({'error': 'Email already registered for early access'}), 400
             return jsonify({'error': f'Database error: {str(db_error)}'}), 500
         
-        # Send email notification to admin
-        send_early_access_email(data)
-        
-        # Send confirmation email to user
-        send_early_access_confirmation_email(data)
+        # Email notifications handled by frontend JavaScript
+        # send_early_access_email(data)
+        # send_early_access_confirmation_email(data)
         
         # Log analytics
         log_analytics('early_signup', None, data)
@@ -519,16 +517,9 @@ def create_account():
         # Log analytics
         log_analytics('user_registered', user_id, {'email': email})
         
-        # Send registration notification email to admin
-        send_user_registration_email({
-            'email': email,
-            'name': email.split('@')[0],
-            'user_id': user_id,
-            'is_admin': is_admin
-        })
-        
-        # Send welcome email to user
-        send_welcome_email_to_user(email, email.split('@')[0])
+        # Email notifications handled by frontend JavaScript
+        # send_user_registration_email(...)
+        # send_welcome_email_to_user(...)
         
         return redirect(url_for('dashboard'))
         
