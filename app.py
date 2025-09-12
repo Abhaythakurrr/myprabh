@@ -420,8 +420,11 @@ def submit_early_access():
                 return jsonify({'error': 'Email already registered for early access'}), 400
             return jsonify({'error': f'Database error: {str(db_error)}'}), 500
         
-        # Send email notification
+        # Send email notification to admin
         send_early_access_email(data)
+        
+        # Send confirmation email to user
+        send_early_access_confirmation_email(data)
         
         # Log analytics
         log_analytics('early_signup', None, data)
@@ -2131,6 +2134,63 @@ Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
         
     except Exception as e:
         print(f"❌ Email sending failed: {e}")
+
+def send_early_access_confirmation_email(data):
+    """Send confirmation email to early access user"""
+    if not EMAIL_ENABLED:
+        print(f"📧 Early access confirmation would be sent to: {data['email']}")
+        return
+    
+    try:
+        msg = MimeMultipart()
+        msg['From'] = FROM_EMAIL
+        msg['To'] = data['email']
+        msg['Subject'] = "🎉 Welcome to MyPrabh Early Access!"
+        
+        body = f"""
+Hi {data['name']}! 👋
+
+Thank you for joining MyPrabh Early Access! 🌟
+
+We're thrilled to have you as part of our exclusive community of AI companion enthusiasts.
+
+✨ What happens next:
+• You'll be among the first to access new features
+• Get exclusive updates on our development progress
+• Receive special early access pricing when we launch
+• Help shape the future of AI companionship
+
+💖 Your Interest Profile:
+• Age Range: {data['age_range']}
+• Relationship Status: {data['relationship_status']}
+• Interest Level: {data['interest_level']}/10
+
+We'll keep you updated on our progress and notify you as soon as MyPrabh is ready for early access users!
+
+🚀 Stay connected:
+• Follow our journey at https://aiprabh.com
+• Questions? Just reply to this email
+
+Thank you for believing in our vision of meaningful AI relationships! 💕
+
+With excitement,
+Abhay & The MyPrabh Team
+
+P.S. Keep an eye on your inbox - exciting updates are coming soon!
+        """
+        
+        msg.attach(MimeText(body, 'plain'))
+        
+        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+        server.starttls()
+        server.login(FROM_EMAIL, EMAIL_PASSWORD)
+        server.send_message(msg)
+        server.quit()
+        
+        print(f"📧 Early access confirmation sent to {data['email']}")
+        
+    except Exception as e:
+        print(f"❌ Early access confirmation email failed: {e}")
 
 def send_welcome_email_to_user(user_email, user_name):
     """Send welcome email to new user"""
