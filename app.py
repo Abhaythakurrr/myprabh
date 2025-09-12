@@ -55,17 +55,17 @@ SMTP_SERVER = "mail.privateemail.com"
 SMTP_PORT = 587
 EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', '')  # Your PrivateMail password
 
-# Import email libraries with fallback
-try:
-    import smtplib
-    from email.mime.text import MimeText
-    from email.mime.multipart import MimeMultipart
-    EMAIL_LIBS_AVAILABLE = True
-except ImportError:
-    EMAIL_LIBS_AVAILABLE = False
-    print("⚠️ Email libraries not available - emails disabled")
+# Import email libraries (built-in Python libraries)
+import smtplib
+from email.mime.text import MimeText
+from email.mime.multipart import MimeMultipart
 
-EMAIL_ENABLED = EMAIL_LIBS_AVAILABLE and bool(EMAIL_PASSWORD)
+# Email is enabled if password is set
+EMAIL_ENABLED = bool(EMAIL_PASSWORD)
+if not EMAIL_ENABLED:
+    print("⚠️ Email disabled - set EMAIL_PASSWORD environment variable to enable")
+else:
+    print(f"📧 Email enabled: {FROM_EMAIL}")
 
 # Database connection helper
 def get_db_connection():
@@ -2393,8 +2393,6 @@ if __name__ == '__main__':
     
     if EMAIL_ENABLED:
         print(f"📧 Email notifications enabled: {FROM_EMAIL}")
-    elif not EMAIL_LIBS_AVAILABLE:
-        print("⚠️ Email libraries not available - install email dependencies")
     else:
         print("⚠️ Email notifications disabled (set EMAIL_PASSWORD environment variable)")
     
