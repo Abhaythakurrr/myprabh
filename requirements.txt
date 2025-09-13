@@ -10,6 +10,9 @@ textblob==0.17.1
 email-validator==2.1.0
 secure-smtplib==0.1.1
 psycopg2-binary==2.9.10
+transformers==4.36.2
+torch==2.1.2
+accelerate==0.25.0
 torch==2.0.1
 transformers==4.21.3
 accelerate==0.20.3

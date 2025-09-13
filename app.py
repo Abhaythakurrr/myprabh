@@ -1566,6 +1566,182 @@ def get_conversation_context(prabh_id):
     except Exception as e:
         return jsonify({'error': f'Failed to get context: {str(e)}'}), 500
 
+@app.route('/api/add-memory', methods=['POST'])
+def add_memory():
+    """Add new memory for real-time AI adaptation"""
+    if 'user_id' not in session:
+        return jsonify({'error': 'Not authenticated'}), 401
+
+    try:
+        data = request.get_json()
+        memory_text = data.get('memory_text', '').strip()
+        prabh_id = data.get('prabh_id')
+
+        if not memory_text or len(memory_text) < 20:
+            return jsonify({'error': 'Memory text must be at least 20 characters'}), 400
+
+        if not prabh_id:
+            return jsonify({'error': 'Prabh ID required'}), 400
+
+        # Verify ownership
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT prabh_name, story_content FROM prabh_instances
+            WHERE id = %s AND user_id = %s
+        ''', (prabh_id, session['user_id']))
+
+        prabh_data = cursor.fetchone()
+        conn.close()
+
+        if not prabh_data:
+            return jsonify({'error': 'Prabh not found'}), 404
+
+        # Add memory to real-time AI adaptation
+        try:
+            from realtime_ai_engine import realtime_ai
+
+            # Create adaptation sample from new memory
+            adaptation_sample = {
+                'input_text': f"New memory shared: {memory_text[:100]}...",
+                'target_text': f"Thank you for sharing this beautiful memory with me. {memory_text[:200]}... This means so much to me. 💕",
+                'memory_type': 'user_added',
+                'timestamp': datetime.now().isoformat()
+            }
+
+            # Add to adaptation queue
+            realtime_ai._queue_adaptation_sample(
+                f"I want to share a memory: {memory_text[:50]}...",
+                f"Thank you for sharing this beautiful memory with me. {memory_text[:100]}... This means so much to me. 💕"
+            )
+
+            # Store memory in database for persistence
+            conn = get_db_connection()
+            cursor = conn.cursor()
+
+            # Create memories table if it doesn't exist
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS user_memories (
+                    id SERIAL PRIMARY KEY,
+                    user_id TEXT NOT NULL,
+                    prabh_id INTEGER NOT NULL,
+                    memory_text TEXT NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (user_id) REFERENCES users (user_id),
+                    FOREIGN KEY (prabh_id) REFERENCES prabh_instances (id)
+                )
+            ''')
+
+            cursor.execute('''
+                INSERT INTO user_memories (user_id, prabh_id, memory_text)
+                VALUES (%s, %s, %s)
+            ''', (session['user_id'], prabh_id, memory_text))
+
+            conn.commit()
+            conn.close()
+
+            # Log analytics
+            log_analytics('memory_added', session['user_id'], {
+                'prabh_id': prabh_id,
+                'memory_length': len(memory_text)
+            })
+
+            return jsonify({
+                'success': True,
+                'message': 'Memory added successfully! Your AI companion will learn from this.',
+                'adaptation_status': realtime_ai.get_adaptation_status()
+            })
+
+        except ImportError:
+            return jsonify({'error': 'Real-time AI system not available'}), 503
+
+    except Exception as e:
+        return jsonify({'error': f'Failed to add memory: {str(e)}'}), 500
+
+@app.route('/api/get-memories/<int:prabh_id>')
+def get_memories(prabh_id):
+    """Get user's memories for a specific Prabh"""
+    if 'user_id' not in session:
+        return jsonify({'error': 'Not authenticated'}), 401
+
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            SELECT memory_text, created_at FROM user_memories
+            WHERE user_id = %s AND prabh_id = %s
+            ORDER BY created_at DESC
+        ''', (session['user_id'], prabh_id))
+
+        memories = [{
+            'text': row[0],
+            'created_at': row[1].isoformat() if hasattr(row[1], 'isoformat') else str(row[1])
+        } for row in cursor.fetchall()]
+
+        conn.close()
+
+        return jsonify({'memories': memories})
+
+    except Exception as e:
+        return jsonify({'error': f'Failed to get memories: {str(e)}'}), 500
+
+@app.route('/api/ai-status')
+def get_ai_status():
+    """Get AI learning and adaptation status"""
+    if 'user_id' not in session:
+        return jsonify({'error': 'Not authenticated'}), 401
+
+    try:
+        # Get conversation count for this user
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            SELECT COUNT(*) FROM chat_sessions
+            WHERE user_id = %s
+        ''', (session['user_id'],))
+
+        conversation_count = cursor.fetchone()[0]
+
+        # Get memory count
+        cursor.execute('''
+            SELECT COUNT(*) FROM user_memories pm
+            JOIN prabh_instances pi ON pm.prabh_id = pi.id
+            WHERE pi.user_id = %s
+        ''', (session['user_id'],))
+
+        memory_count = cursor.fetchone()[0]
+
+        conn.close()
+
+        # Get AI engine status
+        try:
+            from realtime_ai_engine import realtime_ai
+            ai_status = realtime_ai.get_adaptation_status()
+        except ImportError:
+            ai_status = {
+                'model_loaded': False,
+                'is_adapting': False,
+                'conversation_count': 0,
+                'adaptation_samples': 0
+            }
+
+        # Override with actual counts
+        ai_status['conversation_count'] = conversation_count
+        ai_status['adaptation_samples'] = memory_count
+
+        return jsonify(ai_status)
+
+    except Exception as e:
+        return jsonify({
+            'error': f'Failed to get AI status: {str(e)}',
+            'model_loaded': False,
+            'is_adapting': False,
+            'conversation_count': 0,
+            'adaptation_samples': 0
+        }), 500
+
 @app.route('/api/newsletter-signup', methods=['POST'])
 def newsletter_signup():
     """Handle newsletter signup"""
