@@ -33,16 +33,16 @@ app.secret_key = 'myprabh_mvp_2024_secret_key'
 USE_POSTGRES = True
 DATABASE_URL = os.environ.get('DATABASE_URL')
 if not DATABASE_URL:
-    print("⚠️ WARNING: DATABASE_URL environment variable not set!")
-    print("📋 For full functionality, set up PostgreSQL:")
+    print("WARNING: DATABASE_URL environment variable not set!")
+    print("For full functionality, set up PostgreSQL:")
     print("   1. Create a PostgreSQL database in Render dashboard")
     print("   2. Copy the 'External Database URL' from database settings")
     print("   3. Add DATABASE_URL environment variable in your web service settings")
     print("   4. Redeploy your application")
-    print("🚀 App will start in demo mode without database")
+    print("App will start in demo mode without database")
     USE_POSTGRES = False
 else:
-    print("✅ Using PostgreSQL database")
+    print("Using PostgreSQL database")
 
 # Set resource constraints for AI engine
 os.environ['RENDER_FREE_TIER'] = 'true'
@@ -251,13 +251,13 @@ def init_db():
 if USE_POSTGRES:
     try:
         init_db()
-        print("✅ Database initialized successfully")
+        print("Database initialized successfully")
     except Exception as e:
         print(f"ERROR: Database initialization failed: {e}")
         print("Tip: Make sure your DATABASE_URL is correct and the PostgreSQL database is accessible")
         exit(1)
 else:
-    print("ℹ️ Running in demo mode - database features disabled")
+    print("Running in demo mode - database features disabled")
 
 @app.route('/')
 def index():
