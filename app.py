@@ -22,7 +22,7 @@ try:
     from security import security_manager
     SECURITY_AVAILABLE = True
 except ImportError as e:
-    print(f"⚠️ Security module not available: {e}")
+    print(f"Warning: Security module not available: {e}")
     SECURITY_AVAILABLE = False
     security_manager = None
 
@@ -33,20 +33,20 @@ app.secret_key = 'myprabh_mvp_2024_secret_key'
 USE_POSTGRES = True
 DATABASE_URL = os.environ.get('DATABASE_URL')
 if not DATABASE_URL:
-    print("❌ DATABASE_URL environment variable not set!")
-    print("📋 For Render deployment:")
+    print("ERROR: DATABASE_URL environment variable not set!")
+    print("For Render deployment:")
     print("   1. Create a PostgreSQL database in Render dashboard")
     print("   2. Copy the 'External Database URL' from database settings")
     print("   3. Add DATABASE_URL environment variable in your web service settings")
     print("   4. Redeploy your application")
     exit(1)
-print("🗃️ Using PostgreSQL database")
+print("Using PostgreSQL database")
 
 # Set resource constraints for AI engine
 os.environ['RENDER_FREE_TIER'] = 'true'
 os.environ['MEMORY_LIMIT_MB'] = '512'
 os.environ['CPU_LIMIT'] = '0.1'
-print("⚡ Optimized for Render free tier (512MB RAM, 0.1 CPU)")
+print("Optimized for Render free tier (512MB RAM, 0.1 CPU)")
 
 # Razorpay Configuration
 RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', '')  # Set this in environment
@@ -91,7 +91,7 @@ EMAIL_ENABLED = EMAIL_LIBS_AVAILABLE and bool(EMAIL_PASSWORD)
 if EMAIL_ENABLED:
     print(f"📧 Email enabled: {FROM_EMAIL}")
 else:
-    print("⚠️ Email disabled - libraries unavailable or EMAIL_PASSWORD not set")
+    print("Warning: Email disabled - libraries unavailable or EMAIL_PASSWORD not set")
 
 # Database connection helper
 def get_db_connection():
@@ -250,8 +250,8 @@ try:
     init_db()
     print("✅ Database initialized successfully")
 except Exception as e:
-    print(f"❌ Database initialization failed: {e}")
-    print("💡 Make sure your DATABASE_URL is correct and the PostgreSQL database is accessible")
+    print(f"ERROR: Database initialization failed: {e}")
+    print("Tip: Make sure your DATABASE_URL is correct and the PostgreSQL database is accessible")
     exit(1)
 
 @app.route('/')
@@ -946,7 +946,7 @@ def chat_message():
             response = realtime_ai.generate_response(message)
 
         except ImportError as e:
-            print(f"⚠️ Real-time AI not available: {e}")
+            print(f"Warning: Real-time AI not available: {e}")
             # Fallback to lightweight AI
             try:
                 from lightweight_ai_engine import lightweight_ai
@@ -1097,7 +1097,7 @@ The MyPrabh Team
                     
                     print(f"🤖 Prabh ready email sent to {session.get('user_email')}")
                 except Exception as e:
-                    print(f"❌ Prabh ready email failed: {e}")
+                    print(f"ERROR: Prabh ready email failed: {e}")
             
         except Exception as training_error:
             print(f"Model training failed: {training_error}")
@@ -1806,6 +1806,11 @@ def refund():
     """Refund policy"""
     return render_template('refund.html')
 
+@app.route('/investors')
+def investors():
+    """Investor pitch deck page"""
+    return render_template('investors.html')
+
 def generate_prabh_response(message, prabh_data):
     """Generate response using lightweight AI with NLTK"""
     try:
@@ -2259,7 +2264,7 @@ Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
         print(f"📧 Early access notification sent to {SUPPORT_EMAIL}")
         
     except Exception as e:
-        print(f"❌ Email sending failed: {e}")
+        print(f"ERROR: Email sending failed: {e}")
 
 def send_user_registration_email(user_data):
     """Send user registration notification email"""
@@ -2400,7 +2405,7 @@ P.S. Keep an eye on your inbox - exciting updates are coming soon!
         print(f"📧 Early access confirmation sent to {data['email']}")
         
     except Exception as e:
-        print(f"❌ Early access confirmation email failed: {e}")
+        print(f"ERROR: Early access confirmation email failed: {e}")
 
 def send_welcome_email_to_user(user_email, user_name):
     """Send welcome email to new user"""
@@ -2455,7 +2460,7 @@ P.S. Your privacy is sacred to us. Your conversations and memories are encrypted
         print(f"👋 Welcome email sent to {user_email}")
         
     except Exception as e:
-        print(f"❌ Welcome email failed: {e}")
+        print(f"ERROR: Welcome email failed: {e}")
 
 def track_visitor(request):
     """Track website visitor"""
@@ -2599,13 +2604,13 @@ if __name__ == '__main__':
     if ai_ready:
         print("🧠💖 Advanced AI systems online")
     else:
-        print("⚠️ Running with basic systems")
+        print("Warning: Running with basic systems")
     
     print(f"🌐 Running on port {port}")
     
     if EMAIL_ENABLED:
         print(f"📧 Email notifications enabled: {FROM_EMAIL}")
     else:
-        print("⚠️ Email notifications disabled (set EMAIL_PASSWORD environment variable)")
+        print("Warning: Email notifications disabled (set EMAIL_PASSWORD environment variable)")
     
     app.run(debug=debug, host='0.0.0.0', port=port)

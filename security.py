@@ -6,7 +6,7 @@ try:
     CV2_AVAILABLE = True
 except ImportError:
     CV2_AVAILABLE = False
-    print("⚠️ OpenCV not available - face recognition disabled")
+    print("Warning: OpenCV not available - face recognition disabled")
 
 import base64
 from io import BytesIO

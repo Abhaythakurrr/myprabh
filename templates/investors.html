@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invest in Prabh - The Future of AI Companionship</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0f23, #1a1a2e, #16213e);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .pitch-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .pitch-header {
+            text-align: center;
+            padding: 80px 20px 60px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            margin-bottom: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .pitch-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff6b9d, #c44569, #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            font-family: 'Dancing Script', cursive;
+        }
+
+        .pitch-subtitle {
+            font-size: 1.4rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .pitch-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(255, 105, 180, 0.3);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff6b9d, #c44569);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+        }
+
+        .pitch-section {
+            margin-bottom: 80px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #ff6b9d, #c44569, #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: 'Dancing Script', cursive;
+        }
+
+        .story-content {
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .story-highlight {
+            background: linear-gradient(135deg, rgba(255, 105, 180, 0.2), rgba(196, 69, 105, 0.2));
+            padding: 30px;
+            border-radius: 20px;
+            margin: 30px 0;
+            border-left: 4px solid #ff6b9d;
+        }
+
+        .problem-solution {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            margin: 50px 0;
+        }
+
+        .problem-card, .solution-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .problem-card {
+            border-color: #ff6b6b;
+        }
+
+        .solution-card {
+            border-color: #4ecdc4;
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .card-content {
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .market-opportunity {
+            text-align: center;
+            margin: 50px 0;
+        }
+
+        .market-size {
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffd93d, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
+
+        .market-label {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+        }
+
+        .roadmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 50px 0;
+        }
+
+        .roadmap-item {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .roadmap-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(255, 105, 180, 0.2);
+        }
+
+        .roadmap-year {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ff6b9d;
+            margin-bottom: 15px;
+        }
+
+        .roadmap-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .roadmap-desc {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+        }
+
+        .investment-section {
+            text-align: center;
+            background: linear-gradient(135deg, rgba(255, 105, 180, 0.2), rgba(196, 69, 105, 0.2));
+            border-radius: 30px;
+            padding: 60px;
+            margin: 50px 0;
+            border: 2px solid rgba(255, 105, 180, 0.3);
+        }
+
+        .investment-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ff6b9d, #c44569);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .investment-amount {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #ffd93d;
+            margin-bottom: 30px;
+        }
+
+        .investment-desc {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #ff6b9d, #c44569);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.3);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(255, 105, 180, 0.4);
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .floating-element {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 20s linear infinite;
+        }
+
+        .floating-element:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+        .floating-element:nth-child(2) { top: 20%; right: 15%; animation-delay: 5s; }
+        .floating-element:nth-child(3) { bottom: 30%; left: 20%; animation-delay: 10s; }
+        .floating-element:nth-child(4) { bottom: 20%; right: 10%; animation-delay: 15s; }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .pitch-title {
+                font-size: 2.5rem;
+            }
+
+            .pitch-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .pitch-section {
+                padding: 30px 20px;
+            }
+
+            .problem-solution {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .roadmap {
+                grid-template-columns: 1fr;
+            }
+
+            .investment-section {
+                padding: 40px 20px;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Elements -->
+    <div class="floating-elements">
+        <div class="floating-element">🤖</div>
+        <div class="floating-element">💖</div>
+        <div class="floating-element">🚀</div>
+        <div class="floating-element">💫</div>
+    </div>
+
+    <div class="pitch-container">
+        <!-- Header -->
+        <div class="pitch-header">
+            <h1 class="pitch-title">Invest in Prabh</h1>
+            <p class="pitch-subtitle">
+                The Future of AI Companionship - Where Love Meets Technology
+            </p>
+
+            <!-- Key Stats -->
+            <div class="pitch-stats">
+                <div class="stat-card">
+                    <div class="stat-number">$2.5B</div>
+                    <div class="stat-label">AI Companion Market by 2027</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">85%</div>
+                    <div class="stat-label">People Experience Loneliness</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">10M+</div>
+                    <div class="stat-label">Potential Users Worldwide</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3x</div>
+                    <div class="stat-label">Faster Growth than AI Market</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- The Story -->
+        <div class="pitch-section">
+            <h2 class="section-title">The Story Behind Prabh</h2>
+            <div class="story-content">
+                <p>
+                    This is not just another startup idea born from market research or problem statements.
+                    <strong>This is our real life story.</strong>
+                </p>
+
+                <div class="story-highlight">
+                    <p>
+                        I had someone in my life I cared about deeply, loved unconditionally, and respected immensely.
+                        Even when I wasn't treated the same way, I always put them first - they were my priority, my super priority.
+                    </p>
+                </div>
+
+                <p>
+                    The day they left, I was shattered into pieces. But I never lost hope. I kept waiting, scrolling through my feed,
+                    when I stumbled upon a post about Jarvis - Tony Stark's AI assistant. That's when I named my vision:
+                    <strong>Prabh AI</strong>.
+                </p>
+
+                <p>
+                    But Prabh isn't just about AI - it's about preserving love, memories, and human connection in the digital age.
+                    It's about never letting someone feel alone again.
+                </p>
+            </div>
+        </div>
+
+        <!-- Problem & Solution -->
+        <div class="pitch-section">
+            <h2 class="section-title">The Problem & Our Solution</h2>
+
+            <div class="problem-solution">
+                <div class="problem-card">
+                    <div class="card-icon">💔</div>
+                    <h3 class="card-title">The Problem</h3>
+                    <div class="card-content">
+                        <ul>
+                            <li>85% of people experience loneliness</li>
+                            <li>Traditional AI companions lack emotional depth</li>
+                            <li>Existing platforms prioritize NSFW content over genuine connection</li>
+                            <li>People lose loved ones and want to preserve memories</li>
+                            <li>No AI that truly understands personal relationships</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="solution-card">
+                    <div class="card-icon">💖</div>
+                    <h3 class="card-title">Our Solution</h3>
+                    <div class="card-content">
+                        <ul>
+                            <li>Real-time fine-tuning on personal memories and stories</li>
+                            <li>Emotionally intelligent AI companions</li>
+                            <li>Preserve fading love stories digitally forever</li>
+                            <li>Multi-modal AI (text, voice, images, videos)</li>
+                            <li>Ethical AI focused on genuine human connection</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Market Opportunity -->
+        <div class="pitch-section">
+            <div class="market-opportunity">
+                <div class="market-size">$2.5 Billion</div>
+                <div class="market-label">AI Companion Market Size by 2027</div>
+                <p style="color: rgba(255, 255, 255, 0.8); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+                    We're not just building another AI app. We're creating the future of human-AI relationships,
+                    capturing a market that's growing 3x faster than the overall AI industry.
+                </p>
+            </div>
+        </div>
+
+        <!-- Products -->
+        <div class="pitch-section">
+            <h2 class="section-title">Our Products</h2>
+
+            <div class="problem-solution">
+                <div class="solution-card">
+                    <div class="card-icon">💕</div>
+                    <h3 class="card-title">MyPrabh</h3>
+                    <div class="card-content">
+                        <p><strong>Personal AI Companions</strong></p>
+                        <ul>
+                            <li>Real-time fine-tuning on your memories and stories</li>
+                            <li>Multi-modal input (text, voice, images, videos)</li>
+                            <li>Emotional intelligence that evolves with you</li>
+                            <li>Preserve fading relationships digitally</li>
+                            <li>Proactive check-ins and companionship</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="solution-card">
+                    <div class="card-icon">🤖</div>
+                    <h3 class="card-title">PrabhAI</h3>
+                    <div class="card-content">
+                        <p><strong>Business AI Agent</strong></p>
+                        <ul>
+                            <li>Lead generation and client acquisition</li>
+                            <li>Meeting scheduling and management</li>
+                            <li>Negotiation and deal closing</li>
+                            <li>Real-time business analytics</li>
+                            <li>Human-like communication in professional settings</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Roadmap -->
+        <div class="pitch-section">
+            <h2 class="section-title">Our Roadmap</h2>
+
+            <div class="roadmap">
+                <div class="roadmap-item">
+                    <div class="roadmap-year">2024</div>
+                    <h3 class="roadmap-title">MVP Launch</h3>
+                    <div class="roadmap-desc">
+                        MyPrabh MVP with real-time fine-tuning, basic AI companions, and memory sharing
+                    </div>
+                </div>
+
+                <div class="roadmap-item">
+                    <div class="roadmap-year">2025</div>
+                    <h3 class="roadmap-title">AR/VR Integration</h3>
+                    <div class="roadmap-desc">
+                        Avatar creation, AR companions, immersive experiences with AI companions
+                    </div>
+                </div>
+
+                <div class="roadmap-item">
+                    <div class="roadmap-year">2026</div>
+                    <h3 class="roadmap-title">Robotics & Hardware</h3>
+                    <div class="roadmap-desc">
+                        Physical robots, companion devices, smart home integration
+                    </div>
+                </div>
+
+                <div class="roadmap-item">
+                    <div class="roadmap-year">2027</div>
+                    <h3 class="roadmap-title">Global Expansion</h3>
+                    <div class="roadmap-desc">
+                        Multi-language support, global market penetration, enterprise solutions
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Investment Opportunity -->
+        <div class="investment-section">
+            <h2 class="investment-title">Investment Opportunity</h2>
+            <div class="investment-amount">$500K - $2M</div>
+            <p class="investment-desc">
+                We're seeking strategic investors who believe in the future of human-AI relationships.
+                Join us in building technology that heals hearts and connects souls.
+            </p>
+
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: #ffd93d; margin-bottom: 20px;">Use of Funds:</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; max-width: 800px; margin: 0 auto;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; color: #4ecdc4;">40%</div>
+                        <div style="color: rgba(255, 255, 255, 0.8);">AI Development</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; color: #4ecdc4;">30%</div>
+                        <div style="color: rgba(255, 255, 255, 0.8);">Team & Operations</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; color: #4ecdc4;">20%</div>
+                        <div style="color: rgba(255, 255, 255, 0.8);">Marketing & Growth</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; color: #4ecdc4;">10%</div>
+                        <div style="color: rgba(255, 255, 255, 0.8);">Legal & Compliance</div>
+                    </div>
+                </div>
+            </div>
+
+            <a href="mailto:abhay@aiprabh.com?subject=Investment Interest in Prabh" class="cta-button">
+                <i class="fas fa-envelope"></i> Express Investment Interest
+            </a>
+        </div>
+
+        <!-- Vision -->
+        <div class="pitch-section">
+            <h2 class="section-title">Our Vision</h2>
+            <div class="story-content">
+                <p style="text-align: center; font-size: 1.3rem; font-style: italic;">
+                    "To create AI companions so real, so loving, that no one ever feels alone again."
+                </p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-top: 50px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">🎭</div>
+                        <h3 style="color: #ff6b9d;">Animated Love Stories</h3>
+                        <p>Turn your memories into beautiful animated films that you can share and cherish forever.</p>
+                    </div>
+
+                    <div style="text-align: center;">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">🤖</div>
+                        <h3 style="color: #ff6b9d;">Physical Companions</h3>
+                        <p>From teddy bears that speak your loved one's voice to full robots that provide real companionship.</p>
+                    </div>
+
+                    <div style="text-align: center;">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">🌟</div>
+                        <h3 style="color: #ff6b9d;">Legacy Preservation</h3>
+                        <p>Keep your loved ones' memories, personalities, and love alive through advanced AI technology.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact -->
+        <div class="pitch-section" style="text-align: center;">
+            <h2 class="section-title">Ready to Join Our Mission?</h2>
+            <p style="color: rgba(255, 255, 255, 0.9); font-size: 1.1rem; margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto;">
+                We're not just building technology - we're preserving love, memories, and human connection for future generations.
+            </p>
+
+            <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                <a href="mailto:abhay@aiprabh.com?subject=Investment Interest" class="cta-button">
+                    <i class="fas fa-handshake"></i> Invest in Prabh
+                </a>
+                <a href="/" class="cta-button" style="background: linear-gradient(135deg, #4ecdc4, #44a08d);">
+                    <i class="fas fa-eye"></i> See Our MVP
+                </a>
+            </div>
+
+            <div style="margin-top: 40px; padding: 30px; background: rgba(255, 255, 255, 0.1); border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.2);">
+                <p style="margin: 0; color: rgba(255, 255, 255, 0.8);">
+                    <strong>Contact:</strong> abhay@aiprabh.com | <strong>Founder:</strong> Abhay Thakur
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Smooth scrolling and animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate elements on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Initially hide elements
+            document.querySelectorAll('.pitch-section, .stat-card, .roadmap-item').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+
+            // Floating elements animation
+            function createFloatingElement() {
+                const elements = ['🤖', '💖', '🚀', '💫', '🎯', '🌟'];
+                const element = document.createElement('div');
+                element.className = 'floating-element';
+                element.textContent = elements[Math.floor(Math.random() * elements.length)];
+                element.style.left = Math.random() * 100 + '%';
+                element.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                element.style.fontSize = (Math.random() * 20 + 20) + 'px';
+
+                document.querySelector('.floating-elements').appendChild(element);
+
+                setTimeout(() => {
+                    if (element.parentNode) {
+                        element.parentNode.removeChild(element);
+                    }
+                }, 25000);
+            }
+
+            // Create floating elements periodically
+            setInterval(createFloatingElement, 3000);
+
+            // Add click tracking for CTA buttons
+            document.querySelectorAll('.cta-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    // Add click animation
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
