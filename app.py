@@ -55,11 +55,25 @@ SMTP_SERVER = "mail.privateemail.com"
 SMTP_PORT = 465
 EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', '')  # Your PrivateMail password
 
-# Import email libraries
-import smtplib
-from email.mime.text import MimeText
-from email.mime.multipart import MimeMultipart
-EMAIL_LIBS_AVAILABLE = True
+# Import email libraries with Python 3.13 compatibility
+try:
+    import smtplib
+    from email.mime.text import MimeText
+    from email.mime.multipart import MimeMultipart
+    EMAIL_LIBS_AVAILABLE = True
+except ImportError:
+    # Python 3.13 compatibility - use alternative approach
+    import smtplib
+    import email.message
+    EMAIL_LIBS_AVAILABLE = True
+    
+    def MimeText(text, subtype='plain'):
+        msg = email.message.EmailMessage()
+        msg.set_content(text)
+        return msg
+    
+    def MimeMultipart(subtype='mixed'):
+        return email.message.EmailMessage()
 
 # Email is enabled if libraries are available and password is set
 EMAIL_ENABLED = EMAIL_LIBS_AVAILABLE and bool(EMAIL_PASSWORD)
@@ -2039,7 +2053,10 @@ Feedback:
 Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
         """
         
-        msg.attach(MimeText(body, 'plain'))
+        if hasattr(msg, 'attach'):
+            msg.attach(MimeText(body, 'plain'))
+        else:
+            msg.set_content(body)
         
         # Send email
         server = smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT)
@@ -2077,7 +2094,10 @@ Admin: {user_data.get('is_admin', False)}
 Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
         """
         
-        msg.attach(MimeText(body, 'plain'))
+        if hasattr(msg, 'attach'):
+            msg.attach(MimeText(body, 'plain'))
+        else:
+            msg.set_content(body)
         
         # Send email
         server = smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT)
@@ -2115,7 +2135,10 @@ Payment Status: {prabh_data.get('payment_status', 'PENDING')}
 Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
         """
         
-        msg.attach(MimeText(body, 'plain'))
+        if hasattr(msg, 'attach'):
+            msg.attach(MimeText(body, 'plain'))
+        else:
+            msg.set_content(body)
         
         # Send email
         server = smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT)
@@ -2172,7 +2195,10 @@ Abhay & The MyPrabh Team
 P.S. Keep an eye on your inbox - exciting updates are coming soon!
         """
         
-        msg.attach(MimeText(body, 'plain'))
+        if hasattr(msg, 'attach'):
+            msg.attach(MimeText(body, 'plain'))
+        else:
+            msg.set_content(body)
         
         server = smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT)
         server.login(FROM_EMAIL, EMAIL_PASSWORD)
@@ -2224,7 +2250,10 @@ The MyPrabh Team 💕
 P.S. Your privacy is sacred to us. Your conversations and memories are encrypted and never shared.
         """
         
-        msg.attach(MimeText(body, 'plain'))
+        if hasattr(msg, 'attach'):
+            msg.attach(MimeText(body, 'plain'))
+        else:
+            msg.set_content(body)
         
         server = smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT)
         server.login(FROM_EMAIL, EMAIL_PASSWORD)
