@@ -517,9 +517,14 @@ def create_account():
         # Log analytics
         log_analytics('user_registered', user_id, {'email': email})
         
-        # Email notifications handled by frontend JavaScript
-        # send_user_registration_email(...)
-        # send_welcome_email_to_user(...)
+        # Send email notifications
+        send_user_registration_email({
+            'email': email,
+            'name': email.split('@')[0],
+            'user_id': user_id,
+            'is_admin': is_admin
+        })
+        send_welcome_email_to_user(email, email.split('@')[0])
         
         return redirect(url_for('dashboard'))
         

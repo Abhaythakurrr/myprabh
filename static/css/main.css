@@ -38,6 +38,7 @@
   --gradient-accent: linear-gradient(135deg, var(--primary-teal) 0%, var(--primary-blue) 100%);
   --gradient-warm: linear-gradient(135deg, var(--lofi-cream) 0%, var(--lofi-rose) 100%);
   --gradient-romantic: linear-gradient(135deg, #ff69b4, #ff1493, #ff69b4);
+  --gradient-success: linear-gradient(135deg, #10b981, #059669);
   
   /* Shadows - Soft & Cozy */
   --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.08);
