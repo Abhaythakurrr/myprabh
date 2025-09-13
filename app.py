@@ -1,16 +1,12 @@
 # MyPrabh MVP - Flask Application
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
-import sqlite3
+# import sqlite3  # Replaced with PostgreSQL
 import uuid
 
-# Try to import PostgreSQL, fallback to SQLite if not available
-try:
-    import psycopg2
-    from psycopg2.extras import RealDictCursor
-    POSTGRES_AVAILABLE = True
-except ImportError:
-    POSTGRES_AVAILABLE = False
-    print("⚠️ PostgreSQL not available, using SQLite")
+# Import PostgreSQL
+import psycopg2
+from psycopg2.extras import RealDictCursor
+POSTGRES_AVAILABLE = True
 # Email functionality disabled for MVP deployment
 # import smtplib
 # from email.mime.text import MimeText
@@ -33,9 +29,10 @@ except ImportError as e:
 app = Flask(__name__)
 app.secret_key = 'myprabh_mvp_2024_secret_key'
 
-# Database Configuration - Always use SQLite for simplicity
-USE_POSTGRES = False
-print("🗃️ Using SQLite database")
+# Database Configuration - Use PostgreSQL
+USE_POSTGRES = True
+DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://localhost/myprabh')
+print("🗃️ Using PostgreSQL database")
 
 # Razorpay Configuration
 RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', '')  # Set this in environment
@@ -84,24 +81,8 @@ else:
 
 # Database connection helper
 def get_db_connection():
-    """Get SQLite database connection with proper timeout and retry logic"""
-    import time
-    max_retries = 3
-    
-    for attempt in range(max_retries):
-        try:
-            conn = sqlite3.connect('myprabh.db', timeout=30.0)
-            conn.execute('PRAGMA journal_mode=WAL;')
-            conn.execute('PRAGMA synchronous=NORMAL;')
-            conn.execute('PRAGMA cache_size=10000;')
-            conn.execute('PRAGMA temp_store=MEMORY;')
-            return conn
-        except sqlite3.OperationalError as e:
-            if "database is locked" in str(e) and attempt < max_retries - 1:
-                time.sleep(0.1 * (attempt + 1))
-                continue
-            raise e
-    return None
+    """Get PostgreSQL database connection"""
+    return psycopg2.connect(DATABASE_URL)
 
 class DatabaseManager:
     """Context manager for database operations"""
@@ -111,7 +92,7 @@ class DatabaseManager:
     
     def __enter__(self):
         self.conn = get_db_connection()
-        self.cursor = self.conn.cursor()
+        self.cursor = self.conn.cursor(cursor_factory=RealDictCursor)
         return self.cursor
     
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -126,10 +107,10 @@ def init_db():
     conn = get_db_connection()
     cursor = conn.cursor()
     
-    # SQLite schema
+    # PostgreSQL schema
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             user_id TEXT UNIQUE NOT NULL,
             email TEXT UNIQUE NOT NULL,
             name TEXT NOT NULL,
@@ -144,7 +125,7 @@ def init_db():
     # Blog posts table
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS blog_posts (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             title TEXT NOT NULL,
             content TEXT NOT NULL,
             author_id TEXT NOT NULL,
@@ -158,7 +139,7 @@ def init_db():
     # Early access signups
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS early_signups (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             email TEXT UNIQUE NOT NULL,
             name TEXT NOT NULL,
             age_range TEXT,
@@ -174,7 +155,7 @@ def init_db():
     # Prabh instances
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS prabh_instances (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             user_id TEXT NOT NULL,
             prabh_name TEXT NOT NULL,
             character_description TEXT,
@@ -193,7 +174,7 @@ def init_db():
     # Chat sessions
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS chat_sessions (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             user_id TEXT NOT NULL,
             prabh_id INTEGER NOT NULL,
             message_count INTEGER DEFAULT 0,
@@ -207,7 +188,7 @@ def init_db():
     # Analytics
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS analytics (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             event_type TEXT NOT NULL,
             user_id TEXT,
             data TEXT,
@@ -218,7 +199,7 @@ def init_db():
     # Visitor tracking
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS visitors (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             ip_address TEXT,
             user_agent TEXT,
             page_visited TEXT,
@@ -444,7 +425,7 @@ def submit_early_access():
         
         return jsonify({'success': True, 'message': 'Thank you for joining our early access!'})
         
-    except sqlite3.IntegrityError:
+    except psycopg2.IntegrityError:
         return jsonify({'error': 'Email already registered for early access'}), 400
     except Exception as e:
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
@@ -526,7 +507,7 @@ def create_account():
         
         return redirect(url_for('dashboard'))
         
-    except sqlite3.IntegrityError:
+    except psycopg2.IntegrityError:
         return render_template('create_account.html', error='Email already registered')
     except Exception as e:
         return render_template('create_account.html', error=f'Registration failed: {str(e)}')
@@ -1000,7 +981,7 @@ def verify_payment():
             return jsonify({'error': 'Missing payment data'}), 400
         
         # Get Prabh data for model training
-        conn = sqlite3.connect('myprabh.db')
+        conn = get_db_connection()
         cursor = conn.cursor()
         
         cursor.execute('''
@@ -1029,7 +1010,7 @@ def verify_payment():
             model_path = create_personalized_model(session['user_id'], prabh_data)
             
             # Update model status to READY and notify user
-            conn = sqlite3.connect('myprabh.db')
+            conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute('''
                 UPDATE prabh_instances 
@@ -1088,7 +1069,7 @@ The MyPrabh Team
         except Exception as training_error:
             print(f"Model training failed: {training_error}")
             # Set fallback status
-            conn = sqlite3.connect('myprabh.db')
+            conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute('''
                 UPDATE prabh_instances SET model_status = 'FALLBACK' WHERE id = ?
@@ -1141,7 +1122,7 @@ def export_users():
     if 'user_id' not in session or not session.get('is_admin'):
         return jsonify({'error': 'Unauthorized'}), 401
     
-    conn = sqlite3.connect('myprabh.db')
+    conn = get_db_connection()
     cursor = conn.cursor()
     
     # Get all users with their Prabh count
@@ -1455,7 +1436,7 @@ def start_voice_call():
         prabh_id = data.get('prabh_id')
         
         # Get character profile
-        conn = sqlite3.connect('myprabh.db')
+        conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute('''
             SELECT prabh_name, character_description, story_content, character_tags, personality_traits
@@ -1522,7 +1503,7 @@ def get_conversation_context(prabh_id):
     
     try:
         # Verify ownership
-        conn = sqlite3.connect('myprabh.db')
+        conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute('''
             SELECT prabh_name, story_content FROM prabh_instances 
@@ -1569,7 +1550,7 @@ def newsletter_signup():
             return jsonify({'error': 'Email is required'}), 400
         
         # Store newsletter signup in database
-        conn = sqlite3.connect('myprabh.db')
+        conn = get_db_connection()
         cursor = conn.cursor()
         
         # Create newsletter table if it doesn't exist
@@ -1594,7 +1575,7 @@ def newsletter_signup():
         
         return jsonify({'success': True, 'message': 'Successfully subscribed to newsletter'})
         
-    except sqlite3.IntegrityError:
+    except psycopg2.IntegrityError:
         return jsonify({'error': 'Email already subscribed'}), 400
     except Exception as e:
         return jsonify({'error': f'Subscription failed: {str(e)}'}), 500
@@ -2308,7 +2289,7 @@ def track_visitor(request):
 
 def get_live_stats():
     """Get real-time statistics with caching"""
-    conn = sqlite3.connect('myprabh.db')
+    conn = get_db_connection()
     cursor = conn.cursor()
     
     # Get cached stats first
@@ -2378,7 +2359,7 @@ def get_live_stats():
 def log_analytics(event_type, user_id, data):
     """Log analytics event"""
     try:
-        conn = sqlite3.connect('myprabh.db')
+        conn = get_db_connection()
         cursor = conn.cursor()
         
         cursor.execute('''
