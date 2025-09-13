@@ -437,9 +437,9 @@ def submit_early_access():
                 return jsonify({'error': 'Email already registered for early access'}), 400
             return jsonify({'error': f'Database error: {str(db_error)}'}), 500
         
-        # Email notifications handled by frontend JavaScript
-        # send_early_access_email(data)
-        # send_early_access_confirmation_email(data)
+        # Send email notifications
+        send_early_access_email(data)
+        send_early_access_confirmation_email(data)
         
         # Log analytics
         log_analytics('early_signup', None, data)
