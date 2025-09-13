@@ -408,9 +408,9 @@ def submit_early_access():
             cursor = conn.cursor()
             
             cursor.execute('''
-                INSERT INTO early_signups 
+                INSERT INTO early_signups
                 (email, name, age_range, relationship_status, interest_level, use_case, expectations, feedback)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             ''', (
                 data['email'],
                 data['name'],
@@ -490,7 +490,7 @@ def create_account():
         
         cursor.execute('''
             INSERT INTO users (user_id, email, name, password_hash, face_signature, is_admin)
-            VALUES (?, ?, ?, ?, ?, ?)
+            VALUES (%s, %s, %s, %s, %s, %s)
         ''', (user_id, email, email.split('@')[0], password_hash, face_signature, is_admin))
         
         conn.commit()
@@ -551,7 +551,7 @@ def login():
         cursor = conn.cursor()
         cursor.execute('''
             SELECT user_id, email, name, password_hash, is_admin
-            FROM users WHERE email = ?
+            FROM users WHERE email = %s
         ''', (email,))
         user = cursor.fetchone()
         conn.close()
@@ -575,7 +575,7 @@ def login():
         cursor = conn.cursor()
         cursor.execute('''
             UPDATE users SET last_active = CURRENT_TIMESTAMP
-            WHERE user_id = ?
+            WHERE user_id = %s
         ''', (user[0],))
         conn.commit()
         conn.close()
@@ -657,8 +657,8 @@ def dashboard():
         
         cursor.execute('''
             SELECT id, prabh_name, character_description, created_at, last_used, payment_status
-            FROM prabh_instances 
-            WHERE user_id = ?
+            FROM prabh_instances
+            WHERE user_id = %s
             ORDER BY last_used DESC
         ''', (session['user_id'],))
         
@@ -711,9 +711,9 @@ def create_prabh():
                 cursor = conn.cursor()
                 
                 cursor.execute('''
-                    INSERT INTO prabh_instances 
+                    INSERT INTO prabh_instances
                     (user_id, prabh_name, character_description, story_content, character_tags, personality_traits, payment_status, model_status)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                 ''', (
                     session['user_id'],
                     prabh_name,
@@ -774,9 +774,9 @@ def save_prabh():
             cursor = conn.cursor()
             
             cursor.execute('''
-                INSERT INTO prabh_instances 
+                INSERT INTO prabh_instances
                 (user_id, prabh_name, character_description, story_content, character_tags, personality_traits, payment_status)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
             ''', (
                 session['user_id'],
                 data['prabh_name'],
@@ -822,8 +822,8 @@ def payment_page(prabh_id):
         
         cursor.execute('''
             SELECT id, prabh_name, character_description
-            FROM prabh_instances 
-            WHERE id = ? AND user_id = ?
+            FROM prabh_instances
+            WHERE id = %s AND user_id = %s
         ''', (prabh_id, session['user_id']))
         
         prabh_data = cursor.fetchone()
@@ -859,8 +859,8 @@ def chat_interface(prabh_id):
         
         cursor.execute('''
             SELECT id, prabh_name, character_description, story_content, character_tags, personality_traits, payment_status
-            FROM prabh_instances 
-            WHERE id = ? AND user_id = ?
+            FROM prabh_instances
+            WHERE id = %s AND user_id = %s
         ''', (prabh_id, session['user_id']))
         
         prabh_data = cursor.fetchone()
@@ -876,9 +876,9 @@ def chat_interface(prabh_id):
         
         # Update last used
         cursor.execute('''
-            UPDATE prabh_instances 
-            SET last_used = CURRENT_TIMESTAMP 
-            WHERE id = ?
+            UPDATE prabh_instances
+            SET last_used = CURRENT_TIMESTAMP
+            WHERE id = %s
         ''', (prabh_id,))
         
         conn.commit()
@@ -1013,9 +1013,9 @@ def verify_payment():
         
         cursor.execute('''
             SELECT prabh_name, character_description, story_content, character_tags, personality_traits
-            FROM prabh_instances WHERE id = ? AND user_id = ?
+            FROM prabh_instances
+            WHERE id = %s AND user_id = %s
         ''', (prabh_id, session['user_id']))
-        
         prabh_data = cursor.fetchone()
         
         if not prabh_data:
@@ -1023,9 +1023,9 @@ def verify_payment():
         
         # Mark as PAID and set training status
         cursor.execute('''
-            UPDATE prabh_instances 
-            SET payment_status = 'PAID', model_status = 'TRAINING', last_used = CURRENT_TIMESTAMP 
-            WHERE id = ? AND user_id = ?
+            UPDATE prabh_instances
+            SET payment_status = 'PAID', model_status = 'TRAINING', last_used = CURRENT_TIMESTAMP
+            WHERE id = %s AND user_id = %s
         ''', (prabh_id, session['user_id']))
         
         conn.commit()
@@ -1040,13 +1040,13 @@ def verify_payment():
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute('''
-                UPDATE prabh_instances 
-                SET model_status = 'READY', model_path = ?
-                WHERE id = ?
+                UPDATE prabh_instances
+                SET model_status = 'READY', model_path = %s
+                WHERE id = %s
             ''', (model_path, prabh_id))
-            
+
             # Get Prabh name for notification
-            cursor.execute('SELECT prabh_name FROM prabh_instances WHERE id = ?', (prabh_id,))
+            cursor.execute('SELECT prabh_name FROM prabh_instances WHERE id = %s', (prabh_id,))
             prabh_name = cursor.fetchone()[0]
             
             conn.commit()
@@ -1099,7 +1099,7 @@ The MyPrabh Team
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute('''
-                UPDATE prabh_instances SET model_status = 'FALLBACK' WHERE id = ?
+                UPDATE prabh_instances SET model_status = 'FALLBACK' WHERE id = %s
             ''', (prabh_id,))
             conn.commit()
             conn.close()
@@ -1195,7 +1195,7 @@ def create_blog_post():
         
         cursor.execute('''
             INSERT INTO blog_posts (title, content, author_id, published)
-            VALUES (?, ?, ?, ?)
+            VALUES (%s, %s, %s, %s)
         ''', (title, content, session['user_id'], published))
         
         post_id = cursor.lastrowid
@@ -1380,11 +1380,11 @@ def setup_face_recognition():
             conn = sqlite3.connect('myprabh.db')
             cursor = conn.cursor()
             
-            cursor.execute('SELECT user_id FROM users WHERE email = ?', (email,))
+            cursor.execute('SELECT user_id FROM users WHERE email = %s', (email,))
             user = cursor.fetchone()
             
             if user:
-                cursor.execute('UPDATE users SET face_signature = ? WHERE email = ?', (face_signature, email))
+                cursor.execute('UPDATE users SET face_signature = %s WHERE email = %s', (face_signature, email))
                 conn.commit()
                 conn.close()
                 return jsonify({'success': True, 'message': 'Face recognition setup successful'})
@@ -1424,7 +1424,7 @@ def face_login():
             
             cursor.execute('''
                 SELECT user_id, email, name, is_admin
-                FROM users WHERE face_signature = ?
+                FROM users WHERE face_signature = %s
             ''', (face_signature,))
             
             user = cursor.fetchone()
@@ -1467,7 +1467,7 @@ def start_voice_call():
         cursor = conn.cursor()
         cursor.execute('''
             SELECT prabh_name, character_description, story_content, character_tags, personality_traits
-            FROM prabh_instances WHERE id = ? AND user_id = ?
+            FROM prabh_instances WHERE id = %s AND user_id = %s
         ''', (prabh_id, session['user_id']))
         prabh_data = cursor.fetchone()
         conn.close()
@@ -1533,8 +1533,8 @@ def get_conversation_context(prabh_id):
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute('''
-            SELECT prabh_name, story_content FROM prabh_instances 
-            WHERE id = ? AND user_id = ?
+            SELECT prabh_name, story_content FROM prabh_instances
+            WHERE id = %s AND user_id = %s
         ''', (prabh_id, session['user_id']))
         prabh_data = cursor.fetchone()
         conn.close()
@@ -2522,8 +2522,8 @@ def get_live_stats():
         
         # Update cache
         cursor.execute('''
-            UPDATE stats_cache SET 
-            total_visitors = ?, total_users = ?, total_prabhs = ?, early_signups = ?,
+            UPDATE stats_cache SET
+            total_visitors = %s, total_users = %s, total_prabhs = %s, early_signups = %s,
             last_updated = CURRENT_TIMESTAMP
             WHERE id = 1
         ''', (total_visitors, total_users, total_prabhs, early_signups))
@@ -2538,15 +2538,15 @@ def get_live_stats():
     
     # Active users (last 24 hours) - always fresh
     cursor.execute('''
-        SELECT COUNT(*) FROM users 
-        WHERE last_active > datetime('now', '-1 day')
+        SELECT COUNT(*) FROM users
+        WHERE last_active > CURRENT_TIMESTAMP - INTERVAL '1 day'
     ''')
     active_users = cursor.fetchone()[0]
-    
+
     # Visitors today
     cursor.execute('''
-        SELECT COUNT(DISTINCT session_id) FROM visitors 
-        WHERE visit_timestamp > datetime('now', '-1 day')
+        SELECT COUNT(DISTINCT session_id) FROM visitors
+        WHERE visit_timestamp > CURRENT_TIMESTAMP - INTERVAL '1 day'
     ''')
     visitors_today = cursor.fetchone()[0]
     
@@ -2569,7 +2569,7 @@ def log_analytics(event_type, user_id, data):
         
         cursor.execute('''
             INSERT INTO analytics (event_type, user_id, data)
-            VALUES (?, ?, ?)
+            VALUES (%s, %s, %s)
         ''', (event_type, user_id, json.dumps(data)))
         
         conn.commit()
