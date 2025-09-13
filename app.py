@@ -31,7 +31,15 @@ app.secret_key = 'myprabh_mvp_2024_secret_key'
 
 # Database Configuration - Use PostgreSQL
 USE_POSTGRES = True
-DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://localhost/myprabh')
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if not DATABASE_URL:
+    print("❌ DATABASE_URL environment variable not set!")
+    print("📋 For Render deployment:")
+    print("   1. Create a PostgreSQL database in Render dashboard")
+    print("   2. Copy the 'External Database URL' from database settings")
+    print("   3. Add DATABASE_URL environment variable in your web service settings")
+    print("   4. Redeploy your application")
+    exit(1)
 print("🗃️ Using PostgreSQL database")
 
 # Razorpay Configuration
@@ -232,7 +240,13 @@ def init_db():
     conn.close()
 
 # Initialize database on startup
-init_db()
+try:
+    init_db()
+    print("✅ Database initialized successfully")
+except Exception as e:
+    print(f"❌ Database initialization failed: {e}")
+    print("💡 Make sure your DATABASE_URL is correct and the PostgreSQL database is accessible")
+    exit(1)
 
 @app.route('/')
 def index():
