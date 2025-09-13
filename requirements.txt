@@ -3,13 +3,11 @@ Werkzeug==2.3.7
 gunicorn==21.2.0
 razorpay==1.4.1
 requests==2.31.0
-Pillow==10.4.0
-numpy==1.26.4
-nltk==3.8.1
-textblob==0.17.1
-email-validator==2.1.0
-secure-smtplib==0.1.1
 psycopg2-binary==2.9.10
+
+# Minimal dependencies for lightweight operation
+# Removed: Pillow, numpy, nltk, textblob, email-validator, secure-smtplib
+# These can be added back when needed
 
 # Optional AI dependencies (commented out for Render free tier)
 # torch>=2.0.0
