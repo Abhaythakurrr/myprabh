@@ -7,6 +7,8 @@
 !app.py
 !requirements.txt
 !Procfile
+!realtime_ai_engine.py
+!lightweight_ai_engine.py
 !templates/
 !templates/**
 !static/
