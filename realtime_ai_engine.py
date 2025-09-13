@@ -43,14 +43,15 @@ from lightweight_ai_engine import lightweight_ai
 class RealtimeAIEngine:
     """Real-time AI engine with small pretrained model and live adaptation"""
 
-    def __init__(self, model_name="microsoft/DialoGPT-small", max_memory_samples=50):
+    def __init__(self, model_name="microsoft/DialoGPT-small", max_memory_samples=20):
         self.model_name = model_name
         self.max_memory_samples = max_memory_samples
         self.model = None
         self.tokenizer = None
         self.optimizer = None
         self.scheduler = None
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.device = "cpu"  # Force CPU for Render free tier
+        self.model_loaded = False
 
         # Real-time adaptation data
         self.conversation_memory = []
@@ -58,22 +59,33 @@ class RealtimeAIEngine:
         self.character_context = None
         self.is_adapting = False
 
-        # Threading for background adaptation
-        self.adaptation_queue = queue.Queue()
+        # Resource management
+        self.max_memory_mb = 512  # Limit memory usage
+        self.enable_adaptation = False  # Disable real-time adaptation for free tier
+
+        # Threading for background adaptation (disabled for free tier)
+        self.adaptation_queue = None
         self.adaptation_thread = None
 
-        # Initialize components
-        self._initialize_model()
-        self._start_adaptation_worker()
+        # Initialize components lazily
+        print("🤖 Real-time AI engine initialized (lazy loading)")
 
     def _initialize_model(self):
-        """Initialize the small pretrained model"""
+        """Lazy initialization of the small pretrained model"""
         if not TRANSFORMERS_AVAILABLE:
-            print("Running in lightweight NLP mode only")
+            print("🤖 Running in lightweight NLP mode only")
+            return
+
+        # Check if we should load the model based on environment
+        should_load_model = self._should_load_model()
+
+        if not should_load_model:
+            print("⚠️ Skipping model loading for resource-constrained environment")
+            print("🤖 Using lightweight NLP mode")
             return
 
         try:
-            print(f"Loading {self.model_name} for real-time AI...")
+            print(f"🤖 Loading {self.model_name} for real-time AI...")
 
             # Load tokenizer
             self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
@@ -83,26 +95,58 @@ class RealtimeAIEngine:
             # Load model with memory optimization
             self.model = AutoModelForCausalLM.from_pretrained(
                 self.model_name,
-                torch_dtype=torch.float16 if self.device == "cuda" else torch.float32,
+                torch_dtype=torch.float32,  # Use float32 for CPU
                 low_cpu_mem_usage=True
             ).to(self.device)
 
             # Apply PEFT or freeze parameters for efficient fine-tuning
-            if PEFT_AVAILABLE:
+            if PEFT_AVAILABLE and self.enable_adaptation:
                 self._apply_peft_adapter()
             else:
                 self._freeze_parameters()
 
-            # Setup optimizer for real-time adaptation
-            self._setup_optimizer()
+            # Setup optimizer for real-time adaptation (only if enabled)
+            if self.enable_adaptation:
+                self._setup_optimizer()
 
-            print(f"Model loaded on {self.device}")
-            print(f"Trainable parameters: {self._count_trainable_params()}")
+            self.model_loaded = True
+            print(f"✅ Model loaded on {self.device}")
+            print(f"🔧 Trainable parameters: {self._count_trainable_params()}")
 
         except Exception as e:
-            print(f"Model loading failed: {e}")
-            print("Falling back to lightweight NLP mode")
+            print(f"❌ Model loading failed: {e}")
+            print("🔄 Falling back to lightweight NLP mode")
             self.model = None
+            self.model_loaded = False
+
+    def _should_load_model(self):
+        """Check if we should load the model based on environment constraints"""
+        # Check environment variables for resource limits
+        render_free_tier = os.environ.get('RENDER_FREE_TIER', '').lower() == 'true'
+        memory_limit = os.environ.get('MEMORY_LIMIT_MB', '512')
+        cpu_limit = os.environ.get('CPU_LIMIT', '0.1')
+
+        try:
+            memory_limit = int(memory_limit)
+            cpu_limit = float(cpu_limit)
+        except:
+            memory_limit = 512
+            cpu_limit = 0.1
+
+        # Don't load model on Render free tier or low memory
+        if render_free_tier or memory_limit < 1024 or cpu_limit < 0.5:
+            return False
+
+        # Check available memory
+        try:
+            import psutil
+            available_memory = psutil.virtual_memory().available / (1024 * 1024)  # MB
+            if available_memory < 800:  # Less than 800MB available
+                return False
+        except:
+            pass  # psutil not available, assume we can try
+
+        return True
 
     def _apply_peft_adapter(self):
         """Apply PEFT LoRA adapter for efficient fine-tuning"""
@@ -300,14 +344,20 @@ class RealtimeAIEngine:
     def generate_response(self, user_message):
         """Generate response using hybrid approach: model + lightweight NLP"""
         if not self.character_context:
-            return "I need to learn about our story first, my love."
+            return "I need to learn about our story first, my love. 💕"
+
+        # Lazy load model on first use if not already loaded
+        if not self.model_loaded and TRANSFORMERS_AVAILABLE:
+            self._initialize_model()
 
         # Analyze message with lightweight engine
         sentiment = lightweight_ai._analyze_message_sentiment(user_message)
         relevant_memories = lightweight_ai._find_relevant_memories(user_message)
 
-        # Try model generation first
-        model_response = self._generate_with_model(user_message, relevant_memories)
+        # Try model generation first if model is available
+        model_response = None
+        if self.model_loaded and self.model:
+            model_response = self._generate_with_model(user_message, relevant_memories)
 
         if model_response and len(model_response) > 20:
             # Use model response, but enhance with personality
@@ -316,11 +366,12 @@ class RealtimeAIEngine:
             # Fallback to lightweight engine
             response = lightweight_ai.generate_response(user_message)
 
-        # Store conversation for adaptation
+        # Store conversation for adaptation and context
         self._store_conversation(user_message, response, sentiment)
 
-        # Trigger background adaptation
-        self._queue_adaptation_sample(user_message, response)
+        # Trigger background adaptation (only if enabled)
+        if self.enable_adaptation:
+            self._queue_adaptation_sample(user_message, response)
 
         return response
 

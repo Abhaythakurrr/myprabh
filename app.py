@@ -42,6 +42,12 @@ if not DATABASE_URL:
     exit(1)
 print("🗃️ Using PostgreSQL database")
 
+# Set resource constraints for AI engine
+os.environ['RENDER_FREE_TIER'] = 'true'
+os.environ['MEMORY_LIMIT_MB'] = '512'
+os.environ['CPU_LIMIT'] = '0.1'
+print("⚡ Optimized for Render free tier (512MB RAM, 0.1 CPU)")
+
 # Razorpay Configuration
 RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', '')  # Set this in environment
 RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', '')  # Set this in environment
