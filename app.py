@@ -52,7 +52,7 @@ FROM_EMAIL = "abhay@aiprabh.com"  # Sender email
 
 # SMTP configuration for PrivateMail
 SMTP_SERVER = "mail.privateemail.com"
-SMTP_PORT = 587
+SMTP_PORT = 465
 EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', '')  # Your PrivateMail password
 
 # Import email libraries with fallback for Python 3.13 compatibility
@@ -1078,8 +1078,7 @@ The MyPrabh Team
                     
                     msg.attach(MimeText(body, 'plain'))
                     
-                    server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
-                    server.starttls()
+                    server = smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT)
                     server.login(FROM_EMAIL, EMAIL_PASSWORD)
                     server.send_message(msg)
                     server.quit()
@@ -2059,8 +2058,7 @@ Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
         msg.attach(MimeText(body, 'plain'))
         
         # Send email
-        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
-        server.starttls()
+        server = smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT)
         server.login(FROM_EMAIL, EMAIL_PASSWORD)
         server.send_message(msg)
         server.quit()
@@ -2098,8 +2096,7 @@ Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
         msg.attach(MimeText(body, 'plain'))
         
         # Send email
-        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
-        server.starttls()
+        server = smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT)
         server.login(FROM_EMAIL, EMAIL_PASSWORD)
         server.send_message(msg)
         server.quit()
@@ -2137,8 +2134,7 @@ Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
         msg.attach(MimeText(body, 'plain'))
         
         # Send email
-        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
-        server.starttls()
+        server = smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT)
         server.login(FROM_EMAIL, EMAIL_PASSWORD)
         server.send_message(msg)
         server.quit()
@@ -2194,8 +2190,7 @@ P.S. Keep an eye on your inbox - exciting updates are coming soon!
         
         msg.attach(MimeText(body, 'plain'))
         
-        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
-        server.starttls()
+        server = smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT)
         server.login(FROM_EMAIL, EMAIL_PASSWORD)
         server.send_message(msg)
         server.quit()
@@ -2247,8 +2242,7 @@ P.S. Your privacy is sacred to us. Your conversations and memories are encrypted
         
         msg.attach(MimeText(body, 'plain'))
         
-        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
-        server.starttls()
+        server = smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT)
         server.login(FROM_EMAIL, EMAIL_PASSWORD)
         server.send_message(msg)
         server.quit()

@@ -533,7 +533,10 @@
 
         function updateStatWithChange(elementId, newValue) {
             const element = document.getElementById(elementId);
-            const changeElement = document.getElementById(elementId.replace('total', '').replace('early', 'earlyAccess').replace('active', 'activeUsers').replace('visitors', 'visitors') + 'Change');
+            if (!element) return;
+            
+            const changeElementId = elementId + 'Change';
+            const changeElement = document.getElementById(changeElementId);
             
             const oldValue = parseInt(element.textContent) || 0;
             const change = newValue - oldValue;
@@ -541,16 +544,18 @@
             // Animate number
             animateNumber(elementId, newValue);
             
-            // Update change indicator
-            if (change > 0) {
-                changeElement.textContent = `+${change}`;
-                changeElement.className = 'stat-trend trend-up';
-            } else if (change < 0) {
-                changeElement.textContent = `${change}`;
-                changeElement.className = 'stat-trend trend-down';
-            } else {
-                changeElement.textContent = '—';
-                changeElement.className = 'stat-trend trend-neutral';
+            // Update change indicator if element exists
+            if (changeElement) {
+                if (change > 0) {
+                    changeElement.textContent = `+${change}`;
+                    changeElement.className = 'stat-trend trend-up';
+                } else if (change < 0) {
+                    changeElement.textContent = `${change}`;
+                    changeElement.className = 'stat-trend trend-down';
+                } else {
+                    changeElement.textContent = '—';
+                    changeElement.className = 'stat-trend trend-neutral';
+                }
             }
         }
 
