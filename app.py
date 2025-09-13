@@ -934,36 +934,21 @@ def chat_message():
         if not prabh_data:
             return jsonify({'error': 'Prabh not found'}), 404
         
-        # Generate response using real-time AI with small pretrained model
+        # Generate response using ultra-lightweight memory-based AI
         try:
-            from realtime_ai_engine import realtime_ai
+            from memory_based_ai import memory_ai
 
             # Initialize character context if needed
-            if not realtime_ai.character_context or realtime_ai.character_context.get("name") != prabh_data[0]:
-                user_name = realtime_ai._extract_user_name(prabh_data[2]) if hasattr(realtime_ai, '_extract_user_name') else None
-                realtime_ai.process_story(prabh_data[2], prabh_data[0], user_name)
+            if not memory_ai.character_context or memory_ai.character_context.get("name") != prabh_data[0]:
+                user_name = memory_ai._extract_user_name(prabh_data[2])
+                memory_ai.process_story(prabh_data[2], prabh_data[0], user_name)
 
-            response = realtime_ai.generate_response(message)
+            response = memory_ai.generate_response(message)
 
         except ImportError as e:
-            print(f"Warning: Real-time AI not available: {e}")
-            # Fallback to lightweight AI
-            try:
-                from lightweight_ai_engine import lightweight_ai
-
-                # Initialize if needed
-                if not lightweight_ai.models_loaded:
-                    lightweight_ai.initialize_models()
-
-                # Process story if needed
-                if not lightweight_ai.character_context:
-                    user_name = lightweight_ai._extract_user_name(prabh_data[2])
-                    lightweight_ai.process_story(prabh_data[2], prabh_data[0], user_name)
-
-                response = lightweight_ai.generate_response(message)
-
-            except ImportError:
-                response = generate_prabh_response(message, prabh_data)
+            print(f"Warning: Memory AI not available: {e}")
+            # Fallback to basic response generation
+            response = generate_prabh_response(message, prabh_data)
         
         # Prepare response data
         response_data = {
@@ -1603,63 +1588,55 @@ def add_memory():
         if not prabh_data:
             return jsonify({'error': 'Prabh not found'}), 404
 
-        # Add memory to real-time AI adaptation
+        # Add memory to AI learning system
         try:
-            from realtime_ai_engine import realtime_ai
+            from memory_based_ai import memory_ai
 
-            # Create adaptation sample from new memory
-            adaptation_sample = {
-                'input_text': f"New memory shared: {memory_text[:100]}...",
-                'target_text': f"Thank you for sharing this beautiful memory with me. {memory_text[:200]}... This means so much to me. 💕",
-                'memory_type': 'user_added',
-                'timestamp': datetime.now().isoformat()
-            }
+            # Add memory to the AI's learning system
+            success = memory_ai.add_memory(memory_text)
 
-            # Add to adaptation queue
-            realtime_ai._queue_adaptation_sample(
-                f"I want to share a memory: {memory_text[:50]}...",
-                f"Thank you for sharing this beautiful memory with me. {memory_text[:100]}... This means so much to me. 💕"
-            )
+            if success:
+                # Store memory in database for persistence
+                conn = get_db_connection()
+                cursor = conn.cursor()
 
-            # Store memory in database for persistence
-            conn = get_db_connection()
-            cursor = conn.cursor()
+                # Create memories table if it doesn't exist
+                cursor.execute('''
+                    CREATE TABLE IF NOT EXISTS user_memories (
+                        id SERIAL PRIMARY KEY,
+                        user_id TEXT NOT NULL,
+                        prabh_id INTEGER NOT NULL,
+                        memory_text TEXT NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        FOREIGN KEY (user_id) REFERENCES users (user_id),
+                        FOREIGN KEY (prabh_id) REFERENCES prabh_instances (id)
+                    )
+                ''')
 
-            # Create memories table if it doesn't exist
-            cursor.execute('''
-                CREATE TABLE IF NOT EXISTS user_memories (
-                    id SERIAL PRIMARY KEY,
-                    user_id TEXT NOT NULL,
-                    prabh_id INTEGER NOT NULL,
-                    memory_text TEXT NOT NULL,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    FOREIGN KEY (user_id) REFERENCES users (user_id),
-                    FOREIGN KEY (prabh_id) REFERENCES prabh_instances (id)
-                )
-            ''')
+                cursor.execute('''
+                    INSERT INTO user_memories (user_id, prabh_id, memory_text)
+                    VALUES (%s, %s, %s)
+                ''', (session['user_id'], prabh_id, memory_text))
 
-            cursor.execute('''
-                INSERT INTO user_memories (user_id, prabh_id, memory_text)
-                VALUES (%s, %s, %s)
-            ''', (session['user_id'], prabh_id, memory_text))
+                conn.commit()
+                conn.close()
 
-            conn.commit()
-            conn.close()
+                # Log analytics
+                log_analytics('memory_added', session['user_id'], {
+                    'prabh_id': prabh_id,
+                    'memory_length': len(memory_text)
+                })
 
-            # Log analytics
-            log_analytics('memory_added', session['user_id'], {
-                'prabh_id': prabh_id,
-                'memory_length': len(memory_text)
-            })
-
-            return jsonify({
-                'success': True,
-                'message': 'Memory added successfully! Your AI companion will learn from this.',
-                'adaptation_status': realtime_ai.get_adaptation_status()
-            })
+                return jsonify({
+                    'success': True,
+                    'message': 'Memory added successfully! Your AI companion will learn from this.',
+                    'memory_stats': memory_ai.get_memory_stats()
+                })
+            else:
+                return jsonify({'error': 'Failed to add memory to AI system'}), 500
 
         except ImportError:
-            return jsonify({'error': 'Real-time AI system not available'}), 503
+            return jsonify({'error': 'Memory AI system not available'}), 503
 
     except Exception as e:
         return jsonify({'error': f'Failed to add memory: {str(e)}'}), 500
@@ -1696,8 +1673,10 @@ def get_ai_status():
 
         # Get AI engine status
         try:
-            from realtime_ai_engine import realtime_ai
-            ai_status = realtime_ai.get_adaptation_status()
+            from memory_based_ai import memory_ai
+            ai_status = memory_ai.get_memory_stats()
+            ai_status['model_loaded'] = True
+            ai_status['is_adapting'] = False  # Memory AI doesn't have real-time adaptation
         except ImportError:
             ai_status = {
                 'model_loaded': False,
