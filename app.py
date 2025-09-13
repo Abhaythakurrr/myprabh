@@ -33,14 +33,16 @@ app.secret_key = 'myprabh_mvp_2024_secret_key'
 USE_POSTGRES = True
 DATABASE_URL = os.environ.get('DATABASE_URL')
 if not DATABASE_URL:
-    print("ERROR: DATABASE_URL environment variable not set!")
-    print("For Render deployment:")
+    print("⚠️ WARNING: DATABASE_URL environment variable not set!")
+    print("📋 For full functionality, set up PostgreSQL:")
     print("   1. Create a PostgreSQL database in Render dashboard")
     print("   2. Copy the 'External Database URL' from database settings")
     print("   3. Add DATABASE_URL environment variable in your web service settings")
     print("   4. Redeploy your application")
-    exit(1)
-print("Using PostgreSQL database")
+    print("🚀 App will start in demo mode without database")
+    USE_POSTGRES = False
+else:
+    print("✅ Using PostgreSQL database")
 
 # Set resource constraints for AI engine
 os.environ['RENDER_FREE_TIER'] = 'true'
@@ -245,14 +247,17 @@ def init_db():
     conn.commit()
     conn.close()
 
-# Initialize database on startup
-try:
-    init_db()
-    print("✅ Database initialized successfully")
-except Exception as e:
-    print(f"ERROR: Database initialization failed: {e}")
-    print("Tip: Make sure your DATABASE_URL is correct and the PostgreSQL database is accessible")
-    exit(1)
+# Initialize database on startup (only if PostgreSQL is configured)
+if USE_POSTGRES:
+    try:
+        init_db()
+        print("✅ Database initialized successfully")
+    except Exception as e:
+        print(f"ERROR: Database initialization failed: {e}")
+        print("Tip: Make sure your DATABASE_URL is correct and the PostgreSQL database is accessible")
+        exit(1)
+else:
+    print("ℹ️ Running in demo mode - database features disabled")
 
 @app.route('/')
 def index():
@@ -651,31 +656,40 @@ def dashboard():
     """User dashboard"""
     if 'user_id' not in session:
         return redirect(url_for('create_account'))
-    
+
     # Check if admin wants to go to admin dashboard
     if session.get('is_admin') and request.args.get('admin') == 'true':
         return redirect(url_for('admin_dashboard'))
-    
+
+    # Handle demo mode (no database)
+    if not USE_POSTGRES:
+        return render_template('dashboard.html',
+                             user_name=session['user_name'],
+                             is_admin=session.get('is_admin', False),
+                             prabh_instances=[],
+                             demo_mode=True,
+                             demo_message="🚀 Demo Mode: Set up PostgreSQL database to unlock full features!")
+
     # Get user's Prabh instances with proper connection handling
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
-        
+
         cursor.execute('''
             SELECT id, prabh_name, character_description, created_at, last_used, payment_status
             FROM prabh_instances
             WHERE user_id = %s
             ORDER BY last_used DESC
         ''', (session['user_id'],))
-        
+
         prabh_instances = cursor.fetchall()
         conn.close()
-        
+
     except Exception as e:
         print(f"Dashboard database error: {e}")
         prabh_instances = []
-    
-    return render_template('dashboard.html', 
+
+    return render_template('dashboard.html',
                          user_name=session['user_name'],
                          is_admin=session.get('is_admin', False),
                          prabh_instances=prabh_instances)

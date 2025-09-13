@@ -209,7 +209,15 @@
         <div class="welcome-section">
             <h1 class="welcome-title">Your Prabh Companions</h1>
             <p class="welcome-subtitle">Hold onto memories. Stay connected. Feel closer.</p>
-            
+
+            {% if demo_mode %}
+            <div style="background: linear-gradient(135deg, #FFE4E1, #FFF0F5); border: 2px solid #FF69B4; border-radius: 15px; padding: 20px; margin: 20px 0; text-align: center;">
+                <h3 style="color: #FF1493; margin-bottom: 10px;">🚀 Demo Mode Active</h3>
+                <p style="color: #666; margin-bottom: 15px;">{{ demo_message }}</p>
+                <a href="https://docs.render.com/postgresql" target="_blank" style="background: #FF69B4; color: white; padding: 10px 20px; border-radius: 25px; text-decoration: none; display: inline-block;">📚 Setup PostgreSQL Guide</a>
+            </div>
+            {% endif %}
+
             {% if is_admin %}
             <div class="admin-panel">
                 <h3>🔧 Admin Panel</h3>
