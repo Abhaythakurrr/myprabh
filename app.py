@@ -2397,40 +2397,40 @@ def track_visitor(request):
     """Track website visitor"""
     try:
         import hashlib
-        
+
         # Create session ID from IP + User Agent
         ip = request.environ.get('HTTP_X_FORWARDED_FOR', request.environ.get('REMOTE_ADDR', 'unknown'))
         user_agent = request.headers.get('User-Agent', '')
         session_id = hashlib.md5(f"{ip}_{user_agent}".encode()).hexdigest()
-        
-        conn = sqlite3.connect('myprabh.db')
+
+        conn = get_db_connection()
         cursor = conn.cursor()
-        
+
         # Check if this session visited in last hour (avoid spam)
         cursor.execute('''
-            SELECT COUNT(*) FROM visitors 
-            WHERE session_id = ? AND visit_timestamp > datetime('now', '-1 hour')
+            SELECT COUNT(*) FROM visitors
+            WHERE session_id = %s AND visit_timestamp > CURRENT_TIMESTAMP - INTERVAL '1 hour'
         ''', (session_id,))
-        
+
         if cursor.fetchone()[0] == 0:
             # New visitor or returning after 1 hour
             cursor.execute('''
                 INSERT INTO visitors (ip_address, user_agent, page_visited, session_id)
-                VALUES (?, ?, ?, ?)
+                VALUES (%s, %s, %s, %s)
             ''', (ip[:50], user_agent[:200], request.path, session_id))
-            
+
             # Update stats cache
             cursor.execute('''
-                UPDATE stats_cache SET 
+                UPDATE stats_cache SET
                 total_visitors = (SELECT COUNT(DISTINCT session_id) FROM visitors),
                 last_updated = CURRENT_TIMESTAMP
                 WHERE id = 1
             ''')
-            
+
             conn.commit()
-        
+
         conn.close()
-        
+
     except Exception as e:
         print(f"Visitor tracking error: {e}")
 
@@ -2444,7 +2444,7 @@ def get_live_stats():
     cache = cursor.fetchone()
     
     # Update cache if older than 5 minutes or missing data
-    if not cache or datetime.now().timestamp() - datetime.fromisoformat(cache[5].replace('Z', '+00:00')).timestamp() > 300:
+    if not cache or (datetime.now() - cache[5]).total_seconds() > 300:
         
         # Total unique visitors
         cursor.execute('SELECT COUNT(DISTINCT session_id) FROM visitors')
