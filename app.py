@@ -1658,33 +1658,6 @@ def add_memory():
     except Exception as e:
         return jsonify({'error': f'Failed to add memory: {str(e)}'}), 500
 
-@app.route('/api/get-memories/<int:prabh_id>')
-def get_memories(prabh_id):
-    """Get user's memories for a specific Prabh"""
-    if 'user_id' not in session:
-        return jsonify({'error': 'Not authenticated'}), 401
-
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-
-        cursor.execute('''
-            SELECT memory_text, created_at FROM user_memories
-            WHERE user_id = %s AND prabh_id = %s
-            ORDER BY created_at DESC
-        ''', (session['user_id'], prabh_id))
-
-        memories = [{
-            'text': row[0],
-            'created_at': row[1].isoformat() if hasattr(row[1], 'isoformat') else str(row[1])
-        } for row in cursor.fetchall()]
-
-        conn.close()
-
-        return jsonify({'memories': memories})
-
-    except Exception as e:
-        return jsonify({'error': f'Failed to get memories: {str(e)}'}), 500
 
 @app.route('/api/ai-status')
 def get_ai_status():
