@@ -104,8 +104,11 @@ def get_db_connection():
         import psycopg2
         return psycopg2.connect(DATABASE_URL)
     else:
-        conn = sqlite3.connect(DB_PATH)
+        conn = sqlite3.connect(DB_PATH, timeout=30.0)
         conn.row_factory = sqlite3.Row
+        conn.execute('PRAGMA journal_mode=WAL')
+        conn.execute('PRAGMA synchronous=NORMAL')
+        conn.execute('PRAGMA cache_size=10000')
         return conn
 
 class DatabaseManager:
@@ -250,7 +253,11 @@ def init_db():
                 VALUES (1, 0, 0, 0, 0)
             ''')
     else:
-        # SQLite schema
+        # SQLite schema with WAL
+        cursor.execute('PRAGMA journal_mode=WAL')
+        cursor.execute('PRAGMA synchronous=NORMAL')
+        cursor.execute('PRAGMA cache_size=10000')
+        
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
