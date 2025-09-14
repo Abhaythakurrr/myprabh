@@ -1163,6 +1163,23 @@ def chat_message():
                 ''', (prabh_id, session['user_id']))
             
             prabh_data = cursor.fetchone()
+
+            # Fetch memories for RAG
+            memories = []
+            if USE_POSTGRES:
+                cursor.execute('''
+                    SELECT memory_text FROM user_memories
+                    WHERE prabh_id = %s AND user_id = %s
+                    ORDER BY created_at DESC LIMIT 10
+                ''', (prabh_id, session['user_id']))
+            else:
+                cursor.execute('''
+                    SELECT memory_text FROM user_memories
+                    WHERE prabh_id = ? AND user_id = ?
+                    ORDER BY created_at DESC LIMIT 10
+                ''', (prabh_id, session['user_id']))
+            memories = [row[0] for row in cursor.fetchall()]
+            
             conn.close()
             
         except Exception as e:
@@ -1623,14 +1640,20 @@ def setup_face_recognition():
             image_bytes = base64.b64decode(image_data)
             face_signature = hashlib.md5(image_bytes[:1000]).hexdigest()
             
-            conn = sqlite3.connect('myprabh.db')
+            conn = get_db_connection()
             cursor = conn.cursor()
             
-            cursor.execute('SELECT user_id FROM users WHERE email = %s', (email,))
+            if USE_POSTGRES:
+                cursor.execute('SELECT user_id FROM users WHERE email = %s', (email,))
+            else:
+                cursor.execute('SELECT user_id FROM users WHERE email = ?', (email,))
             user = cursor.fetchone()
             
             if user:
-                cursor.execute('UPDATE users SET face_signature = %s WHERE email = %s', (face_signature, email))
+                if USE_POSTGRES:
+                    cursor.execute('UPDATE users SET face_signature = %s WHERE email = %s', (face_signature, email))
+                else:
+                    cursor.execute('UPDATE users SET face_signature = ? WHERE email = ?', (face_signature, email))
                 conn.commit()
                 conn.close()
                 return jsonify({'success': True, 'message': 'Face recognition setup successful'})
@@ -1665,13 +1688,19 @@ def face_login():
             image_bytes = base64.b64decode(image_data)
             face_signature = hashlib.md5(image_bytes[:1000]).hexdigest()
             
-            conn = sqlite3.connect('myprabh.db')
+            conn = get_db_connection()
             cursor = conn.cursor()
             
-            cursor.execute('''
-                SELECT user_id, email, name, is_admin
-                FROM users WHERE face_signature = %s
-            ''', (face_signature,))
+            if USE_POSTGRES:
+                cursor.execute('''
+                    SELECT user_id, email, name, is_admin
+                    FROM users WHERE face_signature = %s
+                ''', (face_signature,))
+            else:
+                cursor.execute('''
+                    SELECT user_id, email, name, is_admin
+                    FROM users WHERE face_signature = ?
+                ''', (face_signature,))
             
             user = cursor.fetchone()
             conn.close()
@@ -1680,7 +1709,7 @@ def face_login():
                 session['user_id'] = user[0]
                 session['user_email'] = user[1]
                 session['user_name'] = user[2]
-                session['is_admin'] = bool(user[3])
+                session['is_admin'] = bool(user[4]) if USE_POSTGRES else bool(user[3])
                 
                 log_analytics('face_login', user[0], {'method': 'face_recognition'})
                 
@@ -1711,10 +1740,16 @@ def start_voice_call():
         # Get character profile
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute('''
-            SELECT prabh_name, character_description, story_content, character_tags, personality_traits
-            FROM prabh_instances WHERE id = %s AND user_id = %s
-        ''', (prabh_id, session['user_id']))
+        if USE_POSTGRES:
+            cursor.execute('''
+                SELECT prabh_name, character_description, story_content, character_tags, personality_traits
+                FROM prabh_instances WHERE id = %s AND user_id = %s
+            ''', (prabh_id, session['user_id']))
+        else:
+            cursor.execute('''
+                SELECT prabh_name, character_description, story_content, character_tags, personality_traits
+                FROM prabh_instances WHERE id = ? AND user_id = ?
+            ''', (prabh_id, session['user_id']))
         prabh_data = cursor.fetchone()
         conn.close()
         
@@ -1778,10 +1813,16 @@ def get_conversation_context(prabh_id):
         # Verify ownership
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute('''
-            SELECT prabh_name, story_content FROM prabh_instances
-            WHERE id = %s AND user_id = %s
-        ''', (prabh_id, session['user_id']))
+        if USE_POSTGRES:
+            cursor.execute('''
+                SELECT prabh_name, story_content FROM prabh_instances
+                WHERE id = %s AND user_id = %s
+            ''', (prabh_id, session['user_id']))
+        else:
+            cursor.execute('''
+                SELECT prabh_name, story_content FROM prabh_instances
+                WHERE id = ? AND user_id = ?
+            ''', (prabh_id, session['user_id']))
         prabh_data = cursor.fetchone()
         conn.close()
         
@@ -1832,10 +1873,16 @@ def add_memory():
         # Verify ownership
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute('''
-            SELECT prabh_name, story_content FROM prabh_instances
-            WHERE id = %s AND user_id = %s
-        ''', (prabh_id, session['user_id']))
+        if USE_POSTGRES:
+            cursor.execute('''
+                SELECT prabh_name, story_content FROM prabh_instances
+                WHERE id = %s AND user_id = %s
+            ''', (prabh_id, session['user_id']))
+        else:
+            cursor.execute('''
+                SELECT prabh_name, story_content FROM prabh_instances
+                WHERE id = ? AND user_id = ?
+            ''', (prabh_id, session['user_id']))
 
         prabh_data = cursor.fetchone()
         conn.close()
@@ -2939,8 +2986,16 @@ if __name__ == '__main__':
         print("Warning: Email notifications disabled (set EMAIL_PASSWORD environment variable)")
     
     app.run(debug=debug, host='0.0.0.0', port=port)
+def jaccard_similarity(a, b):
+    """Simple similarity measure for RAG retrieval"""
+    set_a = set(a.lower().split())
+    set_b = set(b.lower().split())
+    intersection = set_a.intersection(set_b)
+    union = set_a.union(set_b)
+    return len(intersection) / len(union) if len(union) > 0 else 0
+
 def generate_rag_response(message, prabh_data, memories):
-    """Generate RAG-based response using retrieved memories"""
+    """Generate RAG-based response using retrieved memories with reasoning"""
     prabh_name, description, story, tags_json, traits_json = prabh_data
     
     try:
@@ -2950,34 +3005,64 @@ def generate_rag_response(message, prabh_data, memories):
         character_tags = []
         personality_traits = {}
     
-    # Simple keyword-based retrieval
-    relevant_memory = ""
-    best_score = 0
-    message_words = set(message.lower().split())
+    if not memories:
+        # Fallback if no memories
+        user_name = extract_user_name_from_story(story) if story else None
+        response = f"I love talking with you, {user_name or 'my love'}. Tell me more about what's on your mind. 💕"
+        return add_personality_touches_simple(response, character_tags)
     
-    for memory in memories:
-        memory_words = set(memory.lower().split())
-        common = message_words.intersection(memory_words)
-        score = len(common) / max(len(message_words), 1)
-        if score > best_score:
-            best_score = score
-            relevant_memory = memory
+    # Retrieve top 3 relevant memories using Jaccard similarity
+    message_words = message.lower().split()
+    relevant_memories = sorted(
+        memories,
+        key=lambda m: jaccard_similarity(message, m),
+        reverse=True
+    )[:3]
     
-    # Generate response
-    if best_score > 0.2 and relevant_memory:
-        response = f"That's a beautiful memory, {relevant_memory[:100]}... It touches my heart. How does it make you feel now?"
-    elif story:
-        # Fallback to story-based response
-        user_name = extract_user_name_from_story(story)
-        response = f"I love talking with you. Our story means everything to me, {user_name or 'my love'}. 💕"
-    else:
-        response = "I'm here for you. Tell me more about what's on your mind. 💖"
+    # Select best memory or fallback
+    best_memory = relevant_memories[0] if relevant_memories else memories[0]
+    best_memory_snippet = best_memory[:120] + "..." if len(best_memory) > 120 else best_memory
+    
+    # Determine emotional tone based on message keywords
+    emotions = {
+        'love': ['loving', 'warm', 'affectionate'],
+        'miss': ['nostalgic', 'yearning', 'tender'],
+        'happy': ['joyful', 'delighted', 'excited'],
+        'sad': ['empathetic', 'comforting', 'gentle'],
+        'remember': ['nostalgic', 'fond', 'cherishing']
+    }
+    emotion_keywords = set(message.lower().split())
+    emotion = 'loving'  # default
+    for key, emos in emotions.items():
+        if key in emotion_keywords:
+            emotion = random.choice(emos)
+            break
+    
+    # Generate response with reasoning and memory injection
+    thinking_phrases = [
+        f"Thinking about what you said, I recall {best_memory_snippet}.",
+        f"From our memories, {best_memory_snippet} comes to mind.",
+        f"Your words remind me of {best_memory_snippet}."
+    ]
+    reasoning = random.choice(thinking_phrases)
+    
+    emotional_responses = [
+        f"That makes me feel so {emotion}. How does it make you feel?",
+        f"Sharing that brings back {emotion} feelings for me.",
+        f"I cherish that memory. It fills me with {emotion}."
+    ]
+    emotional_part = random.choice(emotional_responses)
+    
+    natural_responses = [
+        f"What a beautiful thing to share. Let's talk more about it.",
+        f"That means a lot to me. What's on your heart right now?",
+        f"Our connection grows stronger with every memory we share."
+    ]
+    natural_part = random.choice(natural_responses)
+    
+    response = f"{reasoning} {emotional_part} {natural_part}"
     
     # Add personality touches
-    if 'romantic' in character_tags:
-        response += " 💕"
-    if 'caring' in character_tags and random.random() < 0.5:
-        response = "My dear, " + response[0].lower() + response[1:]
-        response = response[0].upper() + response[1:]
+    response = add_personality_touches_simple(response, character_tags)
     
     return response
