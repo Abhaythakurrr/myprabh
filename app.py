@@ -656,24 +656,31 @@ def dashboard():
     if session.get('is_admin') and request.args.get('admin') == 'true':
         return redirect(url_for('admin_dashboard'))
     
-    # Get user's Prabh instances with proper connection handling
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        
-        cursor.execute('''
-            SELECT id, prabh_name, character_description, created_at, last_used, payment_status
-            FROM prabh_instances
-            WHERE user_id = %s
-            ORDER BY last_used DESC
-        ''', (session['user_id'],))
-        
-        prabh_instances = cursor.fetchall()
-        conn.close()
-        
-    except Exception as e:
-        print(f"Dashboard database error: {e}")
-        prabh_instances = []
+    # Get user's Prabh instances with session caching for low RAM (safe get to avoid KeyError)
+    cache_key = 'prabh_instances'
+    prabh_instances = session.get(cache_key, [])
+    if not prabh_instances:
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                SELECT id, prabh_name, character_description, created_at, last_used, payment_status
+                FROM prabh_instances
+                WHERE user_id = %s
+                ORDER BY last_used DESC
+            ''', (session['user_id'],))
+            
+            prabh_instances = list(cursor.fetchall())  # Convert to list for session storage
+            conn.close()
+            
+            # Cache in session (expires on logout)
+            session[cache_key] = prabh_instances
+        except Exception as e:
+            print(f"Dashboard database error: {e}")
+            prabh_instances = []
+            if cache_key in session:
+                session.pop(cache_key, None)
     
     return render_template('dashboard.html', 
                          user_name=session['user_name'],
