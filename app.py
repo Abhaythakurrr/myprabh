@@ -2731,7 +2731,11 @@ def get_live_stats():
     cache = cursor.fetchone()
     
     # Update cache if older than 5 minutes or missing data
-    if not cache or (datetime.now() - cache[5]).total_seconds() > 300:
+    from datetime import datetime
+    cache_timestamp = cache[5]
+    if isinstance(cache_timestamp, str):
+        cache_timestamp = datetime.fromisoformat(cache_timestamp.replace('Z', '+00:00'))
+    if not cache or (datetime.now() - cache_timestamp).total_seconds() > 300:
         
         # Total unique visitors
         cursor.execute('SELECT COUNT(DISTINCT session_id) FROM visitors')
