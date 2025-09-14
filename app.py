@@ -2694,17 +2694,29 @@ def track_visitor(request):
         cursor = conn.cursor()
 
         # Check if this session visited in last hour (avoid spam)
-        cursor.execute('''
-            SELECT COUNT(*) FROM visitors
-            WHERE session_id = %s AND visit_timestamp > CURRENT_TIMESTAMP - INTERVAL '1 hour'
-        ''', (session_id,))
+        if USE_POSTGRES:
+            cursor.execute('''
+                SELECT COUNT(*) FROM visitors
+                WHERE session_id = %s AND visit_timestamp > CURRENT_TIMESTAMP - INTERVAL '1 hour'
+            ''', (session_id,))
+        else:
+            cursor.execute('''
+                SELECT COUNT(*) FROM visitors
+                WHERE session_id = ? AND visit_timestamp > datetime('now', '-1 hour')
+            ''', (session_id,))
 
         if cursor.fetchone()[0] == 0:
             # New visitor or returning after 1 hour
-            cursor.execute('''
-                INSERT INTO visitors (ip_address, user_agent, page_visited, session_id)
-                VALUES (%s, %s, %s, %s)
-            ''', (ip[:50], user_agent[:200], request.path, session_id))
+            if USE_POSTGRES:
+                cursor.execute('''
+                    INSERT INTO visitors (ip_address, user_agent, page_visited, session_id)
+                    VALUES (%s, %s, %s, %s)
+                ''', (ip[:50], user_agent[:200], request.path, session_id))
+            else:
+                cursor.execute('''
+                    INSERT INTO visitors (ip_address, user_agent, page_visited, session_id)
+                    VALUES (?, ?, ?, ?)
+                ''', (ip[:50], user_agent[:200], request.path, session_id))
 
             # Update stats cache
             cursor.execute('''
@@ -2754,12 +2766,20 @@ def get_live_stats():
         early_signups = cursor.fetchone()[0]
         
         # Update cache
-        cursor.execute('''
-            UPDATE stats_cache SET
-            total_visitors = %s, total_users = %s, total_prabhs = %s, early_signups = %s,
-            last_updated = CURRENT_TIMESTAMP
-            WHERE id = 1
-        ''', (total_visitors, total_users, total_prabhs, early_signups))
+        if USE_POSTGRES:
+            cursor.execute('''
+                UPDATE stats_cache SET
+                total_visitors = %s, total_users = %s, total_prabhs = %s, early_signups = %s,
+                last_updated = CURRENT_TIMESTAMP
+                WHERE id = 1
+            ''', (total_visitors, total_users, total_prabhs, early_signups))
+        else:
+            cursor.execute('''
+                UPDATE stats_cache SET
+                total_visitors = ?, total_users = ?, total_prabhs = ?, early_signups = ?,
+                last_updated = CURRENT_TIMESTAMP
+                WHERE id = 1
+            ''', (total_visitors, total_users, total_prabhs, early_signups))
         
         conn.commit()
     else:
@@ -2770,17 +2790,29 @@ def get_live_stats():
         early_signups = cache[4]
     
     # Active users (last 24 hours) - always fresh
-    cursor.execute('''
-        SELECT COUNT(*) FROM users
-        WHERE last_active > CURRENT_TIMESTAMP - INTERVAL '1 day'
-    ''')
+    if USE_POSTGRES:
+        cursor.execute('''
+            SELECT COUNT(*) FROM users
+            WHERE last_active > CURRENT_TIMESTAMP - INTERVAL '1 day'
+        ''')
+    else:
+        cursor.execute('''
+            SELECT COUNT(*) FROM users
+            WHERE last_active > datetime('now', '-1 day')
+        ''')
     active_users = cursor.fetchone()[0]
 
     # Visitors today
-    cursor.execute('''
-        SELECT COUNT(DISTINCT session_id) FROM visitors
-        WHERE visit_timestamp > CURRENT_TIMESTAMP - INTERVAL '1 day'
-    ''')
+    if USE_POSTGRES:
+        cursor.execute('''
+            SELECT COUNT(DISTINCT session_id) FROM visitors
+            WHERE visit_timestamp > CURRENT_TIMESTAMP - INTERVAL '1 day'
+        ''')
+    else:
+        cursor.execute('''
+            SELECT COUNT(DISTINCT session_id) FROM visitors
+            WHERE visit_timestamp > datetime('now', '-1 day')
+        ''')
     visitors_today = cursor.fetchone()[0]
     
     conn.close()
