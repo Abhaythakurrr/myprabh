@@ -207,7 +207,7 @@
     <!-- Dashboard Content -->
     <div class="dashboard-container">
         <div class="welcome-section">
-            <h1 class="welcome-title">Your Prabh Companions</h1>
+            <h1 class="welcome-title futuristic-title">Your Prabh Companions</h1>
             <p class="welcome-subtitle">Hold onto memories. Stay connected. Feel closer.</p>
             
             {% if is_admin %}
@@ -236,12 +236,27 @@
                     </button>
                 </div>
             </div>
+
+            {% if is_admin %}
+            <!-- Analytics Modal -->
+            <div id="analyticsModal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+                <div style="background: white; margin: 5% auto; padding: 20px; border-radius: 10px; width: 80%; max-width: 800px; max-height: 80%; overflow-y: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2 style="margin: 0;">📊 Platform Analytics</h2>
+                        <span onclick="closeAnalytics()" style="cursor: pointer; font-size: 24px;">&times;</span>
+                    </div>
+                    <div id="analyticsContent" style="color: #333;">
+                        Loading analytics...
+                    </div>
+                </div>
+            </div>
             {% endif %}
+        {% endif %}
         </div>
 
         <div class="prabh-grid">
             <!-- Create New Prabh Card -->
-            <div class="prabh-card create-new-card" onclick="window.location.href='/create-prabh'">
+            <div class="prabh-card create-new-card futuristic" onclick="window.location.href='/create-prabh'">
                 <div class="create-icon">
                     <i class="fas fa-plus-circle"></i>
                 </div>
@@ -252,7 +267,7 @@
             <!-- Existing Prabh Cards -->
             {% if prabh_instances %}
                 {% for prabh in prabh_instances %}
-                <div class="prabh-card">
+                <div class="prabh-card futuristic">
                     <div class="prabh-name">{{ prabh[1] }}</div>
                     <div class="prabh-description">{{ prabh[2] or "Your personalized AI companion" }}</div>
                     <div class="prabh-meta">
@@ -302,5 +317,138 @@
         `;
         document.head.appendChild(style);
     </script>
+
+    {% if is_admin %}
+    <script>
+        // Admin functionality for dashboard
+        async function downloadUserData() {
+            try {
+                console.log('Fetching user data for export...');
+                const response = await fetch('/api/export-users');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                // Generate CSV
+                let csv = 'Email,Name,Is Admin,Created At,Last Active,Prabh Count\n';
+                data.users.forEach(user => {
+                    csv += `"${user.email}","${user.name}",${user.is_admin},"${user.created_at}","${user.last_active}",${user.prabh_count}\n`;
+                });
+
+                // Download CSV
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `myprabh_users_${new Date().toISOString().split('T')[0]}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+
+                console.log('User data exported successfully');
+            } catch (error) {
+                console.error('Export failed:', error);
+                alert('Export failed: ' + error.message);
+            }
+        }
+
+        async function viewAnalytics() {
+            try {
+                console.log('Fetching analytics data...');
+                const response = await fetch('/api/admin-stats');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                // Populate modal content
+                let content = `
+                    <h3>📈 Platform Statistics</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0;">
+                        <div style="text-align: center; padding: 15px; background: #f0f8ff; border-radius: 8px;">
+                            <strong>${data.stats.total_visitors || 0}</strong><br>Total Visitors
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: #f0fff0; border-radius: 8px;">
+                            <strong>${data.stats.total_users || 0}</strong><br>Total Users
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: #fff0f5; border-radius: 8px;">
+                            <strong>${data.stats.total_prabhs || 0}</strong><br>Prabhs Created
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: #f0f0ff; border-radius: 8px;">
+                            <strong>${data.stats.early_signups || 0}</strong><br>Early Signups
+                        </div>
+                    </div>
+
+                    <h4>Real-time Activity (Last Hour)</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 15px 0;">
+                        <div style="text-align: center; padding: 10px; background: #e6f3ff; border-radius: 6px;">
+                            <strong>${data.real_time?.active_visitors || 0}</strong><br>Active Visitors
+                        </div>
+                        <div style="text-align: center; padding: 10px; background: #e6ffe6; border-radius: 6px;">
+                            <strong>${data.real_time?.active_users_hour || 0}</strong><br>Active Users
+                        </div>
+                        <div style="text-align: center; padding: 10px; background: #ffe6f0; border-radius: 6px;">
+                            <strong>${data.real_time?.active_chats || 0}</strong><br>Active Chats
+                        </div>
+                    </div>
+
+                    <h4>Recent Users (Last 10)</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        ${data.recent_users?.map(user => `<li style="padding: 8px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between;"><span>${user.email}</span><span>${new Date(user.created_at).toLocaleDateString()}</span></li>`).join('') || '<li>No recent users</li>'}
+                    </ul>
+                `;
+
+                document.getElementById('analyticsContent').innerHTML = content;
+                document.getElementById('analyticsModal').style.display = 'block';
+            } catch (error) {
+                console.error('Analytics fetch failed:', error);
+                document.getElementById('analyticsContent').innerHTML = `<p style="color: red;">Failed to load analytics: ${error.message}</p>`;
+                document.getElementById('analyticsModal').style.display = 'block';
+            }
+        }
+
+        function closeAnalytics() {
+            document.getElementById('analyticsModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('analyticsModal');
+            if (event.target === modal) {
+                closeAnalytics();
+            }
+        }
+
+        // Load initial admin stats on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if ({{ is_admin | tojson }}) {
+                // Update admin panel stats (simple fetch for dashboard)
+                fetch('/api/admin-stats')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.error) {
+                            document.getElementById('adminTotalUsers').textContent = data.stats.total_users || 0;
+                            document.getElementById('adminTotalPrabhs').textContent = data.stats.total_prabhs || 0;
+                            document.getElementById('adminEarlySignups').textContent = data.stats.early_signups || 0;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Failed to load admin stats:', error);
+                        document.querySelectorAll('#adminTotalUsers, #adminTotalPrabhs, #adminEarlySignups').forEach(el => el.textContent = 'Error');
+                    });
+            }
+        });
+    </script>
+    {% endif %}
 </body>
 </html>

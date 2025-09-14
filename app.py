@@ -93,7 +93,7 @@ except ImportError:
 # Email is enabled if libraries are available and password is set
 EMAIL_ENABLED = EMAIL_LIBS_AVAILABLE and bool(EMAIL_PASSWORD)
 if EMAIL_ENABLED:
-    print(f"📧 Email enabled: {FROM_EMAIL}")
+    print(f"Email enabled: {FROM_EMAIL}")
 else:
     print("Warning: Email disabled - libraries unavailable or EMAIL_PASSWORD not set")
 
@@ -377,7 +377,7 @@ def init_db():
 # Initialize database on startup
 try:
     init_db()
-    print("✅ Database initialized successfully")
+    print("Database initialized successfully")
 except Exception as e:
     print(f"ERROR: Database initialization failed: {e}")
     print("Tip: Make sure your DATABASE_URL is correct and the PostgreSQL database is accessible")
@@ -1289,7 +1289,7 @@ def verify_payment():
             
             # Send ready notification to user
             if not EMAIL_ENABLED:
-                print(f"🤖 Prabh {prabh_name} ready for {session.get('user_email')}")
+                print(f"Prabh {prabh_name} ready for {session.get('user_email')}")
             else:
                 try:
                     msg = MimeMultipart()

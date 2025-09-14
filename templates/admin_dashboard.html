@@ -485,11 +485,11 @@
     <script>
         let previousStats = {};
         let isLoading = false;
-
+        
         async function updateStats() {
             if (isLoading) return;
             isLoading = true;
-
+        
             try {
                 console.log('Fetching admin stats...');
                 const response = await fetch('/api/admin-stats');
@@ -504,28 +504,51 @@
                 if (data.error) {
                     throw new Error(data.error);
                 }
-
+        
                 // Update stats with change indicators
-                updateStatWithChange('totalVisitors', data.stats.total_visitors);
-                updateStatWithChange('totalUsers', data.stats.total_users);
-                updateStatWithChange('totalPrabhs', data.stats.total_prabhs);
-                updateStatWithChange('earlyAccess', data.stats.early_signups);
-                updateStatWithChange('activeUsers', data.stats.active_users);
-                updateStatWithChange('visitorsToday', data.stats.visitors_today);
-
-                // Update data sections
-                updateRecentUsers(data.recent_users || []);
-                updateRecentPrabhs(data.recent_prabhs || []);
-                updateEarlyAccessList(data.early_access || []);
-
+                updateStatWithChange('totalVisitors', data.stats?.total_visitors || 0);
+                updateStatWithChange('totalUsers', data.stats?.total_users || 0);
+                updateStatWithChange('totalPrabhs', data.stats?.total_prabhs || 0);
+                updateStatWithChange('earlyAccess', data.stats?.early_signups || 0);
+                updateStatWithChange('activeUsers', data.stats?.active_users || 0);
+                updateStatWithChange('visitorsToday', data.stats?.visitors_today || 0);
+        
+                // Update data sections with error handling
+                try {
+                    updateRecentUsers(data.recent_users || []);
+                } catch (e) {
+                    console.error('Error updating users:', e);
+                    document.getElementById('recentUsers').innerHTML = '<div class="loading">Error loading users</div>';
+                }
+                try {
+                    updateRecentPrabhs(data.recent_prabhs || []);
+                } catch (e) {
+                    console.error('Error updating prabhs:', e);
+                    document.getElementById('recentPrabhs').innerHTML = '<div class="loading">Error loading prabhs</div>';
+                }
+                try {
+                    updateEarlyAccessList(data.early_access || []);
+                } catch (e) {
+                    console.error('Error updating early access:', e);
+                    document.getElementById('earlyAccessList').innerHTML = '<div class="loading">Error loading signups</div>';
+                }
+        
                 // Update timestamp
-                document.getElementById('lastUpdated').innerHTML = 
+                document.getElementById('lastUpdated').innerHTML =
                     `✅ Last updated: ${new Date().toLocaleTimeString()}`;
-
+        
             } catch (error) {
                 console.error('Failed to update stats:', error);
-                document.getElementById('lastUpdated').innerHTML = 
+                document.getElementById('lastUpdated').innerHTML =
                     `❌ Update failed: ${error.message}`;
+                
+                // Show partial error in sections if API partially failed
+                const sections = ['recentUsers', 'recentPrabhs', 'earlyAccessList'];
+                sections.forEach(sectionId => {
+                    if (document.getElementById(sectionId).querySelector('.loading')) {
+                        document.getElementById(sectionId).innerHTML = '<div class="loading">Error: Unable to load data. Check console.</div>';
+                    }
+                });
             } finally {
                 isLoading = false;
             }
@@ -668,13 +691,16 @@
             document.getElementById('lastUpdated').innerHTML = '🔄 Refreshing...';
             updateStats();
         }
-
-        // Initialize
+        
+        // Initialize with immediate load
         console.log('Initializing admin dashboard...');
         updateStats();
         
         // Auto-refresh every 30 seconds
-        setInterval(updateStats, 30000);
+        setInterval(() => {
+            console.log('Auto-refreshing stats...');
+            updateStats();
+        }, 30000);
         
         // Add keyboard shortcut for refresh (Ctrl+R or Cmd+R)
         document.addEventListener('keydown', function(e) {
@@ -683,6 +709,17 @@
                 refreshAllData();
             }
         });
+        
+        // Initial error check after 5 seconds if still loading
+        setTimeout(() => {
+            const sections = document.querySelectorAll('.section-content .loading');
+            if (sections.length > 0) {
+                console.warn('Sections still loading after initial fetch, possible API issue');
+                sections.forEach(section => {
+                    section.innerHTML = '<div class="loading">Initial load timeout - try refreshing</div>';
+                });
+            }
+        }, 5000);
     </script>
 </body>
 </html>
