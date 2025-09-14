@@ -14,7 +14,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #ffeef8, #f0f8ff, #fff0f8);
+            background: linear-gradient(135deg, #ffeef8, #e0f7fa, #f3e5f5, #fff8e1, #ffeef8);
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
             overflow: hidden;
@@ -74,7 +74,7 @@
             z-index: 10;
         }
         .chat-header {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 240, 248, 0.95));
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(224, 247, 250, 0.95), rgba(255, 240, 248, 0.95));
             backdrop-filter: blur(20px);
             padding: 25px;
             border-bottom: 1px solid rgba(255, 182, 193, 0.2);
@@ -109,7 +109,7 @@
         .prabh-avatar {
             width: 60px;
             height: 60px;
-            background: linear-gradient(135deg, #ff69b4, #ff1493, #ff69b4);
+            background: linear-gradient(135deg, #ff69b4, #ff1493, #a8e6cf, #ff69b4);
             background-size: 200% 200%;
             animation: gradientPulse 4s ease-in-out infinite;
             border-radius: 50%;
@@ -221,12 +221,12 @@
         }
         
         .message.user .message-avatar {
-            background: linear-gradient(135deg, #87ceeb, #4682b4);
+            background: linear-gradient(135deg, #87ceeb, #4682b4, #b3d9ff);
             color: white;
         }
         
         .message.prabh .message-avatar {
-            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            background: linear-gradient(135deg, #ff69b4, #ff1493, #dcedc8);
             color: white;
             animation: heartbeat 2s ease-in-out infinite;
         }
@@ -246,14 +246,14 @@
         }
         
         .message.user .message-content {
-            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            background: linear-gradient(135deg, #ff69b4, #ff1493, #ffd1dc);
             color: white;
             box-shadow: 0 8px 25px rgba(255, 105, 180, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
         
         .message.prabh .message-content {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 240, 248, 0.95));
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 240, 248, 0.95), rgba(230, 245, 253, 0.95));
             backdrop-filter: blur(15px);
         }
         .message-text {
@@ -286,7 +286,7 @@
         .typing-dot {
             width: 10px;
             height: 10px;
-            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            background: linear-gradient(135deg, #ff69b4, #ff1493, #88d8a3);
             border-radius: 50%;
             animation: typingDot 1.4s infinite;
             box-shadow: 0 2px 8px rgba(255, 105, 180, 0.3);
@@ -298,7 +298,7 @@
             30% { opacity: 1; transform: scale(1); }
         }
         .chat-input-container {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 240, 248, 0.95));
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 240, 248, 0.95), rgba(243, 229, 245, 0.95));
             backdrop-filter: blur(20px);
             padding: 25px;
             border-top: 1px solid rgba(255, 182, 193, 0.2);
@@ -347,7 +347,7 @@
             font-style: italic;
         }
         .send-button {
-            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            background: linear-gradient(135deg, #ff69b4, #ff1493, #b39ddb);
             color: white;
             border: none;
             width: 55px;
@@ -401,7 +401,7 @@
         
         .empty-chat-icon {
             font-size: 4rem;
-            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            background: linear-gradient(135deg, #ff69b4, #ff1493, #81c784);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -413,7 +413,7 @@
             font-family: 'Dancing Script', cursive;
             font-size: 1.8rem;
             margin-bottom: 10px;
-            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            background: linear-gradient(135deg, #ff69b4, #ff1493, #ffcc80);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -864,11 +864,14 @@
         <!-- Chat Input -->
         <div class="chat-input-container">
             <div class="chat-input-wrapper">
-                <textarea 
-                    id="chatInput" 
-                    class="chat-input" 
+                <textarea
+                    id="chatInput"
+                    class="chat-input"
                     placeholder="Type your message to {{ prabh_name }}..."
                     rows="1"></textarea>
+                <button id="emojiBtn" class="emoji-button" title="Add emoji">
+                    <i class="fas fa-smile"></i>
+                </button>
                 <button id="sendButton" class="send-button">
                     <i class="fas fa-paper-plane"></i>
                 </button>
@@ -880,6 +883,7 @@
         const chatMessages = document.getElementById('chatMessages');
         const chatInput = document.getElementById('chatInput');
         const sendButton = document.getElementById('sendButton');
+        const emojiBtn = document.getElementById('emojiBtn');
         const typingIndicator = document.getElementById('typingIndicator');
         const emptyChat = document.getElementById('emptyChat');
         const voiceCallBtn = document.getElementById('voiceCallBtn');
@@ -920,6 +924,72 @@
 
         // AI Status button
         aiStatusBtn.addEventListener('click', showAIStatus);
+    
+        // Emoji picker functionality
+        let emojiPicker = null;
+        emojiBtn.addEventListener('click', toggleEmojiPicker);
+    
+        function toggleEmojiPicker() {
+            if (emojiPicker) {
+                emojiPicker.remove();
+                emojiPicker = null;
+                return;
+            }
+    
+            emojiPicker = document.createElement('div');
+            emojiPicker.className = 'emoji-picker';
+            emojiPicker.style.position = 'absolute';
+            emojiPicker.style.bottom = '70px';
+            emojiPicker.style.left = '0';
+            emojiPicker.style.right = '60px'; // Adjust for send button
+    
+            // Common romantic emojis
+            const emojis = ['💖', '💕', '💗', '💝', '🌹', '😘', '🥰', '😍', '💋', '❤️', '🧡', '💙', '💜', '💚', '🖤', '🤍', '✨', '🌟', '⭐', '💫'];
+            
+            emojis.forEach(emoji => {
+                const span = document.createElement('span');
+                span.textContent = emoji;
+                span.addEventListener('click', () => {
+                    insertEmojiAtCursor(emoji);
+                    emojiPicker.remove();
+                    emojiPicker = null;
+                });
+                emojiPicker.appendChild(span);
+            });
+    
+            chatInput.parentNode.appendChild(emojiPicker);
+            setTimeout(() => emojiPicker.classList.add('show'), 10);
+        }
+    
+        function insertEmojiAtCursor(emoji) {
+            const start = chatInput.selectionStart;
+            const end = chatInput.selectionEnd;
+            const value = chatInput.value;
+            chatInput.value = value.substring(0, start) + emoji + value.substring(end);
+            const newPos = start + emoji.length;
+            chatInput.setSelectionRange(newPos, newPos);
+            chatInput.focus();
+        }
+    
+        // Close emoji picker on input click
+        chatInput.addEventListener('focus', () => {
+            if (emojiPicker) {
+                setTimeout(() => {
+                    if (document.activeElement === chatInput) {
+                        emojiPicker.remove();
+                        emojiPicker = null;
+                    }
+                }, 200);
+            }
+        });
+    
+        // Close on outside click
+        document.addEventListener('click', (e) => {
+            if (emojiPicker && !emojiBtn.contains(e.target) && !emojiPicker.contains(e.target)) {
+                emojiPicker.remove();
+                emojiPicker = null;
+            }
+        });
 
         async function sendMessage() {
             const message = chatInput.value.trim();
@@ -979,6 +1049,8 @@
         function addMessage(text, sender, isError = false) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${sender}`;
+            messageDiv.style.opacity = '0';
+            messageDiv.style.transform = 'translateY(20px)';
             
             const avatar = document.createElement('div');
             avatar.className = 'message-avatar';
@@ -1010,6 +1082,13 @@
             messageDiv.appendChild(content);
             
             chatMessages.appendChild(messageDiv);
+    
+            // Animate in
+            requestAnimationFrame(() => {
+                messageDiv.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+                messageDiv.style.opacity = '1';
+                messageDiv.style.transform = 'translateY(0)';
+            });
             
             // Add message effects
             addMessageEffect(messageDiv, sender);
@@ -1033,37 +1112,97 @@
         // Add romantic message effects
         function addMessageEffect(messageDiv, sender) {
             if (sender === 'prabh') {
-                // Add sparkle effect for Prabh messages
+                // Enhanced sparkle effect
                 setTimeout(() => {
-                    const sparkles = ['✨', '💫', '⭐', '🌟'];
-                    const sparkle = document.createElement('span');
-                    sparkle.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
-                    sparkle.style.cssText = `
+                    const sparkles = ['✨', '💫', '⭐', '🌟', '💖', '🌈'];
+                    for (let i = 0; i < 3; i++) {
+                        setTimeout(() => {
+                            const sparkle = document.createElement('span');
+                            sparkle.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
+                            sparkle.style.cssText = `
+                                position: absolute;
+                                font-size: ${Math.random() * 0.5 + 0.8}rem;
+                                animation: sparkleFloat ${Math.random() * 2 + 2}s ease-out forwards;
+                                pointer-events: none;
+                                color: ${['#ff69b4', '#87ceeb', '#ffd700', '#ff1493'][Math.floor(Math.random() * 4)]};
+                            `;
+                            const rect = messageDiv.getBoundingClientRect();
+                            sparkle.style.left = Math.random() * rect.width + 'px';
+                            sparkle.style.top = Math.random() * rect.height + 'px';
+                            messageDiv.style.position = 'relative';
+                            messageDiv.appendChild(sparkle);
+                            
+                            setTimeout(() => sparkle.remove(), 3000);
+                        }, i * 300);
+                    }
+                }, 300);
+            } else if (sender === 'user') {
+                // Subtle glow for user messages
+                setTimeout(() => {
+                    const glow = document.createElement('div');
+                    glow.style.cssText = `
                         position: absolute;
                         top: -10px;
+                        left: -10px;
                         right: -10px;
-                        font-size: 0.8rem;
-                        animation: sparkle 2s ease-out;
+                        bottom: -10px;
+                        background: radial-gradient(circle, rgba(135, 206, 235, 0.3) 0%, transparent 70%);
+                        border-radius: 25px;
+                        animation: userGlow 1s ease-out;
                         pointer-events: none;
+                        z-index: -1;
                     `;
                     messageDiv.style.position = 'relative';
-                    messageDiv.appendChild(sparkle);
-                    
-                    setTimeout(() => sparkle.remove(), 2000);
-                }, 500);
+                    messageDiv.appendChild(glow);
+                    setTimeout(() => glow.remove(), 1000);
+                }, 200);
             }
         }
         
         // Add sparkle animation CSS
         const sparkleStyle = document.createElement('style');
         sparkleStyle.textContent = `
-            @keyframes sparkle {
-                0% { opacity: 0; transform: scale(0) rotate(0deg); }
-                50% { opacity: 1; transform: scale(1) rotate(180deg); }
-                100% { opacity: 0; transform: scale(0) rotate(360deg); }
+            @keyframes sparkleFloat {
+                0% {
+                    opacity: 1;
+                    transform: translateY(0) scale(1) rotate(0deg);
+                }
+                100% {
+                    opacity: 0;
+                    transform: translateY(-50px) scale(0.5) rotate(360deg);
+                }
+            }
+            @keyframes userGlow {
+                0% { opacity: 0; transform: scale(0.8); }
+                50% { opacity: 1; transform: scale(1.2); }
+                100% { opacity: 0; transform: scale(1); }
+            }
+            @keyframes colorBurst {
+                0% {
+                    box-shadow: 0 0 0 0 rgba(255, 105, 180, 0.7);
+                    transform: scale(1);
+                }
+                50% {
+                    box-shadow: 0 0 0 20px rgba(255, 105, 180, 0);
+                    transform: scale(1.05);
+                }
+                100% {
+                    box-shadow: 0 0 0 40px rgba(255, 105, 180, 0);
+                    transform: scale(1);
+                }
             }
         `;
         document.head.appendChild(sparkleStyle);
+    
+        // Add burst effect on send
+        sendButton.addEventListener('click', function() {
+            if (chatInput.value.trim()) {
+                this.style.animation = 'colorBurst 0.6s ease-out';
+                setTimeout(() => {
+                    this.style.animation = '';
+                }, 600);
+            }
+        });
         
         // Focus input on load
         document.addEventListener('DOMContentLoaded', function() {

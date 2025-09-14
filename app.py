@@ -1,6 +1,6 @@
 # MyPrabh MVP - Flask Application
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
-# import sqlite3  # Replaced with PostgreSQL
+import sqlite3
 import uuid
 
 # Import PostgreSQL
@@ -29,18 +29,22 @@ except ImportError as e:
 app = Flask(__name__)
 app.secret_key = 'myprabh_mvp_2024_secret_key'
 
-# Database Configuration - Use PostgreSQL
-USE_POSTGRES = True
-DATABASE_URL = os.environ.get('DATABASE_URL')
-if not DATABASE_URL:
-    print("ERROR: DATABASE_URL environment variable not set!")
-    print("For Render deployment:")
-    print("   1. Create a PostgreSQL database in Render dashboard")
-    print("   2. Copy the 'External Database URL' from database settings")
-    print("   3. Add DATABASE_URL environment variable in your web service settings")
-    print("   4. Redeploy your application")
-    exit(1)
-print("Using PostgreSQL database")
+# Database Configuration - SQLite for local, PostgreSQL for production
+USE_POSTGRES = os.environ.get('USE_POSTGRES', 'false').lower() == 'true'
+DB_PATH = 'app.db'
+if USE_POSTGRES:
+    DATABASE_URL = os.environ.get('DATABASE_URL')
+    if not DATABASE_URL:
+        print("ERROR: DATABASE_URL environment variable not set!")
+        print("For Render deployment:")
+        print("   1. Create a PostgreSQL database in Render dashboard")
+        print("   2. Copy the 'External Database URL' from database settings")
+        print("   3. Add DATABASE_URL environment variable in your web service settings")
+        print("   4. Redeploy your application")
+        exit(1)
+    print("Using PostgreSQL database")
+else:
+    print("Using SQLite database for local development")
 
 # Set resource constraints for AI engine
 os.environ['RENDER_FREE_TIER'] = 'true'
@@ -95,8 +99,14 @@ else:
 
 # Database connection helper
 def get_db_connection():
-    """Get PostgreSQL database connection"""
-    return psycopg2.connect(DATABASE_URL)
+    """Get database connection - PostgreSQL or SQLite"""
+    if USE_POSTGRES:
+        import psycopg2
+        return psycopg2.connect(DATABASE_URL)
+    else:
+        conn = sqlite3.connect(DB_PATH)
+        conn.row_factory = sqlite3.Row
+        return conn
 
 class DatabaseManager:
     """Context manager for database operations"""
@@ -106,7 +116,11 @@ class DatabaseManager:
     
     def __enter__(self):
         self.conn = get_db_connection()
-        self.cursor = self.conn.cursor(cursor_factory=RealDictCursor)
+        if USE_POSTGRES:
+            import psycopg2.extras
+            self.cursor = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        else:
+            self.cursor = self.conn.cursor()
         return self.cursor
     
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -121,126 +135,234 @@ def init_db():
     conn = get_db_connection()
     cursor = conn.cursor()
     
-    # PostgreSQL schema
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id SERIAL PRIMARY KEY,
-            user_id TEXT UNIQUE NOT NULL,
-            email TEXT UNIQUE NOT NULL,
-            name TEXT NOT NULL,
-            password_hash TEXT,
-            face_signature TEXT,
-            is_admin BOOLEAN DEFAULT FALSE,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            last_active TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    
-    # Blog posts table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS blog_posts (
-            id SERIAL PRIMARY KEY,
-            title TEXT NOT NULL,
-            content TEXT NOT NULL,
-            author_id TEXT NOT NULL,
-            published BOOLEAN DEFAULT FALSE,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (author_id) REFERENCES users (user_id)
-        )
-    ''')
-    
-    # Early access signups
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS early_signups (
-            id SERIAL PRIMARY KEY,
-            email TEXT UNIQUE NOT NULL,
-            name TEXT NOT NULL,
-            age_range TEXT,
-            relationship_status TEXT,
-            interest_level INTEGER,
-            use_case TEXT,
-            expectations TEXT,
-            feedback TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    
-    # Prabh instances
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS prabh_instances (
-            id SERIAL PRIMARY KEY,
-            user_id TEXT NOT NULL,
-            prabh_name TEXT NOT NULL,
-            character_description TEXT,
-            story_content TEXT,
-            character_tags TEXT,
-            personality_traits TEXT,
-            payment_status TEXT DEFAULT 'PENDING',
-            model_status TEXT DEFAULT 'PENDING',
-            model_path TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            last_used TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users (user_id)
-        )
-    ''')
-    
-    # Chat sessions
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS chat_sessions (
-            id SERIAL PRIMARY KEY,
-            user_id TEXT NOT NULL,
-            prabh_id INTEGER NOT NULL,
-            message_count INTEGER DEFAULT 0,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            last_message TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users (user_id),
-            FOREIGN KEY (prabh_id) REFERENCES prabh_instances (id)
-        )
-    ''')
-    
-    # Analytics
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS analytics (
-            id SERIAL PRIMARY KEY,
-            event_type TEXT NOT NULL,
-            user_id TEXT,
-            data TEXT,
-            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    
-    # Visitor tracking
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS visitors (
-            id SERIAL PRIMARY KEY,
-            ip_address TEXT,
-            user_agent TEXT,
-            page_visited TEXT,
-            visit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            session_id TEXT
-        )
-    ''')
-    
-    # Live stats cache
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS stats_cache (
-            id INTEGER PRIMARY KEY,
-            total_visitors INTEGER DEFAULT 0,
-            total_users INTEGER DEFAULT 0,
-            total_prabhs INTEGER DEFAULT 0,
-            early_signups INTEGER DEFAULT 0,
-            last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    
-    # Initialize stats cache if empty
-    cursor.execute('SELECT COUNT(*) FROM stats_cache')
-    if cursor.fetchone()[0] == 0:
+    if USE_POSTGRES:
+        # PostgreSQL schema
         cursor.execute('''
-            INSERT INTO stats_cache (id, total_visitors, total_users, total_prabhs, early_signups)
-            VALUES (1, 0, 0, 0, 0)
+            CREATE TABLE IF NOT EXISTS users (
+                id SERIAL PRIMARY KEY,
+                user_id TEXT UNIQUE NOT NULL,
+                email TEXT UNIQUE NOT NULL,
+                name TEXT NOT NULL,
+                password_hash TEXT,
+                face_signature TEXT,
+                is_admin BOOLEAN DEFAULT FALSE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                last_active TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
         ''')
+        
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS blog_posts (
+                id SERIAL PRIMARY KEY,
+                title TEXT NOT NULL,
+                content TEXT NOT NULL,
+                author_id TEXT NOT NULL,
+                published BOOLEAN DEFAULT FALSE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (author_id) REFERENCES users (user_id)
+            )
+        ''')
+        
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS early_signups (
+                id SERIAL PRIMARY KEY,
+                email TEXT UNIQUE NOT NULL,
+                name TEXT NOT NULL,
+                age_range TEXT,
+                relationship_status TEXT,
+                interest_level INTEGER,
+                use_case TEXT,
+                expectations TEXT,
+                feedback TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS prabh_instances (
+                id SERIAL PRIMARY KEY,
+                user_id TEXT NOT NULL,
+                prabh_name TEXT NOT NULL,
+                character_description TEXT,
+                story_content TEXT,
+                character_tags TEXT,
+                personality_traits TEXT,
+                payment_status TEXT DEFAULT 'PENDING',
+                model_status TEXT DEFAULT 'PENDING',
+                model_path TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                last_used TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users (user_id)
+            )
+        ''')
+        
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS chat_sessions (
+                id SERIAL PRIMARY KEY,
+                user_id TEXT NOT NULL,
+                prabh_id INTEGER NOT NULL,
+                message_count INTEGER DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                last_message TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users (user_id),
+                FOREIGN KEY (prabh_id) REFERENCES prabh_instances (id)
+            )
+        ''')
+        
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS analytics (
+                id SERIAL PRIMARY KEY,
+                event_type TEXT NOT NULL,
+                user_id TEXT,
+                data TEXT,
+                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS visitors (
+                id SERIAL PRIMARY KEY,
+                ip_address TEXT,
+                user_agent TEXT,
+                page_visited TEXT,
+                visit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                session_id TEXT
+            )
+        ''')
+        
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS stats_cache (
+                id INTEGER PRIMARY KEY,
+                total_visitors INTEGER DEFAULT 0,
+                total_users INTEGER DEFAULT 0,
+                total_prabhs INTEGER DEFAULT 0,
+                early_signups INTEGER DEFAULT 0,
+                last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        
+        # Initialize stats cache if empty
+        cursor.execute('SELECT COUNT(*) FROM stats_cache')
+        if cursor.fetchone()[0] == 0:
+            cursor.execute('''
+                INSERT INTO stats_cache (id, total_visitors, total_users, total_prabhs, early_signups)
+                VALUES (1, 0, 0, 0, 0)
+            ''')
+    else:
+        # SQLite schema
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id TEXT UNIQUE NOT NULL,
+                email TEXT UNIQUE NOT NULL,
+                name TEXT NOT NULL,
+                password_hash TEXT,
+                face_signature TEXT,
+                is_admin INTEGER DEFAULT 0,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                last_active DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS blog_posts (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT NOT NULL,
+                content TEXT NOT NULL,
+                author_id TEXT NOT NULL,
+                published INTEGER DEFAULT 0,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (author_id) REFERENCES users (user_id)
+            )
+        ''')
+        
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS early_signups (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                email TEXT UNIQUE NOT NULL,
+                name TEXT NOT NULL,
+                age_range TEXT,
+                relationship_status TEXT,
+                interest_level INTEGER,
+                use_case TEXT,
+                expectations TEXT,
+                feedback TEXT,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS prabh_instances (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id TEXT NOT NULL,
+                prabh_name TEXT NOT NULL,
+                character_description TEXT,
+                story_content TEXT,
+                character_tags TEXT,
+                personality_traits TEXT,
+                payment_status TEXT DEFAULT 'PENDING',
+                model_status TEXT DEFAULT 'PENDING',
+                model_path TEXT,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                last_used DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users (user_id)
+            )
+        ''')
+        
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS chat_sessions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id TEXT NOT NULL,
+                prabh_id INTEGER NOT NULL,
+                message_count INTEGER DEFAULT 0,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                last_message DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users (user_id),
+                FOREIGN KEY (prabh_id) REFERENCES prabh_instances (id)
+            )
+        ''')
+        
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS analytics (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                event_type TEXT NOT NULL,
+                user_id TEXT,
+                data TEXT,
+                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS visitors (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                ip_address TEXT,
+                user_agent TEXT,
+                page_visited TEXT,
+                visit_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                session_id TEXT
+            )
+        ''')
+        
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS stats_cache (
+                id INTEGER PRIMARY KEY,
+                total_visitors INTEGER DEFAULT 0,
+                total_users INTEGER DEFAULT 0,
+                total_prabhs INTEGER DEFAULT 0,
+                early_signups INTEGER DEFAULT 0,
+                last_updated DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        
+        # Initialize stats cache if empty
+        cursor.execute('SELECT COUNT(*) FROM stats_cache')
+        if cursor.fetchone()[0] == 0:
+            cursor.execute('''
+                INSERT INTO stats_cache (id, total_visitors, total_users, total_prabhs, early_signups)
+                VALUES (1, 0, 0, 0, 0)
+            ''')
     
     conn.commit()
     conn.close()
@@ -494,10 +616,16 @@ def create_account():
         # Get face signature if available
         face_signature = session.get(f'face_signature_{email}')
         
-        cursor.execute('''
-            INSERT INTO users (user_id, email, name, password_hash, face_signature, is_admin)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        ''', (user_id, email, email.split('@')[0], password_hash, face_signature, is_admin))
+        if USE_POSTGRES:
+            cursor.execute('''
+                INSERT INTO users (user_id, email, name, password_hash, face_signature, is_admin)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            ''', (user_id, email, email.split('@')[0], password_hash, face_signature, is_admin))
+        else:
+            cursor.execute('''
+                INSERT INTO users (user_id, email, name, password_hash, face_signature, is_admin)
+                VALUES (?, ?, ?, ?, ?, ?)
+            ''', (user_id, email, email.split('@')[0], password_hash, face_signature, int(is_admin)))
         
         conn.commit()
         conn.close()
@@ -555,10 +683,16 @@ def login():
         # Find user in database
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute('''
-            SELECT user_id, email, name, password_hash, is_admin
-            FROM users WHERE email = %s
-        ''', (email,))
+        if USE_POSTGRES:
+            cursor.execute('''
+                SELECT user_id, email, name, password_hash, is_admin
+                FROM users WHERE email = %s
+            ''', (email,))
+        else:
+            cursor.execute('''
+                SELECT user_id, email, name, password_hash, is_admin
+                FROM users WHERE email = ?
+            ''', (email,))
         user = cursor.fetchone()
         conn.close()
         
@@ -579,10 +713,16 @@ def login():
         # Update last active
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute('''
-            UPDATE users SET last_active = CURRENT_TIMESTAMP
-            WHERE user_id = %s
-        ''', (user[0],))
+        if USE_POSTGRES:
+            cursor.execute('''
+                UPDATE users SET last_active = CURRENT_TIMESTAMP
+                WHERE user_id = %s
+            ''', (user[0],))
+        else:
+            cursor.execute('''
+                UPDATE users SET last_active = CURRENT_TIMESTAMP
+                WHERE user_id = ?
+            ''', (user[0],))
         conn.commit()
         conn.close()
         
@@ -664,12 +804,20 @@ def dashboard():
             conn = get_db_connection()
             cursor = conn.cursor()
             
-            cursor.execute('''
-                SELECT id, prabh_name, character_description, created_at, last_used, payment_status
-                FROM prabh_instances
-                WHERE user_id = %s
-                ORDER BY last_used DESC
-            ''', (session['user_id'],))
+            if USE_POSTGRES:
+                cursor.execute('''
+                    SELECT id, prabh_name, character_description, created_at, last_used, payment_status
+                    FROM prabh_instances
+                    WHERE user_id = %s
+                    ORDER BY last_used DESC
+                ''', (session['user_id'],))
+            else:
+                cursor.execute('''
+                    SELECT id, prabh_name, character_description, created_at, last_used, payment_status
+                    FROM prabh_instances
+                    WHERE user_id = ?
+                    ORDER BY last_used DESC
+                ''', (session['user_id'],))
             
             prabh_instances = list(cursor.fetchall())  # Convert to list for session storage
             conn.close()
@@ -723,20 +871,36 @@ def create_prabh():
                 conn = get_db_connection()
                 cursor = conn.cursor()
                 
-                cursor.execute('''
-                    INSERT INTO prabh_instances
-                    (user_id, prabh_name, character_description, story_content, character_tags, personality_traits, payment_status, model_status)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-                ''', (
-                    session['user_id'],
-                    prabh_name,
-                    character_description,
-                    story,
-                    json.dumps(tags.split(',') if tags else []),
-                    json.dumps({'relationship': relationship, 'personality': personality}),
-                    'PAID',
-                    'READY'
-                ))
+                if USE_POSTGRES:
+                    cursor.execute('''
+                        INSERT INTO prabh_instances
+                        (user_id, prabh_name, character_description, story_content, character_tags, personality_traits, payment_status, model_status)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                    ''', (
+                        session['user_id'],
+                        prabh_name,
+                        character_description,
+                        story,
+                        json.dumps(tags.split(',') if tags else []),
+                        json.dumps({'relationship': relationship, 'personality': personality}),
+                        'PAID',
+                        'READY'
+                    ))
+                else:
+                    cursor.execute('''
+                        INSERT INTO prabh_instances
+                        (user_id, prabh_name, character_description, story_content, character_tags, personality_traits, payment_status, model_status)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    ''', (
+                        session['user_id'],
+                        prabh_name,
+                        character_description,
+                        story,
+                        json.dumps(tags.split(',') if tags else []),
+                        json.dumps({'relationship': relationship, 'personality': personality}),
+                        'PAID',
+                        'READY'
+                    ))
                 
                 prabh_id = cursor.lastrowid
                 conn.commit()
@@ -746,7 +910,7 @@ def create_prabh():
                 log_analytics('prabh_created_free', session['user_id'], {'prabh_id': prabh_id})
                 
             except Exception as db_error:
-                return render_template('create_prabh.html', 
+                return render_template('create_prabh.html',
                                      user_email=session.get('user_email'),
                                      error=f'Database error: {str(db_error)}')
             
@@ -786,19 +950,34 @@ def save_prabh():
             conn = get_db_connection()
             cursor = conn.cursor()
             
-            cursor.execute('''
-                INSERT INTO prabh_instances
-                (user_id, prabh_name, character_description, story_content, character_tags, personality_traits, payment_status)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
-            ''', (
-                session['user_id'],
-                data['prabh_name'],
-                data.get('character_description', ''),
-                data['story_content'],
-                json.dumps(data.get('character_tags', [])),
-                json.dumps(data.get('personality_traits', {})),
-                'PENDING'
-            ))
+            if USE_POSTGRES:
+                cursor.execute('''
+                    INSERT INTO prabh_instances
+                    (user_id, prabh_name, character_description, story_content, character_tags, personality_traits, payment_status)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                ''', (
+                    session['user_id'],
+                    data['prabh_name'],
+                    data.get('character_description', ''),
+                    data['story_content'],
+                    json.dumps(data.get('character_tags', [])),
+                    json.dumps(data.get('personality_traits', {})),
+                    'PENDING'
+                ))
+            else:
+                cursor.execute('''
+                    INSERT INTO prabh_instances
+                    (user_id, prabh_name, character_description, story_content, character_tags, personality_traits, payment_status)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                ''', (
+                    session['user_id'],
+                    data['prabh_name'],
+                    data.get('character_description', ''),
+                    data['story_content'],
+                    json.dumps(data.get('character_tags', [])),
+                    json.dumps(data.get('personality_traits', {})),
+                    'PENDING'
+                ))
             
             prabh_id = cursor.lastrowid
             conn.commit()
@@ -833,11 +1012,18 @@ def payment_page(prabh_id):
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        cursor.execute('''
-            SELECT id, prabh_name, character_description
-            FROM prabh_instances
-            WHERE id = %s AND user_id = %s
-        ''', (prabh_id, session['user_id']))
+        if USE_POSTGRES:
+            cursor.execute('''
+                SELECT id, prabh_name, character_description
+                FROM prabh_instances
+                WHERE id = %s AND user_id = %s
+            ''', (prabh_id, session['user_id']))
+        else:
+            cursor.execute('''
+                SELECT id, prabh_name, character_description
+                FROM prabh_instances
+                WHERE id = ? AND user_id = ?
+            ''', (prabh_id, session['user_id']))
         
         prabh_data = cursor.fetchone()
         conn.close()
@@ -870,11 +1056,18 @@ def chat_interface(prabh_id):
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        cursor.execute('''
-            SELECT id, prabh_name, character_description, story_content, character_tags, personality_traits, payment_status
-            FROM prabh_instances
-            WHERE id = %s AND user_id = %s
-        ''', (prabh_id, session['user_id']))
+        if USE_POSTGRES:
+            cursor.execute('''
+                SELECT id, prabh_name, character_description, story_content, character_tags, personality_traits, payment_status
+                FROM prabh_instances
+                WHERE id = %s AND user_id = %s
+            ''', (prabh_id, session['user_id']))
+        else:
+            cursor.execute('''
+                SELECT id, prabh_name, character_description, story_content, character_tags, personality_traits, payment_status
+                FROM prabh_instances
+                WHERE id = ? AND user_id = ?
+            ''', (prabh_id, session['user_id']))
         
         prabh_data = cursor.fetchone()
         
@@ -888,11 +1081,18 @@ def chat_interface(prabh_id):
             return redirect(url_for('payment_page', prabh_id=prabh_id))
         
         # Update last used
-        cursor.execute('''
-            UPDATE prabh_instances
-            SET last_used = CURRENT_TIMESTAMP
-            WHERE id = %s
-        ''', (prabh_id,))
+        if USE_POSTGRES:
+            cursor.execute('''
+                UPDATE prabh_instances
+                SET last_used = CURRENT_TIMESTAMP
+                WHERE id = %s
+            ''', (prabh_id,))
+        else:
+            cursor.execute('''
+                UPDATE prabh_instances
+                SET last_used = CURRENT_TIMESTAMP
+                WHERE id = ?
+            ''', (prabh_id,))
         
         conn.commit()
         conn.close()
@@ -926,11 +1126,18 @@ def chat_message():
             conn = get_db_connection()
             cursor = conn.cursor()
             
-            cursor.execute('''
-                SELECT prabh_name, character_description, story_content, character_tags, personality_traits
-                FROM prabh_instances 
-                WHERE id = ? AND user_id = ?
-            ''', (prabh_id, session['user_id']))
+            if USE_POSTGRES:
+                cursor.execute('''
+                    SELECT prabh_name, character_description, story_content, character_tags, personality_traits
+                    FROM prabh_instances
+                    WHERE id = %s AND user_id = %s
+                ''', (prabh_id, session['user_id']))
+            else:
+                cursor.execute('''
+                    SELECT prabh_name, character_description, story_content, character_tags, personality_traits
+                    FROM prabh_instances
+                    WHERE id = ? AND user_id = ?
+                ''', (prabh_id, session['user_id']))
             
             prabh_data = cursor.fetchone()
             conn.close()
@@ -996,22 +1203,36 @@ def verify_payment():
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        cursor.execute('''
-            SELECT prabh_name, character_description, story_content, character_tags, personality_traits
-            FROM prabh_instances
-            WHERE id = %s AND user_id = %s
-        ''', (prabh_id, session['user_id']))
+        if USE_POSTGRES:
+            cursor.execute('''
+                SELECT prabh_name, character_description, story_content, character_tags, personality_traits
+                FROM prabh_instances
+                WHERE id = %s AND user_id = %s
+            ''', (prabh_id, session['user_id']))
+        else:
+            cursor.execute('''
+                SELECT prabh_name, character_description, story_content, character_tags, personality_traits
+                FROM prabh_instances
+                WHERE id = ? AND user_id = ?
+            ''', (prabh_id, session['user_id']))
         prabh_data = cursor.fetchone()
         
         if not prabh_data:
             return jsonify({'error': 'Prabh not found'}), 404
         
         # Mark as PAID and set training status
-        cursor.execute('''
-            UPDATE prabh_instances
-            SET payment_status = 'PAID', model_status = 'TRAINING', last_used = CURRENT_TIMESTAMP
-            WHERE id = %s AND user_id = %s
-        ''', (prabh_id, session['user_id']))
+        if USE_POSTGRES:
+            cursor.execute('''
+                UPDATE prabh_instances
+                SET payment_status = 'PAID', model_status = 'TRAINING', last_used = CURRENT_TIMESTAMP
+                WHERE id = %s AND user_id = %s
+            ''', (prabh_id, session['user_id']))
+        else:
+            cursor.execute('''
+                UPDATE prabh_instances
+                SET payment_status = 'PAID', model_status = 'TRAINING', last_used = CURRENT_TIMESTAMP
+                WHERE id = ? AND user_id = ?
+            ''', (prabh_id, session['user_id']))
         
         conn.commit()
         conn.close()
@@ -1024,14 +1245,20 @@ def verify_payment():
             # Update model status to READY and notify user
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute('''
-                UPDATE prabh_instances
-                SET model_status = 'READY', model_path = %s
-                WHERE id = %s
-            ''', (model_path, prabh_id))
-
-            # Get Prabh name for notification
-            cursor.execute('SELECT prabh_name FROM prabh_instances WHERE id = %s', (prabh_id,))
+            if USE_POSTGRES:
+                cursor.execute('''
+                    UPDATE prabh_instances
+                    SET model_status = 'READY', model_path = %s
+                    WHERE id = %s
+                ''', (model_path, prabh_id))
+                cursor.execute('SELECT prabh_name FROM prabh_instances WHERE id = %s', (prabh_id,))
+            else:
+                cursor.execute('''
+                    UPDATE prabh_instances
+                    SET model_status = 'READY', model_path = ?
+                    WHERE id = ?
+                ''', (model_path, prabh_id))
+                cursor.execute('SELECT prabh_name FROM prabh_instances WHERE id = ?', (prabh_id,))
             prabh_name = cursor.fetchone()[0]
             
             conn.commit()
@@ -1083,9 +1310,14 @@ The MyPrabh Team
             # Set fallback status
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute('''
-                UPDATE prabh_instances SET model_status = 'FALLBACK' WHERE id = %s
-            ''', (prabh_id,))
+            if USE_POSTGRES:
+                cursor.execute('''
+                    UPDATE prabh_instances SET model_status = 'FALLBACK' WHERE id = %s
+                ''', (prabh_id,))
+            else:
+                cursor.execute('''
+                    UPDATE prabh_instances SET model_status = 'FALLBACK' WHERE id = ?
+                ''', (prabh_id,))
             conn.commit()
             conn.close()
         
