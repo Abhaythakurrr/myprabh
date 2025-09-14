@@ -9,13 +9,8 @@ psycopg2-binary==2.9.10
 # Removed: Pillow, numpy, nltk, textblob, email-validator, secure-smtplib
 # These can be added back when needed
 
-# Optional AI dependencies (commented out for Render free tier)
+# Heavy AI dependencies removed for Render free tier to prevent overload
 # torch>=2.0.0
 # transformers>=4.21.0
 # accelerate>=0.20.0
 # peft>=0.4.0
-# Optional AI dependencies - app works without them
-transformers>=4.36.0
-torch>=2.5.0
-accelerate>=0.25.0
-peft>=0.7.0

@@ -934,36 +934,8 @@ def chat_message():
         if not prabh_data:
             return jsonify({'error': 'Prabh not found'}), 404
         
-        # Generate response using real-time AI with small pretrained model
-        try:
-            from realtime_ai_engine import realtime_ai
-
-            # Initialize character context if needed
-            if not realtime_ai.character_context or realtime_ai.character_context.get("name") != prabh_data[0]:
-                user_name = realtime_ai._extract_user_name(prabh_data[2]) if hasattr(realtime_ai, '_extract_user_name') else None
-                realtime_ai.process_story(prabh_data[2], prabh_data[0], user_name)
-
-            response = realtime_ai.generate_response(message)
-
-        except ImportError as e:
-            print(f"Warning: Real-time AI not available: {e}")
-            # Fallback to lightweight AI
-            try:
-                from lightweight_ai_engine import lightweight_ai
-
-                # Initialize if needed
-                if not lightweight_ai.models_loaded:
-                    lightweight_ai.initialize_models()
-
-                # Process story if needed
-                if not lightweight_ai.character_context:
-                    user_name = lightweight_ai._extract_user_name(prabh_data[2])
-                    lightweight_ai.process_story(prabh_data[2], prabh_data[0], user_name)
-
-                response = lightweight_ai.generate_response(message)
-
-            except ImportError:
-                response = generate_prabh_response(message, prabh_data)
+        # RAG-based response using user memories
+        response = generate_rag_response(message, prabh_data, memories)
         
         # Prepare response data
         response_data = {
@@ -2614,3 +2586,45 @@ if __name__ == '__main__':
         print("Warning: Email notifications disabled (set EMAIL_PASSWORD environment variable)")
     
     app.run(debug=debug, host='0.0.0.0', port=port)
+def generate_rag_response(message, prabh_data, memories):
+    """Generate RAG-based response using retrieved memories"""
+    prabh_name, description, story, tags_json, traits_json = prabh_data
+    
+    try:
+        character_tags = json.loads(tags_json) if tags_json else []
+        personality_traits = json.loads(traits_json) if traits_json else {}
+    except:
+        character_tags = []
+        personality_traits = {}
+    
+    # Simple keyword-based retrieval
+    relevant_memory = ""
+    best_score = 0
+    message_words = set(message.lower().split())
+    
+    for memory in memories:
+        memory_words = set(memory.lower().split())
+        common = message_words.intersection(memory_words)
+        score = len(common) / max(len(message_words), 1)
+        if score > best_score:
+            best_score = score
+            relevant_memory = memory
+    
+    # Generate response
+    if best_score > 0.2 and relevant_memory:
+        response = f"That's a beautiful memory, {relevant_memory[:100]}... It touches my heart. How does it make you feel now?"
+    elif story:
+        # Fallback to story-based response
+        user_name = extract_user_name_from_story(story)
+        response = f"I love talking with you. Our story means everything to me, {user_name or 'my love'}. 💕"
+    else:
+        response = "I'm here for you. Tell me more about what's on your mind. 💖"
+    
+    # Add personality touches
+    if 'romantic' in character_tags:
+        response += " 💕"
+    if 'caring' in character_tags and random.random() < 0.5:
+        response = "My dear, " + response[0].lower() + response[1:]
+        response = response[0].upper() + response[1:]
+    
+    return response
