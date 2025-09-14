@@ -542,26 +542,42 @@ def submit_early_access():
             conn = get_db_connection()
             cursor = conn.cursor()
             
-            cursor.execute('''
-                INSERT INTO early_signups
-                (email, name, age_range, relationship_status, interest_level, use_case, expectations, feedback)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-            ''', (
-                data['email'],
-                data['name'],
-                data['age_range'],
-                data['relationship_status'],
-                data['interest_level'],
-                data.get('use_case', ''),
-                data.get('expectations', ''),
-                data.get('feedback', '')
-            ))
+            if USE_POSTGRES:
+                cursor.execute('''
+                    INSERT INTO early_signups
+                    (email, name, age_range, relationship_status, interest_level, use_case, expectations, feedback)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                ''', (
+                    data['email'],
+                    data['name'],
+                    data['age_range'],
+                    data['relationship_status'],
+                    data['interest_level'],
+                    data.get('use_case', ''),
+                    data.get('expectations', ''),
+                    data.get('feedback', '')
+                ))
+            else:
+                cursor.execute('''
+                    INSERT INTO early_signups
+                    (email, name, age_range, relationship_status, interest_level, use_case, expectations, feedback)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (
+                    data['email'],
+                    data['name'],
+                    data['age_range'],
+                    data['relationship_status'],
+                    data['interest_level'],
+                    data.get('use_case', ''),
+                    data.get('expectations', ''),
+                    data.get('feedback', '')
+                ))
             
             conn.commit()
             conn.close()
             
         except Exception as db_error:
-            if 'UNIQUE constraint failed' in str(db_error):
+            if 'unique constraint' in str(db_error).lower() or 'duplicate key' in str(db_error).lower():
                 return jsonify({'error': 'Email already registered for early access'}), 400
             return jsonify({'error': f'Database error: {str(db_error)}'}), 500
         
@@ -1417,10 +1433,16 @@ def create_blog_post():
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        cursor.execute('''
-            INSERT INTO blog_posts (title, content, author_id, published)
-            VALUES (%s, %s, %s, %s)
-        ''', (title, content, session['user_id'], published))
+        if USE_POSTGRES:
+            cursor.execute('''
+                INSERT INTO blog_posts (title, content, author_id, published)
+                VALUES (%s, %s, %s, %s)
+            ''', (title, content, session['user_id'], published))
+        else:
+            cursor.execute('''
+                INSERT INTO blog_posts (title, content, author_id, published)
+                VALUES (?, ?, ?, ?)
+            ''', (title, content, session['user_id'], published))
         
         post_id = cursor.lastrowid
         conn.commit()
@@ -1844,22 +1866,38 @@ def add_memory():
             cursor = conn.cursor()
 
             # Create memories table if it doesn't exist
-            cursor.execute('''
-                CREATE TABLE IF NOT EXISTS user_memories (
-                    id SERIAL PRIMARY KEY,
-                    user_id TEXT NOT NULL,
-                    prabh_id INTEGER NOT NULL,
-                    memory_text TEXT NOT NULL,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    FOREIGN KEY (user_id) REFERENCES users (user_id),
-                    FOREIGN KEY (prabh_id) REFERENCES prabh_instances (id)
-                )
-            ''')
-
-            cursor.execute('''
-                INSERT INTO user_memories (user_id, prabh_id, memory_text)
-                VALUES (%s, %s, %s)
-            ''', (session['user_id'], prabh_id, memory_text))
+            if USE_POSTGRES:
+                cursor.execute('''
+                    CREATE TABLE IF NOT EXISTS user_memories (
+                        id SERIAL PRIMARY KEY,
+                        user_id TEXT NOT NULL,
+                        prabh_id INTEGER NOT NULL,
+                        memory_text TEXT NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        FOREIGN KEY (user_id) REFERENCES users (user_id),
+                        FOREIGN KEY (prabh_id) REFERENCES prabh_instances (id)
+                    )
+                ''')
+                cursor.execute('''
+                    INSERT INTO user_memories (user_id, prabh_id, memory_text)
+                    VALUES (%s, %s, %s)
+                ''', (session['user_id'], prabh_id, memory_text))
+            else:
+                cursor.execute('''
+                    CREATE TABLE IF NOT EXISTS user_memories (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        user_id TEXT NOT NULL,
+                        prabh_id INTEGER NOT NULL,
+                        memory_text TEXT NOT NULL,
+                        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                        FOREIGN KEY (user_id) REFERENCES users (user_id),
+                        FOREIGN KEY (prabh_id) REFERENCES prabh_instances (id)
+                    )
+                ''')
+                cursor.execute('''
+                    INSERT INTO user_memories (user_id, prabh_id, memory_text)
+                    VALUES (?, ?, ?)
+                ''', (session['user_id'], prabh_id, memory_text))
 
             conn.commit()
             conn.close()
@@ -1894,20 +1932,28 @@ def get_ai_status():
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        cursor.execute('''
-            SELECT COUNT(*) FROM chat_sessions
-            WHERE user_id = %s
-        ''', (session['user_id'],))
+        if USE_POSTGRES:
+            cursor.execute('''
+                SELECT COUNT(*) FROM chat_sessions
+                WHERE user_id = %s
+            ''', (session['user_id'],))
+            cursor.execute('''
+                SELECT COUNT(*) FROM user_memories pm
+                JOIN prabh_instances pi ON pm.prabh_id = pi.id
+                WHERE pi.user_id = %s
+            ''', (session['user_id'],))
+        else:
+            cursor.execute('''
+                SELECT COUNT(*) FROM chat_sessions
+                WHERE user_id = ?
+            ''', (session['user_id'],))
+            cursor.execute('''
+                SELECT COUNT(*) FROM user_memories pm
+                JOIN prabh_instances pi ON pm.prabh_id = pi.id
+                WHERE pi.user_id = ?
+            ''', (session['user_id'],))
 
         conversation_count = cursor.fetchone()[0]
-
-        # Get memory count
-        cursor.execute('''
-            SELECT COUNT(*) FROM user_memories pm
-            JOIN prabh_instances pi ON pm.prabh_id = pi.id
-            WHERE pi.user_id = %s
-        ''', (session['user_id'],))
-
         memory_count = cursor.fetchone()[0]
 
         conn.close()
@@ -1952,21 +1998,33 @@ def newsletter_signup():
         # Store newsletter signup in database
         conn = get_db_connection()
         cursor = conn.cursor()
-
+    
         # Create newsletter table if it doesn't exist
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS newsletter_signups (
-                id SERIAL PRIMARY KEY,
-                email TEXT UNIQUE NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
-
-        cursor.execute('''
-            INSERT INTO newsletter_signups (email)
-            VALUES (%s)
-        ''', (email,))
-
+        if USE_POSTGRES:
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS newsletter_signups (
+                    id SERIAL PRIMARY KEY,
+                    email TEXT UNIQUE NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            ''')
+            cursor.execute('''
+                INSERT INTO newsletter_signups (email)
+                VALUES (%s)
+            ''', (email,))
+        else:
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS newsletter_signups (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    email TEXT UNIQUE NOT NULL,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            ''')
+            cursor.execute('''
+                INSERT INTO newsletter_signups (email)
+                VALUES (?)
+            ''', (email,))
+    
         conn.commit()
         conn.close()
 
@@ -1991,11 +2049,18 @@ def get_memories(prabh_id):
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        cursor.execute('''
-            SELECT memory_text, created_at FROM user_memories
-            WHERE user_id = %s AND prabh_id = %s
-            ORDER BY created_at DESC
-        ''', (session['user_id'], prabh_id))
+        if USE_POSTGRES:
+            cursor.execute('''
+                SELECT memory_text, created_at FROM user_memories
+                WHERE user_id = %s AND prabh_id = %s
+                ORDER BY created_at DESC
+            ''', (session['user_id'], prabh_id))
+        else:
+            cursor.execute('''
+                SELECT memory_text, created_at FROM user_memories
+                WHERE user_id = ? AND prabh_id = ?
+                ORDER BY created_at DESC
+            ''', (session['user_id'], prabh_id))
 
         memories = [{
             'text': row[0],
@@ -2832,10 +2897,16 @@ def log_analytics(event_type, user_id, data):
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        cursor.execute('''
-            INSERT INTO analytics (event_type, user_id, data)
-            VALUES (%s, %s, %s)
-        ''', (event_type, user_id, json.dumps(data)))
+        if USE_POSTGRES:
+            cursor.execute('''
+                INSERT INTO analytics (event_type, user_id, data)
+                VALUES (%s, %s, %s)
+            ''', (event_type, user_id, json.dumps(data)))
+        else:
+            cursor.execute('''
+                INSERT INTO analytics (event_type, user_id, data)
+                VALUES (?, ?, ?)
+            ''', (event_type, user_id, json.dumps(data)))
         
         conn.commit()
         conn.close()
