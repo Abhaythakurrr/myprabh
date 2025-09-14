@@ -197,21 +197,9 @@ class LightweightAIEngine:
     
     def _analyze_message_sentiment(self, message):
         """Analyze sentiment of user message"""
-        if self.sentiment_analyzer:
-            try:
-                scores = self.sentiment_analyzer.polarity_scores(message)
-                return {
-                    'positive': scores['pos'],
-                    'negative': scores['neg'],
-                    'neutral': scores['neu'],
-                    'compound': scores['compound']
-                }
-            except:
-                pass
-        
-        # Fallback sentiment analysis
-        positive_words = ['love', 'happy', 'good', 'great', 'wonderful', 'amazing']
-        negative_words = ['sad', 'bad', 'hurt', 'angry', 'upset', 'miss']
+        # Pure Python sentiment analysis for low RAM
+        positive_words = ['love', 'happy', 'good', 'great', 'wonderful', 'amazing', 'joy', 'smile']
+        negative_words = ['sad', 'bad', 'hurt', 'angry', 'upset', 'miss', 'pain', 'cry']
         
         message_lower = message.lower()
         pos_count = sum(1 for word in positive_words if word in message_lower)
