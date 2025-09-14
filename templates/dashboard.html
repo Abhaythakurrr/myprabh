@@ -256,8 +256,8 @@
                     <div class="prabh-name">{{ prabh[1] }}</div>
                     <div class="prabh-description">{{ prabh[2] or "Your personalized AI companion" }}</div>
                     <div class="prabh-meta">
-                        <span>Created: {{ prabh[3][:10] }}</span>
-                        <span>Last chat: {{ prabh[4][:10] if prabh[4] else 'Never' }}</span>
+                        <span>Created: {{ prabh[3].strftime('%Y-%m-%d') }}</span>
+                        <span>Last chat: {{ prabh[4].strftime('%Y-%m-%d') if prabh[4] else 'Never' }}</span>
                     </div>
                     <a href="/chat/{{ prabh[0] }}" class="chat-button">
                         <i class="fas fa-comments"></i> Start Chatting
