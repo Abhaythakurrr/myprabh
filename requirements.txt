@@ -1,4 +1,11 @@
 textgenrnn
 gtts
 requests
-gunicorn
+Flask==2.3.3
+Werkzeug==2.3.7
+gunicorn==21.2.0
+razorpay==1.4.1
+requests==2.31.0
+psycopg2-binary==2.9.10
+flask-cors==3.0.10
+flask-restful==0.3.9
