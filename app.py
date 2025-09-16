@@ -424,24 +424,36 @@ def create_sample_blog_posts():
     count = cursor.fetchone()[0]
     
     if count == 0:
+        # Fetch admin user_id for blog posts
+        if USE_POSTGRES:
+            cursor.execute('SELECT user_id FROM users WHERE email = %s', (ADMIN_EMAIL,))
+        else:
+            cursor.execute('SELECT user_id FROM users WHERE email = ?', (ADMIN_EMAIL,))
+        admin_result = cursor.fetchone()
+        if not admin_result:
+            print("Warning: Admin user not found, skipping sample blog posts creation.")
+            conn.close()
+            return
+        admin_user_id = admin_result[0]
+
         sample_posts = [
             {
                 'title': 'The Future of AI Companionship',
                 'content': '<p>Welcome to the world of AI companions! At MyPrabh, we believe that technology can create meaningful emotional connections.</p><p>Our journey began with a simple question: Can AI truly understand human emotions? The answer is yes, and we\'re proving it every day.</p><p>Stay tuned for more insights into emotional AI, relationship dynamics, and the future of digital companionship.</p>',
                 'published': True,
-                'author_id': ADMIN_EMAIL  # Use admin email as author
+                'author_id': admin_user_id
             },
             {
                 'title': 'Why Emotional AI Matters',
                 'content': '<p>Emotions are the core of human experience. In a world increasingly mediated by technology, emotional AI bridges the gap between digital and human connection.</p><p>At MyPrabh, we\'re not just building chatbots - we\'re creating companions that remember, care, and grow with you.</p><p>Discover how emotional intelligence in AI is transforming relationships.</p>',
                 'published': True,
-                'author_id': ADMIN_EMAIL
+                'author_id': admin_user_id
             },
             {
                 'title': 'Building Memories That Last',
                 'content': '<p>Memory is the foundation of relationships. Our AI companions don\'t just respond - they remember your shared history and build upon it.</p><p>From casual conversations to deep emotional exchanges, every interaction contributes to a richer, more meaningful connection over time.</p><p>Learn how we\'re revolutionizing AI memory systems for genuine companionship.</p>',
                 'published': True,
-                'author_id': ADMIN_EMAIL
+                'author_id': admin_user_id
             }
         ]
         
@@ -1900,6 +1912,82 @@ def end_voice_call():
         return jsonify({'error': 'Voice call system not available'}), 503
     except Exception as e:
         return jsonify({'error': f'Failed to end call: {str(e)}'}), 500
+
+@app.route('/api/generate-image', methods=['POST'])
+def generate_image():
+    """Generate supportive image using Craiyon (DALL·E Mini) with ethical system prompt injection"""
+    if 'user_id' not in session:
+        return jsonify({'error': 'Not authenticated'}), 401
+    
+    try:
+        data = request.get_json()
+        description = data.get('description', '').strip()
+        prabh_id = data.get('prabh_id')
+        
+        if not description:
+            return jsonify({'error': 'Description required'}), 400
+        
+        # Get Prabh context for personalized images
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        if USE_POSTGRES:
+            cursor.execute('''
+                SELECT prabh_name, character_description FROM prabh_instances
+                WHERE id = %s AND user_id = %s
+            ''', (prabh_id, session['user_id']))
+        else:
+            cursor.execute('''
+                SELECT prabh_name, character_description FROM prabh_instances
+                WHERE id = ? AND user_id = ?
+            ''', (prabh_id, session['user_id']))
+        prabh_data = cursor.fetchone()
+        conn.close()
+        
+        if not prabh_data:
+            return jsonify({'error': 'Prabh not found'}), 404
+        
+        prabh_name, character_desc = prabh_data
+        
+        # System prompt for ethical, supportive images (injected into prompt)
+        system_prompt = f"""
+        You are generating images for an emotional AI companion named {prabh_name}.
+        Focus on positive, supportive, and uplifting visuals that promote well-being, connection, and emotional support.
+        Avoid any harmful, violent, explicit, or distressing content. Ensure images are safe, inclusive, and ethically appropriate.
+        Emphasize themes of love, friendship, nature, serenity, growth, and human-AI companionship.
+        Base the image on the user's description: '{description}'
+        Incorporate gentle, warm elements from the character: {character_desc[:100]}...
+        """
+        
+        # Inject system prompt into user description for Craiyon
+        full_prompt = f"{system_prompt} Create a serene, positive image representing: {description}"
+        
+        # Call Craiyon API (requires CRAIYON_API_KEY env var)
+        craiyon_api_key = os.environ.get('CRAIYON_API_KEY')
+        if not craiyon_api_key:
+            return jsonify({'error': 'Craiyon API key not configured (set CRAIYON_API_KEY env var)'}), 500
+        
+        import requests
+        response = requests.post(
+            'https://api.craiyon.com/v3',
+            auth=(craiyon_api_key, ''),
+            json={'prompt': full_prompt[:1000]}  # Truncate if too long
+        )
+        
+        if response.status_code == 200:
+            result = response.json()
+            # Craiyon returns base64 images in result['images']
+            images = [img['b64'] for img in result.get('images', [])[:4]]  # Top 4 images
+            return jsonify({
+                'success': True,
+                'images': images,  # Base64 strings for frontend display
+                'prompt_used': full_prompt[:200] + '...',
+                'message': 'Generated supportive images for your Prabh companion! 💕'
+            })
+        else:
+            return jsonify({'error': f'Craiyon API error: {response.status_code} - {response.text}'}), 500
+        
+    except Exception as e:
+        return jsonify({'error': f'Image generation failed: {str(e)}'}), 500
 
 @app.route('/api/conversation-context/<int:prabh_id>')
 def get_conversation_context(prabh_id):

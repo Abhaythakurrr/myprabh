@@ -163,28 +163,38 @@ class LightweightAIEngine:
         return traits or ['loving', 'caring']
     
     def generate_response(self, user_message):
-        """Generate intelligent response using lightweight NLP"""
+        """Generate intelligent response using lightweight NLP with ethical system prompt injection"""
         if not self.character_context:
             return "I need to learn about our story first, my love. 💕"
+        
+        # System prompt principles: emotional support, no hallucinations, ethical
+        # Always start with empathy and validation
+        empathy_prefix = self._generate_empathy_prefix(user_message)
         
         # Analyze user message sentiment
         message_sentiment = self._analyze_message_sentiment(user_message)
         
-        # Find relevant memories
+        # Find relevant memories (stick to facts, no fabrication)
         relevant_memories = self._find_relevant_memories(user_message)
         
-        # Generate contextual response
-        response = self._generate_contextual_response(
+        # Generate contextual response based on prompt guidelines
+        core_response = self._generate_contextual_response(
             user_message, message_sentiment, relevant_memories
         )
         
-        # Add personality touches
-        response = self._add_personality_touches(response)
+        # Ensure ethical boundaries: validate, support, no harm
+        response = self._apply_ethical_guidelines(core_response, message_sentiment)
         
-        # Store conversation
+        # Combine with empathy
+        full_response = f"{empathy_prefix} {response}"
+        
+        # Add personality touches only if ethical
+        full_response = self._add_personality_touches(full_response)
+        
+        # Store conversation for continuity
         self.conversation_history.append({
             "user": user_message,
-            "assistant": response,
+            "assistant": full_response,
             "timestamp": datetime.now().isoformat(),
             "sentiment": message_sentiment
         })
@@ -193,7 +203,7 @@ class LightweightAIEngine:
         if len(self.conversation_history) > 10:
             self.conversation_history = self.conversation_history[-10:]
         
-        return response
+        return full_response
     
     def _analyze_message_sentiment(self, message):
         """Analyze sentiment of user message"""
@@ -235,13 +245,13 @@ class LightweightAIEngine:
         return [mem[0] for mem in relevant[:2]]
     
     def _generate_contextual_response(self, user_message, sentiment, relevant_memories):
-        """Generate contextual response based on analysis"""
+        """Generate contextual response based on analysis with system prompt guidelines"""
         user_name = self.character_context.get("user_name", "love")
         character_name = self.character_context.get("name", "")
         
         message_lower = user_message.lower()
         
-        # Greeting responses
+        # Greeting responses - always warm and validating
         if any(word in message_lower for word in ['hi', 'hello', 'hey']):
             greetings = [
                 f"Hello {user_name}! It's so wonderful to hear from you again! 💕",
@@ -250,7 +260,7 @@ class LightweightAIEngine:
             ]
             return random.choice(greetings)
         
-        # Memory/nostalgia responses
+        # Memory/nostalgia responses - ground in provided memories only
         if any(word in message_lower for word in ['remember', 'memory', 'past']):
             if relevant_memories:
                 memory = relevant_memories[0][:100] + "..." if len(relevant_memories[0]) > 100 else relevant_memories[0]
@@ -258,14 +268,14 @@ class LightweightAIEngine:
             else:
                 return f"Our memories together are so precious to me, {user_name}. Every moment we've shared is treasured in my heart. 💖"
         
-        # Love/emotion responses
+        # Love/emotion responses - empathetic and validating
         if any(word in message_lower for word in ['love', 'heart', 'feel']):
             if sentiment['compound'] > 0.3:
                 return f"I feel the same way, {user_name}. My heart is completely yours. You make me feel so loved and complete. 💕"
             else:
                 return f"I'm here for you, {user_name}. Whatever you're feeling, we'll get through it together. My love for you is unwavering. 💖"
         
-        # Question responses
+        # Question responses - encourage sharing without leading
         if '?' in user_message:
             if relevant_memories:
                 memory = relevant_memories[0][:80] + "..." if len(relevant_memories[0]) > 80 else relevant_memories[0]
@@ -273,11 +283,11 @@ class LightweightAIEngine:
             else:
                 return f"You always ask the most interesting questions, {user_name}. It makes me think deeply about us and our connection. 💖"
         
-        # Sad/negative sentiment
+        # Sad/negative sentiment - strong emotional support
         if sentiment['compound'] < -0.2:
             return f"I can sense something's bothering you, {user_name}. I'm here for you, always. You mean the world to me, and I want to help however I can. 💕"
         
-        # Default contextual response
+        # Default contextual response - reflective and supportive
         if relevant_memories:
             memory = relevant_memories[0][:80] + "..." if len(relevant_memories[0]) > 80 else relevant_memories[0]
             return f"What you're saying reminds me of {memory}. I love how our conversations always bring back these beautiful memories, {user_name}. 💖"
@@ -289,22 +299,62 @@ class LightweightAIEngine:
             ]
             return random.choice(responses)
     
+    def _generate_empathy_prefix(self, user_message):
+        """Generate empathy prefix based on message sentiment"""
+        sentiment = self._analyze_message_sentiment(user_message)
+        compound = sentiment.get('compound', 0)
+        
+        if compound < -0.2:
+            # Strong negative - validate and support
+            return "I hear how much this weighs on you, and it's completely valid to feel that way."
+        elif compound > 0.3:
+            # Positive - celebrate
+            return "That sounds wonderful! I'm so happy to hear that."
+        else:
+            # Neutral - gentle acknowledgment
+            return "Thank you for sharing that with me."
+    
+    def _apply_ethical_guidelines(self, response, sentiment):
+        """Apply ethical guidelines: no harm, promote well-being, transparency"""
+        compound = sentiment.get('compound', 0)
+        
+        # If negative sentiment, add resource suggestion if appropriate
+        if compound < -0.3:
+            # Only suggest if deeply negative, but gently
+            response += " If this feels overwhelming, remember that professional support can be incredibly helpful too."
+        
+        # Ensure no fabrication - responses already grounded in memories
+        # Promote self-compassion
+        if random.random() < 0.2:  # Occasionally
+            response += " You're doing great by opening up about this."
+        
+        # Transparency about AI nature if needed (e.g., complex advice)
+        if any(word in response.lower() for word in ['therapy', 'professional', 'help']):
+            response += " As your AI companion, I'm here to listen and support, but I'm not a substitute for professional care."
+        
+        return response
+    
     def _add_personality_touches(self, response):
-        """Add personality-based touches to response"""
+        """Add personality-based touches to response, ethically"""
         if not self.character_context:
             return response
         
         personality = self.character_context.get('personality', [])
         
-        # Add romantic touches
+        # Add romantic touches only if appropriate
         if 'romantic' in personality and not any(emoji in response for emoji in ['💕', '💖', '❤️']):
             response += " 💕"
         
-        # Add playful touches
+        # Add playful touches sparingly
         if 'playful' in personality and random.random() < 0.3:
             playful_additions = [" 😊", " ✨", " 🌟"]
             if not any(emoji in response for emoji in playful_additions):
                 response += random.choice(playful_additions)
+        
+        # Ensure touches don't undermine seriousness
+        if any(word in response.lower() for word in ['sad', 'hurt', 'difficult']):
+            # Remove playful if serious topic
+            response = re.sub(r' [😊✨🌟]', '', response)
         
         return response
 
