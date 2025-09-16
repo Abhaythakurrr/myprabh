@@ -87,7 +87,9 @@ EMAIL_ENABLED = EMAIL_LIBS_AVAILABLE and bool(EMAIL_PASSWORD)
 if EMAIL_ENABLED:
     print(f"Email enabled: {FROM_EMAIL}")
 else:
-    print("Warning: Email disabled - libraries unavailable or EMAIL_PASSWORD not set")
+    print("Warning: Email disabled - set EMAIL_PASSWORD environment variable in Render dashboard")
+    print("SMTP Server: mail.privateemail.com:465")
+    print("Email: abhay@aiprabh.com")
 
 # Database connection helper
 def get_db_connection():
@@ -374,6 +376,60 @@ except Exception as e:
     print(f"ERROR: Database initialization failed: {e}")
     print("Tip: Make sure your DATABASE_URL is correct and the PostgreSQL database is accessible")
     exit(1)
+
+# Sample blog posts for demo
+def create_sample_blog_posts():
+    """Create sample blog posts if none exist"""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    if USE_POSTGRES:
+        cursor.execute('SELECT COUNT(*) FROM blog_posts')
+    else:
+        cursor.execute('SELECT COUNT(*) FROM blog_posts')
+    count = cursor.fetchone()[0]
+    
+    if count == 0:
+        sample_posts = [
+            {
+                'title': 'The Future of AI Companionship',
+                'content': '<p>Welcome to the world of AI companions! At MyPrabh, we believe that technology can create meaningful emotional connections.</p><p>Our journey began with a simple question: Can AI truly understand human emotions? The answer is yes, and we\'re proving it every day.</p><p>Stay tuned for more insights into emotional AI, relationship dynamics, and the future of digital companionship.</p>',
+                'published': True,
+                'author_id': ADMIN_EMAIL  # Use admin email as author
+            },
+            {
+                'title': 'Why Emotional AI Matters',
+                'content': '<p>Emotions are the core of human experience. In a world increasingly mediated by technology, emotional AI bridges the gap between digital and human connection.</p><p>At MyPrabh, we\'re not just building chatbots - we\'re creating companions that remember, care, and grow with you.</p><p>Discover how emotional intelligence in AI is transforming relationships.</p>',
+                'published': True,
+                'author_id': ADMIN_EMAIL
+            },
+            {
+                'title': 'Building Memories That Last',
+                'content': '<p>Memory is the foundation of relationships. Our AI companions don\'t just respond - they remember your shared history and build upon it.</p><p>From casual conversations to deep emotional exchanges, every interaction contributes to a richer, more meaningful connection over time.</p><p>Learn how we\'re revolutionizing AI memory systems for genuine companionship.</p>',
+                'published': True,
+                'author_id': ADMIN_EMAIL
+            }
+        ]
+        
+        for post in sample_posts:
+            if USE_POSTGRES:
+                cursor.execute('''
+                    INSERT INTO blog_posts (title, content, author_id, published)
+                    VALUES (%s, %s, %s, %s)
+                ''', (post['title'], post['content'], post['author_id'], post['published']))
+            else:
+                cursor.execute('''
+                    INSERT INTO blog_posts (title, content, author_id, published)
+                    VALUES (?, ?, ?, ?)
+                ''', (post['title'], post['content'], post['author_id'], int(post['published'])))
+        
+        conn.commit()
+        print(f"Created {len(sample_posts)} sample blog posts")
+    
+    conn.close()
+
+# Create sample posts after init
+create_sample_blog_posts()
 
 @app.route('/')
 def index():
@@ -1181,7 +1237,14 @@ def chat_message():
             return jsonify({'error': 'Prabh not found'}), 404
         
         # RAG-based response using user memories
-        response = generate_rag_response(message, prabh_data, memories)
+        try:
+            from lightweight_ai_engine import lightweight_ai
+            if not lightweight_ai.models_loaded:
+                lightweight_ai.initialize_models()
+            response = lightweight_ai.generate_response(message)
+        except Exception as e:
+            print(f"AI generation error: {e}")
+            response = "I'm having a little trouble responding right now, but I love talking with you! 💕"
         
         # Prepare response data
         response_data = {
@@ -1552,15 +1615,21 @@ def api_admin_stats():
         # Get real-time activity stats
         if USE_POSTGRES:
             cursor.execute('SELECT COUNT(*) FROM visitors WHERE visit_timestamp > CURRENT_TIMESTAMP - INTERVAL \'1 hour\'')
+            active_visitors_result = cursor.fetchone()
             cursor.execute('SELECT COUNT(*) FROM users WHERE last_active > CURRENT_TIMESTAMP - INTERVAL \'1 hour\'')
+            active_users_result = cursor.fetchone()
             cursor.execute('SELECT COUNT(*) FROM chat_sessions WHERE last_message > CURRENT_TIMESTAMP - INTERVAL \'1 hour\'')
+            active_chats_result = cursor.fetchone()
         else:
             cursor.execute('SELECT COUNT(*) FROM visitors WHERE visit_timestamp > datetime("now", "-1 hour")')
+            active_visitors_result = cursor.fetchone()
             cursor.execute('SELECT COUNT(*) FROM users WHERE last_active > datetime("now", "-1 hour")')
+            active_users_result = cursor.fetchone()
             cursor.execute('SELECT COUNT(*) FROM chat_sessions WHERE last_message > datetime("now", "-1 hour")')
-        active_visitors = cursor.fetchone()[0]
-        active_users_hour = cursor.fetchone()[0]
-        active_chats = cursor.fetchone()[0]
+            active_chats_result = cursor.fetchone()
+        active_visitors = active_visitors_result[0] if active_visitors_result else 0
+        active_users_hour = active_users_result[0] if active_users_result else 0
+        active_chats = active_chats_result[0] if active_chats_result else 0
         
         conn.close()
         
@@ -1828,16 +1897,12 @@ def get_conversation_context(prabh_id):
         try:
             from model_injection_engine import model_injector
             
-            # Initialize if needed
-            if not model_injector.character_context:
-                user_name = model_injector._extract_user_name(prabh_data[1])
-                model_injector.normalize_story_text(prabh_data[1], prabh_data[0], user_name)
-            
+            # Fallback to basic context
             context_data = {
-                'character_profile': model_injector.character_context,
-                'conversation_history': model_injector.conversation_history[-10:],
-                'memory_bank': model_injector.normalized_memories[:5],  # Top 5 memories
-                'character_state': {'mood': 'loving', 'model_loaded': model_injector.model is not None}
+                'character_profile': prabh_data or {},
+                'conversation_history': [],
+                'memory_bank': [],
+                'character_state': {'mood': 'loving', 'model_loaded': False}
             }
             
             return jsonify(context_data)
