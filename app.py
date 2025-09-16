@@ -1550,13 +1550,16 @@ def api_admin_stats():
         print(f"Found {len(blog_posts)} blog posts")
         
         # Get real-time activity stats
-        cursor.execute('SELECT COUNT(*) FROM visitors WHERE visit_timestamp > datetime("now", "-1 hour")')
+        if USE_POSTGRES:
+            cursor.execute('SELECT COUNT(*) FROM visitors WHERE visit_timestamp > CURRENT_TIMESTAMP - INTERVAL \'1 hour\'')
+            cursor.execute('SELECT COUNT(*) FROM users WHERE last_active > CURRENT_TIMESTAMP - INTERVAL \'1 hour\'')
+            cursor.execute('SELECT COUNT(*) FROM chat_sessions WHERE last_message > CURRENT_TIMESTAMP - INTERVAL \'1 hour\'')
+        else:
+            cursor.execute('SELECT COUNT(*) FROM visitors WHERE visit_timestamp > datetime("now", "-1 hour")')
+            cursor.execute('SELECT COUNT(*) FROM users WHERE last_active > datetime("now", "-1 hour")')
+            cursor.execute('SELECT COUNT(*) FROM chat_sessions WHERE last_message > datetime("now", "-1 hour")')
         active_visitors = cursor.fetchone()[0]
-        
-        cursor.execute('SELECT COUNT(*) FROM users WHERE last_active > datetime("now", "-1 hour")')
         active_users_hour = cursor.fetchone()[0]
-        
-        cursor.execute('SELECT COUNT(*) FROM chat_sessions WHERE last_message > datetime("now", "-1 hour")')
         active_chats = cursor.fetchone()[0]
         
         conn.close()
