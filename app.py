@@ -377,6 +377,40 @@ except Exception as e:
     print("Tip: Make sure your DATABASE_URL is correct and the PostgreSQL database is accessible")
     exit(1)
 
+# Ensure admin user exists for blog posts
+def ensure_admin_user():
+    """Create admin user if not exists"""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    if USE_POSTGRES:
+        cursor.execute('SELECT COUNT(*) FROM users WHERE email = %s', (ADMIN_EMAIL,))
+    else:
+        cursor.execute('SELECT COUNT(*) FROM users WHERE email = ?', (ADMIN_EMAIL,))
+    count = cursor.fetchone()[0]
+    
+    if count == 0:
+        admin_user_id = str(uuid.uuid4())
+        admin_password_hash = generate_password_hash('admin123')  # Default password for demo
+        
+        if USE_POSTGRES:
+            cursor.execute('''
+                INSERT INTO users (user_id, email, name, password_hash, is_admin)
+                VALUES (%s, %s, %s, %s, %s)
+            ''', (admin_user_id, ADMIN_EMAIL, 'Admin', admin_password_hash, True))
+        else:
+            cursor.execute('''
+                INSERT INTO users (user_id, email, name, password_hash, is_admin)
+                VALUES (?, ?, ?, ?, ?)
+            ''', (admin_user_id, ADMIN_EMAIL, 'Admin', admin_password_hash, 1))
+        
+        conn.commit()
+        print(f"Created admin user: {ADMIN_EMAIL}")
+    
+    conn.close()
+
+ensure_admin_user()
+
 # Sample blog posts for demo
 def create_sample_blog_posts():
     """Create sample blog posts if none exist"""
