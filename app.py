@@ -30,18 +30,10 @@ app = Flask(__name__)
 app.secret_key = 'myprabh_mvp_2024_secret_key'
 
 # Database Configuration - SQLite for local, PostgreSQL for production
-USE_POSTGRES = os.environ.get('USE_POSTGRES', 'false').lower() == 'true'
+DATABASE_URL = os.environ.get('DATABASE_URL')
+USE_POSTGRES = bool(DATABASE_URL)
 DB_PATH = 'app.db'
 if USE_POSTGRES:
-    DATABASE_URL = os.environ.get('DATABASE_URL')
-    if not DATABASE_URL:
-        print("ERROR: DATABASE_URL environment variable not set!")
-        print("For Render deployment:")
-        print("   1. Create a PostgreSQL database in Render dashboard")
-        print("   2. Copy the 'External Database URL' from database settings")
-        print("   3. Add DATABASE_URL environment variable in your web service settings")
-        print("   4. Redeploy your application")
-        exit(1)
     print("Using PostgreSQL database")
 else:
     print("Using SQLite database for local development")
