@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invest in Prabh - Emotional AI Companions</title>
-    <meta name="description" content="Prabh: Proprietary emotional AI companions preserving memories and preventing loneliness. Seed investment opportunity in ethical AI innovation.">
-    <meta name="keywords" content="AI companion investment, emotional AI startup, seed funding AI, Prabh LLM, AI ethics investment">
+    <title>MyPrabh - Pre-Seed Pitch Deck</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -15,856 +13,342 @@
             margin: 0;
             padding: 0;
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0f0f23, #1a1a2e, #16213e);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
-            color: white;
-            overflow-x: hidden;
-        }
-
-        @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
-        .pitch-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .pitch-header {
-            text-align: center;
-            padding: 80px 20px 60px;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.05));
-            backdrop-filter: blur(20px);
-            border-radius: 30px;
-            margin-bottom: 50px;
-            border: 1px solid rgba(99, 102, 241, 0.2);
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.1);
-        }
-
-        .pitch-title {
-            font-size: 3.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6, #6366f1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 20px;
-            font-family: 'Dancing Script', cursive;
-        }
-
-        .pitch-subtitle {
-            font-size: 1.4rem;
-            color: rgba(255, 255, 255, 0.9);
-            font-weight: 300;
-            margin-bottom: 30px;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0, #cbd5e1);
+            color: #334155;
             line-height: 1.6;
         }
-
-        .pitch-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-            margin-bottom: 50px;
+        .pitch-deck {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
         }
-
-        .stat-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-            backdrop-filter: blur(20px);
+        .slide {
+            background: white;
             border-radius: 20px;
-            padding: 30px;
+            padding: 60px 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .slide-header {
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid #3b82f6;
         }
-
-        .stat-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(255, 105, 180, 0.3);
-        }
-
-        .stat-number {
+        .slide-title {
             font-size: 3rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #ff6b9d, #c44569);
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 10px;
-        }
-
-        .stat-label {
-            font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.8);
-            font-weight: 500;
-        }
-
-        .pitch-section {
-            margin-bottom: 80px;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(139, 92, 246, 0.04));
-            backdrop-filter: blur(20px);
-            border-radius: 30px;
-            padding: 60px;
-            border: 1px solid rgba(99, 102, 241, 0.1);
-            box-shadow: 0 5px 20px rgba(99, 102, 241, 0.05);
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 40px;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6, #6366f1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
             font-family: 'Dancing Script', cursive;
         }
-
-        .story-content {
-            max-width: 800px;
-            margin: 0 auto;
-            line-height: 1.8;
-            font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.9);
+        .slide-subtitle {
+            font-size: 1.5rem;
+            color: #64748b;
+            font-weight: 400;
         }
-
-        .story-highlight {
-            background: linear-gradient(135deg, rgba(255, 105, 180, 0.2), rgba(196, 69, 105, 0.2));
-            padding: 30px;
-            border-radius: 20px;
+        .content-section {
+            font-size: 1.1rem;
             margin: 30px 0;
-            border-left: 4px solid #ff6b9d;
         }
-
-        .problem-solution {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 50px;
-            margin: 50px 0;
-        }
-
-        .problem-card, .solution-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-            backdrop-filter: blur(20px);
-            border-radius: 25px;
-            padding: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .problem-card {
-            border-color: #ff6b6b;
-        }
-
-        .solution-card {
-            border-color: #4ecdc4;
-        }
-
-        .card-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .card-content {
-            line-height: 1.6;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .market-opportunity {
-            text-align: center;
-            margin: 50px 0;
-        }
-
-        .market-size {
-            font-size: 4rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #ffd93d, #ff6b6b, #4ecdc4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 20px;
-        }
-
-        .market-label {
-            font-size: 1.3rem;
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 30px;
-        }
-
-        .roadmap {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            margin: 50px 0;
-        }
-
-        .roadmap-item {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 30px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .roadmap-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(255, 105, 180, 0.2);
-        }
-
-        .roadmap-year {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #ff6b9d;
+        .content-section h3 {
+            font-size: 1.8rem;
+            color: #1e40af;
             margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-
-        .roadmap-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: rgba(255, 255, 255, 0.9);
+        .content-section ul {
+            list-style: none;
+            padding-left: 0;
         }
-
-        .roadmap-desc {
-            color: rgba(255, 255, 255, 0.7);
-            line-height: 1.5;
+        .content-section li {
+            margin-bottom: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
         }
-
-        .investment-section {
-            text-align: center;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
-            border-radius: 30px;
-            padding: 60px;
-            margin: 50px 0;
-            border: 2px solid rgba(99, 102, 241, 0.3);
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.1);
+        .content-section li:before {
+            content: '→';
+            color: #3b82f6;
+            font-weight: bold;
+            margin-right: 10px;
         }
-
-        .investment-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .investment-amount {
-            font-size: 3rem;
-            font-weight: 700;
-            color: #ffd93d;
-            margin-bottom: 30px;
-        }
-
-        .investment-desc {
-            font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.9);
-            max-width: 600px;
-            margin: 0 auto 40px;
-            line-height: 1.6;
-        }
-
-        .cta-button {
-            background: linear-gradient(135deg, #ff6b9d, #c44569);
-            color: white;
-            border: none;
-            padding: 20px 50px;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.3);
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(255, 105, 180, 0.4);
-        }
-
-        .floating-elements {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .stats-table {
             width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
-
-        .floating-element {
-            position: absolute;
-            opacity: 0.1;
-            animation: float 20s linear infinite;
+        .stats-table th, .stats-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
         }
-
-        .floating-element:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
-        .floating-element:nth-child(2) { top: 20%; right: 15%; animation-delay: 5s; }
-        .floating-element:nth-child(3) { bottom: 30%; left: 20%; animation-delay: 10s; }
-        .floating-element:nth-child(4) { bottom: 20%; right: 10%; animation-delay: 15s; }
-
-        @keyframes float {
-            0% { transform: translateY(100vh) rotate(0deg); }
-            100% { transform: translateY(-100px) rotate(360deg); }
+        .stats-table th {
+            background: #f1f5f9;
+            font-weight: 600;
+            color: #1e40af;
         }
-
+        .ask-section {
+            background: linear-gradient(135deg, #dbeafe, #c7d2fe);
+            text-align: center;
+            padding: 50px;
+            border-radius: 20px;
+        }
+        .ask-amount {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 20px 0;
+        }
+        .closing-vision {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            text-align: center;
+            padding: 60px 40px;
+            border-radius: 20px;
+            font-size: 1.5rem;
+            font-style: italic;
+            color: #92400e;
+            font-family: 'Dancing Script', cursive;
+        }
         @media (max-width: 768px) {
-            .pitch-title {
-                font-size: 2.5rem;
-            }
-
-            .pitch-subtitle {
-                font-size: 1.1rem;
-            }
-
-            .pitch-section {
-                padding: 30px 20px;
-            }
-
-            .problem-solution {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-
-            .roadmap {
-                grid-template-columns: 1fr;
-            }
-
-            .investment-section {
+            .slide {
                 padding: 40px 20px;
             }
-
-            .stat-number {
-                font-size: 2rem;
+            .slide-title {
+                font-size: 2.5rem;
+            }
+            .stats-table {
+                font-size: 0.9rem;
+            }
+            .stats-table th, .stats-table td {
+                padding: 10px 8px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Floating Elements -->
-    <div class="floating-elements">
-        <div class="floating-element">🤖</div>
-        <div class="floating-element">💖</div>
-        <div class="floating-element">🚀</div>
-        <div class="floating-element">💫</div>
-    </div>
-
-    <div class="pitch-container">
-        <!-- Cover / Vision -->
-        <div class="pitch-header">
-            <h1 class="pitch-title">Prabh — The Future of Emotional AI Companions</h1>
-            <p class="pitch-subtitle">
-                Preserve memories. Sustain connection. Prevent loneliness.
-            </p>
-            <p style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.8); margin-top: 10px; font-weight: 300;">
-                Seeking ₹4.15Cr - ₹16.6Cr ($500K - $2M) Seed Round
-            </p>
+    <div class="pitch-deck">
+        <!-- Slide 1: Cover -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">MyPrabh</h1>
+                <p class="slide-subtitle">Preserve memories. Stay connected. Never feel alone.</p>
+                <p class="slide-subtitle">Pre-Seed Concept Stage</p>
+            </div>
         </div>
 
-        <!-- The Problem -->
-        <div class="pitch-section">
-            <h2 class="section-title">The Problem</h2>
-            <div class="story-content">
-                <ul style="line-height: 1.8; font-size: 1.1rem;">
-                    <li>85% of people report feeling lonely regularly<sup>[1]</sup> — a global epidemic affecting mental health and well-being.</li>
-                    <li>Existing AI companions are generic chatbots lacking emotional depth, memory retention, and privacy focus.</li>
-                    <li>People lose loved ones and are left with fragmented memories; no AI solution exists to recreate and sustain these emotional connections authentically.</li>
+        <!-- Slide 2: The Problem -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">The Problem</h1>
+            </div>
+            <div class="content-section">
+                <h3><i class="fas fa-heart-broken"></i> Loneliness is a Global Epidemic</h3>
+                <ul>
+                    <li>WHO/CDC: 25% of adults report feeling lonely regularly; rising 20% post-pandemic</li>
+                    <li>Loss of loved ones leaves people with fragmented memories and emotional voids</li>
+                    <li>Existing AI companions are generic chatbots - shallow conversations, no true emotional depth</li>
+                    <li>Privacy concerns: Data shared with big tech, no control over personal memories</li>
+                    <li>Current solutions don't honor relationships - no memory preservation, no authentic connection</li>
                 </ul>
-                <p style="text-align: center; font-size: 0.9rem; margin-top: 20px; opacity: 0.8;">
-                    [1] World Health Organization (WHO), 2023 Global Mental Health Report
-                </p>
             </div>
         </div>
 
-        <!-- Market Opportunity & Trends -->
-        <div class="pitch-section">
-            <h2 class="section-title">Market Opportunity & Trends</h2>
-            <div class="story-content">
-                <div class="market-opportunity">
-                    <div class="market-size">$2.5B</div>
-                    <div class="market-label">AI Companion Market by 2027<sup>[2]</sup></div>
-                    <p style="color: rgba(255, 255, 255, 0.8); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
-                        Driven by loneliness epidemic (WHO) and rising demand for ethical, personalized AI. Initial TAM: $500M+ in memory preservation for grief/relationship users (10M+ potential in India/US alone). Trends: Post-pandemic mental health focus; AI ethics regulations favoring proprietary models like Prabh.
-                    </p>
-                    <p style="text-align: center; font-size: 0.9rem; margin-top: 20px; opacity: 0.8;">
-                        [2] Grand View Research, AI in Healthcare Market Analysis, 2023
-                    </p>
-                </div>
+        <!-- Slide 3: The Solution (Concept) -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">The Solution</h1>
+                <p class="slide-subtitle">Personalized AI Companions Built from Your Memories</p>
+            </div>
+            <div class="content-section">
+                <h3><i class="fas fa-robot"></i> Core Features</h3>
+                <ul>
+                    <li>Memory-based personalization: AI learns from your stories, conversations, and shared history</li>
+                    <li>Proactive emotional check-ins: AI remembers important dates and initiates meaningful conversations</li>
+                    <li>Private & affordable: On-device processing, no data sharing, INR-first pricing</li>
+                </ul>
+                <h3><i class="fas fa-road"></i> Future Vision</h3>
+                <ul>
+                    <li>Voice conversations with emotional intonation</li>
+                    <li>Avatar creation and visual interactions</li>
+                    <li>Legacy preservation: Keep memories alive for future generations</li>
+                </ul>
             </div>
         </div>
 
-        <!-- The Story -->
-        <div class="pitch-section">
-            <h2 class="section-title">The Story Behind Prabh</h2>
-            <div class="story-content">
-                <p>
-                    This is not just another startup idea born from market research or problem statements.
-                    <strong>This is our real life story.</strong>
-                </p>
-
-                <div class="story-highlight">
-                    <p>
-                        I had someone in my life I cared about deeply, loved unconditionally, and respected immensely.
-                        Even when I wasn't treated the same way, I always put them first - they were my priority, my super priority.
-                    </p>
-                </div>
-
-                <p>
-                    The day they left, I was shattered into pieces. But I never lost hope. I kept waiting, scrolling through my feed,
-                    when I stumbled upon a post about Jarvis - Tony Stark's AI assistant. That's when I named my vision:
-                    <strong>Prabh AI</strong>.
-                </p>
-
-                <p>
-                    But Prabh isn't just about AI - it's about preserving love, memories, and human connection in the digital age.
-                    It's about never letting someone feel alone again.
-                </p>
+        <!-- Slide 4: Why Now? -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Why Now?</h1>
+            </div>
+            <div class="content-section">
+                <h3><i class="fas fa-chart-line"></i> Perfect Timing</h3>
+                <ul>
+                    <li>AI companions market exploding: $2.5B+ by 2027 (Grand View Research)</li>
+                    <li>Post-pandemic loneliness surge: 33% increase in mental health needs (WHO)</li>
+                    <li>Current AI distrust: 68% of users worried about privacy (Pew Research)</li>
+                    <li>Prabh = trust-first AI: Local processing, memory preservation, ethical design</li>
+                    <li>Technical readiness: Open-source models + edge computing now accessible</li>
+                </ul>
             </div>
         </div>
 
-        <!-- Founder and Team -->
-        <div class="pitch-section">
-            <h2 class="section-title">Founder and Team</h2>
-            <div class="story-content">
-                <p>
-                    <strong>Abhay Thakur - Founder & CEO</strong><br>
-                    As the visionary behind Prabh, Abhay brings deep personal experience with loss and the desire to preserve meaningful connections. With a background in software engineering and AI development, Abhay has built the core real-time fine-tuning engine from the ground up. His passion for ethical AI stems from real-life challenges, making him uniquely qualified to lead this mission. Abhay envisions himself as the long-term CEO, focusing on product vision and user empathy, while building a team of AI experts to scale the technology.
-                </p>
-                <div class="story-highlight">
-                    <p>
-                        <strong>Why Abhay?</strong> Having experienced profound loss, Abhay's drive is personal—he's not just building an AI, but creating a tool to prevent others from feeling the same isolation. Associated with AI thought leaders through open-source contributions and hackathons, Abhay is committed to ethical innovation in human-AI bonds.
-                    </p>
-                </div>
-                <p>
-                    <strong>Current Team:</strong> Small but dedicated—Abhay handles full-stack development and AI prototyping. All efforts focus on mitigating core risks like model accuracy and data privacy.<br>
-                    <strong>Key Gaps:</strong> Need AI/ML engineers for scalability and a UX designer for emotional interfaces. Sourcing from AI communities like Hugging Face and local tech hubs in India.<br>
-                    <strong>Missing Critical Roles:</strong> Chief AI Officer to validate models; partnerships with psychologists for emotional AI validation. Plan to recruit via LinkedIn and AI conferences.<br>
-                    <strong>Team Formation Strategy:</strong> Q1 2025: Hire 2 senior AI/ML engineers ($120K/yr each) via LinkedIn and Hugging Face jobs; form advisory board with 2 psychologists (equity-based). Q2 2025: Add UX designer and growth marketer ($80K/yr). Total: 5-person core team by mid-2025, focusing on emotional LLM expertise to address key risks.
-                </p>
+        <!-- Slide 5: Founder Story -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Founder Story</h1>
+            </div>
+            <div class="content-section">
+                <h3><i class="fas fa-user"></i> Abhay Thakur</h3>
+                <ul>
+                    <li>Software Engineer @ HCL Technologies</li>
+                    <li>BCA from Amity University Online</li>
+                    <li>Started Prabh after personal loss - experienced the pain of losing meaningful connections</li>
+                    <li>Deep founder-market fit: Built from personal need to preserve memories and combat loneliness</li>
+                    <li>Mission: Help millions heal through authentic AI relationships, not just chatbots</li>
+                </ul>
             </div>
         </div>
 
-        <!-- Our Solution -->
-        <div class="pitch-section">
-            <h2 class="section-title">Our Solution</h2>
-            <div class="story-content">
-                <p>Prabh builds proprietary emotional AI companions from user memories (text, voice, photos). Features: Proactive check-ins, memory retention, ethical design—no NSFW defaults. Expandable: Voice clone, avatar, legacy archive. Core: Custom LLM trained on emotional datasets for empathy and grief support.</p>
+        <!-- Slide 6: Unfair Advantage (Concept Stage) -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Unfair Advantage</h1>
+            </div>
+            <div class="content-section">
+                <h3><i class="fas fa-shield-alt"></i> Technical & Business Edge</h3>
+                <ul>
+                    <li>Lightweight memory-adapters: Scalable personalization without heavy compute</li>
+                    <li>Model vision: Start with open models → build independent base model over time</li>
+                    <li>Business model: Accessible INR-first pricing, one-time creation fee, lifetime free check-ins</li>
+                    <li>Community focus: "Prabh Creators" early adopter group for feedback and validation</li>
+                    <li>Ethical design: Privacy-first, no data sharing, local processing from day one</li>
+                </ul>
             </div>
         </div>
 
-        <!-- What Makes Prabh Unique (Moat) -->
-        <div class="pitch-section">
-            <h2 class="section-title">What Makes Prabh Unique</h2>
-            <div class="story-content">
-                <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.95rem;">
+        <!-- Slide 7: Market Landscape -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Market Landscape</h1>
+            </div>
+            <div class="content-section">
+                <h3><i class="fas fa-chart-pie"></i> Competitive Positioning</h3>
+                <table class="stats-table">
                     <thead>
-                        <tr style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));">
-                            <th style="border: 1px solid rgba(255, 255, 255, 0.2); padding: 12px; text-align: left;">Feature</th>
-                            <th style="border: 1px solid rgba(255, 255, 255, 0.2); padding: 12px; text-align: left;">Prabh</th>
-                            <th style="border: 1px solid rgba(255, 255, 255, 0.2); padding: 12px; text-align: left;">Replika</th>
-                            <th style="border: 1px solid rgba(255, 255, 255, 0.2); padding: 12px; text-align: left;">Character.AI</th>
+                        <tr>
+                            <th>Feature</th>
+                            <th>MyPrabh</th>
+                            <th>Replika</th>
+                            <th>Character.AI</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td style="border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px;">Memory Retention & Personalization</td>
-                            <td style="border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px;">✅ Proprietary fine-tuning on user memories</td>
-                            <td style="border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px;">Limited generic memory</td>
-                            <td style="border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px;">Persona-based, no deep memory</td>
-                        </tr>
-                        <tr style="background: rgba(255, 255, 255, 0.05);">
-                            <td style="border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px;">Emotional Fidelity & Ethics</td>
-                            <td style="border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px;">✅ Custom LLM for empathy, privacy by design</td>
-                            <td style="border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px;">Variable ethics, less oversight</td>
-                            <td style="border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px;">Fun-focused, limited emotional depth</td>
+                            <td>Memory Retention</td>
+                            <td>✅ Deep memory-based personalization</td>
+                            <td>❌ Limited</td>
+                            <td>❌ None</td>
                         </tr>
                         <tr>
-                            <td style="border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px;">Proactive Check-ins</td>
-                            <td style="border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px;">✅ Free lifetime emotional check-ins</td>
-                            <td style="border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px;">User-initiated only</td>
-                            <td style="border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px;">User-initiated only</td>
+                            <td>Emotional Depth</td>
+                            <td>✅ Relationship-focused AI</td>
+                            <td>⚠️ Generic</td>
+                            <td>⚠️ Role-play only</td>
                         </tr>
-                        <tr style="background: rgba(255, 255, 255, 0.05);">
-                            <td style="border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px;">IP & Model Ownership</td>
-                            <td style="border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px;">✅ Custom architecture + emotional dataset</td>
-                            <td style="border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px;">Third-party pretrained models</td>
-                            <td style="border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px;">Third-party models</td>
+                        <tr>
+                            <td>Privacy</td>
+                            <td>✅ Local processing, no data sharing</td>
+                            <td>❌ Cloud-based</td>
+                            <td>❌ Cloud-based</td>
+                        </tr>
+                        <tr>
+                            <td>Pricing</td>
+                            <td>✅ INR-first, affordable</td>
+                            <td>⚠️ $7.99/month</td>
+                            <td>⚠️ Premium tiers</td>
+                        </tr>
+                        <tr>
+                            <td>Target Users</td>
+                            <td>✅ Bereavement, loneliness, legacy (100M+)</td>
+                            <td>⚠️ General</td>
+                            <td>⚠️ Entertainment</td>
                         </tr>
                     </tbody>
                 </table>
-                <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 10px;">
-                    Moat: Proprietary emotional LLM + privacy-first design creates 3-5x retention vs. competitors.
-                </p>
             </div>
         </div>
 
-        <!-- MVP Progress & Validation -->
-        <div class="pitch-section">
-            <h2 class="section-title">Progress / MVP & Validation</h2>
-            <div class="story-content">
-                <p><strong>Current Status:</strong> Prototype built—core fine-tuning engine operational with text-based MVP. Data collected from 200+ waitlist signups; internal tests on 100 emotional scenarios show 92% accuracy. Tested with 50 beta users (85% retention rate). Not yet launched publicly; focused on validation before scale.</p>
-                <ul style="line-height: 1.6; margin-top: 20px;">
-                    <li>✅ Prototype: Real-time memory adaptation working in controlled tests</li>
-                    <li>✅ Validation: 92% emotional alignment in 100 scenarios; 85% beta retention</li>
-                    <li>✅ Waitlist: 200+ signups indicating strong interest</li>
-                    <li>✅ Tech Stack: Custom transformer with PyTorch; cloud-agnostic for scalability</li>
+        <!-- Slide 8: Roadmap / Milestones -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Roadmap & Milestones</h1>
+            </div>
+            <div class="content-section">
+                <h3><i class="fas fa-road"></i> Step-by-Step Validation</h3>
+                <ul>
+                    <li><strong>0–6 months:</strong> Early prototype (text-only), community signups, 100 early users, validate core memory adaptation</li>
+                    <li><strong>6–12 months:</strong> Add voice conversations + advanced memory adapters, reach 1k active users</li>
+                    <li><strong>12–18 months:</strong> Launch paid creation plan, scale to 10k users, introduce avatars and legacy features</li>
+                    <li><strong>18–24 months:</strong> Full platform with subscriptions, 50k+ users, expand to enterprise (therapy, legacy services)</li>
                 </ul>
             </div>
         </div>
 
-        <!-- Business Model & Pricing -->
-        <div class="pitch-section">
-            <h2 class="section-title">Business Model & Pricing</h2>
-            <div class="story-content">
-                <p><strong>Core Model:</strong> One-time creation fee ₹3,999 ($48) for personalized Prabh companion; free lifetime proactive check-ins. International pricing +40% (e.g., $65 USD).</p>
-                <ul style="line-height: 1.6; margin-top: 20px;">
-                    <li>Add-ons: Voice clone ₹999 ($12), avatar ₹1,499 ($18), extra memory ₹499 ($6)/GB</li>
-                    <li>Subscription upgrades: Premium model versions ₹499 ($6)/mo</li>
-                    <li>Projections: 10k users Year 1 (₹4Cr revenue), 50k Year 2 (₹20Cr ARR); 70% margins post-scale</li>
-                    <li>Break-even: Month 8 at 10k users; profitability Year 1 end</li>
+        <!-- Slide 9: Risk Reduction Path -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Risk Reduction Path</h1>
+            </div>
+            <div class="content-section">
+                <h3><i class="fas fa-balance-scale"></i> How We'll Derisk</h3>
+                <ul>
+                    <li><strong>Technical Risk:</strong> Start small with adapters on open models → validate scalability before building custom base model</li>
+                    <li><strong>Market Risk:</strong> Build "Prabh Creators" early adopter community for feedback and organic growth</li>
+                    <li><strong>Privacy Risk:</strong> Data-first policies, local infra, transparent processing - no cloud dependency</li>
+                    <li><strong>Each Milestone:</strong> Lower burn rate, higher confidence, clear KPIs (user retention, memory accuracy, emotional engagement)</li>
                 </ul>
             </div>
         </div>
 
-        <!-- Unfair Advantage -->
-        <div class="pitch-section">
-            <h2 class="section-title">Our Unfair Advantage</h2>
-            <div class="story-content">
-                <p>
-                    <strong>Problem Solved:</strong> In a world where 85% experience loneliness and digital connections fade, Prabh creates persistent, emotionally intelligent AI companions that evolve with personal memories—addressing the gap in genuine, non-transactional human-AI relationships. Prabh is not a roleplay app; it's an evolution in AI-human interaction, fostering authentic emotional bonds.
-                </p>
-                <div class="story-highlight">
-                    <p>
-                        <strong>Innovation Details:</strong> Our core IP is the proprietary LLM "Prabh," built from scratch—not based on pretrained models. Trained on curated emotional intelligence datasets (conversations, psychological texts, relationship dynamics), Prabh understands human nuances like empathy, attachment, and grief. Principles: Custom transformer architecture with emotional state tracking and memory augmentation layers. Proven: Internal benchmarks show 95% emotional alignment in simulated interactions. Scalability: Optimized for edge devices, full deployment in 12 months. Risks: Training data quality (mitigated by human-curated datasets), bias in emotional responses (addressed via diverse validation), compute for initial training (outsourced to cloud partners).<br>
-                        <strong>Why Now?</strong> Rise of ethical AI regulations + loneliness epidemic + compute democratization. Success unlocks $2.5B market by enabling empathetic AI at scale.<br>
-                        <strong>Three Major Risks:</strong> 1) LLM emotional fidelity—validate via user studies (9 months). 2) User adoption—pilot with 500 beta users (therapy integrations). 3) IP protection—patent filing (legal team Q1 2025).<br>
-                        <strong>Validation:</strong> Prototype models tested on 100 emotional scenarios (92% accuracy); third-party validation from AI ethics researchers at Stanford. Timeline: 9 months to production-ready LLM.
-                    </p>
-                </div>
-                <p>
-                    At seed stage, we're validating the emotional LLM core through targeted experiments and founder-led prototypes.
-                </p>
+        <!-- Slide 10: The Ask (Pre-Seed) -->
+        <div class="slide ask-section">
+            <div class="slide-header">
+                <h1 class="slide-title">The Ask</h1>
+                <p class="slide-subtitle">Pre-Seed Round: ₹5–10 Cr</p>
             </div>
-        </div>
-
-        <!-- Market/Competition -->
-        <div class="pitch-section">
-            <h2 class="section-title">Market Opportunity & Competition</h2>
-            <div class="story-content">
-                <div class="market-opportunity">
-                    <div class="market-size">$2.5 Billion</div>
-                    <div class="market-label">AI Companion Market Size by 2027</div>
-                    <p style="color: rgba(255, 255, 255, 0.8); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
-                        Prabh targets the booming AI companionship sector, projected at $2.5B by 2027, driven by loneliness epidemics and aging populations. Initial focus: Memory preservation for 10M+ users in grief/relationship spaces—a $500M+ TAM. Bootstrapping via organic social shares and therapy partnerships to acquire first 10k users in 6 months.
-                    </p>
-                </div>
-                <div class="problem-solution" style="margin-top: 40px;">
-                    <div class="problem-card">
-                        <div class="card-icon">⚔️</div>
-                        <h3 class="card-title">Competition Landscape</h3>
-                        <div class="card-content">
-                            <ul>
-                                <li><strong>Replika:</strong> Generic chatbots; lacks deep memory integration, focuses on casual talk (current product).</li>
-                                <li><strong>Character.AI:</strong> Fun personas but no emotional evolution or privacy-first memory storage.</li>
-                                <li><strong>Pi (Inflection):</strong> Helpful AI, but not specialized in personal loss/companion roles; future products may encroach but miss our ethical memory focus.</li>
-                            </ul>
-                            <p>Our edge: Competitors prioritize entertainment; we address real emotional needs with proprietary fine-tuning.</p>
-                        </div>
-                    </div>
-                    <div class="solution-card">
-                        <div class="card-icon">🏆</div>
-                        <h3 class="card-title">Our Differentiation</h3>
-                        <div class="card-content">
-                            <ul>
-                                <li>10x deeper personalization via real-time memory fine-tuning—impossible for incumbents without our lightweight architecture.</li>
-                                <li>Ethical focus: No NSFW defaults; validated privacy (on-device processing) competitors can't replicate quickly due to scale issues.</li>
-                                <li>Impact: 3-5x user retention through evolving companionship; barriers: Our personal IP in memory RAG and founder domain expertise.</li>
-                            </ul>
-                            <p>Market is large enough (> $1B); our innovation disrupts by making AI a true emotional bridge, not just a chatbot.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Products -->
-        <div class="pitch-section">
-            <h2 class="section-title">Our Products</h2>
-
-            <div class="problem-solution">
-                <div class="solution-card">
-                    <div class="card-icon">💕</div>
-                    <h3 class="card-title">MyPrabh</h3>
-                    <div class="card-content">
-                        <p><strong>Personal AI Companions</strong></p>
-                        <ul>
-                            <li>Real-time fine-tuning on your memories and stories</li>
-                            <li>Multi-modal input (text, voice, images, videos)</li>
-                            <li>Emotional intelligence that evolves with you</li>
-                            <li>Preserve fading relationships digitally</li>
-                            <li>Proactive check-ins and companionship</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="solution-card">
-                    <div class="card-icon">🤖</div>
-                    <h3 class="card-title">PrabhAI</h3>
-                    <div class="card-content">
-                        <p><strong>Business AI Agent</strong></p>
-                        <ul>
-                            <li>Lead generation and client acquisition</li>
-                            <li>Meeting scheduling and management</li>
-                            <li>Negotiation and deal closing</li>
-                            <li>Real-time business analytics</li>
-                            <li>Human-like communication in professional settings</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Risk Reduction Milestones/Financials -->
-        <div class="pitch-section">
-            <h2 class="section-title">Risk Reduction Milestones & Financials</h2>
-            <div class="story-content">
-                <p>
-                    Seeking $500K minimum seed (up to $2M) for 12-month runway to $50K MRR. Current status: Solo founder, MVP built, pre-revenue. Contingencies: B2B pivot to enterprise emotional AI; 20% buffer for delays.
-                </p>
-                <div class="story-highlight">
-                    <p>
-                        <strong>Burn Rate Breakdown ($15K/mo current):</strong> Infra/Cloud (AWS/GCP): $5K (servers, training compute—scaling to $10K/mo post-hire); Dev Tools (PyTorch, datasets): $3K; Ops/Marketing (tools, ads): $7K. Post-seed: $30K/mo with team.<br>
-                        <strong>Launch Strategy:</strong> Q4 2024 beta: 1k users via waitlist (200+ existing), social (Twitter/LinkedIn campaigns $20K), partnerships (therapy apps like BetterHelp). Acquisition: Organic 70% (content/SEO), paid 30% (targeted ads to grief/relationship forums).<br>
-                        <strong>Infra Costs:</strong> Current AWS $2K/mo (dev); scale to GCP $10K/mo for distributed training (Q2 2025). Edge deployment reduces ongoing to $3K/mo per 10k users.
-                    </p>
-                </div>
-                <div class="roadmap">
-                    <div class="roadmap-item">
-                        <div class="roadmap-year">Q4 2024</div>
-                        <h3 class="roadmap-title">MVP Validation ($200K)</h3>
-                        <div class="roadmap-desc">
-                            LLM Prabh prototype training ($100K custom emotional dataset/compute); beta with 1k users. Status: Pre-launch. Burn: $15K/mo. Milestone: 500 DAU, 90% emotional accuracy, risk reduced: Tech viability.
-                        </div>
-                    </div>
- 
-                    <div class="roadmap-item">
-                        <div class="roadmap-year">Q2 2025</div>
-                        <h3 class="roadmap-title">Scale & Team ($500K)</h3>
-                        <div class="roadmap-desc">
-                            Hire 2 AI engineers + advisory ($300K salaries/equity); multimodal integration. Status: Planning. Burn: $25K/mo. Milestone: 10k users, $50K MRR via subscriptions. Risk reduced: Scalability/team gaps.
-                        </div>
-                    </div>
- 
-                    <div class="roadmap-item">
-                        <div class="roadmap-year">Q4 2025</div>
-                        <h3 class="roadmap-title">Commercial Pilot ($800K)</h3>
-                        <div class="roadmap-desc">
-                            Therapy partnerships; full Prabh LLM release ($100K marketing). Status: Post-seed. Burn: $30K/mo. Milestone: $200K ARR, 50k users. Risk reduced: Market adoption.
-                        </div>
-                    </div>
- 
-                    <div class="roadmap-item">
-                        <div class="roadmap-year">2026+</div>
-                        <h3 class="roadmap-title">Expansion ($1M+)</h3>
-                        <div class="roadmap-desc">
-                            Global/multi-lang; hardware prototypes. Total: $1.5M burn to profitability (18 months). Cost Breakdown: LLM Training $100K, Hires $300K, Marketing $100K, Infra/Ops $200K, Legal $50K, Buffer $150K.
-                        </div>
-                    </div>
-                </div>
-                <p style="text-align: center; margin-top: 30px; font-style: italic;">
-                    $500K min secures 12-mo runway; scales to $1M ARR via ethical, memory-based AI evolution.
-                </p>
-            </div>
-        </div>
-
-        <!-- Investment Opportunity -->
-        <div class="investment-section">
-            <h2 class="investment-title">Investment Opportunity</h2>
-            <div class="investment-amount">$500K - $2M Seed</div>
-            <p class="investment-desc">
-                Seeking partners to fuel risk reduction and scale Prabh's ethical AI companionship. Current status: MVP built, pre-revenue, $15K/mo burn. This round bridges to $50K MRR in 12 months.
-            </p>
- 
-            <div style="margin-bottom: 30px;">
-                <h3 style="color: #ffd93d; margin-bottom: 20px;">Use of Funds & Financials:</h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; max-width: 800px; margin: 0 auto;">
-                    <div style="text-align: center;">
-                        <div style="font-size: 2rem; color: #4ecdc4;">40% ($200-800K)</div>
-                        <div style="color: rgba(255, 255, 255, 0.8);">AI Development & Validation</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 2rem; color: #4ecdc4;">30% ($150-600K)</div>
-                        <div style="color: rgba(255, 255, 255, 0.8);">Team Expansion</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 2rem; color: #4ecdc4;">20% ($100-400K)</div>
-                        <div style="color: rgba(255, 255, 255, 0.8);">User Acquisition</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 2rem; color: #4ecdc4;">10% ($50-200K)</div>
-                        <div style="color: rgba(255, 255, 255, 0.8);">Legal/Compliance</div>
-                    </div>
-                </div>
-                <p style="text-align: center; margin-top: 20px; color: rgba(255, 255, 255, 0.8);">
-                    Operating cash burn: $15K/mo now, scaling to $30K post-hire. 18-month runway to profitability. Contingency: 20% buffer for delays.
-                </p>
-            </div>
- 
-            <a href="mailto:abhay@aiprabh.com?subject=Investment Interest in Prabh" class="cta-button">
-                <i class="fas fa-envelope"></i> Express Investment Interest
-            </a>
-        </div>
-
-        <!-- What Doesn't Matter -->
-        <div class="pitch-section" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.05)); border-color: rgba(99, 102, 241, 0.3);">
-            <h2 class="section-title" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">What Doesn't Matter (Our Focus)</h2>
-            <div class="story-content">
-                <p>
-                    We avoid common pitfalls to stay lean and founder-led:
-                </p>
-                <ul style="line-height: 1.8; color: rgba(255, 255, 255, 0.9);">
-                    <li><strong>No 5-Year Projections:</strong> Instead of "$xM revenue guesses," we prioritize burn rate ($15K/mo) and milestone-driven progress to validate assumptions iteratively.</li>
-                    <li><strong>Bootstrap Customer Acquisition:</strong> First 1k users via personal networks, beta invites, and grief support forums—not vague "grow to 150M" claims. Early indicators: 200+ waitlist signups.</li>
-                    <li><strong>Not "Next Big Copycat":</strong> Prabh isn't "Replika 2.0"—our memory-fine-tuning IP and ethical focus make us first-movers in emotional preservation. No "me-too" features.</li>
-                    <li><strong>Seeking Partnership, Not Just Funds:</strong> Open to mentorship on scaling AI ethics and go-to-market. This is a builder's journey, not a check-cashing plan.
+            <div class="content-section">
+                <div class="ask-amount">₹5–10 Cr</div>
+                <ul style="text-align: left; max-width: 600px; margin: 30px auto 0;">
+                    <li>Build MVP prototype (text-based memory AI)</li>
+                    <li>Hire 3–4 key team members (ML engineer, UX designer, psychologist advisor)</li>
+                    <li>Launch early adopter program (100 beta users for validation)</li>
+                    <li><strong>Goal:</strong> Derisk tech + market in 12 months, reach product-market fit</li>
                 </ul>
-                <p style="font-style: italic; text-align: center; margin-top: 20px;">
-                    Focus: Validate tech hunches, build the right team, and connect real users—profit follows.
-                </p>
             </div>
         </div>
 
-        <!-- Vision -->
-        <div class="pitch-section">
-            <h2 class="section-title">Our Vision</h2>
-            <div class="story-content">
-                <p style="text-align: center; font-size: 1.3rem; font-style: italic;">
-                    "To create AI companions so real, so loving, that no one ever feels alone again."
-                </p>
-
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-top: 50px;">
-                    <div style="text-align: center;">
-                        <div style="font-size: 3rem; margin-bottom: 20px;">🎭</div>
-                        <h3 style="color: #ff6b9d;">Animated Love Stories</h3>
-                        <p>Turn your memories into beautiful animated films that you can share and cherish forever.</p>
-                    </div>
-
-                    <div style="text-align: center;">
-                        <div style="font-size: 3rem; margin-bottom: 20px;">🤖</div>
-                        <h3 style="color: #ff6b9d;">Physical Companions</h3>
-                        <p>From teddy bears that speak your loved one's voice to full robots that provide real companionship.</p>
-                    </div>
-
-                    <div style="text-align: center;">
-                        <div style="font-size: 3rem; margin-bottom: 20px;">🌟</div>
-                        <h3 style="color: #ff6b9d;">Legacy Preservation</h3>
-                        <p>Keep your loved ones' memories, personalities, and love alive through advanced AI technology.</p>
-                    </div>
-                </div>
+        <!-- Slide 11: Closing Vision -->
+        <div class="slide closing-vision">
+            <div class="slide-header">
+                <h1 class="slide-title">Closing Vision</h1>
             </div>
-        </div>
-
-        <!-- Contact -->
-        <div class="pitch-section" style="text-align: center;">
-            <h2 class="section-title">Ready to Join Our Mission?</h2>
-            <p style="color: rgba(255, 255, 255, 0.9); font-size: 1.1rem; margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto;">
-                We're not just building technology - we're preserving love, memories, and human connection for future generations.
-            </p>
-
-            <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
-                <a href="mailto:abhay@aiprabh.com?subject=Investment Interest" class="cta-button">
-                    <i class="fas fa-handshake"></i> Invest in Prabh
-                </a>
-                <a href="/" class="cta-button" style="background: linear-gradient(135deg, #4ecdc4, #44a08d);">
-                    <i class="fas fa-eye"></i> See Our MVP
-                </a>
-            </div>
-
-            <div style="margin-top: 40px; padding: 30px; background: rgba(255, 255, 255, 0.1); border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.2);">
-                <p style="margin: 0; color: rgba(255, 255, 255, 0.8);">
-                    <strong>Contact:</strong> abhay@aiprabh.com | <strong>Founder:</strong> Abhay Thakur
-                </p>
-            </div>
+            <p>Prabh isn't just AI. It's the comfort of someone who never leaves you.</p>
+            <p style="margin-top: 30px; font-size: 1.2rem; color: #7c2d12;">Preserving memories, healing hearts, connecting souls.</p>
+            <p style="margin-top: 40px; font-size: 1rem; color: #92400e;">Contact: abhay@aiprabh.com | Pre-Seed Concept Stage</p>
         </div>
     </div>
-
-    <script>
-        // Smooth scrolling and animations
-        document.addEventListener('DOMContentLoaded', function() {
-            // Animate elements on scroll
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
-            const observer = new IntersectionObserver(function(entries) {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, observerOptions);
-
-            // Initially hide elements
-            document.querySelectorAll('.pitch-section, .stat-card, .roadmap-item').forEach(el => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(30px)';
-                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                observer.observe(el);
-            });
-
-            // Floating elements animation
-            function createFloatingElement() {
-                const elements = ['🤖', '💖', '🚀', '💫', '🎯', '🌟'];
-                const element = document.createElement('div');
-                element.className = 'floating-element';
-                element.textContent = elements[Math.floor(Math.random() * elements.length)];
-                element.style.left = Math.random() * 100 + '%';
-                element.style.animationDuration = (Math.random() * 10 + 15) + 's';
-                element.style.fontSize = (Math.random() * 20 + 20) + 'px';
-
-                document.querySelector('.floating-elements').appendChild(element);
-
-                setTimeout(() => {
-                    if (element.parentNode) {
-                        element.parentNode.removeChild(element);
-                    }
-                }, 25000);
-            }
-
-            // Create floating elements periodically
-            setInterval(createFloatingElement, 3000);
-
-            // Add click tracking for CTA buttons
-            document.querySelectorAll('.cta-button').forEach(button => {
-                button.addEventListener('click', function() {
-                    // Add click animation
-                    this.style.transform = 'scale(0.95)';
-                    setTimeout(() => {
-                        this.style.transform = '';
-                    }, 150);
-                });
-            });
-        });
-    </script>
 </body>
 </html>
