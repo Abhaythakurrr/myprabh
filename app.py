@@ -206,6 +206,18 @@ def init_db():
                 FOREIGN KEY (prabh_id) REFERENCES prabh_instances (id)
             )
         ''')
+
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS user_memories (
+                id SERIAL PRIMARY KEY,
+                user_id TEXT NOT NULL,
+                prabh_id INTEGER NOT NULL,
+                memory_text TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users (user_id),
+                FOREIGN KEY (prabh_id) REFERENCES prabh_instances (id)
+            )
+        ''')
         
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS analytics (
@@ -320,6 +332,18 @@ def init_db():
                 message_count INTEGER DEFAULT 0,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 last_message DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users (user_id),
+                FOREIGN KEY (prabh_id) REFERENCES prabh_instances (id)
+            )
+        ''')
+
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS user_memories (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id TEXT NOT NULL,
+                prabh_id INTEGER NOT NULL,
+                memory_text TEXT NOT NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users (user_id),
                 FOREIGN KEY (prabh_id) REFERENCES prabh_instances (id)
             )
@@ -1260,19 +1284,23 @@ def chat_message():
 
             # Fetch memories for RAG
             memories = []
-            if USE_POSTGRES:
-                cursor.execute('''
-                    SELECT memory_text FROM user_memories
-                    WHERE prabh_id = %s AND user_id = %s
-                    ORDER BY created_at DESC LIMIT 10
-                ''', (prabh_id, session['user_id']))
-            else:
-                cursor.execute('''
-                    SELECT memory_text FROM user_memories
-                    WHERE prabh_id = ? AND user_id = ?
-                    ORDER BY created_at DESC LIMIT 10
-                ''', (prabh_id, session['user_id']))
-            memories = [row[0] for row in cursor.fetchall()]
+            try:
+                if USE_POSTGRES:
+                    cursor.execute('''
+                        SELECT memory_text FROM user_memories
+                        WHERE prabh_id = %s AND user_id = %s
+                        ORDER BY created_at DESC LIMIT 10
+                    ''', (prabh_id, session['user_id']))
+                else:
+                    cursor.execute('''
+                        SELECT memory_text FROM user_memories
+                        WHERE prabh_id = ? AND user_id = ?
+                        ORDER BY created_at DESC LIMIT 10
+                    ''', (prabh_id, session['user_id']))
+                memories = [row[0] for row in cursor.fetchall()]
+            except Exception as mem_error:
+                print(f"Memory fetch error: {mem_error}")
+                memories = []
             
             conn.close()
             
@@ -2015,22 +2043,18 @@ def get_conversation_context(prabh_id):
         if not prabh_data:
             return jsonify({'error': 'Prabh not found'}), 404
         
-        # Get conversation context
-        try:
-            from model_injection_engine import model_injector
-            
-            # Fallback to basic context
-            context_data = {
-                'character_profile': prabh_data or {},
-                'conversation_history': [],
-                'memory_bank': [],
-                'character_state': {'mood': 'loving', 'model_loaded': False}
-            }
-            
-            return jsonify(context_data)
-            
-        except ImportError:
-            return jsonify({'error': 'Model injection system not available'}), 503
+        # Basic context data
+        context_data = {
+            'character_profile': {
+                'name': prabh_data[0],
+                'story': prabh_data[1] if len(prabh_data) > 1 else ''
+            },
+            'conversation_history': [],
+            'memory_bank': [],
+            'character_state': {'mood': 'loving', 'model_loaded': False}
+        }
+        
+        return jsonify(context_data)
         
     except Exception as e:
         return jsonify({'error': f'Failed to get context: {str(e)}'}), 500
