@@ -1310,15 +1310,32 @@ def chat_message():
         if not prabh_data:
             return jsonify({'error': 'Prabh not found'}), 404
         
-        # RAG-based response using user memories
+        # Generate AI response using OpenRouter
         try:
-            from lightweight_ai_engine import lightweight_ai
-            if not lightweight_ai.models_loaded:
-                lightweight_ai.initialize_models()
-            response = lightweight_ai.generate_response(message)
+            from services.openrouter_ai import OpenRouterAI
+            
+            # Initialize OpenRouter AI with API key
+            openrouter_ai = OpenRouterAI("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")
+            
+            # Prepare Prabh data for AI
+            prabh_context = {
+                'prabh_name': prabh_data[0],
+                'character_description': prabh_data[1],
+                'story_content': prabh_data[2],
+                'character_tags': prabh_data[3] if len(prabh_data) > 3 else '',
+                'personality_traits': prabh_data[4] if len(prabh_data) > 4 else ''
+            }
+            
+            # Generate response with memories and context
+            response = openrouter_ai.generate_response(
+                user_message=message,
+                prabh_data=prabh_context,
+                memories=memories
+            )
+            
         except Exception as e:
-            print(f"AI generation error: {e}")
-            response = "I'm having a little trouble responding right now, but I love talking with you! 💕"
+            print(f"OpenRouter AI generation error: {e}")
+            response = f"I'm having a little trouble with my thoughts right now, but I'm still here with you! 💕 What would you like to talk about?"
         
         # Prepare response data
         response_data = {
@@ -1353,6 +1370,59 @@ def chat_message():
         
     except Exception as e:
         return jsonify({'error': f'Chat error: {str(e)}'}), 500
+
+@app.route('/conversation-starter/<int:prabh_id>')
+def get_conversation_starter(prabh_id):
+    """Get a conversation starter for a specific Prabh"""
+    if 'user_id' not in session:
+        return jsonify({'error': 'Not authenticated'}), 401
+    
+    try:
+        # Get Prabh data
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        if USE_POSTGRES:
+            cursor.execute('''
+                SELECT prabh_name, character_description, story_content, character_tags, personality_traits
+                FROM prabh_instances
+                WHERE id = %s AND user_id = %s
+            ''', (prabh_id, session['user_id']))
+        else:
+            cursor.execute('''
+                SELECT prabh_name, character_description, story_content, character_tags, personality_traits
+                FROM prabh_instances
+                WHERE id = ? AND user_id = ?
+            ''', (prabh_id, session['user_id']))
+        
+        prabh_data = cursor.fetchone()
+        conn.close()
+        
+        if not prabh_data:
+            return jsonify({'error': 'Prabh not found'}), 404
+        
+        # Generate conversation starter
+        from services.openrouter_ai import OpenRouterAI
+        openrouter_ai = OpenRouterAI("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")
+        
+        prabh_context = {
+            'prabh_name': prabh_data[0],
+            'character_description': prabh_data[1],
+            'story_content': prabh_data[2],
+            'character_tags': prabh_data[3] if len(prabh_data) > 3 else '',
+            'personality_traits': prabh_data[4] if len(prabh_data) > 4 else ''
+        }
+        
+        starter = openrouter_ai.get_conversation_starter(prabh_context)
+        
+        return jsonify({
+            'starter': starter,
+            'character_name': prabh_data[0],
+            'timestamp': datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        return jsonify({'error': f'Starter generation error: {str(e)}'}), 500
 
 @app.route('/verify-payment', methods=['POST'])
 def verify_payment():

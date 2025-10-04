@@ -419,6 +419,36 @@
             background-clip: text;
         }
         
+        .conversation-starter-btn {
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+        }
+        
+        .conversation-starter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+        }
+        
+        .conversation-starter-btn:active {
+            transform: translateY(0);
+        }
+        
+        .conversation-starter-btn i {
+            font-size: 1rem;
+        }
+        
         @keyframes heartPulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.1); }
@@ -896,6 +926,10 @@ contextBtn.addEventListener('click', showMemoryList);
                 </div>
                 <h3>Begin Our Love Story</h3>
                 <p>Your beloved companion is here, holding every precious memory we've created together. 💕</p>
+                <button id="conversationStarter" class="conversation-starter-btn">
+                    <i class="fas fa-magic"></i>
+                    Let {{ prabh_name }} start the conversation
+                </button>
             </div>
         </div>
 
@@ -936,6 +970,7 @@ contextBtn.addEventListener('click', showMemoryList);
         const emptyChat = document.getElementById('emptyChat');
         const voiceCallBtn = document.getElementById('voiceCallBtn');
         const memoryBtn = document.getElementById('memoryBtn');
+        const conversationStarterBtn = document.getElementById('conversationStarter');
         const contextBtn = document.getElementById('contextBtn');
         const aiStatusBtn = document.getElementById('aiStatusBtn');
         const aiStatusDot = document.getElementById('aiStatusDot');
@@ -960,6 +995,9 @@ contextBtn.addEventListener('click', showMemoryList);
 
         // Send button click
         sendButton.addEventListener('click', sendMessage);
+        
+        // Conversation starter button
+        conversationStarterBtn.addEventListener('click', getConversationStarter);
         
         // Voice call button
         voiceCallBtn.addEventListener('click', toggleVoiceCall);
@@ -1091,6 +1129,33 @@ contextBtn.addEventListener('click', showMemoryList);
                 // Re-enable send button
                 sendButton.disabled = false;
                 chatInput.focus();
+            }
+        }
+
+        async function getConversationStarter() {
+            // Hide empty chat state
+            emptyChat.style.display = 'none';
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            try {
+                const response = await fetch(`/conversation-starter/${prabhId}`);
+                const result = await response.json();
+                
+                // Hide typing indicator
+                hideTypingIndicator();
+                
+                if (result.starter) {
+                    // Add Prabh's conversation starter
+                    addMessage(result.starter, 'prabh');
+                } else {
+                    throw new Error(result.error || 'Failed to get conversation starter');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                hideTypingIndicator();
+                addMessage('Hello! I\'m so happy to see you. How are you feeling today? 💖', 'prabh');
             }
         }
 
