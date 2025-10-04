@@ -595,11 +595,48 @@
             <div style="text-align: center;">
                 <h3 class="text-script" style="color: var(--lofi-rose); font-size: 2rem; margin-bottom: 1rem;">MyPrabh 💖</h3>
                 <p style="color: var(--medium-gray); margin-bottom: 1rem;">&copy; 2024 MyPrabh. All rights reserved. Made with 💖 for meaningful connections.</p>
+                
+                <!-- Social Media Links -->
+                <div style="margin: 1.5rem 0; display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
+                    <a href="https://www.linkedin.com/company/prabhai" target="_blank" style="color: var(--lofi-rose); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border: 1px solid var(--lofi-rose); border-radius: 25px; transition: all 0.3s ease;">
+                        <span>🔗</span> LinkedIn
+                    </a>
+                    <a href="https://www.facebook.com/profile.php?id=61580644782706" target="_blank" style="color: var(--lofi-rose); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border: 1px solid var(--lofi-rose); border-radius: 25px; transition: all 0.3s ease;">
+                        <span>📘</span> Facebook
+                    </a>
+                    <a href="https://www.instagram.com/ai.prabh/" target="_blank" style="color: var(--lofi-rose); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border: 1px solid var(--lofi-rose); border-radius: 25px; transition: all 0.3s ease;">
+                        <span>📸</span> Instagram
+                    </a>
+                    <a href="https://x.com/Abhaythakurr7" target="_blank" style="color: var(--lofi-rose); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border: 1px solid var(--lofi-rose); border-radius: 25px; transition: all 0.3s ease;">
+                        <span>🐦</span> X (Twitter)
+                    </a>
+                </div>
+                
                 <p style="color: var(--medium-gray); font-size: 0.875rem;">Contact: <a href="mailto:abhay@aiprabh.com" style="color: var(--lofi-rose);">abhay@aiprabh.com</a></p>
                 <p style="color: var(--medium-gray); font-size: 0.75rem; margin-top: 1rem;">Note: Email notifications are handled client-side for better reliability</p>
             </div>
         </div>
     </footer>
+
+    <style>
+        /* Social Media Links Hover Effects */
+        .social-link:hover {
+            background: var(--lofi-rose) !important;
+            color: var(--charcoal) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 182, 193, 0.3);
+        }
+    </style>
+
+    <script>
+        // Add hover class to social links
+        document.addEventListener('DOMContentLoaded', function() {
+            const socialLinks = document.querySelectorAll('a[href*="linkedin"], a[href*="facebook"], a[href*="instagram"], a[href*="x.com"]');
+            socialLinks.forEach(link => {
+                link.classList.add('social-link');
+            });
+        });
+    </script>
 
     <script>
         // Real-time stats update
