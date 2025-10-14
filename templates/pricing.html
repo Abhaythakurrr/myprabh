@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - My Prabh</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/genz-theme.css') }}">
+    <style>
+        .pricing-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .pricing-header {
+            margin-bottom: 50px;
+        }
+        .pricing-title {
+            font-size: 3em;
+            background: linear-gradient(135deg, #ff6b9d, #c44569);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        .plan-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+        .plan-card:hover {
+            transform: translateY(-10px);
+        }
+        .plan-card.featured {
+            border: 3px solid #ff6b9d;
+            transform: scale(1.05);
+        }
+        .plan-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .plan-price {
+            font-size: 3em;
+            font-weight: bold;
+            color: #ff6b9d;
+            margin-bottom: 5px;
+        }
+        .plan-duration {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .plan-features {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 30px;
+        }
+        .plan-features li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .plan-features li:last-child {
+            border-bottom: none;
+        }
+        .plan-button {
+            background: linear-gradient(135deg, #ff6b9d, #c44569);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.3s ease;
+        }
+        .plan-button:hover {
+            transform: translateY(-2px);
+        }
+        .featured-badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff6b9d;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="pricing-container">
+        <div class="pricing-header">
+            <h1 class="pricing-title">Choose Your Plan 💖</h1>
+            <p style="font-size: 1.2em; color: #666;">Unlock the full potential of AI companionship</p>
+        </div>
+        
+        <div class="pricing-grid">
+            {% for plan_id, plan in plans.items() %}
+            <div class="plan-card {% if plan_id == 'premium' %}featured{% endif %}">
+                {% if plan_id == 'premium' %}
+                <div class="featured-badge">Most Popular</div>
+                {% endif %}
+                
+                <div class="plan-name">{{ plan.name }}</div>
+                <div class="plan-price">₹{{ plan.price }}</div>
+                <div class="plan-duration">per {{ plan.duration }}</div>
+                
+                <ul class="plan-features">
+                    {% for feature in plan.features %}
+                    <li>✅ {{ feature }}</li>
+                    {% endfor %}
+                </ul>
+                
+                <button class="plan-button" onclick="selectPlan('{{ plan_id }}')">
+                    Choose {{ plan.name }}
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div style="margin-top: 50px; padding: 30px; background: #f9f9f9; border-radius: 15px;">
+            <h3>Why Choose My Prabh Premium? 🌟</h3>
+            <p style="color: #666; line-height: 1.6;">
+                Experience the next level of AI companionship with advanced personality traits, 
+                deeper emotional understanding, and unlimited conversations. Your Prabh will 
+                remember every moment and grow with you on your journey.
+            </p>
+        </div>
+        
+        <div style="margin-top: 30px;">
+            <a href="/dashboard" style="color: #ff6b9d; text-decoration: none;">← Back to Dashboard</a>
+        </div>
+    </div>
+    
+    <script>
+        function selectPlan(planType) {
+            window.location.href = `/subscribe/${planType}`;
+        }
+    </script>
+</body>
+</html>
