@@ -101,48 +101,27 @@ else:
 def get_db_connection():
     """Get database connection - PostgreSQL or SQLite"""
     if USE_POSTGRES:
-        import psycopg2
-        
         # Check if running on Google Cloud App Engine
         if os.getenv('GAE_ENV', '').startswith('standard'):
-            # Use Cloud SQL connector for App Engine
-            try:
-                from google.cloud.sql.connector import Connector
-                import sqlalchemy
-                
-                # Initialize Cloud SQL connector
-                connector = Connector()
-                
-                # Extract connection details from DATABASE_URL
-                # Format: postgresql://user:pass@/dbname?host=/cloudsql/project:region:instance
-                import urllib.parse
-                parsed = urllib.parse.urlparse(DATABASE_URL)
-                
-                # Get Cloud SQL instance connection name from host parameter
-                query_params = urllib.parse.parse_qs(parsed.query)
-                instance_connection_name = query_params.get('host', [None])[0]
-                
-                if instance_connection_name:
-                    instance_connection_name = instance_connection_name.replace('/cloudsql/', '')
-                    
-                    # Create connection using Cloud SQL connector
-                    conn = connector.connect(
-                        instance_connection_name,
-                        "pg8000",
-                        user=parsed.username,
-                        password=parsed.password,
-                        db=parsed.path.lstrip('/')
-                    )
-                    return conn
-                else:
-                    # Fallback to direct connection
-                    return psycopg2.connect(DATABASE_URL)
-                    
-            except ImportError:
-                print("Google Cloud SQL connector not available, using direct connection")
-                return psycopg2.connect(DATABASE_URL)
+            # Use pg8000 for App Engine (simpler than Cloud SQL connector)
+            import pg8000
+            import urllib.parse
+            
+            # Parse DATABASE_URL for App Engine
+            parsed = urllib.parse.urlparse(DATABASE_URL)
+            query_params = urllib.parse.parse_qs(parsed.query)
+            
+            # Connect using pg8000 with Unix socket
+            conn = pg8000.connect(
+                user=parsed.username,
+                password=parsed.password,
+                database=parsed.path.lstrip('/'),
+                unix_sock=query_params.get('host', [None])[0]
+            )
+            return conn
         else:
-            # Direct PostgreSQL connection for other environments
+            # Use psycopg2 for other environments
+            import psycopg2
             return psycopg2.connect(DATABASE_URL)
     else:
         # SQLite for local development
