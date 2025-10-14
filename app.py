@@ -14,6 +14,7 @@ app.secret_key = os.environ.get('SECRET_KEY', 'myprabh-gcp-secret-key-2024')
 from services.firestore_db import firestore_db
 from services.firebase_auth import firebase_auth
 from services.email_service import email_service
+from services.phone_verification import phone_verification
 
 print("✅ Using Firestore database")
 print(f"✅ Firebase Authentication enabled")
@@ -277,11 +278,12 @@ def google_auth():
         uid = decoded_token['uid']
         email = decoded_token.get('email')
         name = decoded_token.get('name', email.split('@')[0])
+        phone_number = decoded_token.get('phone_number')
         
         # Get or create user record
         user = firebase_auth.get_user_by_uid(uid)
         if not user:
-            user = firebase_auth.create_user_record(email, name, uid)
+            user = firebase_auth.create_user_record(email, name, uid, phone_number, 'google')
             # Send welcome email for new users
             email_service.send_welcome_email(email, name)
         else:
@@ -292,6 +294,7 @@ def google_auth():
         session['user_id'] = uid
         session['user_email'] = email
         session['user_name'] = name
+        session['user_phone'] = phone_number
         session['auth_provider'] = 'google'
         
         return jsonify({
@@ -307,6 +310,56 @@ def google_auth():
     except Exception as e:
         print(f"Google auth error: {e}")
         return jsonify({'error': 'Authentication failed'}), 500
+
+@app.route('/verify-phone', methods=['POST'])
+def verify_phone():
+    """Send phone verification code"""
+    try:
+        data = request.get_json()
+        phone_number = data.get('phone_number', '').strip()
+        
+        if not phone_number:
+            return jsonify({'error': 'Phone number required'}), 400
+        
+        # Format phone number
+        formatted_phone = phone_verification.format_phone_number(phone_number)
+        
+        # Send verification code
+        result = phone_verification.send_verification_code(formatted_phone)
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        print(f"Phone verification error: {e}")
+        return jsonify({'error': 'Verification failed'}), 500
+
+@app.route('/confirm-phone', methods=['POST'])
+def confirm_phone():
+    """Confirm phone verification code"""
+    if 'user_id' not in session:
+        return jsonify({'error': 'Not authenticated'}), 401
+    
+    try:
+        data = request.get_json()
+        phone_number = data.get('phone_number', '').strip()
+        verification_code = data.get('verification_code', '').strip()
+        
+        if not phone_number or not verification_code:
+            return jsonify({'error': 'Phone number and verification code required'}), 400
+        
+        # Verify code
+        result = phone_verification.verify_phone_number(phone_number, verification_code)
+        
+        if result['success']:
+            # Update user record with verified phone
+            firebase_auth.update_user_phone(session['user_id'], phone_number)
+            session['user_phone'] = phone_number
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        print(f"Phone confirmation error: {e}")
+        return jsonify({'error': 'Confirmation failed'}), 500
 
 @app.route('/conversation-starter/<prabh_id>')
 def get_conversation_starter(prabh_id):
