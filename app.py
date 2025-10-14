@@ -10,12 +10,16 @@ import random
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'myprabh-gcp-secret-key-2024')
 
-# Initialize Firestore
+# Initialize services
 from services.firestore_db import firestore_db
+from services.firebase_auth import firebase_auth
+from services.email_service import email_service
 
 print("✅ Using Firestore database")
-print(f"✅ Optimized for Google Cloud App Engine")
-print(f"✅ Email: {os.environ.get('ADMIN_EMAIL', 'abhay@aiprabh.com')}")
+print(f"✅ Firebase Authentication enabled")
+print(f"✅ Email service configured")
+print(f"✅ Optimized for Google Cloud Run")
+print(f"✅ Admin: {os.environ.get('ADMIN_EMAIL', 'abhay@aiprabh.com')}")
 
 # Simple password hashing (for demo - use proper hashing in production)
 import hashlib
@@ -255,6 +259,55 @@ def chat_message():
         print(f"Chat message error: {e}")
         return jsonify({'error': 'Chat error occurred'}), 500
 
+@app.route('/auth/google', methods=['POST'])
+def google_auth():
+    """Handle Google authentication"""
+    try:
+        data = request.get_json()
+        id_token = data.get('idToken')
+        
+        if not id_token:
+            return jsonify({'error': 'ID token required'}), 400
+        
+        # Verify the token with Firebase
+        decoded_token = firebase_auth.verify_id_token(id_token)
+        if not decoded_token:
+            return jsonify({'error': 'Invalid token'}), 401
+        
+        uid = decoded_token['uid']
+        email = decoded_token.get('email')
+        name = decoded_token.get('name', email.split('@')[0])
+        
+        # Get or create user record
+        user = firebase_auth.get_user_by_uid(uid)
+        if not user:
+            user = firebase_auth.create_user_record(email, name, uid)
+            # Send welcome email for new users
+            email_service.send_welcome_email(email, name)
+        else:
+            # Update last login
+            firebase_auth.update_last_login(uid)
+        
+        # Set session
+        session['user_id'] = uid
+        session['user_email'] = email
+        session['user_name'] = name
+        session['auth_provider'] = 'google'
+        
+        return jsonify({
+            'success': True,
+            'user': {
+                'uid': uid,
+                'email': email,
+                'name': name
+            },
+            'redirect': '/dashboard'
+        })
+        
+    except Exception as e:
+        print(f"Google auth error: {e}")
+        return jsonify({'error': 'Authentication failed'}), 500
+
 @app.route('/conversation-starter/<prabh_id>')
 def get_conversation_starter(prabh_id):
     """Get conversation starter"""
@@ -300,7 +353,7 @@ def live_stats():
 
 @app.route('/submit-early-access', methods=['POST'])
 def submit_early_access():
-    """Handle early access signup"""
+    """Handle early access signup with email confirmation"""
     try:
         data = request.get_json() if request.is_json else request.form
         email = data.get('email', '').strip().lower()
@@ -312,10 +365,14 @@ def submit_early_access():
         # Save early access signup
         signup_id = firestore_db.save_early_access_signup(email, name)
         
+        # Send confirmation email
+        email_sent = email_service.send_early_access_confirmation(email, name)
+        
         return jsonify({
             'success': True,
-            'message': 'Thank you for your interest! We\'ll notify you when My Prabh launches.',
-            'signup_id': signup_id
+            'message': 'Thank you for your interest! Check your email for confirmation. 💖',
+            'signup_id': signup_id,
+            'email_sent': email_sent
         })
         
     except Exception as e:
