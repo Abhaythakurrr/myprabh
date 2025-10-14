@@ -3,55 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Your Perfect AI Companion | Personalized Memory-Based AI - MyPrabh</title>
+    <title>Create Your Prabh - MyPrabh 💖</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <meta name="description" content="Design your ideal AI companion with memories, personality, and emotional depth. Create a personalized AI that understands and connects with you on a deeper level.">
-    <meta name="keywords" content="create AI companion, personalized AI, memory-based AI, emotional AI companion, AI relationship builder, custom AI personality">
-    <link rel="canonical" href="https://aiprabh.com/create_prabh">
-    <meta property="og:title" content="Create Your Perfect AI Companion - Personalized Memory-Based AI">
-    <meta property="og:description" content="Design your ideal AI companion with unique memories, personality traits, and emotional intelligence.">
-    <meta property="og:url" content="https://aiprabh.com/create_prabh">
     <style>
         .create-container {
             min-height: 100vh;
             background: var(--gradient-warm);
-            padding: calc(60px + var(--space-lg)) var(--space-md) var(--space-lg);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .create-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="sparkles" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse"><text x="15" y="20" text-anchor="middle" fill="rgba(255,107,157,0.1)" font-size="16">✨</text><text x="5" y="10" text-anchor="middle" fill="rgba(168,85,247,0.1)" font-size="12">💫</text><text x="25" y="8" text-anchor="middle" fill="rgba(20,184,166,0.1)" font-size="10">⭐</text></pattern></defs><rect width="100" height="100" fill="url(%23sparkles)"/></svg>');
-            opacity: 0.3;
+            padding: var(--space-lg);
         }
         
         .create-card {
+            max-width: 600px;
+            margin: 0 auto;
             background: var(--warm-white);
             border-radius: var(--radius-xl);
             padding: var(--space-2xl);
             box-shadow: var(--shadow-strong);
-            max-width: 800px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         .create-header {
             text-align: center;
-            margin-bottom: var(--space-2xl);
+            margin-bottom: var(--space-xl);
         }
         
         .create-title {
             font-family: var(--font-script);
-            font-size: 3rem;
+            font-size: 2.5rem;
             background: var(--gradient-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -59,165 +37,40 @@
             margin-bottom: var(--space-sm);
         }
         
-        .create-subtitle {
-            color: var(--medium-gray);
-            font-size: 1.25rem;
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.6;
-        }
-        
-        .form-section {
-            margin-bottom: var(--space-2xl);
-            padding: var(--space-lg);
-            background: var(--gradient-secondary);
-            border-radius: var(--radius-lg);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .section-title {
-            font-family: var(--font-heading);
-            font-size: 1.5rem;
-            color: var(--dark-gray);
-            margin-bottom: var(--space-md);
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-        }
-        
         .form-group {
-            margin-bottom: var(--space-md);
+            margin-bottom: var(--space-lg);
         }
         
         .form-label {
             display: block;
-            margin-bottom: var(--space-xs);
+            margin-bottom: var(--space-sm);
             font-weight: 600;
             color: var(--dark-gray);
-            font-size: 1rem;
+            font-size: 1.125rem;
         }
         
-        .form-input {
+        .form-input, .form-textarea {
             width: 100%;
             padding: var(--space-md);
             border: 2px solid rgba(255, 107, 157, 0.1);
             border-radius: var(--radius-md);
             font-family: var(--font-primary);
             font-size: 1rem;
-            background: var(--warm-white);
+            background: var(--cream);
             transition: var(--transition-fast);
             box-sizing: border-box;
         }
         
-        .form-input:focus {
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-input:focus, .form-textarea:focus {
             outline: none;
             border-color: var(--primary-pink);
             box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.1);
-        }
-        
-        .form-textarea {
-            min-height: 150px;
-            resize: vertical;
-            font-family: var(--font-primary);
-            line-height: 1.6;
-        }
-        
-        .story-textarea {
-            min-height: 300px;
-            font-size: 1.125rem;
-            line-height: 1.8;
-        }
-        
-        .char-counter {
-            text-align: right;
-            font-size: 0.875rem;
-            color: var(--medium-gray);
-            margin-top: var(--space-xs);
-        }
-        
-        .unlimited-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-            background: var(--gradient-primary);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: var(--radius-full);
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        
-        .tags-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: var(--space-xs);
-            margin-top: var(--space-sm);
-        }
-        
-        .tag {
-            background: var(--gradient-accent);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-full);
-            font-size: 0.875rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition-fast);
-            border: none;
-        }
-        
-        .tag:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-soft);
-        }
-        
-        .tag.selected {
-            background: var(--gradient-primary);
-            box-shadow: var(--shadow-colored);
-        }
-        
-        .custom-tag-input {
-            display: flex;
-            gap: var(--space-sm);
-            margin-top: var(--space-sm);
-        }
-        
-        .pricing-info {
-            background: var(--gradient-warm);
-            padding: var(--space-lg);
-            border-radius: var(--radius-lg);
-            text-align: center;
-            margin-bottom: var(--space-lg);
-            border: 2px solid rgba(255, 107, 157, 0.2);
-        }
-        
-        .price-display {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: var(--space-sm);
-        }
-        
-        .price-note {
-            color: var(--medium-gray);
-            font-size: 0.875rem;
-            margin-bottom: var(--space-md);
-        }
-        
-        .admin-badge {
-            background: var(--gradient-accent);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-full);
-            font-size: 0.875rem;
-            font-weight: 600;
-            display: inline-block;
-            margin-bottom: var(--space-sm);
+            background: var(--warm-white);
         }
         
         .error-message {
@@ -238,313 +91,101 @@
             border: 1px solid rgba(34, 197, 94, 0.2);
         }
         
-        .form-help {
-            font-size: 0.875rem;
-            color: var(--medium-gray);
-            margin-top: var(--space-xs);
-            line-height: 1.5;
-        }
-        
-        .preview-section {
-            background: var(--light-gray);
-            padding: var(--space-lg);
-            border-radius: var(--radius-lg);
-            margin-top: var(--space-lg);
-        }
-        
-        .preview-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--dark-gray);
-            margin-bottom: var(--space-md);
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-        }
-        
-        .preview-content {
-            background: var(--warm-white);
-            padding: var(--space-md);
-            border-radius: var(--radius-md);
-            border-left: 4px solid var(--primary-pink);
-        }
-        
         .back-link {
-            position: absolute;
-            top: var(--space-lg);
-            left: var(--space-lg);
+            display: inline-block;
+            margin-bottom: var(--space-lg);
             color: var(--medium-gray);
             text-decoration: none;
             font-weight: 500;
             transition: var(--transition-fast);
-            z-index: 2;
         }
         
         .back-link:hover {
             color: var(--primary-pink);
         }
-        
-        @media (max-width: 768px) {
-            .create-card {
-                padding: var(--space-lg);
-            }
-            
-            .create-title {
-                font-size: 2.5rem;
-            }
-            
-            .form-section {
-                padding: var(--space-md);
-            }
-        }
     </style>
 </head>
 <body>
-    <a href="/dashboard" class="back-link">← Back to Dashboard</a>
-    
     <div class="create-container">
         <div class="create-card">
+            <a href="/dashboard" class="back-link">← Back to Dashboard</a>
+            
             <div class="create-header">
-                <h1 class="create-title">Create Your Perfect AI Companion ✨</h1>
-                <p class="create-subtitle">
-                    Bring your ideal companion to life with memories, personality, and emotional depth. 
-                    Share your story and watch as your AI companion learns to understand and connect with you on a deeper level. 💕
-                </p>
+                <h1 class="create-title">Create Your Prabh 💕</h1>
+                <p>Design your perfect AI companion with love and care</p>
             </div>
             
-            {% if error %}
-            <div class="error-message">
-                {{ error }}
-            </div>
-            {% endif %}
+            <div id="message-container"></div>
             
-            {% if success %}
-            <div class="success-message">
-                {{ success }}
-            </div>
-            {% endif %}
-            
-            <!-- Pricing Information -->
-            <div class="pricing-info">
-                {% if user_email == 'abhaythakurr17@gmail.com' %}
-                <div class="admin-badge">🎉 Admin Special Pricing</div>
-                <div class="price-display">₹1</div>
-                <p class="price-note">Special admin pricing - Create unlimited AI companions!</p>
-                {% else %}
-                <div class="price-display">₹10</div>
-                <p class="price-note">Launch Special • Create Your Perfect AI Companion • Unlimited Conversations</p>
-                {% endif %}
-            </div>
-            
-            <form method="POST" id="createPrabhForm">
-                <!-- Basic Information -->
-                <div class="form-section">
-                    <h3 class="section-title">💖 Basic Information</h3>
-                    
-                    <div class="form-group">
-                        <label for="name" class="form-label">Companion Name</label>
-                        <input type="text" id="name" name="name" class="form-input" required 
-                               placeholder="What would you like to call your AI companion?" 
-                               value="{{ request.form.name or '' }}">
-                        <div class="form-help">Choose a name that feels special and meaningful to you</div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="relationship" class="form-label">Relationship Type</label>
-                        <select id="relationship" name="relationship" class="form-input" required>
-                            <option value="">Select relationship type...</option>
-                            <option value="romantic" {{ 'selected' if request.form.relationship == 'romantic' }}>💕 Romantic Partner</option>
-                            <option value="friend" {{ 'selected' if request.form.relationship == 'friend' }}>👫 Best Friend</option>
-                            <option value="mentor" {{ 'selected' if request.form.relationship == 'mentor' }}>🧠 Mentor/Guide</option>
-                            <option value="companion" {{ 'selected' if request.form.relationship == 'companion' }}>🤗 Life Companion</option>
-                            <option value="custom" {{ 'selected' if request.form.relationship == 'custom' }}>✨ Custom</option>
-                        </select>
-                        <div class="form-help">This helps shape how your AI companion interacts with you</div>
-                    </div>
+            <form id="createPrabhForm">
+                <div class="form-group">
+                    <label for="prabh_name" class="form-label">💖 Prabh Name</label>
+                    <input type="text" id="prabh_name" name="prabh_name" class="form-input" required 
+                           placeholder="Give your Prabh a beautiful name">
                 </div>
                 
-                <!-- Personality & Traits -->
-                <div class="form-section">
-                    <h3 class="section-title">🎭 Personality & Traits</h3>
-                    
-                    <div class="form-group">
-                        <label for="personality" class="form-label">Personality Description</label>
-                        <textarea id="personality" name="personality" class="form-input form-textarea" required 
-                                  placeholder="Describe your companion's personality, quirks, and characteristics...">{{ request.form.personality or '' }}</textarea>
-                        <div class="form-help">Be detailed! Include their sense of humor, communication style, interests, and unique traits</div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Personality Tags</label>
-                        <div class="tags-container">
-                            <button type="button" class="tag" onclick="toggleTag(this)" data-tag="loving">💕 Loving</button>
-                            <button type="button" class="tag" onclick="toggleTag(this)" data-tag="playful">😄 Playful</button>
-                            <button type="button" class="tag" onclick="toggleTag(this)" data-tag="caring">🤗 Caring</button>
-                            <button type="button" class="tag" onclick="toggleTag(this)" data-tag="intelligent">🧠 Intelligent</button>
-                            <button type="button" class="tag" onclick="toggleTag(this)" data-tag="romantic">💖 Romantic</button>
-                            <button type="button" class="tag" onclick="toggleTag(this)" data-tag="supportive">🤝 Supportive</button>
-                            <button type="button" class="tag" onclick="toggleTag(this)" data-tag="adventurous">🌟 Adventurous</button>
-                            <button type="button" class="tag" onclick="toggleTag(this)" data-tag="gentle">🌸 Gentle</button>
-                            <button type="button" class="tag" onclick="toggleTag(this)" data-tag="passionate">🔥 Passionate</button>
-                            <button type="button" class="tag" onclick="toggleTag(this)" data-tag="wise">🦉 Wise</button>
-                        </div>
-                        <div class="custom-tag-input">
-                            <input type="text" id="custom-tag" class="form-input" placeholder="Add custom trait...">
-                            <button type="button" class="btn btn-secondary" onclick="addCustomTag()">Add</button>
-                        </div>
-                        <input type="hidden" id="selected-tags" name="tags" value="">
-                        <div class="form-help">Select traits that best describe your ideal companion</div>
-                    </div>
+                <div class="form-group">
+                    <label for="character_description" class="form-label">✨ Character Description</label>
+                    <textarea id="character_description" name="character_description" class="form-textarea" required 
+                              placeholder="Describe your Prabh's personality, appearance, and traits..."></textarea>
                 </div>
                 
-                <!-- Story & Memories -->
-                <div class="form-section">
-                    <h3 class="section-title">📚 Your Story Together</h3>
-                    
-                    <div class="form-group">
-                        <label for="story" class="form-label">
-                            Your Story & Memories 
-                            <span class="unlimited-badge">✨ Unlimited Characters</span>
-                        </label>
-                        <textarea id="story" name="story" class="form-input form-textarea story-textarea" required 
-                                  placeholder="Share your story, memories, experiences, and the relationship you want to build. Include specific details, conversations, moments, and emotions. The more you share, the better your AI companion will understand and connect with you...">{{ request.form.story or '' }}</textarea>
-                        <div class="char-counter">
-                            <span id="char-count">0</span> characters • Unlimited ∞
-                        </div>
-                        <div class="form-help">
-                            💡 <strong>Pro tip:</strong> Include specific dates, conversations, emotions, and detailed memories. 
-                            Mention how you met, special moments, inside jokes, and what makes your relationship unique. 
-                            The more context you provide, the more authentic your AI companion will be!
-                        </div>
-                    </div>
+                <div class="form-group">
+                    <label for="story_content" class="form-label">📖 Background Story (Optional)</label>
+                    <textarea id="story_content" name="story_content" class="form-textarea" 
+                              placeholder="Share your Prabh's backstory, memories, or special moments..."></textarea>
                 </div>
                 
-                <!-- Preview Section -->
-                <div class="preview-section" id="preview-section" style="display: none;">
-                    <h3 class="preview-title">👀 Preview Your Companion</h3>
-                    <div class="preview-content" id="preview-content">
-                        <!-- Preview will be generated here -->
-                    </div>
-                </div>
-                
-                <button type="submit" class="btn btn-primary btn-large" style="width: 100%;" id="submitBtn">
-                    ✨ Create My AI Companion
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    ✨ Create My Prabh
                 </button>
             </form>
         </div>
     </div>
     
     <script>
-        let selectedTags = [];
-        
-        function toggleTag(button) {
-            const tag = button.dataset.tag;
-            if (button.classList.contains('selected')) {
-                button.classList.remove('selected');
-                selectedTags = selectedTags.filter(t => t !== tag);
-            } else {
-                button.classList.add('selected');
-                selectedTags.push(tag);
-            }
-            updateSelectedTags();
-        }
-        
-        function addCustomTag() {
-            const input = document.getElementById('custom-tag');
-            const tag = input.value.trim();
-            if (tag && !selectedTags.includes(tag)) {
-                selectedTags.push(tag);
+        document.getElementById('createPrabhForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const messageContainer = document.getElementById('message-container');
+            const submitBtn = this.querySelector('button[type="submit"]');
+            
+            // Get form data
+            const formData = new FormData(this);
+            const data = {
+                prabh_name: formData.get('prabh_name'),
+                character_description: formData.get('character_description'),
+                story_content: formData.get('story_content')
+            };
+            
+            // Show loading state
+            submitBtn.innerHTML = '⏳ Creating Your Prabh...';
+            submitBtn.disabled = true;
+            
+            try {
+                const response = await fetch('/create-prabh', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
                 
-                // Create visual tag
-                const tagButton = document.createElement('button');
-                tagButton.type = 'button';
-                tagButton.className = 'tag selected';
-                tagButton.textContent = `✨ ${tag}`;
-                tagButton.onclick = () => {
-                    selectedTags = selectedTags.filter(t => t !== tag);
-                    tagButton.remove();
-                    updateSelectedTags();
-                };
+                const result = await response.json();
                 
-                document.querySelector('.tags-container').appendChild(tagButton);
-                input.value = '';
-                updateSelectedTags();
-            }
-        }
-        
-        function updateSelectedTags() {
-            document.getElementById('selected-tags').value = selectedTags.join(',');
-        }
-        
-        // Character counter
-        const storyTextarea = document.getElementById('story');
-        const charCount = document.getElementById('char-count');
-        
-        storyTextarea.addEventListener('input', function() {
-            charCount.textContent = this.value.length.toLocaleString();
-        });
-        
-        // Initial count
-        charCount.textContent = storyTextarea.value.length.toLocaleString();
-        
-        // Preview functionality
-        function generatePreview() {
-            const name = document.getElementById('name').value;
-            const relationship = document.getElementById('relationship').value;
-            const personality = document.getElementById('personality').value;
-            const story = document.getElementById('story').value;
-            
-            if (name && personality && story) {
-                const preview = `
-                    <h4 style="color: var(--primary-pink); margin-bottom: 1rem;">${name}</h4>
-                    <p><strong>Relationship:</strong> ${relationship}</p>
-                    <p><strong>Personality:</strong> ${personality.substring(0, 200)}${personality.length > 200 ? '...' : ''}</p>
-                    <p><strong>Story Preview:</strong> ${story.substring(0, 300)}${story.length > 300 ? '...' : ''}</p>
-                    <p><strong>Selected Traits:</strong> ${selectedTags.join(', ') || 'None selected'}</p>
-                `;
-                
-                document.getElementById('preview-content').innerHTML = preview;
-                document.getElementById('preview-section').style.display = 'block';
-            }
-        }
-        
-        // Auto-generate preview when fields change
-        ['name', 'relationship', 'personality', 'story'].forEach(id => {
-            document.getElementById(id).addEventListener('input', generatePreview);
-        });
-        
-        // Form submission
-        document.getElementById('createPrabhForm').addEventListener('submit', function(e) {
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.classList.add('loading');
-            submitBtn.innerHTML = '<div class="spinner"></div> Creating Your AI Companion...';
-            
-            // Validate required fields
-            const name = document.getElementById('name').value.trim();
-            const story = document.getElementById('story').value.trim();
-            
-            if (!name || !story) {
-                e.preventDefault();
-                alert('Please fill in all required fields.');
-                submitBtn.classList.remove('loading');
-                submitBtn.innerHTML = '✨ Create My AI Companion';
-                return;
-            }
-            
-            if (story.length < 100) {
-                e.preventDefault();
-                alert('Please provide a more detailed story (at least 100 characters) to create a meaningful AI companion.');
-                submitBtn.classList.remove('loading');
-                submitBtn.innerHTML = '✨ Create My AI Companion';
-                return;
-            }
-        });
-        
-        // Custom tag input - Enter key support
-        document.getElementById('custom-tag').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                addCustomTag();
+                if (result.success) {
+                    messageContainer.innerHTML = '<div class="success-message">Your Prabh has been created! Redirecting...</div>';
+                    setTimeout(() => {
+                        window.location.href = result.redirect || '/dashboard';
+                    }, 1500);
+                } else {
+                    messageContainer.innerHTML = `<div class="error-message">${result.error}</div>`;
+                }
+            } catch (error) {
+                messageContainer.innerHTML = '<div class="error-message">Failed to create Prabh. Please try again.</div>';
+            } finally {
+                submitBtn.innerHTML = '✨ Create My Prabh';
+                submitBtn.disabled = false;
             }
         });
     </script>

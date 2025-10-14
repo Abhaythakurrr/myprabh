@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found - My Prabh</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <style>
+        .error-container {
+            text-align: center;
+            padding: 100px 20px;
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .error-code {
+            font-size: 120px;
+            font-weight: bold;
+            color: #ff6b9d;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .error-message {
+            font-size: 24px;
+            color: #333;
+            margin: 20px 0;
+        }
+        .error-description {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+            max-width: 500px;
+        }
+        .home-button {
+            background: linear-gradient(135deg, #ff6b9d, #c44569);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+        .home-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 157, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <h1 class="error-code">404</h1>
+        <h2 class="error-message">Connection Lost 🌧️</h2>
+        <p class="error-description">
+            Like a storm, sometimes connections fail. The page you're looking for doesn't exist or has been moved.
+        </p>
+        <a href="{{ url_for('index') }}" class="home-button">Return Home</a>
+    </div>
+</body>
+</html>

@@ -82,32 +82,50 @@ def login():
     """User login"""
     if request.method == 'POST':
         try:
-            data = request.get_json()
+            # Handle both JSON and form data
+            if request.is_json:
+                data = request.get_json()
+            else:
+                data = request.form.to_dict()
+                
             email = data.get('email', '').strip().lower()
             password = data.get('password', '')
             
             if not email or not password:
-                return jsonify({'error': 'Email and password required'}), 400
+                if request.is_json:
+                    return jsonify({'error': 'Email and password required'}), 400
+                return render_template('login.html', error='Email and password required')
             
             # Get user
             user = firestore_db.get_user_by_email(email)
             if not user:
-                return jsonify({'error': 'Invalid credentials'}), 401
+                error_msg = 'Invalid credentials'
+                if request.is_json:
+                    return jsonify({'error': error_msg}), 401
+                return render_template('login.html', error=error_msg)
             
             # Check password
             if not check_password_hash(user['password_hash'], password):
-                return jsonify({'error': 'Invalid credentials'}), 401
+                error_msg = 'Invalid credentials'
+                if request.is_json:
+                    return jsonify({'error': error_msg}), 401
+                return render_template('login.html', error=error_msg)
             
             # Set session
             session['user_id'] = user['user_id']
             session['user_email'] = user['email']
             session['user_name'] = user['name']
             
-            return jsonify({'success': True, 'redirect': '/dashboard'})
+            if request.is_json:
+                return jsonify({'success': True, 'redirect': '/dashboard'})
+            return redirect(url_for('dashboard'))
             
         except Exception as e:
             print(f"Login error: {e}")
-            return jsonify({'error': 'Login failed'}), 500
+            error_msg = 'Login failed'
+            if request.is_json:
+                return jsonify({'error': error_msg}), 500
+            return render_template('login.html', error=error_msg)
     
     return render_template('login.html')
 
@@ -261,6 +279,51 @@ def get_conversation_starter(prabh_id):
     except Exception as e:
         print(f"Conversation starter error: {e}")
         return jsonify({'error': 'Failed to generate starter'}), 500
+
+@app.route('/api/live-stats')
+def live_stats():
+    """Live stats API endpoint"""
+    try:
+        stats = firestore_db.get_stats()
+        return jsonify({
+            'success': True,
+            'stats': stats,
+            'timestamp': datetime.now().isoformat()
+        })
+    except Exception as e:
+        print(f"Live stats error: {e}")
+        return jsonify({
+            'success': False,
+            'stats': {'total_users': 0, 'total_prabhs': 0, 'early_signups': 0},
+            'error': 'Stats temporarily unavailable'
+        }), 500
+
+@app.route('/submit-early-access', methods=['POST'])
+def submit_early_access():
+    """Handle early access signup"""
+    try:
+        data = request.get_json() if request.is_json else request.form
+        email = data.get('email', '').strip().lower()
+        name = data.get('name', '').strip()
+        
+        if not email:
+            return jsonify({'error': 'Email is required'}), 400
+        
+        # Save early access signup
+        signup_id = firestore_db.save_early_access_signup(email, name)
+        
+        return jsonify({
+            'success': True,
+            'message': 'Thank you for your interest! We\'ll notify you when My Prabh launches.',
+            'signup_id': signup_id
+        })
+        
+    except Exception as e:
+        print(f"Early access signup error: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'Connection Error 🌧️ Like a storm, sometimes connections fail. Please try again in a moment.'
+        }), 500
 
 # Error handlers
 @app.errorhandler(404)
