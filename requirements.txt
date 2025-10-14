@@ -2,14 +2,11 @@
 Flask==3.0.0
 Werkzeug==3.0.1
 
-# Database
-pg8000==1.30.3
+# Database - Firestore
+google-cloud-firestore==2.13.1
 
 # HTTP Requests
 requests==2.31.0
-
-# Security
-Werkzeug[watchdog]==3.0.1
 
 # Utilities
 gunicorn==21.2.0

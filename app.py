@@ -40,14 +40,14 @@ except ImportError as e:
 app = Flask(__name__)
 app.secret_key = 'myprabh_mvp_2024_secret_key'
 
-# Database Configuration - SQLite for local, PostgreSQL for production
-DATABASE_URL = os.environ.get('DATABASE_URL')
-USE_POSTGRES = bool(DATABASE_URL)
-DB_PATH = 'app.db'
-if USE_POSTGRES:
-    print("Using PostgreSQL database")
+# Database Configuration - Firestore for production
+USE_FIRESTORE = os.environ.get('USE_FIRESTORE', 'false').lower() == 'true'
+if USE_FIRESTORE:
+    print("Using Firestore database")
+    from services.firestore_db import firestore_db
 else:
     print("Using SQLite database for local development")
+    DB_PATH = 'app.db'
 
 # Set resource constraints based on environment
 if os.getenv('GAE_ENV', '').startswith('standard'):
@@ -110,30 +110,10 @@ else:
 
 # Database connection helper
 def get_db_connection():
-    """Get database connection - PostgreSQL or SQLite"""
-    if USE_POSTGRES:
-        # Check if running on Google Cloud App Engine
-        if os.getenv('GAE_ENV', '').startswith('standard'):
-            # Use pg8000 for App Engine (simpler than Cloud SQL connector)
-            import pg8000
-            import urllib.parse
-            
-            # Parse DATABASE_URL for App Engine
-            parsed = urllib.parse.urlparse(DATABASE_URL)
-            query_params = urllib.parse.parse_qs(parsed.query)
-            
-            # Connect using pg8000 with Unix socket
-            conn = pg8000.connect(
-                user=parsed.username,
-                password=parsed.password,
-                database=parsed.path.lstrip('/'),
-                unix_sock=query_params.get('host', [None])[0]
-            )
-            return conn
-        else:
-            # Use psycopg2 for other environments
-            import psycopg2
-            return psycopg2.connect(DATABASE_URL)
+    """Get database connection - Firestore or SQLite"""
+    if USE_FIRESTORE:
+        # Return Firestore client (no connection needed)
+        return firestore_db
     else:
         # SQLite for local development
         conn = sqlite3.connect(DB_PATH, timeout=30.0)
@@ -164,6 +144,38 @@ class DatabaseManager:
         else:
             self.conn.rollback()
         self.conn.close()
+
+# Get real stats from database
+def get_real_stats():
+    """Get real statistics from database for landing page"""
+    try:
+        if USE_FIRESTORE:
+            return firestore_db.get_stats()
+        else:
+            # SQLite fallback
+            conn = sqlite3.connect(DB_PATH)
+            cursor = conn.cursor()
+            
+            stats = {}
+            cursor.execute("SELECT COUNT(*) FROM users")
+            stats['total_users'] = cursor.fetchone()[0]
+            
+            cursor.execute("SELECT COUNT(*) FROM prabhs")
+            stats['total_prabhs'] = cursor.fetchone()[0]
+            
+            cursor.execute("SELECT COUNT(*) FROM users WHERE created_at >= datetime('now', '-30 days')")
+            stats['early_signups'] = cursor.fetchone()[0]
+            
+            conn.close()
+            return stats
+            
+    except Exception as e:
+        print(f"Error getting stats: {e}")
+        return {
+            'total_users': 0,
+            'total_prabhs': 0,
+            'early_signups': 0
+        }
 
 # Database initialization
 def init_db():

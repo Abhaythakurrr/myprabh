@@ -1,8 +1,9 @@
 runtime: python312
 
 env_variables:
-  # Database Configuration (update after creating Cloud SQL)
-  DATABASE_URL: "postgresql://prabhuser:YourSecurePassword123@/prabhdb?host=/cloudsql/myprabh:us-central1:my-prabh-db"
+  # Database Configuration - Using Firestore (NoSQL)
+  USE_FIRESTORE: "true"
+  GOOGLE_CLOUD_PROJECT: "myprabh"
   
   # OpenRouter AI API
   OPENROUTER_API_KEY: "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"
