@@ -38,11 +38,17 @@ if USE_POSTGRES:
 else:
     print("Using SQLite database for local development")
 
-# Set resource constraints for AI engine
-os.environ['RENDER_FREE_TIER'] = 'true'
-os.environ['MEMORY_LIMIT_MB'] = '512'
-os.environ['CPU_LIMIT'] = '0.1'
-print("Optimized for Render free tier (512MB RAM, 0.1 CPU)")
+# Set resource constraints based on environment
+if os.getenv('GAE_ENV', '').startswith('standard'):
+    # Google Cloud App Engine
+    os.environ['MEMORY_LIMIT_MB'] = os.environ.get('MEMORY_LIMIT_MB', '2048')
+    os.environ['CPU_LIMIT'] = os.environ.get('CPU_LIMIT', '1')
+    print(f"Optimized for Google Cloud App Engine ({os.environ.get('MEMORY_LIMIT_MB', '2048')}MB RAM, {os.environ.get('CPU_LIMIT', '1')} CPU)")
+else:
+    # Local development or other platforms
+    os.environ['MEMORY_LIMIT_MB'] = '512'
+    os.environ['CPU_LIMIT'] = '0.1'
+    print("Optimized for local development (512MB RAM, 0.1 CPU)")
 
 # Razorpay Configuration
 RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', '')  # Set this in environment
@@ -96,8 +102,50 @@ def get_db_connection():
     """Get database connection - PostgreSQL or SQLite"""
     if USE_POSTGRES:
         import psycopg2
-        return psycopg2.connect(DATABASE_URL)
+        
+        # Check if running on Google Cloud App Engine
+        if os.getenv('GAE_ENV', '').startswith('standard'):
+            # Use Cloud SQL connector for App Engine
+            try:
+                from google.cloud.sql.connector import Connector
+                import sqlalchemy
+                
+                # Initialize Cloud SQL connector
+                connector = Connector()
+                
+                # Extract connection details from DATABASE_URL
+                # Format: postgresql://user:pass@/dbname?host=/cloudsql/project:region:instance
+                import urllib.parse
+                parsed = urllib.parse.urlparse(DATABASE_URL)
+                
+                # Get Cloud SQL instance connection name from host parameter
+                query_params = urllib.parse.parse_qs(parsed.query)
+                instance_connection_name = query_params.get('host', [None])[0]
+                
+                if instance_connection_name:
+                    instance_connection_name = instance_connection_name.replace('/cloudsql/', '')
+                    
+                    # Create connection using Cloud SQL connector
+                    conn = connector.connect(
+                        instance_connection_name,
+                        "pg8000",
+                        user=parsed.username,
+                        password=parsed.password,
+                        db=parsed.path.lstrip('/')
+                    )
+                    return conn
+                else:
+                    # Fallback to direct connection
+                    return psycopg2.connect(DATABASE_URL)
+                    
+            except ImportError:
+                print("Google Cloud SQL connector not available, using direct connection")
+                return psycopg2.connect(DATABASE_URL)
+        else:
+            # Direct PostgreSQL connection for other environments
+            return psycopg2.connect(DATABASE_URL)
     else:
+        # SQLite for local development
         conn = sqlite3.connect(DB_PATH, timeout=30.0)
         conn.row_factory = sqlite3.Row
         conn.execute('PRAGMA journal_mode=WAL')
