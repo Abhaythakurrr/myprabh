@@ -4,9 +4,12 @@ import sqlite3
 import uuid
 
 # Import PostgreSQL
-import psycopg2
-from psycopg2.extras import RealDictCursor
-POSTGRES_AVAILABLE = True
+try:
+    import psycopg2
+    from psycopg2.extras import RealDictCursor
+    POSTGRES_AVAILABLE = True
+except ImportError:
+    POSTGRES_AVAILABLE = False
 # Email functionality disabled for MVP deployment
 # import smtplib
 # from email.mime.text import MimeText
@@ -16,7 +19,15 @@ from datetime import datetime
 import os
 import re
 import random
-from werkzeug.security import generate_password_hash, check_password_hash
+try:
+    from werkzeug.security import generate_password_hash, check_password_hash
+except ImportError:
+    # Simple fallback for password hashing
+    import hashlib
+    def generate_password_hash(password):
+        return hashlib.sha256(password.encode()).hexdigest()
+    def check_password_hash(hash, password):
+        return hash == hashlib.sha256(password.encode()).hexdigest()
 # Try to import security manager, fallback if not available
 try:
     from security import security_manager
