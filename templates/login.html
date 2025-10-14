@@ -323,10 +323,20 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     
     <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDLcA32A8FDafvtmuD3xFk9t3qIceAIM5I",
+            authDomain: "myprabh.firebaseapp.com",
+            projectId: "myprabh",
+            storageBucket: "myprabh.firebasestorage.app",
+            messagingSenderId: "26708699201",
+            appId: "1:26708699201:web:a5562ea736b9db177ebec0"
+        };
+
         // Initialize Google Sign-In
         window.onload = function() {
             google.accounts.id.initialize({
-                client_id: '{{ google_client_id or "YOUR_GOOGLE_CLIENT_ID" }}',
+                client_id: '26708699201-YOUR_OAUTH_CLIENT_ID.apps.googleusercontent.com',
                 callback: handleGoogleSignIn
             });
             

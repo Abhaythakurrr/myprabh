@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscribe to {{ plan.name }} - My Prabh</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/genz-theme.css') }}">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        .subscribe-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .plan-summary {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .plan-name {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ff6b9d;
+            margin-bottom: 10px;
+        }
+        .plan-price {
+            font-size: 3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .plan-features {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .plan-features li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .plan-features li:last-child {
+            border-bottom: none;
+        }
+        .payment-button {
+            background: linear-gradient(135deg, #ff6b9d, #c44569);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            border-radius: 25px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: transform 0.3s ease;
+        }
+        .payment-button:hover {
+            transform: translateY(-2px);
+        }
+        .payment-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .security-info {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="subscribe-container">
+        <div class="plan-summary">
+            <div class="plan-name">{{ plan.name }}</div>
+            <div class="plan-price">₹{{ plan.price }}</div>
+            <div style="color: #666; margin-bottom: 20px;">per {{ plan.duration }}</div>
+            
+            <ul class="plan-features">
+                {% for feature in plan.features %}
+                <li>✅ {{ feature }}</li>
+                {% endfor %}
+            </ul>
+            
+            <button id="payButton" class="payment-button" onclick="initiatePayment()">
+                💳 Pay ₹{{ plan.price }} Securely
+            </button>
+        </div>
+        
+        <div class="security-info">
+            <h4>🔒 Secure Payment</h4>
+            <p>Your payment is processed securely by Razorpay. We never store your card details.</p>
+            <p>Powered by Razorpay | SSL Encrypted | PCI DSS Compliant</p>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="/pricing" style="color: #ff6b9d; text-decoration: none;">← Back to Pricing</a>
+        </div>
+    </div>
+    
+    <script>
+        function initiatePayment() {
+            const payButton = document.getElementById('payButton');
+            payButton.disabled = true;
+            payButton.innerHTML = '⏳ Creating Order...';
+            
+            // Create payment order
+            fetch('/create-payment-order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    plan_type: '{{ plan_type }}',
+                    amount: {{ plan.price }}
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    openRazorpayCheckout(data);
+                } else {
+                    alert('Error: ' + data.error);
+                    resetPayButton();
+                }
+            })
+            .catch(error => {
+                alert('Payment initialization failed: ' + error);
+                resetPayButton();
+            });
+        }
+        
+        function openRazorpayCheckout(orderData) {
+            const options = {
+                key: orderData.key_id,
+                amount: orderData.amount,
+                currency: orderData.currency,
+                name: 'My Prabh',
+                description: '{{ plan.name }} Subscription',
+                image: '/static/logo.jpg',
+                order_id: orderData.order_id,
+                handler: function(response) {
+                    verifyPayment(response);
+                },
+                prefill: {
+                    name: '{{ user_name }}',
+                    email: '{{ session.user_email }}',
+                },
+                theme: {
+                    color: '#ff6b9d'
+                },
+                modal: {
+                    ondismiss: function() {
+                        resetPayButton();
+                    }
+                }
+            };
+            
+            const rzp = new Razorpay(options);
+            rzp.open();
+        }
+        
+        function verifyPayment(paymentResponse) {
+            const payButton = document.getElementById('payButton');
+            payButton.innerHTML = '⏳ Verifying Payment...';
+            
+            fetch('/verify-payment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    razorpay_order_id: paymentResponse.razorpay_order_id,
+                    razorpay_payment_id: paymentResponse.razorpay_payment_id,
+                    razorpay_signature: paymentResponse.razorpay_signature,
+                    plan_type: '{{ plan_type }}'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('🎉 ' + data.message);
+                    window.location.href = data.redirect || '/dashboard';
+                } else {
+                    alert('Payment verification failed: ' + data.error);
+                    resetPayButton();
+                }
+            })
+            .catch(error => {
+                alert('Payment verification error: ' + error);
+                resetPayButton();
+            });
+        }
+        
+        function resetPayButton() {
+            const payButton = document.getElementById('payButton');
+            payButton.disabled = false;
+            payButton.innerHTML = '💳 Pay ₹{{ plan.price }} Securely';
+        }
+    </script>
+</body>
+</html>
