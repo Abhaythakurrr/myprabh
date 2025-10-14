@@ -1,5 +1,5 @@
-# My Prabh - Google Cloud App Engine Requirements
-# Python 3.13 compatible versions
+# My Prabh - Google Cloud Run Requirements
+# Python 3.12 compatible versions
 
 # Core Flask Application
 Flask==3.0.0

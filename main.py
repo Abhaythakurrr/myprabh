@@ -1,13 +1,13 @@
 """
-Main entry point for Google Cloud App Engine
+Main entry point for Google Cloud Run
 """
 
 import os
 from app import app
 
-# Health checks are already defined in app.py
-# No need to duplicate them here
-
 if __name__ == '__main__':
-    # This is used when running locally only
-    app.run(host='127.0.0.1', port=8080, debug=True)
+    # Get port from environment variable (Cloud Run sets this)
+    port = int(os.environ.get('PORT', 8080))
+    
+    # Run the app
+    app.run(host='0.0.0.0', port=port, debug=False)
