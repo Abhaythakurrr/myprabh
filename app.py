@@ -18,16 +18,23 @@ try:
     from services.firebase_auth import firebase_auth
     from services.email_service import email_service
     from services.phone_verification import phone_verification
-from services.payment_service import payment_service
+    from services.payment_service import payment_service
     print("✅ All services initialized successfully")
 except Exception as e:
     print(f"⚠️ Service initialization warning: {e}")
+    # Initialize minimal services for basic functionality
+    firestore_db = None
+    firebase_auth = None
+    email_service = None
+    phone_verification = None
+    payment_service = None
 
 print("✅ My Prabh Platform Starting...")
-print(f"✅ Firestore Database: Connected")
-print(f"✅ Firebase Auth: Enabled") 
-print(f"✅ Email Service: Google Workspace")
-print(f"✅ Phone Verification: Enabled")
+print(f"✅ Firestore Database: {'Connected' if firestore_db else 'Disabled'}")
+print(f"✅ Firebase Auth: {'Enabled' if firebase_auth else 'Disabled'}") 
+print(f"✅ Email Service: {'Google Workspace' if email_service else 'Disabled'}")
+print(f"✅ Phone Verification: {'Enabled' if phone_verification else 'Disabled'}")
+print(f"✅ Payment Service: {'Razorpay Live' if payment_service else 'Disabled'}")
 print(f"✅ Environment: {os.environ.get('FLASK_ENV', 'production')}")
 print(f"✅ Admin: {os.environ.get('ADMIN_EMAIL', 'abhay@aiprabh.com')}")
 
@@ -57,17 +64,20 @@ def check_password_hash(hash_value, password):
 def index():
     """Landing page with real-time stats"""
     try:
-        stats = firestore_db.get_stats()
-        
-        # Add some dynamic stats
-        stats.update({
-            'active_conversations': stats.get('total_prabhs', 0) * 3,
-            'happiness_score': '98%',
-            'countries': 25
-        })
+        if firestore_db:
+            stats = firestore_db.get_stats()
+            # Add some dynamic stats
+            stats.update({
+                'active_conversations': stats.get('total_prabhs', 0) * 3,
+                'happiness_score': '98%',
+                'countries': 25
+            })
+        else:
+            raise Exception("Firestore not available")
         
     except Exception as e:
         print(f"Stats error: {e}")
+        # Fallback stats for demo
         stats = {
             'total_users': 1247,
             'total_prabhs': 892,
