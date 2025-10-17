@@ -135,6 +135,69 @@
                     <textarea id="story_content" name="story_content" class="form-textarea" 
                               placeholder="Share your Prabh's backstory, memories, or special moments..."></textarea>
                 </div>
+
+                <div class="form-group">
+                    <label for="personality_traits" class="form-label">🎭 Personality Traits (Optional)</label>
+                    <textarea id="personality_traits" name="personality_traits" class="form-textarea" 
+                              placeholder="Describe specific personality traits, communication style, or behavioral patterns..."></textarea>
+                </div>
+                
+                <!-- Memory-Based Training Section -->
+                <div class="form-group" style="border: 2px solid var(--primary-color); border-radius: 12px; padding: 1.5rem; background: rgba(255, 182, 193, 0.1);">
+                    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+                        <input type="checkbox" id="use_memory_training" name="use_memory_training" style="margin-right: 0.5rem; transform: scale(1.2);">
+                        <label for="use_memory_training" class="form-label" style="margin-bottom: 0; cursor: pointer;">
+                            🧠 Enable Memory-Based Training (Advanced)
+                        </label>
+                    </div>
+                    
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">
+                        Train your Prabh using your uploaded memories for personalized conversations and deeper understanding.
+                    </p>
+                    
+                    <div id="memory-training-options" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label">Memory Assignment Type:</label>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                <label style="display: flex; align-items: center; cursor: pointer;">
+                                    <input type="radio" name="memory_assignment_type" value="all" checked style="margin-right: 0.5rem;">
+                                    <span>Use all my memories</span>
+                                </label>
+                                <label style="display: flex; align-items: center; cursor: pointer;">
+                                    <input type="radio" name="memory_assignment_type" value="filter" style="margin-right: 0.5rem;">
+                                    <span>Use memories from specific time period</span>
+                                </label>
+                                <label style="display: flex; align-items: center; cursor: pointer;">
+                                    <input type="radio" name="memory_assignment_type" value="selection" style="margin-right: 0.5rem;">
+                                    <span>Let me choose specific memories later</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div id="filter-options" style="display: none; margin-top: 1rem;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div>
+                                    <label for="memory_start_date" class="form-label" style="font-size: 0.9rem;">From Date:</label>
+                                    <input type="date" id="memory_start_date" name="memory_start_date" class="form-input">
+                                </div>
+                                <div>
+                                    <label for="memory_end_date" class="form-label" style="font-size: 0.9rem;">To Date:</label>
+                                    <input type="date" id="memory_end_date" name="memory_end_date" class="form-input">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="background: rgba(255, 255, 255, 0.7); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                            <h4 style="margin: 0 0 0.5rem 0; color: var(--primary-color);">🔒 Privacy & Data Isolation</h4>
+                            <ul style="margin: 0; padding-left: 1.5rem; font-size: 0.85rem; color: var(--text-secondary);">
+                                <li>Memories assigned to this Prabh will be isolated from other companions</li>
+                                <li>Each Prabh maintains separate conversation history and personality</li>
+                                <li>You can modify memory assignments anytime from the dashboard</li>
+                                <li>All data remains under your complete control</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
                 
                 <button type="submit" class="btn btn-primary" style="width: 100%;">
                     ✨ Create My Prabh
@@ -155,8 +218,29 @@
             const data = {
                 prabh_name: formData.get('prabh_name'),
                 character_description: formData.get('character_description'),
-                story_content: formData.get('story_content')
+                story_content: formData.get('story_content'),
+                personality_traits: formData.get('personality_traits'),
+                use_memory_training: document.getElementById('use_memory_training').checked
             };
+
+            // Add memory assignment configuration if memory training is enabled
+            if (data.use_memory_training) {
+                const assignmentType = formData.get('memory_assignment_type');
+                const memoryAssignment = { type: assignmentType };
+                
+                if (assignmentType === 'filter') {
+                    const startDate = formData.get('memory_start_date');
+                    const endDate = formData.get('memory_end_date');
+                    
+                    if (startDate || endDate) {
+                        memoryAssignment.filters = { date_range: {} };
+                        if (startDate) memoryAssignment.filters.date_range.start = startDate;
+                        if (endDate) memoryAssignment.filters.date_range.end = endDate;
+                    }
+                }
+                
+                data.memory_assignment = memoryAssignment;
+            }
             
             // Show loading state
             submitBtn.innerHTML = '⏳ Creating Your Prabh...';
@@ -188,6 +272,24 @@
                 submitBtn.disabled = false;
             }
         });
+        });
+
+        // Handle memory training checkbox
+        document.getElementById('use_memory_training').addEventListener('change', function() {
+            const options = document.getElementById('memory-training-options');
+            options.style.display = this.checked ? 'block' : 'none';
+        });
+
+        // Handle memory assignment type radio buttons
+        document.querySelectorAll('input[name="memory_assignment_type"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const filterOptions = document.getElementById('filter-options');
+                filterOptions.style.display = this.value === 'filter' ? 'block' : 'none';
+            });
+        });
+
+        // Set default end date to today
+        document.getElementById('memory_end_date').valueAsDate = new Date();
     </script>
 </body>
 </html>

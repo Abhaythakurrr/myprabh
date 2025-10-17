@@ -1,42 +1,58 @@
 """
-Main entry point for Google Cloud Run
+Main entry point for Google Cloud Run - Ultra Simple Version
 """
 
 import os
 import sys
 
-print("🚀 Starting My Prabh main.py...")
-print(f"Python version: {sys.version}")
+print("🚀 My Prabh Starting...")
+print(f"Python: {sys.version}")
 print(f"PORT: {os.environ.get('PORT', '8080')}")
 
+# Try to import the working app first
 try:
-    from app import app
-    print("✅ App imported successfully")
+    print("📦 Importing working app...")
+    from app_working import app
+    print("✅ Working app loaded successfully!")
 except Exception as e:
-    print(f"❌ Error importing app: {e}")
-    # Try minimal app as fallback
+    print(f"❌ Working app failed: {e}")
+    
+    # Try the full app
     try:
-        from app_minimal import app
-        print("✅ Minimal app imported as fallback")
+        print("📦 Importing full app...")
+        from app import app
+        print("✅ Full app loaded!")
     except Exception as e2:
-        print(f"❌ Error importing minimal app: {e2}")
-        # Create emergency app
+        print(f"❌ Full app failed: {e2}")
+        
+        # Emergency Flask app
+        print("🚨 Creating emergency app...")
         from flask import Flask
         app = Flask(__name__)
         
         @app.route('/')
         def emergency():
-            return f"<h1>My Prabh Emergency Mode</h1><p>Import Error: {e}</p><p>Minimal Error: {e2}</p>"
+            return f'''
+            <h1>🚨 My Prabh Emergency Mode</h1>
+            <p><strong>Working App Error:</strong> {e}</p>
+            <p><strong>Full App Error:</strong> {e2}</p>
+            <p><strong>Time:</strong> {os.environ.get('PORT', 'Unknown')}</p>
+            <p><a href="/health">Health Check</a></p>
+            '''
         
         @app.route('/health')
         def health():
-            return {'status': 'emergency', 'error': str(e)}
+            return {
+                'status': 'emergency', 
+                'working_app_error': str(e),
+                'full_app_error': str(e2),
+                'port': os.environ.get('PORT', '8080')
+            }
+
+# This is the WSGI application that gunicorn will use
+application = app
 
 if __name__ == '__main__':
-    # Get port from environment variable (Cloud Run sets this)
     port = int(os.environ.get('PORT', 8080))
-    
-    print(f"🌐 Starting server on 0.0.0.0:{port}")
-    
-    # Run the app
+    print(f"🌐 Server starting on 0.0.0.0:{port}")
     app.run(host='0.0.0.0', port=port, debug=False)

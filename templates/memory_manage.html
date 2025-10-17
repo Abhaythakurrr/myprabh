@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Memories - My Prabh</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modern-ui.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/genz-theme.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="{{ url_for('static', filename='js/modern-ui.js') }}"></script>
+</head>
+<body>
+    <!-- Modern Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="{{ url_for('dashboard') }}" class="nav-logo">My Prabh</a>
+            <div class="nav-links">
+                <a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a>
+                <a href="{{ url_for('memory_upload') }}" class="nav-link">Upload Memories</a>
+                <div class="theme-toggle" title="Toggle theme"></div>
+                <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main style="padding-top: 80px; min-height: 100vh;">
+        <div class="container" style="max-width: 1400px; margin: 0 auto; padding: var(--space-2xl);">
+            
+            <!-- Header Section -->
+            <div class="flex justify-between items-center animate-fade-in" style="margin-bottom: var(--space-3xl);">
+                <div>
+                    <h1 class="text-5xl font-bold" style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: var(--space-sm);">
+                        Your Memories
+                    </h1>
+                    <p class="text-xl text-secondary">Manage and organize your personal memories</p>
+                </div>
+                <div class="flex" style="gap: var(--space-md);">
+                    <div class="input-group" style="margin: 0; min-width: 300px;">
+                        <input type="text" class="input" id="searchBar" placeholder=" ">
+                        <label class="input-label">Search memories...</label>
+                    </div>
+                    <a href="{{ url_for('memory_upload') }}" class="btn btn-primary">
+                        📁 Upload More
+                    </a>
+                </div>
+            </div>
+
+            <!-- Stats Dashboard -->
+            <div class="grid grid-cols-auto animate-scale-in" style="margin-bottom: var(--space-3xl);">
+                <div class="card glass card-interactive">
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-primary" id="totalMemories">0</div>
+                        <div class="text-sm text-secondary">Total Memories</div>
+                        <div class="text-xs text-secondary" style="margin-top: var(--space-xs);">All time</div>
+                    </div>
+                </div>
+                <div class="card glass card-interactive">
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-accent" id="textMemories">0</div>
+                        <div class="text-sm text-secondary">Text Memories</div>
+                        <div class="text-xs text-secondary" style="margin-top: var(--space-xs);">📝 Documents & Notes</div>
+                    </div>
+                </div>
+                <div class="card glass card-interactive">
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-warning" id="audioMemories">0</div>
+                        <div class="text-sm text-secondary">Audio Memories</div>
+                        <div class="text-xs text-secondary" style="margin-top: var(--space-xs);">🎵 Voice & Music</div>
+                    </div>
+                </div>
+                <div class="card glass card-interactive">
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-success" id="imageMemories">0</div>
+                        <div class="text-sm text-secondary">Image Memories</div>
+                        <div class="text-xs text-secondary" style="margin-top: var(--space-xs);">🖼️ Photos & Media</div>
+                    </div>
+                </div>
+                <div class="card glass card-interactive">
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-error" id="storageUsed">0 MB</div>
+                        <div class="text-sm text-secondary">Storage Used</div>
+                        <div class="text-xs text-secondary" style="margin-top: var(--space-xs);">💾 Total space</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Controls -->
+            <div class="card glass animate-slide-in" style="margin-bottom: var(--space-2xl);">
+                <div class="flex justify-between items-center" style="margin-bottom: var(--space-lg);">
+                    <h3 class="text-xl font-semibold">Filter & Sort</h3>
+                    <div class="flex" style="gap: var(--space-sm);">
+                        <select id="sortBy" class="input" style="min-width: 150px;">
+                            <option value="recent">Most Recent</option>
+                            <option value="oldest">Oldest First</option>
+                            <option value="name">Name A-Z</option>
+                            <option value="size">File Size</option>
+                            <option value="type">File Type</option>
+                        </select>
+                        <button class="btn btn-secondary" id="viewToggle" data-view="grid">
+                            📋 List View
+                        </button>
+                    </div>
+                </div>
+                <div class="flex" style="gap: var(--space-sm); flex-wrap: wrap;">
+                    <button class="btn btn-primary filter-btn active" data-filter="all">All Memories</button>
+                    <button class="btn btn-secondary filter-btn" data-filter="text">📝 Text</button>
+                    <button class="btn btn-secondary filter-btn" data-filter="audio">🎵 Audio</button>
+                    <button class="btn btn-secondary filter-btn" data-filter="image">🖼️ Images</button>
+                    <button class="btn btn-secondary filter-btn" data-filter="video">🎥 Videos</button>
+                    <button class="btn btn-secondary filter-btn" data-filter="document">📄 Documents</button>
+                    <button class="btn btn-secondary filter-btn" data-filter="recent">🕒 This Week</button>
+                </div>
+            </div>
+
+            <!-- Memory Grid/List -->
+            <div id="memoryContainer" class="animate-fade-in">
+                <div id="memoryGrid" class="grid grid-cols-auto" style="gap: var(--space-lg);">
+                    <div class="card glass text-center" style="grid-column: 1 / -1; padding: var(--space-3xl);">
+                        <div class="loading animate-spin" style="margin: 0 auto var(--space-md);"></div>
+                        <p class="text-secondary">Loading your memories...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bulk Actions -->
+            <div id="bulkActions" class="card glass" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: none; z-index: var(--z-sticky);">
+                <div class="flex items-center" style="gap: var(--space-md);">
+                    <span id="selectedCount" class="font-medium">0 selected</span>
+                    <div class="flex" style="gap: var(--space-sm);">
+                        <button class="btn btn-secondary btn-sm" id="selectAllBtn">Select All</button>
+                        <button class="btn btn-warning btn-sm" id="bulkExportBtn">📤 Export</button>
+                        <button class="btn btn-error btn-sm" id="bulkDeleteBtn">🗑️ Delete</button>
+                        <button class="btn btn-secondary btn-sm" id="clearSelectionBtn">Clear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Memory Detail Modal -->
+    <div id="memoryModal" class="modal">
+        <div class="modal-content card glass-strong" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+            <div class="flex justify-between items-center" style="margin-bottom: var(--space-lg);">
+                <h2 id="modalTitle" class="text-2xl font-bold">Memory Details</h2>
+                <button class="btn btn-secondary btn-sm modal-close">✕</button>
+            </div>
+            <div id="modalContent" style="line-height: 1.6;"></div>
+            <div class="flex justify-end" style="gap: var(--space-sm); margin-top: var(--space-lg);">
+                <button class="btn btn-secondary modal-close">Close</button>
+                <button class="btn btn-primary" id="editMemoryBtn">Edit</button>
+                <button class="btn btn-error" id="deleteMemoryBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class ModernMemoryManager {
+            constructor() {
+                this.memories = [];
+                this.filteredMemories = [];
+                this.selectedMemories = new Set();
+                this.currentFilter = 'all';
+                this.currentSort = 'recent';
+                this.currentView = 'grid';
+                this.currentMemory = null;
+                
+                this.initEventListeners();
+                this.loadMemories();
+            }
+            
+            initEventListeners() {
+                // Search functionality
+                document.getElementById('searchBar').addEventListener('input', (e) => {
+                    this.searchMemories(e.target.value);
+                });
+                
+                // Filter buttons
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.filter-btn').forEach(b => {
+                            b.classList.remove('btn-primary');
+                            b.classList.add('btn-secondary');
+                        });
+                        e.target.classList.remove('btn-secondary');
+                        e.target.classList.add('btn-primary');
+                        
+                        this.currentFilter = e.target.dataset.filter;
+                        this.filterMemories();
+                    });
+                });
+                
+                // Sort functionality
+                document.getElementById('sortBy').addEventListener('change', (e) => {
+                    this.currentSort = e.target.value;
+                    this.sortMemories();
+                });
+                
+                // View toggle
+                document.getElementById('viewToggle').addEventListener('click', (e) => {
+                    this.currentView = this.currentView === 'grid' ? 'list' : 'grid';
+                    e.target.textContent = this.currentView === 'grid' ? '📋 List View' : '🔲 Grid View';
+                    e.target.dataset.view = this.currentView;
+                    this.renderMemories();
+                });
+                
+                // Bulk actions
+                document.getElementById('selectAllBtn').addEventListener('click', () => this.selectAllMemories());
+                document.getElementById('clearSelectionBtn').addEventListener('click', () => this.clearSelection());
+                document.getElementById('bulkDeleteBtn').addEventListener('click', () => this.bulkDeleteMemories());
+                document.getElementById('bulkExportBtn').addEventListener('click', () => this.bulkExportMemories());
+                
+                // Modal controls
+                document.querySelectorAll('.modal-close').forEach(btn => {
+                    btn.addEventListener('click', () => this.closeModal());
+                });
+                
+                document.getElementById('editMemoryBtn').addEventListener('click', () => this.editCurrentMemory());
+                document.getElementById('deleteMemoryBtn').addEventListener('click', () => this.deleteCurrentMemory());
+                
+                // Modal outside click
+                document.getElementById('memoryModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'memoryModal') this.closeModal();
+                });
+            }
+            
+            async loadMemories() {
+                try {
+                    const response = await fetch('/api/memory/list');
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.memories = data.memories || [];
+                        this.filteredMemories = [...this.memories];
+                        this.updateStats();
+                        this.renderMemories();
+                    } else {
+                        throw new Error('Failed to load memories');
+                    }
+                } catch (error) {
+                    console.error('Error loading memories:', error);
+                    window.modernUI?.showNotification('Failed to load memories', 'error');
+                    this.renderEmptyState('Error loading memories');
+                }
+            }
+            
+            updateStats() {
+                const stats = {
+                    total: this.memories.length,
+                    text: this.memories.filter(m => m.type === 'text').length,
+                    audio: this.memories.filter(m => m.type === 'audio').length,
+                    image: this.memories.filter(m => m.type === 'image').length,
+                    storage: this.memories.reduce((sum, m) => sum + (m.size || 0), 0)
+                };
+                
+                document.getElementById('totalMemories').textContent = stats.total;
+                document.getElementById('textMemories').textContent = stats.text;
+                document.getElementById('audioMemories').textContent = stats.audio;
+                document.getElementById('imageMemories').textContent = stats.image;
+                document.getElementById('storageUsed').textContent = this.formatFileSize(stats.storage);
+            }
+            
+            searchMemories(query) {
+                if (!query.trim()) {
+                    this.filterMemories();
+                    return;
+                }
+                
+                this.filteredMemories = this.memories.filter(memory => 
+                    memory.title?.toLowerCase().includes(query.toLowerCase()) ||
+                    memory.content?.toLowerCase().includes(query.toLowerCase()) ||
+                    memory.preview?.toLowerCase().includes(query.toLowerCase()) ||
+                    memory.filename?.toLowerCase().includes(query.toLowerCase())
+                );
+                
+                this.renderMemories();
+            }
+            
+            filterMemories() {
+                switch (this.currentFilter) {
+                    case 'all':
+                        this.filteredMemories = [...this.memories];
+                        break;
+                    case 'recent':
+                        const weekAgo = new Date();
+                        weekAgo.setDate(weekAgo.getDate() - 7);
+                        this.filteredMemories = this.memories.filter(memory => 
+                            new Date(memory.created_at) > weekAgo
+                        );
+                        break;
+                    default:
+                        this.filteredMemories = this.memories.filter(memory => 
+                            memory.type === this.currentFilter
+                        );
+                }
+                
+                this.sortMemories();
+            }
+            
+            sortMemories() {
+                switch (this.currentSort) {
+                    case 'recent':
+                        this.filteredMemories.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                        break;
+                    case 'oldest':
+                        this.filteredMemories.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+                        break;
+                    case 'name':
+                        this.filteredMemories.sort((a, b) => (a.title || a.filename || '').localeCompare(b.title || b.filename || ''));
+                        break;
+                    case 'size':
+                        this.filteredMemories.sort((a, b) => (b.size || 0) - (a.size || 0));
+                        break;
+                    case 'type':
+                        this.filteredMemories.sort((a, b) => (a.type || '').localeCompare(b.type || ''));
+                        break;
+                }
+                
+                this.renderMemories();
+            }
+            
+            renderMemories() {
+                const grid = document.getElementById('memoryGrid');
+                
+                if (this.filteredMemories.length === 0) {
+                    this.renderEmptyState();
+                    return;
+                }
+                
+                if (this.currentView === 'grid') {
+                    grid.className = 'grid grid-cols-auto';
+                    grid.style.gap = 'var(--space-lg)';
+                    grid.innerHTML = this.filteredMemories.map(memory => this.renderMemoryCard(memory)).join('');
+                } else {
+                    grid.className = 'grid';
+                    grid.style.gap = 'var(--space-md)';
+                    grid.innerHTML = this.filteredMemories.map(memory => this.renderMemoryListItem(memory)).join('');
+                }
+                
+                // Add event listeners to memory items
+                this.attachMemoryEventListeners();
+            }
+            
+            renderMemoryCard(memory) {
+                const isSelected = this.selectedMemories.has(memory.id);
+                return `
+                    <div class="card glass card-interactive memory-item animate-scale-in" data-id="${memory.id}" style="position: relative;">
+                        <div class="flex justify-between items-start" style="margin-bottom: var(--space-md);">
+                            <div class="flex items-center" style="gap: var(--space-sm);">
+                                <input type="checkbox" ${isSelected ? 'checked' : ''} 
+                                       onchange="memoryManager.toggleMemorySelection('${memory.id}')"
+                                       style="transform: scale(1.2);">
+                                <div class="text-2xl">${this.getMemoryIcon(memory.type)}</div>
+                                <div>
+                                    <div class="text-sm text-secondary">${memory.type}</div>
+                                    <div class="text-xs text-secondary">${this.formatDate(memory.created_at)}</div>
+                                </div>
+                            </div>
+                            <div class="text-xs text-secondary">${this.formatFileSize(memory.size || 0)}</div>
+                        </div>
+                        <h3 class="font-semibold" style="margin-bottom: var(--space-sm);">${memory.title || memory.filename || 'Untitled Memory'}</h3>
+                        <p class="text-sm text-secondary" style="margin-bottom: var(--space-md); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                            ${memory.preview || 'No preview available'}
+                        </p>
+                        <div class="flex justify-end" style="gap: var(--space-xs);">
+                            <button class="btn btn-secondary btn-sm" onclick="memoryManager.viewMemory('${memory.id}')">👁️ View</button>
+                            <button class="btn btn-primary btn-sm" onclick="memoryManager.editMemory('${memory.id}')">✏️ Edit</button>
+                            <button class="btn btn-error btn-sm" onclick="memoryManager.deleteMemory('${memory.id}')">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            renderMemoryListItem(memory) {
+                const isSelected = this.selectedMemories.has(memory.id);
+                return `
+                    <div class="card glass memory-item animate-fade-in" data-id="${memory.id}">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center" style="gap: var(--space-md);">
+                                <input type="checkbox" ${isSelected ? 'checked' : ''} 
+                                       onchange="memoryManager.toggleMemorySelection('${memory.id}')"
+                                       style="transform: scale(1.2);">
+                                <div class="text-2xl">${this.getMemoryIcon(memory.type)}</div>
+                                <div>
+                                    <h3 class="font-semibold">${memory.title || memory.filename || 'Untitled Memory'}</h3>
+                                    <div class="text-sm text-secondary">${memory.type} • ${this.formatDate(memory.created_at)} • ${this.formatFileSize(memory.size || 0)}</div>
+                                </div>
+                            </div>
+                            <div class="flex" style="gap: var(--space-xs);">
+                                <button class="btn btn-secondary btn-sm" onclick="memoryManager.viewMemory('${memory.id}')">👁️</button>
+                                <button class="btn btn-primary btn-sm" onclick="memoryManager.editMemory('${memory.id}')">✏️</button>
+                                <button class="btn btn-error btn-sm" onclick="memoryManager.deleteMemory('${memory.id}')">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            renderEmptyState(message = 'No memories found') {
+                const grid = document.getElementById('memoryGrid');
+                grid.className = 'grid';
+                grid.innerHTML = `
+                    <div class="card glass text-center animate-fade-in" style="padding: var(--space-3xl);">
+                        <div style="font-size: 4rem; margin-bottom: var(--space-lg); opacity: 0.5;">📭</div>
+                        <h3 class="text-xl font-semibold" style="margin-bottom: var(--space-md);">${message}</h3>
+                        <p class="text-secondary" style="margin-bottom: var(--space-lg);">Upload some memories to get started!</p>
+                        <a href="${window.location.origin}/memory/upload" class="btn btn-primary">📁 Upload Memories</a>
+                    </div>
+                `;
+            }
+            
+            attachMemoryEventListeners() {
+                // Double-click to view
+                document.querySelectorAll('.memory-item').forEach(item => {
+                    item.addEventListener('dblclick', () => {
+                        this.viewMemory(item.dataset.id);
+                    });
+                });
+            }
+            
+            toggleMemorySelection(memoryId) {
+                if (this.selectedMemories.has(memoryId)) {
+                    this.selectedMemories.delete(memoryId);
+                } else {
+                    this.selectedMemories.add(memoryId);
+                }
+                this.updateBulkActions();
+            }
+            
+            selectAllMemories() {
+                this.filteredMemories.forEach(memory => {
+                    this.selectedMemories.add(memory.id);
+                });
+                this.renderMemories();
+                this.updateBulkActions();
+            }
+            
+            clearSelection() {
+                this.selectedMemories.clear();
+                this.renderMemories();
+                this.updateBulkActions();
+            }
+            
+            updateBulkActions() {
+                const bulkActions = document.getElementById('bulkActions');
+                const selectedCount = document.getElementById('selectedCount');
+                
+                if (this.selectedMemories.size > 0) {
+                    bulkActions.style.display = 'block';
+                    selectedCount.textContent = `${this.selectedMemories.size} selected`;
+                } else {
+                    bulkActions.style.display = 'none';
+                }
+            }
+            
+            async viewMemory(memoryId) {
+                try {
+                    const response = await fetch(`/api/memory/${memoryId}`);
+                    if (response.ok) {
+                        const memory = await response.json();
+                        this.currentMemory = memory;
+                        
+                        document.getElementById('modalTitle').textContent = memory.title || memory.filename || 'Memory Details';
+                        document.getElementById('modalContent').innerHTML = this.renderMemoryContent(memory);
+                        document.getElementById('memoryModal').classList.add('active');
+                    } else {
+                        throw new Error('Failed to load memory');
+                    }
+                } catch (error) {
+                    console.error('Error loading memory:', error);
+                    window.modernUI?.showNotification('Failed to load memory details', 'error');
+                }
+            }
+            
+            renderMemoryContent(memory) {
+                let content = `
+                    <div class="grid grid-cols-2" style="gap: var(--space-lg); margin-bottom: var(--space-lg);">
+                        <div>
+                            <strong>Type:</strong> ${this.getMemoryIcon(memory.type)} ${memory.type}
+                        </div>
+                        <div>
+                            <strong>Size:</strong> ${this.formatFileSize(memory.size || 0)}
+                        </div>
+                        <div>
+                            <strong>Created:</strong> ${this.formatDate(memory.created_at)}
+                        </div>
+                        <div>
+                            <strong>Privacy:</strong> ${memory.privacy_level || 'Private'}
+                        </div>
+                    </div>
+                `;
+                
+                if (memory.content) {
+                    content += `
+                        <div style="margin-top: var(--space-lg);">
+                            <strong>Content:</strong>
+                            <div class="card glass" style="margin-top: var(--space-sm); padding: var(--space-md); white-space: pre-wrap; max-height: 400px; overflow-y: auto;">
+                                ${memory.content}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                return content;
+            }
+            
+            editMemory(memoryId) {
+                // TODO: Implement edit functionality
+                window.modernUI?.showNotification('Edit functionality coming soon!', 'info');
+            }
+            
+            editCurrentMemory() {
+                if (this.currentMemory) {
+                    this.editMemory(this.currentMemory.id);
+                }
+            }
+            
+            async deleteMemory(memoryId) {
+                if (!confirm('Are you sure you want to delete this memory? This action cannot be undone.')) {
+                    return;
+                }
+                
+                try {
+                    const response = await fetch(`/api/memory/${memoryId}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (response.ok) {
+                        this.memories = this.memories.filter(m => m.id !== memoryId);
+                        this.filteredMemories = this.filteredMemories.filter(m => m.id !== memoryId);
+                        this.selectedMemories.delete(memoryId);
+                        
+                        this.updateStats();
+                        this.renderMemories();
+                        this.updateBulkActions();
+                        
+                        window.modernUI?.showNotification('Memory deleted successfully', 'success');
+                    } else {
+                        throw new Error('Failed to delete memory');
+                    }
+                } catch (error) {
+                    console.error('Error deleting memory:', error);
+                    window.modernUI?.showNotification('Failed to delete memory', 'error');
+                }
+            }
+            
+            deleteCurrentMemory() {
+                if (this.currentMemory) {
+                    this.closeModal();
+                    this.deleteMemory(this.currentMemory.id);
+                }
+            }
+            
+            async bulkDeleteMemories() {
+                if (this.selectedMemories.size === 0) return;
+                
+                if (!confirm(`Are you sure you want to delete ${this.selectedMemories.size} memories? This action cannot be undone.`)) {
+                    return;
+                }
+                
+                const deletePromises = Array.from(this.selectedMemories).map(id => 
+                    fetch(`/api/memory/${id}`, { method: 'DELETE' })
+                );
+                
+                try {
+                    const results = await Promise.allSettled(deletePromises);
+                    const successCount = results.filter(r => r.status === 'fulfilled' && r.value.ok).length;
+                    const errorCount = results.length - successCount;
+                    
+                    // Remove successful deletions from local data
+                    this.memories = this.memories.filter(m => !this.selectedMemories.has(m.id));
+                    this.filteredMemories = this.filteredMemories.filter(m => !this.selectedMemories.has(m.id));
+                    this.selectedMemories.clear();
+                    
+                    this.updateStats();
+                    this.renderMemories();
+                    this.updateBulkActions();
+                    
+                    if (successCount > 0) {
+                        window.modernUI?.showNotification(`Successfully deleted ${successCount} memories`, 'success');
+                    }
+                    if (errorCount > 0) {
+                        window.modernUI?.showNotification(`Failed to delete ${errorCount} memories`, 'error');
+                    }
+                } catch (error) {
+                    console.error('Error bulk deleting memories:', error);
+                    window.modernUI?.showNotification('Failed to delete memories', 'error');
+                }
+            }
+            
+            bulkExportMemories() {
+                if (this.selectedMemories.size === 0) return;
+                
+                // TODO: Implement bulk export functionality
+                window.modernUI?.showNotification('Export functionality coming soon!', 'info');
+            }
+            
+            closeModal() {
+                document.getElementById('memoryModal').classList.remove('active');
+                this.currentMemory = null;
+            }
+            
+            getMemoryIcon(type) {
+                const icons = {
+                    'text': '📝',
+                    'audio': '🎵',
+                    'image': '🖼️',
+                    'video': '🎥',
+                    'document': '📄',
+                    'archive': '📦'
+                };
+                return icons[type] || '📁';
+            }
+            
+            formatDate(dateString) {
+                const date = new Date(dateString);
+                const now = new Date();
+                const diffTime = Math.abs(now - date);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                if (diffDays === 1) return 'Today';
+                if (diffDays === 2) return 'Yesterday';
+                if (diffDays <= 7) return `${diffDays} days ago`;
+                
+                return date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+            }
+            
+            formatFileSize(bytes) {
+                if (bytes === 0) return '0 B';
+                const k = 1024;
+                const sizes = ['B', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+        }
+        
+        // Initialize memory manager when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            window.memoryManager = new ModernMemoryManager();
+        });
+    </script>
+
+    <style>
+        .memory-item {
+            transition: all var(--transition-normal);
+        }
+        
+        .memory-item:hover {
+            transform: translateY(-4px);
+        }
+        
+        .memory-item input[type="checkbox"] {
+            accent-color: #667eea;
+        }
+        
+        #bulkActions {
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+        }
+        
+        /* Enhanced Responsive Design */
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1600px;
+            }
+            
+            .grid-cols-auto {
+                grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            }
+        }
+        
+        @media (min-width: 768px) and (max-width: 1199px) {
+            .container {
+                padding: var(--space-xl);
+            }
+            
+            .grid-cols-auto {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+            
+            .grid-cols-2 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .memory-card {
+                padding: var(--space-lg);
+            }
+        }
+        
+        @media (max-width: 767px) {
+            .container {
+                padding: var(--space-lg);
+                margin: 0 var(--space-sm);
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                gap: var(--space-sm);
+                padding: var(--space-sm) var(--space-md);
+            }
+            
+            .nav-links {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: var(--space-sm);
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .nav-link {
+                padding: var(--space-xs) var(--space-sm);
+                font-size: 0.875rem;
+            }
+            
+            .flex {
+                flex-direction: column;
+                align-items: stretch !important;
+            }
+            
+            .grid-cols-auto,
+            .grid-cols-2 {
+                grid-template-columns: 1fr;
+                gap: var(--space-md);
+            }
+            
+            .stats-mobile {
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--space-sm);
+            }
+            
+            .text-5xl {
+                font-size: 2rem;
+            }
+            
+            .text-xl {
+                font-size: 1.125rem;
+            }
+            
+            .btn {
+                width: 100%;
+                min-height: 48px;
+                justify-content: center;
+            }
+            
+            .btn-sm {
+                width: auto;
+                min-height: 40px;
+                padding: var(--space-sm) var(--space-md);
+            }
+            
+            .input-group {
+                margin: 0;
+                width: 100%;
+                margin-bottom: var(--space-md);
+            }
+            
+            .card {
+                padding: var(--space-lg);
+                margin-bottom: var(--space-md);
+            }
+            
+            .memory-item {
+                padding: var(--space-md);
+            }
+            
+            .memory-actions-mobile {
+                flex-direction: column;
+                gap: var(--space-xs);
+                width: 100%;
+                margin-top: var(--space-md);
+            }
+            
+            .memory-actions-mobile .btn {
+                width: 100%;
+                margin: 0;
+            }
+            
+            .filter-buttons-mobile {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--space-xs);
+            }
+            
+            .filter-btn-mobile {
+                font-size: 0.75rem;
+                padding: var(--space-sm);
+            }
+            
+            #bulkActions {
+                position: relative;
+                bottom: auto;
+                left: auto;
+                transform: none;
+                margin-top: var(--space-lg);
+                width: 100%;
+            }
+            
+            .bulk-actions-mobile .flex {
+                flex-direction: column;
+                gap: var(--space-sm);
+            }
+            
+            .bulk-actions-mobile .btn {
+                width: 100%;
+            }
+            
+            .modal-content {
+                width: 95%;
+                max-width: none;
+                margin: 5% auto;
+                padding: var(--space-lg);
+                max-height: 90vh;
+            }
+            
+            .search-mobile {
+                width: 100%;
+                margin-bottom: var(--space-md);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: var(--space-md);
+                margin: 0;
+            }
+            
+            .nav-container {
+                padding: var(--space-xs) var(--space-sm);
+            }
+            
+            .stats-mobile {
+                grid-template-columns: 1fr;
+            }
+            
+            .text-5xl {
+                font-size: 1.75rem;
+            }
+            
+            .card {
+                padding: var(--space-md);
+            }
+            
+            .btn {
+                font-size: 0.875rem;
+                padding: var(--space-sm) var(--space-md);
+            }
+            
+            .filter-buttons-mobile {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                margin: 2% auto;
+                padding: var(--space-md);
+            }
+        }
+        
+        /* Tablet Portrait Optimizations */
+        @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+            .container {
+                max-width: 100%;
+                padding: var(--space-xl);
+            }
+            
+            .grid-cols-auto {
+                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            }
+            
+            .btn {
+                min-height: 48px;
+            }
+            
+            .memory-card {
+                padding: var(--space-xl);
+            }
+        }
+        
+        /* Touch Device Optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .memory-item:hover {
+                transform: none;
+            }
+            
+            .btn:hover {
+                transform: none;
+            }
+            
+            .card:hover {
+                transform: none;
+            }
+            
+            .memory-item:active {
+                transform: scale(0.98);
+            }
+            
+            .btn:active {
+                transform: scale(0.95);
+            }
+            
+            .btn {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
+        
+        /* Landscape Mobile Optimizations */
+        @media (max-width: 767px) and (orientation: landscape) {
+            .nav-container {
+                flex-direction: row;
+                padding: var(--space-xs) var(--space-md);
+            }
+            
+            .nav-links {
+                flex-direction: row;
+                gap: var(--space-sm);
+            }
+            
+            .container {
+                padding: var(--space-md);
+            }
+            
+            .stats-mobile {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .modal-content {
+                max-height: 85vh;
+                margin: 2% auto;
+            }
+        }
+        
+        /* High DPI Optimizations */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .memory-item {
+                border-width: 0.5px;
+            }
+            
+            .btn {
+                border-width: 0.5px;
+            }
+        }
+    </style>
+</body>
+</html>

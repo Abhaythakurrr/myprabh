@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Memories - My Prabh</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modern-ui.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/genz-theme.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="{{ url_for('static', filename='js/modern-ui.js') }}"></script>
+</head>
+<body>
+    <!-- Modern Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="{{ url_for('dashboard') }}" class="nav-logo">My Prabh</a>
+            <div class="nav-links">
+                <a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a>
+                <a href="{{ url_for('memory_manage') }}" class="nav-link">Manage Memories</a>
+                <div class="theme-toggle" title="Toggle theme"></div>
+                <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main style="padding-top: 80px; min-height: 100vh;">
+        <div class="container" style="max-width: 1200px; margin: 0 auto; padding: var(--space-2xl);">
+            
+            <!-- Header Section -->
+            <div class="text-center animate-fade-in" style="margin-bottom: var(--space-3xl);">
+                <h1 class="text-5xl font-bold" style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: var(--space-md);">
+                    Upload Your Memories
+                </h1>
+                <p class="text-xl text-secondary" style="max-width: 600px; margin: 0 auto;">
+                    Share your photos, documents, voice notes, and more to create a deeply personalized AI companion that truly understands you
+                </p>
+            </div>
+
+            <!-- Stats Dashboard -->
+            <div class="grid grid-cols-auto animate-scale-in" style="margin-bottom: var(--space-3xl);">
+                <div class="card glass">
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-primary" id="totalMemories">0</div>
+                        <div class="text-sm text-secondary">Total Memories</div>
+                    </div>
+                </div>
+                <div class="card glass">
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-accent" id="storageUsed">0 MB</div>
+                        <div class="text-sm text-secondary">Storage Used</div>
+                    </div>
+                </div>
+                <div class="card glass">
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-warning" id="processingQueue">0</div>
+                        <div class="text-sm text-secondary">Processing</div>
+                    </div>
+                </div>
+                <div class="card glass">
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-success" id="completedToday">0</div>
+                        <div class="text-sm text-secondary">Uploaded Today</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Companion Selection -->
+            <div class="card glass animate-slide-in" style="margin-bottom: var(--space-2xl);">
+                <h3 class="text-xl font-semibold" style="margin-bottom: var(--space-md);">Choose Your AI Companion</h3>
+                <div class="input-group">
+                    <select id="companionSelect" class="input" required>
+                        <option value="">Select a companion...</option>
+                        {% for prabh in user_prabhs %}
+                        <option value="{{ prabh.id }}">{{ prabh.prabh_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <label class="input-label">AI Companion</label>
+                </div>
+                <div class="flex items-center" style="gap: var(--space-sm); margin-top: var(--space-md); padding: var(--space-md); background: rgba(67, 233, 123, 0.1); border-radius: var(--radius-md);">
+                    <span style="color: #43e97b;">🔒</span>
+                    <p class="text-sm text-secondary">Your memories are encrypted and only accessible by your selected companion</p>
+                </div>
+            </div>
+
+            <!-- Upload Zone -->
+            <div class="card glass-strong animate-slide-in" style="margin-bottom: var(--space-2xl);">
+                <div id="uploadZone" class="upload-zone" style="text-align: center; padding: var(--space-3xl); cursor: pointer; transition: all var(--transition-normal); border: 2px dashed var(--glass-border); border-radius: var(--radius-xl);">
+                    <div class="animate-float" style="font-size: 4rem; margin-bottom: var(--space-lg); opacity: 0.8;">📁</div>
+                    <h3 class="text-2xl font-semibold" style="margin-bottom: var(--space-md);">Drop files here or click to browse</h3>
+                    <p class="text-lg text-secondary" style="margin-bottom: var(--space-sm);">Supports photos, documents, audio files, videos, and more</p>
+                    <p class="text-sm text-secondary">Maximum file size: 50MB per file • Batch upload supported</p>
+                    <input type="file" id="fileInput" multiple accept="*/*" style="display: none;">
+                    
+                    <!-- Supported file types -->
+                    <div class="flex justify-center items-center" style="gap: var(--space-md); margin-top: var(--space-lg); flex-wrap: wrap;">
+                        <span class="tooltip" data-tooltip="Images: JPG, PNG, GIF, WebP" style="font-size: 1.5rem;">🖼️</span>
+                        <span class="tooltip" data-tooltip="Audio: MP3, WAV, M4A, OGG" style="font-size: 1.5rem;">🎵</span>
+                        <span class="tooltip" data-tooltip="Video: MP4, MOV, AVI, WebM" style="font-size: 1.5rem;">🎥</span>
+                        <span class="tooltip" data-tooltip="Documents: PDF, DOC, TXT, MD" style="font-size: 1.5rem;">📄</span>
+                        <span class="tooltip" data-tooltip="Archives: ZIP, RAR, 7Z" style="font-size: 1.5rem;">📦</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Memory Settings -->
+            <div class="card glass animate-fade-in" style="margin-bottom: var(--space-2xl);">
+                <h3 class="text-xl font-semibold" style="margin-bottom: var(--space-lg);">Memory Settings</h3>
+                <div class="grid grid-cols-2" style="gap: var(--space-lg);">
+                    <div class="input-group">
+                        <select id="retentionPolicy" class="input">
+                            <option value="long_term">Long-term (Permanent)</option>
+                            <option value="mid_term">Mid-term (1 year)</option>
+                            <option value="short_term">Short-term (30 days)</option>
+                        </select>
+                        <label class="input-label">Retention Policy</label>
+                    </div>
+                    <div class="input-group">
+                        <select id="privacyLevel" class="input">
+                            <option value="private">Private (Only you)</option>
+                            <option value="companion">Companion (This AI only)</option>
+                        </select>
+                        <label class="input-label">Privacy Level</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- File List -->
+            <div id="fileList" class="card glass animate-fade-in" style="display: none; margin-bottom: var(--space-2xl);">
+                <div class="flex justify-between items-center" style="margin-bottom: var(--space-lg);">
+                    <h3 class="text-xl font-semibold">Upload Queue</h3>
+                    <div class="flex" style="gap: var(--space-sm);">
+                        <button class="btn btn-secondary btn-sm" id="clearAllBtn">Clear All</button>
+                        <button class="btn btn-primary btn-sm" id="selectAllBtn">Select All</button>
+                    </div>
+                </div>
+                <div id="fileItems" class="grid" style="gap: var(--space-md);"></div>
+            </div>
+
+            <!-- Upload Actions -->
+            <div class="text-center animate-scale-in">
+                <button class="btn btn-primary" id="uploadBtn" disabled style="padding: var(--space-lg) var(--space-2xl); font-size: 1.1rem;">
+                    <span class="btn-text">🚀 Upload Selected Files</span>
+                    <span class="btn-loading" style="display: none;">
+                        <div class="loading"></div>
+                        Processing...
+                    </span>
+                </button>
+                <p class="text-sm text-secondary" style="margin-top: var(--space-md);">
+                    Files are processed securely and encrypted. You maintain full control over your data.
+                </p>
+            </div>
+
+            <!-- Processing Status -->
+            <div id="processingStatus" class="card glass" style="display: none; margin-top: var(--space-2xl);">
+                <h3 class="text-lg font-semibold" style="margin-bottom: var(--space-md);">Processing Status</h3>
+                <div id="processingItems"></div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        class ModernMemoryUploader {
+            constructor() {
+                this.files = [];
+                this.selectedFiles = new Set();
+                this.uploadZone = document.getElementById('uploadZone');
+                this.fileInput = document.getElementById('fileInput');
+                this.fileList = document.getElementById('fileList');
+                this.fileItems = document.getElementById('fileItems');
+                this.uploadBtn = document.getElementById('uploadBtn');
+                this.companionSelect = document.getElementById('companionSelect');
+                this.processingStatus = document.getElementById('processingStatus');
+                this.processingItems = document.getElementById('processingItems');
+                
+                this.initEventListeners();
+                this.loadStats();
+                this.startStatsPolling();
+            }
+            
+            initEventListeners() {
+                // Upload zone interactions
+                this.uploadZone.addEventListener('click', () => this.fileInput.click());
+                this.fileInput.addEventListener('change', (e) => this.handleFiles(Array.from(e.target.files)));
+                
+                // Drag and drop with modern effects
+                this.uploadZone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    this.uploadZone.style.borderColor = '#667eea';
+                    this.uploadZone.style.background = 'rgba(102, 126, 234, 0.1)';
+                    this.uploadZone.style.transform = 'scale(1.02)';
+                });
+                
+                this.uploadZone.addEventListener('dragleave', () => {
+                    this.uploadZone.style.borderColor = 'var(--glass-border)';
+                    this.uploadZone.style.background = 'transparent';
+                    this.uploadZone.style.transform = 'scale(1)';
+                });
+                
+                this.uploadZone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    this.uploadZone.style.borderColor = 'var(--glass-border)';
+                    this.uploadZone.style.background = 'transparent';
+                    this.uploadZone.style.transform = 'scale(1)';
+                    this.handleFiles(Array.from(e.dataTransfer.files));
+                });
+                
+                // Action buttons
+                this.uploadBtn.addEventListener('click', () => this.uploadFiles());
+                this.companionSelect.addEventListener('change', () => this.updateUploadButton());
+                document.getElementById('clearAllBtn')?.addEventListener('click', () => this.clearAllFiles());
+                document.getElementById('selectAllBtn')?.addEventListener('click', () => this.selectAllFiles());
+            }
+            
+            handleFiles(newFiles) {
+                const validFiles = [];
+                
+                newFiles.forEach(file => {
+                    if (file.size > 50 * 1024 * 1024) {
+                        window.modernUI?.showNotification(`File ${file.name} is too large (max 50MB)`, 'error');
+                        return;
+                    }
+                    
+                    if (this.files.some(f => f.file.name === file.name && f.file.size === file.size)) {
+                        window.modernUI?.showNotification(`File ${file.name} already added`, 'warning');
+                        return;
+                    }
+                    
+                    const fileObj = {
+                        file: file,
+                        id: Date.now() + Math.random(),
+                        progress: 0,
+                        status: 'pending',
+                        selected: true
+                    };
+                    
+                    validFiles.push(fileObj);
+                    this.files.push(fileObj);
+                    this.selectedFiles.add(fileObj.id);
+                });
+                
+                if (validFiles.length > 0) {
+                    window.modernUI?.showNotification(`Added ${validFiles.length} file(s) to upload queue`, 'success');
+                    this.updateFileList();
+                    this.updateUploadButton();
+                }
+            }
+            
+            updateFileList() {
+                if (this.files.length === 0) {
+                    this.fileList.style.display = 'none';
+                    return;
+                }
+                
+                this.fileList.style.display = 'block';
+                this.fileItems.innerHTML = '';
+                
+                this.files.forEach((fileObj, index) => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'card glass-strong animate-scale-in';
+                    fileItem.style.animationDelay = `${index * 0.1}s`;
+                    
+                    fileItem.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center" style="gap: var(--space-md);">
+                                <input type="checkbox" ${fileObj.selected ? 'checked' : ''} 
+                                       onchange="uploader.toggleFileSelection('${fileObj.id}')"
+                                       style="transform: scale(1.2);">
+                                <div class="file-icon" style="font-size: 2rem;">${this.getFileIcon(fileObj.file.type)}</div>
+                                <div>
+                                    <div class="font-medium">${fileObj.file.name}</div>
+                                    <div class="text-sm text-secondary">${this.formatFileSize(fileObj.file.size)} • ${this.getFileTypeLabel(fileObj.file.type)}</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center" style="gap: var(--space-md);">
+                                <div class="progress" style="width: 150px; display: ${fileObj.progress > 0 ? 'block' : 'none'};">
+                                    <div class="progress-bar" style="width: ${fileObj.progress}%;"></div>
+                                </div>
+                                <div class="status-badge ${fileObj.status}" style="padding: var(--space-xs) var(--space-sm); border-radius: var(--radius-md); font-size: 0.75rem; font-weight: 600;">
+                                    ${this.getStatusLabel(fileObj.status)}
+                                </div>
+                                <button class="btn btn-error btn-sm" onclick="uploader.removeFile('${fileObj.id}')" 
+                                        style="padding: var(--space-xs);">
+                                    ✕
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    this.fileItems.appendChild(fileItem);
+                });
+            }
+            
+            toggleFileSelection(fileId) {
+                const fileObj = this.files.find(f => f.id == fileId);
+                if (fileObj) {
+                    fileObj.selected = !fileObj.selected;
+                    if (fileObj.selected) {
+                        this.selectedFiles.add(fileId);
+                    } else {
+                        this.selectedFiles.delete(fileId);
+                    }
+                    this.updateUploadButton();
+                }
+            }
+            
+            selectAllFiles() {
+                this.files.forEach(fileObj => {
+                    fileObj.selected = true;
+                    this.selectedFiles.add(fileObj.id);
+                });
+                this.updateFileList();
+                this.updateUploadButton();
+            }
+            
+            clearAllFiles() {
+                this.files = [];
+                this.selectedFiles.clear();
+                this.updateFileList();
+                this.updateUploadButton();
+                window.modernUI?.showNotification('Upload queue cleared', 'info');
+            }
+            
+            removeFile(fileId) {
+                this.files = this.files.filter(f => f.id != fileId);
+                this.selectedFiles.delete(fileId);
+                this.updateFileList();
+                this.updateUploadButton();
+            }
+            
+            updateUploadButton() {
+                const selectedCount = this.selectedFiles.size;
+                const hasCompanion = this.companionSelect.value !== '';
+                this.uploadBtn.disabled = selectedCount === 0 || !hasCompanion;
+                this.uploadBtn.querySelector('.btn-text').textContent = 
+                    selectedCount > 0 ? `🚀 Upload ${selectedCount} File(s)` : '🚀 Upload Selected Files';
+            }
+            
+            async uploadFiles() {
+                if (!this.companionSelect.value) {
+                    window.modernUI?.showNotification('Please select a companion first', 'error');
+                    return;
+                }
+                
+                const selectedFiles = this.files.filter(f => f.selected);
+                if (selectedFiles.length === 0) return;
+                
+                this.setUploadingState(true);
+                this.showProcessingStatus();
+                
+                let successCount = 0;
+                let errorCount = 0;
+                
+                for (let fileObj of selectedFiles) {
+                    try {
+                        await this.uploadSingleFile(fileObj);
+                        successCount++;
+                    } catch (error) {
+                        errorCount++;
+                        console.error('Upload error:', error);
+                    }
+                }
+                
+                // Show results
+                if (successCount > 0) {
+                    window.modernUI?.showNotification(`Successfully uploaded ${successCount} file(s)!`, 'success');
+                }
+                if (errorCount > 0) {
+                    window.modernUI?.showNotification(`Failed to upload ${errorCount} file(s)`, 'error');
+                }
+                
+                // Clean up completed files
+                this.files = this.files.filter(f => f.status !== 'completed');
+                this.selectedFiles.clear();
+                
+                this.updateFileList();
+                this.loadStats();
+                this.setUploadingState(false);
+                
+                if (this.files.length === 0) {
+                    this.hideProcessingStatus();
+                }
+            }
+            
+            async uploadSingleFile(fileObj) {
+                fileObj.status = 'uploading';
+                this.updateFileStatus(fileObj);
+                
+                const formData = new FormData();
+                formData.append('file', fileObj.file);
+                formData.append('file_type', fileObj.file.type);
+                formData.append('companion_id', this.companionSelect.value);
+                formData.append('retention_policy', document.getElementById('retentionPolicy').value);
+                formData.append('privacy_level', document.getElementById('privacyLevel').value);
+                formData.append('metadata', JSON.stringify({
+                    originalName: fileObj.file.name,
+                    size: fileObj.file.size,
+                    uploadedAt: new Date().toISOString()
+                }));
+                
+                try {
+                    const response = await fetch('/api/memory/upload', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        fileObj.progress = 100;
+                        fileObj.status = 'completed';
+                        this.updateFileStatus(fileObj);
+                        
+                        // Add to processing status
+                        this.addProcessingItem(fileObj);
+                    } else {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Upload failed');
+                    }
+                } catch (error) {
+                    fileObj.status = 'error';
+                    fileObj.error = error.message;
+                    this.updateFileStatus(fileObj);
+                    throw error;
+                }
+            }
+            
+            updateFileStatus(fileObj) {
+                const fileItems = this.fileItems.querySelectorAll('.card');
+                const index = this.files.indexOf(fileObj);
+                if (fileItems[index]) {
+                    const progressBar = fileItems[index].querySelector('.progress-bar');
+                    const statusBadge = fileItems[index].querySelector('.status-badge');
+                    const progressContainer = fileItems[index].querySelector('.progress');
+                    
+                    if (progressBar) {
+                        progressBar.style.width = `${fileObj.progress}%`;
+                    }
+                    if (progressContainer) {
+                        progressContainer.style.display = fileObj.progress > 0 ? 'block' : 'none';
+                    }
+                    if (statusBadge) {
+                        statusBadge.textContent = this.getStatusLabel(fileObj.status);
+                        statusBadge.className = `status-badge ${fileObj.status}`;
+                    }
+                }
+            }
+            
+            showProcessingStatus() {
+                this.processingStatus.style.display = 'block';
+                this.processingItems.innerHTML = '';
+            }
+            
+            hideProcessingStatus() {
+                setTimeout(() => {
+                    this.processingStatus.style.display = 'none';
+                }, 2000);
+            }
+            
+            addProcessingItem(fileObj) {
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between p-3 glass border-radius-md animate-fade-in';
+                item.innerHTML = `
+                    <div class="flex items-center" style="gap: var(--space-md);">
+                        <div class="animate-pulse" style="color: #43e97b;">✓</div>
+                        <div>
+                            <div class="font-medium">${fileObj.file.name}</div>
+                            <div class="text-sm text-secondary">Processing for AI training...</div>
+                        </div>
+                    </div>
+                    <div class="text-sm text-success">Completed</div>
+                `;
+                this.processingItems.appendChild(item);
+            }
+            
+            setUploadingState(uploading) {
+                this.uploadBtn.disabled = uploading;
+                this.uploadBtn.querySelector('.btn-text').style.display = uploading ? 'none' : 'inline';
+                this.uploadBtn.querySelector('.btn-loading').style.display = uploading ? 'inline-flex' : 'none';
+            }
+            
+            async loadStats() {
+                try {
+                    const response = await fetch('/api/memory/stats');
+                    if (response.ok) {
+                        const stats = await response.json();
+                        this.updateStatsDisplay(stats);
+                    }
+                } catch (error) {
+                    console.error('Failed to load stats:', error);
+                }
+            }
+            
+            updateStatsDisplay(stats) {
+                document.getElementById('totalMemories').textContent = stats.total_memories || 0;
+                document.getElementById('storageUsed').textContent = this.formatFileSize(stats.storage_used || 0);
+                document.getElementById('processingQueue').textContent = stats.processing_queue || 0;
+                document.getElementById('completedToday').textContent = stats.completed_today || 0;
+            }
+            
+            startStatsPolling() {
+                setInterval(() => this.loadStats(), 30000); // Update every 30 seconds
+            }
+            
+            getFileIcon(mimeType) {
+                if (mimeType.startsWith('image/')) return '🖼️';
+                if (mimeType.startsWith('audio/')) return '🎵';
+                if (mimeType.startsWith('video/')) return '🎥';
+                if (mimeType.includes('pdf')) return '📄';
+                if (mimeType.includes('text')) return '📝';
+                if (mimeType.includes('zip') || mimeType.includes('rar')) return '📦';
+                return '📁';
+            }
+            
+            getFileTypeLabel(mimeType) {
+                if (mimeType.startsWith('image/')) return 'Image';
+                if (mimeType.startsWith('audio/')) return 'Audio';
+                if (mimeType.startsWith('video/')) return 'Video';
+                if (mimeType.includes('pdf')) return 'PDF';
+                if (mimeType.includes('text')) return 'Text';
+                if (mimeType.includes('zip')) return 'Archive';
+                return 'File';
+            }
+            
+            getStatusLabel(status) {
+                const labels = {
+                    'pending': 'Pending',
+                    'uploading': 'Uploading...',
+                    'completed': 'Completed',
+                    'error': 'Error',
+                    'processing': 'Processing...'
+                };
+                return labels[status] || status;
+            }
+            
+            formatFileSize(bytes) {
+                if (bytes === 0) return '0 B';
+                const k = 1024;
+                const sizes = ['B', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+        }
+        
+        // Initialize uploader when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            window.uploader = new ModernMemoryUploader();
+        });
+    </script>
+
+    <style>
+        .status-badge.pending { background: rgba(102, 126, 234, 0.2); color: #667eea; }
+        .status-badge.uploading { background: rgba(250, 112, 154, 0.2); color: #fa709a; }
+        .status-badge.completed { background: rgba(67, 233, 123, 0.2); color: #43e97b; }
+        .status-badge.error { background: rgba(255, 107, 107, 0.2); color: #ff6b6b; }
+        .status-badge.processing { background: rgba(79, 172, 254, 0.2); color: #4facfe; }
+        
+        .upload-zone:hover {
+            border-color: #667eea !important;
+            background: rgba(102, 126, 234, 0.05) !important;
+            transform: translateY(-2px) !important;
+        }
+        
+        .container {
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        /* Enhanced Responsive Design */
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1400px;
+            }
+            
+            .grid-cols-auto {
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            }
+        }
+        
+        @media (min-width: 768px) and (max-width: 1199px) {
+            .container {
+                padding: var(--space-xl);
+            }
+            
+            .grid-cols-auto {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+            
+            .grid-cols-2 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .upload-zone {
+                padding: var(--space-2xl);
+            }
+        }
+        
+        @media (max-width: 767px) {
+            .container {
+                padding: var(--space-lg);
+                margin: 0 var(--space-sm);
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                gap: var(--space-sm);
+                padding: var(--space-sm) var(--space-md);
+            }
+            
+            .nav-links {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: var(--space-sm);
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .nav-link {
+                padding: var(--space-xs) var(--space-sm);
+                font-size: 0.875rem;
+            }
+            
+            .grid-cols-auto,
+            .grid-cols-2 {
+                grid-template-columns: 1fr;
+                gap: var(--space-md);
+            }
+            
+            .stats-mobile {
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--space-sm);
+            }
+            
+            .text-5xl {
+                font-size: 2rem;
+            }
+            
+            .text-xl {
+                font-size: 1.125rem;
+            }
+            
+            .upload-zone {
+                padding: var(--space-xl) var(--space-md);
+            }
+            
+            .upload-zone .animate-float {
+                font-size: 3rem;
+            }
+            
+            .flex {
+                flex-direction: column;
+                align-items: stretch !important;
+            }
+            
+            .btn {
+                width: 100%;
+                min-height: 48px;
+                justify-content: center;
+            }
+            
+            .btn-sm {
+                width: auto;
+                min-height: 40px;
+                padding: var(--space-sm) var(--space-md);
+            }
+            
+            .input-group {
+                margin: 0;
+                width: 100%;
+            }
+            
+            .card {
+                padding: var(--space-lg);
+                margin-bottom: var(--space-md);
+            }
+            
+            .file-item-mobile {
+                flex-direction: column;
+                align-items: stretch;
+                gap: var(--space-md);
+            }
+            
+            .file-actions-mobile {
+                flex-direction: row;
+                justify-content: space-between;
+                width: 100%;
+            }
+            
+            .file-actions-mobile .btn {
+                flex: 1;
+                margin: 0 var(--space-xs);
+            }
+            
+            .processing-status-mobile {
+                margin-top: var(--space-lg);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: var(--space-md);
+                margin: 0;
+            }
+            
+            .nav-container {
+                padding: var(--space-xs) var(--space-sm);
+            }
+            
+            .stats-mobile {
+                grid-template-columns: 1fr;
+            }
+            
+            .text-5xl {
+                font-size: 1.75rem;
+            }
+            
+            .upload-zone {
+                padding: var(--space-lg) var(--space-sm);
+            }
+            
+            .card {
+                padding: var(--space-md);
+            }
+            
+            .btn {
+                font-size: 0.875rem;
+                padding: var(--space-sm) var(--space-md);
+            }
+        }
+        
+        /* Tablet Portrait Optimizations */
+        @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+            .container {
+                max-width: 100%;
+                padding: var(--space-xl);
+            }
+            
+            .grid-cols-auto {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+            
+            .btn {
+                min-height: 48px;
+            }
+        }
+        
+        /* Touch Device Optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .btn:hover {
+                transform: none;
+            }
+            
+            .card:hover {
+                transform: none;
+            }
+            
+            .btn:active {
+                transform: scale(0.95);
+            }
+            
+            .upload-zone:hover {
+                transform: none !important;
+            }
+            
+            .upload-zone:active {
+                transform: scale(0.98) !important;
+            }
+            
+            .btn {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
+        
+        /* Landscape Mobile Optimizations */
+        @media (max-width: 767px) and (orientation: landscape) {
+            .nav-container {
+                flex-direction: row;
+                padding: var(--space-xs) var(--space-md);
+            }
+            
+            .nav-links {
+                flex-direction: row;
+                gap: var(--space-sm);
+            }
+            
+            .container {
+                padding: var(--space-md);
+            }
+            
+            .stats-mobile {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</body>
+</html>

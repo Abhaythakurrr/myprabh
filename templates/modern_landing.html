@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyPrabh - AI Companions with Memory & Soul</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modern-ui.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    
+    <!-- Modern Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-content">
+            <a href="/" class="logo">
+                <i class="fas fa-heart"></i> MyPrabh
+            </a>
+            <div class="nav-links">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#how-it-works" class="nav-link">How It Works</a>
+                <a href="#pricing" class="nav-link">Pricing</a>
+                <a href="/login" class="btn btn-ghost">Login</a>
+                <a href="/register" class="btn btn-primary">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <canvas id="particles-canvas" class="particles-container"></canvas>
+        <div class="hero-bg"></div>
+        <div class="floating-elements">
+            <div class="floating-element">💖</div>
+            <div class="floating-element">🌟</div>
+            <div class="floating-element">✨</div>
+            <div class="floating-element">💫</div>
+        </div>
+        
+        <div class="hero-content" data-animate="fade-in">
+            <h1 class="hero-title">
+                AI Companions with
+                <span style="background: var(--gradient-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Memory & Soul</span>
+            </h1>
+            <p class="hero-subtitle">
+                Create deeply personalized AI companions that remember your stories, understand your emotions, 
+                and grow with you through every conversation.
+            </p>
+            <div class="hero-cta">
+                <a href="/register" class="btn btn-accent btn-lg">
+                    <i class="fas fa-rocket"></i>
+                    Start Your Journey
+                </a>
+                <a href="#demo" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-play"></i>
+                    Watch Demo
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16" data-animate="slide-up">
+                <h2 class="text-4xl font-bold mb-4">Revolutionary AI Technology</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Experience the future of AI companionship with memory-driven personalization, 
+                    emotional intelligence, and cutting-edge technology.
+                </p>
+            </div>
+            
+            <div class="feature-grid">
+                <div class="feature-card" data-animate="scale-in" data-delay="100">
+                    <div class="feature-icon">🧠</div>
+                    <h3 class="feature-title">Memory-Driven AI</h3>
+                    <p class="feature-description">
+                        Upload your memories, photos, and voice notes. Your AI companion learns from your personal experiences 
+                        to create truly personalized conversations.
+                    </p>
+                </div>
+                
+                <div class="feature-card" data-animate="scale-in" data-delay="200">
+                    <div class="feature-icon">💝</div>
+                    <h3 class="feature-title">Emotional Intelligence</h3>
+                    <p class="feature-description">
+                        Advanced emotion detection and empathetic responses. Your companion understands your feelings 
+                        and provides appropriate emotional support.
+                    </p>
+                </div>
+                
+                <div class="feature-card" data-animate="scale-in" data-delay="300">
+                    <div class="feature-icon">🎭</div>
+                    <h3 class="feature-title">Dynamic Personalities</h3>
+                    <p class="feature-description">
+                        Each companion develops unique personality traits based on your interactions and memories, 
+                        creating authentic and evolving relationships.
+                    </p>
+                </div>
+                
+                <div class="feature-card" data-animate="scale-in" data-delay="400">
+                    <div class="feature-icon">🔒</div>
+                    <h3 class="feature-title">Privacy First</h3>
+                    <p class="feature-description">
+                        Your data is encrypted and isolated. Complete control over your memories with granular privacy settings 
+                        and secure data export.
+                    </p>
+                </div>
+                
+                <div class="feature-card" data-animate="scale-in" data-delay="500">
+                    <div class="feature-icon">🎙️</div>
+                    <h3 class="feature-title">Voice & Multimodal</h3>
+                    <p class="feature-description">
+                        Voice conversations, image understanding, and multimodal interactions. 
+                        Communicate naturally through text, voice, and visual memories.
+                    </p>
+                </div>
+                
+                <div class="feature-card" data-animate="scale-in" data-delay="600">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">Real-time Learning</h3>
+                    <p class="feature-description">
+                        Advanced LoRA adapters and real-time personalization. Your companion continuously learns 
+                        and adapts to provide better conversations.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="py-20">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16" data-animate="slide-up">
+                <h2 class="text-4xl font-bold mb-4">How It Works</h2>
+                <p class="text-xl text-gray-600">Simple steps to create your perfect AI companion</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <div class="text-center" data-animate="slide-up" data-delay="100">
+                    <div class="w-20 h-20 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-upload text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">1. Upload Memories</h3>
+                    <p class="text-gray-600">Share your photos, voice notes, and personal stories to train your AI companion.</p>
+                </div>
+                
+                <div class="text-center" data-animate="slide-up" data-delay="200">
+                    <div class="w-20 h-20 bg-gradient-secondary rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-brain text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">2. AI Learning</h3>
+                    <p class="text-gray-600">Advanced AI processes your memories to understand your personality and preferences.</p>
+                </div>
+                
+                <div class="text-center" data-animate="slide-up" data-delay="300">
+                    <div class="w-20 h-20 bg-gradient-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-comments text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">3. Personalized Chats</h3>
+                    <p class="text-gray-600">Enjoy deeply personal conversations with your AI companion that truly knows you.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-white mb-4" data-animate="fade-in">
+                Trusted by Thousands
+            </h2>
+            <p class="text-xl text-gray-300 mb-8" data-animate="fade-in" data-delay="200">
+                Join the revolution in AI companionship
+            </p>
+            
+            <div class="stats-grid">
+                <div class="stat-item" data-animate="bounce-in" data-delay="100">
+                    <span class="stat-number" data-count="10000">0</span>
+                    <div class="stat-label">Active Users</div>
+                </div>
+                <div class="stat-item" data-animate="bounce-in" data-delay="200">
+                    <span class="stat-number" data-count="50000">0</span>
+                    <div class="stat-label">Memories Processed</div>
+                </div>
+                <div class="stat-item" data-animate="bounce-in" data-delay="300">
+                    <span class="stat-number" data-count="1000000">0</span>
+                    <div class="stat-label">Conversations</div>
+                </div>
+                <div class="stat-item" data-animate="bounce-in" data-delay="400">
+                    <span class="stat-number" data-count="99">0</span>
+                    <div class="stat-label">% Satisfaction</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container mx-auto px-4">
+            <h2 class="cta-title" data-animate="slide-up">
+                Ready to Meet Your Perfect AI Companion?
+            </h2>
+            <p class="cta-subtitle" data-animate="slide-up" data-delay="200">
+                Join thousands of users who have discovered the future of AI companionship. 
+                Create your personalized AI companion today.
+            </p>
+            <div class="flex justify-center gap-4" data-animate="bounce-in" data-delay="400">
+                <a href="/register" class="btn btn-primary btn-lg">
+                    <i class="fas fa-heart"></i>
+                    Create My Companion
+                </a>
+                <a href="/about" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-info-circle"></i>
+                    Learn More
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">
+                        <i class="fas fa-heart text-accent"></i> MyPrabh
+                    </h3>
+                    <p class="text-gray-400">
+                        Revolutionary AI companions with memory, emotion, and soul.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Product</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#features" class="hover:text-white transition-colors">Features</a></li>
+                        <li><a href="/pricing" class="hover:text-white transition-colors">Pricing</a></li>
+                        <li><a href="/about" class="hover:text-white transition-colors">About</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Support</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="/privacy" class="hover:text-white transition-colors">Privacy</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Help Center</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Connect</h4>
+                    <div class="flex gap-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-discord text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-github text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 MyPrabh. All rights reserved. Made with 💖 for meaningful AI connections.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/modern-ui.js') }}"></script>
+    <script>
+        // Initialize modern landing page
+        document.addEventListener('DOMContentLoaded', () => {
+            // Navbar scroll effect
+            window.addEventListener('scroll', () => {
+                const navbar = document.getElementById('navbar');
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+
+            // Counter animation
+            const counters = document.querySelectorAll('[data-count]');
+            const animateCounter = (counter) => {
+                const target = parseInt(counter.dataset.count);
+                const duration = 2000;
+                const step = target / (duration / 16);
+                let current = 0;
+
+                const timer = setInterval(() => {
+                    current += step;
+                    if (current >= target) {
+                        counter.textContent = target.toLocaleString();
+                        clearInterval(timer);
+                    } else {
+                        counter.textContent = Math.floor(current).toLocaleString();
+                    }
+                }, 16);
+            };
+
+            // Intersection observer for counters
+            const counterObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounter(entry.target);
+                        counterObserver.unobserve(entry.target);
+                    }
+                });
+            });
+
+            counters.forEach(counter => counterObserver.observe(counter));
+
+            // Smooth reveal animations
+            gsap.registerPlugin(ScrollTrigger);
+            
+            // Hero animations
+            const tl = gsap.timeline();
+            tl.from('.hero-title', { duration: 1.2, y: 100, opacity: 0, ease: "power3.out" })
+              .from('.hero-subtitle', { duration: 1, y: 50, opacity: 0, ease: "power2.out" }, "-=0.8")
+              .from('.hero-cta', { duration: 0.8, y: 30, opacity: 0, ease: "power2.out" }, "-=0.6");
+
+            // Feature cards stagger animation
+            gsap.from('.feature-card', {
+                duration: 0.8,
+                y: 100,
+                opacity: 0,
+                stagger: 0.1,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: '.feature-grid',
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
+                }
+            });
+
+            // Parallax effect for floating elements
+            gsap.to('.floating-element', {
+                y: -50,
+                duration: 3,
+                ease: "power1.inOut",
+                stagger: 0.2,
+                yoyo: true,
+                repeat: -1
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy & Data Controls - My Prabh</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/genz-theme.css') }}">
+    <style>
+        .privacy-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .privacy-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .privacy-header h1 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .privacy-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .privacy-section {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .privacy-section h3 {
+            color: var(--text-primary);
+            margin: 0 0 1.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .data-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .data-stat {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .data-stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .data-stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .data-stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .export-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .export-card {
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .export-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .export-card.selected {
+            border-color: var(--primary-color);
+            background: var(--primary-color-light);
+        }
+
+        .export-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .export-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .export-description {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .export-size {
+            font-size: 0.8rem;
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .privacy-controls {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .privacy-control {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+        }
+
+        .control-info h4 {
+            margin: 0 0 0.25rem 0;
+            color: var(--text-primary);
+        }
+
+        .control-info p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: var(--primary-color);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(26px);
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-danger {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .actions-section {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .success-message {
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
+            color: var(--success-color);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .error-message {
+            background: var(--error-bg);
+            border: 1px solid var(--error-border);
+            color: var(--error-color);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .export-progress {
+            display: none;
+            margin-top: 1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="privacy-container">
+        <div class="privacy-header">
+            <h1>🔒 Privacy & Data Controls</h1>
+            <p>Manage your personal data and privacy settings</p>
+        </div>
+
+        <div class="success-message" id="successMessage"></div>
+        <div class="error-message" id="errorMessage"></div>
+
+        <!-- Data Overview -->
+        <div class="privacy-section">
+            <h3>📊 Your Data Overview</h3>
+            <div class="data-overview" id="dataOverview">
+                <div class="data-stat">
+                    <div class="data-stat-icon">🧠</div>
+                    <div class="data-stat-value" id="totalMemories">-</div>
+                    <div class="data-stat-label">Total Memories</div>
+                </div>
+                <div class="data-stat">
+                    <div class="data-stat-icon">🤖</div>
+                    <div class="data-stat-value" id="totalCompanions">-</div>
+                    <div class="data-stat-label">AI Companions</div>
+                </div>
+                <div class="data-stat">
+                    <div class="data-stat-icon">💾</div>
+                    <div class="data-stat-value" id="dataSize">-</div>
+                    <div class="data-stat-label">Data Size</div>
+                </div>
+                <div class="data-stat">
+                    <div class="data-stat-icon">📅</div>
+                    <div class="data-stat-value" id="memberSince">-</div>
+                    <div class="data-stat-label">Member Since</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Export -->
+        <div class="privacy-section">
+            <h3>📤 Export Your Data</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                Download all your personal data in a portable format. This includes memories, conversations, and personalization settings.
+            </p>
+
+            <div class="export-options">
+                <div class="export-card" data-export-type="complete" onclick="selectExportType('complete')">
+                    <div class="export-icon">📦</div>
+                    <div class="export-title">Complete Export</div>
+                    <div class="export-description">All your data including memories, companions, and settings</div>
+                    <div class="export-size" id="completeSize">Calculating...</div>
+                </div>
+
+                <div class="export-card" data-export-type="memories" onclick="selectExportType('memories')">
+                    <div class="export-icon">🧠</div>
+                    <div class="export-title">Memories Only</div>
+                    <div class="export-description">Just your uploaded memories and associated metadata</div>
+                    <div class="export-size" id="memoriesSize">Calculating...</div>
+                </div>
+
+                <div class="export-card" data-export-type="conversations" onclick="selectExportType('conversations')">
+                    <div class="export-icon">💬</div>
+                    <div class="export-title">Conversations</div>
+                    <div class="export-description">Chat history with your AI companions</div>
+                    <div class="export-size" id="conversationsSize">Calculating...</div>
+                </div>
+
+                <div class="export-card" data-export-type="profile" onclick="selectExportType('profile')">
+                    <div class="export-icon">👤</div>
+                    <div class="export-title">Profile Data</div>
+                    <div class="export-description">Account information and personalization settings</div>
+                    <div class="export-size" id="profileSize">Calculating...</div>
+                </div>
+            </div>
+
+            <div class="export-progress" id="exportProgress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="exportProgressFill"></div>
+                </div>
+                <div class="progress-text" id="exportProgressText">Preparing export...</div>
+            </div>
+
+            <div class="actions-section">
+                <button class="btn btn-primary" id="exportBtn" onclick="startExport()" disabled>
+                    📤 Export Selected Data
+                </button>
+            </div>
+        </div>
+
+        <!-- Privacy Controls -->
+        <div class="privacy-section">
+            <h3>🛡️ Global Privacy Settings</h3>
+            <div class="privacy-controls">
+                <div class="privacy-control">
+                    <div class="control-info">
+                        <h4>Data Analytics</h4>
+                        <p>Allow anonymous usage analytics to improve the service</p>
+                    </div>
+                    <div class="toggle-switch" id="analyticsToggle" onclick="togglePrivacySetting('analytics')">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+
+                <div class="privacy-control">
+                    <div class="control-info">
+                        <h4>Memory Processing</h4>
+                        <p>Enable advanced memory processing for better personalization</p>
+                    </div>
+                    <div class="toggle-switch active" id="processingToggle" onclick="togglePrivacySetting('processing')">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+
+                <div class="privacy-control">
+                    <div class="control-info">
+                        <h4>Data Sharing</h4>
+                        <p>Share anonymized data for research purposes</p>
+                    </div>
+                    <div class="toggle-switch" id="sharingToggle" onclick="togglePrivacySetting('sharing')">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+
+                <div class="privacy-control">
+                    <div class="control-info">
+                        <h4>Marketing Communications</h4>
+                        <p>Receive updates about new features and improvements</p>
+                    </div>
+                    <div class="toggle-switch" id="marketingToggle" onclick="togglePrivacySetting('marketing')">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+
+                <div class="privacy-control">
+                    <div class="control-info">
+                        <h4>AI Training</h4>
+                        <p>Allow your data to be used for improving AI models</p>
+                    </div>
+                    <div class="toggle-switch" id="trainingToggle" onclick="togglePrivacySetting('training')">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+
+                <div class="privacy-control">
+                    <div class="control-info">
+                        <h4>Data Minimization</h4>
+                        <p>Only collect and process essential data</p>
+                    </div>
+                    <div class="toggle-switch active" id="minimizationToggle" onclick="togglePrivacySetting('data_minimization')">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Consent Management -->
+        <div class="privacy-section">
+            <h3>📋 Consent Management</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                Manage your explicit consent for different types of data processing. You can withdraw consent at any time.
+            </p>
+
+            <div class="privacy-controls" id="consentControls">
+                <div class="privacy-control">
+                    <div class="control-info">
+                        <h4>Personalization Consent</h4>
+                        <p>Consent to use your data for AI personalization and improvement</p>
+                    </div>
+                    <div class="toggle-switch" id="personalizationConsentToggle" onclick="toggleConsent('personalization')">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+
+                <div class="privacy-control">
+                    <div class="control-info">
+                        <h4>Research Consent</h4>
+                        <p>Consent to use anonymized data for research purposes</p>
+                    </div>
+                    <div class="toggle-switch" id="researchConsentToggle" onclick="toggleConsent('research')">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+
+                <div class="privacy-control">
+                    <div class="control-info">
+                        <h4>Analytics Consent</h4>
+                        <p>Consent to collect usage analytics for service improvement</p>
+                    </div>
+                    <div class="toggle-switch" id="analyticsConsentToggle" onclick="toggleConsent('analytics')">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Memory-Level Privacy -->
+        <div class="privacy-section">
+            <h3>🔐 Memory-Level Privacy Controls</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                Set privacy levels for individual memories. Higher privacy levels restrict how your data can be processed and shared.
+            </p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                <div style="background: var(--bg-secondary); padding: 1rem; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🌍</div>
+                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Public</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary);">Can be processed and shared</div>
+                </div>
+                <div style="background: var(--bg-secondary); padding: 1rem; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">👥</div>
+                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Shared</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary);">Limited processing allowed</div>
+                </div>
+                <div style="background: var(--bg-secondary); padding: 1rem; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🔒</div>
+                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Private</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary);">Personal use only</div>
+                </div>
+                <div style="background: var(--bg-secondary); padding: 1rem; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🔐</div>
+                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Confidential</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary);">Maximum protection</div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                <select id="bulkPrivacyLevel" style="padding: 0.5rem; border-radius: 5px; border: 1px solid var(--border-color);">
+                    <option value="">Select Privacy Level</option>
+                    <option value="public">Public</option>
+                    <option value="shared">Shared</option>
+                    <option value="private">Private</option>
+                    <option value="confidential">Confidential</option>
+                </select>
+                <button class="btn btn-secondary" onclick="bulkUpdateMemoryPrivacy()">
+                    Update All Memories
+                </button>
+                <button class="btn btn-secondary" onclick="loadMemoryPrivacySettings()">
+                    View Memory Privacy
+                </button>
+            </div>
+
+            <div id="memoryPrivacyList" style="display: none;">
+                <!-- Memory privacy list will be populated here -->
+            </div>
+        </div>
+
+        <!-- Privacy Compliance -->
+        <div class="privacy-section">
+            <h3>📊 Privacy Compliance Report</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                View your privacy compliance status and get recommendations for better privacy protection.
+            </p>
+
+            <div id="complianceReport" style="display: none;">
+                <!-- Compliance report will be populated here -->
+            </div>
+
+            <button class="btn btn-secondary" onclick="loadComplianceReport()">
+                Generate Compliance Report
+            </button>
+        </div>
+
+        <!-- Secure Deletion -->
+        <div class="privacy-section">
+            <h3>🔒 Secure Data Deletion</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                Securely delete your data with verification and audit logging. All deletions are permanent and cannot be undone.
+            </p>
+
+            <div style="display: grid; gap: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--bg-secondary); border-radius: 10px;">
+                    <div>
+                        <h4 style="margin: 0 0 0.25rem 0; color: var(--text-primary);">Secure Memory Deletion</h4>
+                        <p style="margin: 0; font-size: 0.85rem; color: var(--text-secondary);">Permanently delete all memories with verification and audit logging</p>
+                    </div>
+                    <button class="btn btn-danger" onclick="secureDeleteData('memories')">
+                        🔒 Secure Delete Memories
+                    </button>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--bg-secondary); border-radius: 10px;">
+                    <div>
+                        <h4 style="margin: 0 0 0.25rem 0; color: var(--text-primary);">Secure Companion Deletion</h4>
+                        <p style="margin: 0; font-size: 0.85rem; color: var(--text-secondary);">Permanently delete all companions and conversations with verification</p>
+                    </div>
+                    <button class="btn btn-danger" onclick="secureDeleteData('companions')">
+                        🔒 Secure Delete Companions
+                    </button>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--bg-secondary); border-radius: 10px;">
+                    <div>
+                        <h4 style="margin: 0 0 0.25rem 0; color: var(--text-primary);">Complete Data Deletion</h4>
+                        <p style="margin: 0; font-size: 0.85rem; color: var(--text-secondary);">Delete all data (memories, companions, conversations) with full audit trail</p>
+                    </div>
+                    <button class="btn btn-danger" onclick="secureDeleteData('complete')">
+                        🔒 Secure Delete All Data
+                    </button>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--error-bg); border: 1px solid var(--error-border); border-radius: 10px;">
+                    <div>
+                        <h4 style="margin: 0 0 0.25rem 0; color: var(--error-color);">Secure Account Deletion</h4>
+                        <p style="margin: 0; font-size: 0.85rem; color: var(--error-color);">Permanently delete your entire account with complete verification</p>
+                    </div>
+                    <button class="btn btn-danger" onclick="secureDeleteData('account')">
+                        💀 Secure Delete Account
+                    </button>
+                </div>
+            </div>
+
+            <div style="background: var(--warning-bg); border: 1px solid var(--warning-border); color: var(--warning-color); border-radius: 10px; padding: 1rem; margin-top: 1rem;">
+                <strong>🔒 Secure Deletion Features:</strong>
+                <ul style="margin: 0.5rem 0 0 1rem; padding: 0;">
+                    <li>Complete verification of data removal</li>
+                    <li>Audit logging for compliance</li>
+                    <li>Multi-system deletion (database, vector store, files)</li>
+                    <li>Deletion confirmation and status reporting</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="actions-section">
+            <button class="btn btn-primary" onclick="savePrivacySettings()">
+                💾 Save Privacy Settings
+            </button>
+            <a href="/dashboard" class="btn btn-secondary">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        let selectedExportType = null;
+        let privacySettings = {
+            analytics: false,
+            processing: true,
+            sharing: false,
+            marketing: false
+        };
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDataOverview();
+            loadPrivacySettings();
+            calculateExportSizes();
+        });
+
+        async function loadDataOverview() {
+            try {
+                const response = await fetch('/memory/api/data-overview');
+                if (response.ok) {
+                    const data = await response.json();
+                    updateDataOverview(data);
+                }
+            } catch (error) {
+                console.error('Error loading data overview:', error);
+            }
+        }
+
+        function updateDataOverview(data) {
+            document.getElementById('totalMemories').textContent = data.total_memories || '0';
+            document.getElementById('totalCompanions').textContent = data.total_companions || '0';
+            document.getElementById('dataSize').textContent = formatBytes(data.total_size || 0);
+            document.getElementById('memberSince').textContent = data.member_since || 'Unknown';
+        }
+
+        async function loadPrivacySettings() {
+            try {
+                const response = await fetch('/api/privacy-settings');
+                if (response.ok) {
+                    const data = await response.json();
+                    privacySettings = data.settings || privacySettings;
+                    updatePrivacyUI();
+                }
+            } catch (error) {
+                console.error('Error loading privacy settings:', error);
+            }
+        }
+
+        function updatePrivacyUI() {
+            for (const [setting, enabled] of Object.entries(privacySettings)) {
+                const toggle = document.getElementById(setting + 'Toggle');
+                if (toggle) {
+                    toggle.classList.toggle('active', enabled);
+                }
+            }
+        }
+
+        async function calculateExportSizes() {
+            try {
+                const response = await fetch('/memory/api/export-sizes');
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('completeSize').textContent = formatBytes(data.complete || 0);
+                    document.getElementById('memoriesSize').textContent = formatBytes(data.memories || 0);
+                    document.getElementById('conversationsSize').textContent = formatBytes(data.conversations || 0);
+                    document.getElementById('profileSize').textContent = formatBytes(data.profile || 0);
+                } else {
+                    document.getElementById('completeSize').textContent = '~5-50 MB';
+                    document.getElementById('memoriesSize').textContent = '~1-20 MB';
+                    document.getElementById('conversationsSize').textContent = '~1-10 MB';
+                    document.getElementById('profileSize').textContent = '~1-5 MB';
+                }
+            } catch (error) {
+                console.error('Error calculating export sizes:', error);
+            }
+        }
+
+        function selectExportType(type) {
+            selectedExportType = type;
+            
+            document.querySelectorAll('.export-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.querySelector(`[data-export-type="${type}"]`).classList.add('selected');
+            
+            document.getElementById('exportBtn').disabled = false;
+        }
+
+        async function startExport() {
+            if (!selectedExportType) {
+                showError('Please select an export type first.');
+                return;
+            }
+
+            const exportBtn = document.getElementById('exportBtn');
+            const exportProgress = document.getElementById('exportProgress');
+            const progressFill = document.getElementById('exportProgressFill');
+            const progressText = document.getElementById('exportProgressText');
+
+            exportBtn.disabled = true;
+            exportProgress.style.display = 'block';
+            hideMessages();
+
+            try {
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += 10;
+                    progressFill.style.width = progress + '%';
+                    
+                    if (progress <= 30) {
+                        progressText.textContent = 'Collecting data...';
+                    } else if (progress <= 60) {
+                        progressText.textContent = 'Processing memories...';
+                    } else if (progress <= 90) {
+                        progressText.textContent = 'Creating export file...';
+                    } else {
+                        progressText.textContent = 'Finalizing export...';
+                    }
+                }, 500);
+
+                const response = await fetch('/memory/api/export-data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        export_type: selectedExportType
+                    })
+                });
+
+                clearInterval(progressInterval);
+                progressFill.style.width = '100%';
+                progressText.textContent = 'Export complete!';
+
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.download_url) {
+                        const a = document.createElement('a');
+                        a.href = data.download_url;
+                        a.download = data.filename || `myprabh_export_${selectedExportType}_${new Date().toISOString().split('T')[0]}.json`;
+                        a.click();
+                    } else if (data.export_data) {
+                        const blob = new Blob([JSON.stringify(data.export_data, null, 2)], {
+                            type: 'application/json'
+                        });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `myprabh_export_${selectedExportType}_${new Date().toISOString().split('T')[0]}.json`;
+                        a.click();
+                        URL.revokeObjectURL(url);
+                    }
+                    
+                    showSuccess('Data exported successfully!');
+                } else {
+                    const errorData = await response.json();
+                    showError(errorData.error || 'Export failed');
+                }
+
+            } catch (error) {
+                console.error('Export error:', error);
+                showError('Export failed. Please try again.');
+            } finally {
+                exportBtn.disabled = false;
+                setTimeout(() => {
+                    exportProgress.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        function togglePrivacySetting(setting) {
+            privacySettings[setting] = !privacySettings[setting];
+            const toggle = document.getElementById(setting + 'Toggle');
+            toggle.classList.toggle('active', privacySettings[setting]);
+        }
+
+        async function savePrivacySettings() {
+            try {
+                const response = await fetch('/api/privacy-settings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        settings: privacySettings
+                    })
+                });
+
+                if (response.ok) {
+                    showSuccess('Privacy settings saved successfully!');
+                } else {
+                    const errorData = await response.json();
+                    showError(errorData.error || 'Failed to save settings');
+                }
+
+            } catch (error) {
+                console.error('Error saving privacy settings:', error);
+                showError('Failed to save privacy settings');
+            }
+        }
+
+        function showSuccess(message) {
+            hideMessages();
+            const successEl = document.getElementById('successMessage');
+            successEl.textContent = message;
+            successEl.style.display = 'block';
+            setTimeout(() => {
+                successEl.style.display = 'none';
+            }, 5000);
+        }
+
+        function showError(message) {
+            hideMessages();
+            const errorEl = document.getElementById('errorMessage');
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+            setTimeout(() => {
+                errorEl.style.display = 'none';
+            }, 5000);
+        }
+
+        function hideMessages() {
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        async function toggleConsent(consentType) {
+            const toggle = document.getElementById(consentType + 'ConsentToggle');
+            const granted = !toggle.classList.contains('active');
+            
+            try {
+                const response = await fetch('/memory/api/privacy/consent', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        consent_type: consentType,
+                        granted: granted,
+                        context: {
+                            source: 'privacy_controls_page',
+                            timestamp: new Date().toISOString()
+                        }
+                    })
+                });
+
+                if (response.ok) {
+                    toggle.classList.toggle('active', granted);
+                    showSuccess(`Consent for ${consentType} ${granted ? 'granted' : 'withdrawn'} successfully`);
+                } else {
+                    const errorData = await response.json();
+                    showError(errorData.error || 'Failed to update consent');
+                }
+
+            } catch (error) {
+                console.error('Error updating consent:', error);
+                showError('Failed to update consent');
+            }
+        }
+
+        async function bulkUpdateMemoryPrivacy() {
+            const privacyLevel = document.getElementById('bulkPrivacyLevel').value;
+            
+            if (!privacyLevel) {
+                showError('Please select a privacy level first');
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to set ALL memories to ${privacyLevel} privacy level?`)) {
+                return;
+            }
+
+            try {
+                // First get all memory IDs (this would need to be implemented)
+                const response = await fetch('/memory/api/search', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        query: '',
+                        limit: 1000
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to get memories');
+                }
+
+                const searchResult = await response.json();
+                const memoryIds = searchResult.results.map(memory => memory.id);
+
+                if (memoryIds.length === 0) {
+                    showError('No memories found to update');
+                    return;
+                }
+
+                // Update privacy levels
+                const updateResponse = await fetch('/memory/api/privacy/memory-level', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        memory_ids: memoryIds,
+                        privacy_level: privacyLevel
+                    })
+                });
+
+                if (updateResponse.ok) {
+                    const result = await updateResponse.json();
+                    showSuccess(`Updated ${result.updated_count} memories to ${privacyLevel} privacy level`);
+                } else {
+                    const errorData = await updateResponse.json();
+                    showError(errorData.error || 'Failed to update memory privacy levels');
+                }
+
+            } catch (error) {
+                console.error('Error updating memory privacy:', error);
+                showError('Failed to update memory privacy levels');
+            }
+        }
+
+        async function loadMemoryPrivacySettings() {
+            try {
+                const response = await fetch('/memory/api/privacy/detailed-settings');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const memoryPrivacy = data.privacy_settings.memory_privacy;
+                    
+                    const listDiv = document.getElementById('memoryPrivacyList');
+                    
+                    if (Object.keys(memoryPrivacy).length === 0) {
+                        listDiv.innerHTML = '<p style="color: var(--text-secondary);">No memories found</p>';
+                    } else {
+                        let html = '<h4>Memory Privacy Levels:</h4><div style="max-height: 300px; overflow-y: auto;">';
+                        
+                        for (const [memoryId, privacyLevel] of Object.entries(memoryPrivacy)) {
+                            const levelIcon = {
+                                'public': '🌍',
+                                'shared': '👥',
+                                'private': '🔒',
+                                'confidential': '🔐'
+                            }[privacyLevel] || '🔒';
+                            
+                            html += `
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; border-bottom: 1px solid var(--border-color);">
+                                    <span style="font-family: monospace; font-size: 0.8rem;">${memoryId.substring(0, 8)}...</span>
+                                    <span>${levelIcon} ${privacyLevel}</span>
+                                </div>
+                            `;
+                        }
+                        
+                        html += '</div>';
+                        listDiv.innerHTML = html;
+                    }
+                    
+                    listDiv.style.display = 'block';
+                } else {
+                    showError('Failed to load memory privacy settings');
+                }
+
+            } catch (error) {
+                console.error('Error loading memory privacy settings:', error);
+                showError('Failed to load memory privacy settings');
+            }
+        }
+
+        async function loadComplianceReport() {
+            try {
+                const response = await fetch('/memory/api/privacy/compliance-report');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const report = data.compliance_report;
+                    
+                    const reportDiv = document.getElementById('complianceReport');
+                    
+                    let html = `
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                            <div style="background: var(--bg-secondary); padding: 1rem; border-radius: 10px; text-align: center;">
+                                <div style="font-size: 2rem; font-weight: 600; color: var(--primary-color);">${Math.round(report.compliance_score)}</div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary);">Compliance Score</div>
+                            </div>
+                            <div style="background: var(--bg-secondary); padding: 1rem; border-radius: 10px; text-align: center;">
+                                <div style="font-size: 2rem; font-weight: 600; color: var(--primary-color);">${Object.values(report.memory_privacy_distribution).reduce((a, b) => a + b, 0)}</div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary);">Total Memories</div>
+                            </div>
+                        </div>
+                        
+                        <h4>Memory Privacy Distribution:</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                    `;
+                    
+                    for (const [level, count] of Object.entries(report.memory_privacy_distribution)) {
+                        const levelIcon = {
+                            'public': '🌍',
+                            'shared': '👥',
+                            'private': '🔒',
+                            'confidential': '🔐'
+                        }[level] || '🔒';
+                        
+                        html += `
+                            <div style="background: var(--bg-secondary); padding: 1rem; border-radius: 10px; text-align: center;">
+                                <div style="font-size: 1.5rem;">${levelIcon}</div>
+                                <div style="font-weight: 600;">${count}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">${level}</div>
+                            </div>
+                        `;
+                    }
+                    
+                    html += `
+                        </div>
+                        
+                        <h4>Recommendations:</h4>
+                        <ul style="margin: 1rem 0;">
+                    `;
+                    
+                    for (const recommendation of report.recommendations) {
+                        html += `<li style="margin-bottom: 0.5rem;">${recommendation}</li>`;
+                    }
+                    
+                    html += '</ul>';
+                    
+                    reportDiv.innerHTML = html;
+                    reportDiv.style.display = 'block';
+                } else {
+                    showError('Failed to load compliance report');
+                }
+
+            } catch (error) {
+                console.error('Error loading compliance report:', error);
+                showError('Failed to load compliance report');
+            }
+        }
+
+        async function secureDeleteData(deletionType) {
+            let confirmationMessage = '';
+            let requiredConfirmation = '';
+            
+            switch(deletionType) {
+                case 'memories':
+                    confirmationMessage = 'Are you sure you want to securely delete ALL your memories? This action cannot be undone and will remove all personalization data.';
+                    requiredConfirmation = 'DELETE MEMORIES';
+                    break;
+                case 'companions':
+                    confirmationMessage = 'Are you sure you want to securely delete ALL your AI companions and conversations? This action cannot be undone.';
+                    requiredConfirmation = 'DELETE COMPANIONS';
+                    break;
+                case 'complete':
+                    confirmationMessage = 'Are you sure you want to securely delete ALL your data (memories, companions, conversations)? This action cannot be undone.';
+                    requiredConfirmation = 'DELETE ALL DATA';
+                    break;
+                case 'account':
+                    confirmationMessage = '⚠️ DANGER: This will permanently delete your entire account and ALL data. This action cannot be undone and you will lose access forever.';
+                    requiredConfirmation = 'DELETE MY ACCOUNT';
+                    break;
+            }
+
+            if (!confirm(confirmationMessage)) {
+                return;
+            }
+
+            const userConfirmation = prompt(`Type "${requiredConfirmation}" to confirm secure deletion:`);
+            if (userConfirmation !== requiredConfirmation) {
+                showError('Secure deletion cancelled - confirmation text did not match.');
+                return;
+            }
+
+            try {
+                hideMessages();
+                
+                // Show progress indicator
+                const progressDiv = document.createElement('div');
+                progressDiv.innerHTML = `
+                    <div style="text-align: center; padding: 1rem; background: var(--bg-secondary); border-radius: 10px; margin: 1rem 0;">
+                        <div style="font-weight: 600; margin-bottom: 0.5rem;">🔒 Secure Deletion in Progress...</div>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary);">Deleting data and verifying removal...</div>
+                    </div>
+                `;
+                document.querySelector('.privacy-container').insertBefore(progressDiv, document.querySelector('.privacy-container').firstChild);
+
+                const response = await fetch('/memory/api/secure-delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        deletion_type: deletionType,
+                        confirmation: requiredConfirmation
+                    })
+                });
+
+                progressDiv.remove();
+
+                if (response.ok) {
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        const deletionLog = result.deletion_log;
+                        let message = `Secure deletion completed successfully!\n\n`;
+                        message += `Deletion Type: ${deletionType}\n`;
+                        message += `Verification Status: ${deletionLog.verification_status}\n`;
+                        
+                        if (deletionLog.deleted_items) {
+                            message += `\nDeleted Items:\n`;
+                            for (const [key, value] of Object.entries(deletionLog.deleted_items)) {
+                                if (value.deleted_count !== undefined) {
+                                    message += `- ${key}: ${value.deleted_count} items\n`;
+                                }
+                            }
+                        }
+
+                        showSuccess(message);
+                        
+                        // Refresh data overview
+                        loadDataOverview();
+                        
+                        // If account deletion, redirect to logout
+                        if (deletionType === 'account') {
+                            setTimeout(() => {
+                                window.location.href = '/logout';
+                            }, 3000);
+                        }
+                    } else {
+                        showError(result.error || 'Secure deletion failed');
+                    }
+                } else {
+                    const errorData = await response.json();
+                    showError(errorData.error || 'Secure deletion failed');
+                }
+
+            } catch (error) {
+                console.error('Secure deletion error:', error);
+                showError('Secure deletion failed. Please try again.');
+            }
+        }
+    </script>
+</body>
+</html>

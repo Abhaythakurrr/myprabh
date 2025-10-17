@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Companion Personalization - My Prabh</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/genz-theme.css') }}">
+    <style>
+        .personalization-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .personalization-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .personalization-header h1 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .companion-info {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            text-align: center;
+        }
+
+        .companion-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin: 0 auto 1rem auto;
+        }
+
+        .companion-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .companion-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .personalization-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .personality-section {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .personality-section h3 {
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .trait-slider {
+            margin-bottom: 2rem;
+        }
+
+        .trait-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .trait-name {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .trait-value {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--bg-secondary);
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            cursor: pointer;
+            border: none;
+            box-shadow: var(--shadow-md);
+        }
+
+        .communication-styles {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .style-card {
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .style-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .style-card.selected {
+            border-color: var(--primary-color);
+            background: var(--primary-color-light);
+        }
+
+        .style-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .style-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .style-description {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .memory-insights {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .insight-item {
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .insight-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .insight-text {
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .training-section {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .training-status {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--success-color);
+        }
+
+        .status-indicator.training {
+            background: var(--warning-color);
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.error {
+            background: var(--error-color);
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .training-progress {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            height: 8px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .training-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            transition: width 0.3s ease;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-danger {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .actions-section {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .premium-notice {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .premium-notice h4 {
+            margin: 0 0 0.5rem 0;
+        }
+
+        .preview-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .preview-conversation {
+            background: var(--bg-primary);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .preview-message {
+            margin-bottom: 0.5rem;
+        }
+
+        .preview-user {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .preview-ai {
+            color: var(--primary-color);
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="personalization-container">
+        <div class="personalization-header">
+            <h1>🎭 Companion Personalization</h1>
+            <p>Customize your AI companion's personality and behavior</p>
+        </div>
+
+        <div class="companion-info" id="companionInfo">
+            <div class="companion-avatar">🤖</div>
+            <div class="companion-name" id="companionName">Loading...</div>
+            <div class="companion-description" id="companionDescription">Loading companion information...</div>
+        </div>
+
+        <div class="personalization-tabs">
+            <button class="tab-button active" onclick="switchTab('personality')">🧠 Personality</button>
+            <button class="tab-button" onclick="switchTab('communication')">💬 Communication</button>
+            <button class="tab-button" onclick="switchTab('training')">🎯 Training</button>
+            <button class="tab-button" onclick="switchTab('insights')">📊 Insights</button>
+        </div>
+
+        <!-- Personality Tab -->
+        <div class="tab-content active" id="personalityTab">
+            <div class="personality-section">
+                <h3>🧠 Personality Traits</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                    Adjust your companion's personality traits based on the Big Five personality model.
+                </p>
+
+                <div class="trait-slider">
+                    <div class="trait-label">
+                        <span class="trait-name">Openness to Experience</span>
+                        <span class="trait-value" id="opennessValue">50%</span>
+                    </div>
+                    <input type="range" class="slider" id="openness" min="0" max="100" value="50" 
+                           oninput="updateTrait('openness', this.value)">
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                        How creative, curious, and open to new experiences your companion is.
+                    </p>
+                </div>
+
+                <div class="trait-slider">
+                    <div class="trait-label">
+                        <span class="trait-name">Conscientiousness</span>
+                        <span class="trait-value" id="conscientiousnessValue">50%</span>
+                    </div>
+                    <input type="range" class="slider" id="conscientiousness" min="0" max="100" value="50" 
+                           oninput="updateTrait('conscientiousness', this.value)">
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                        How organized, responsible, and goal-oriented your companion is.
+                    </p>
+                </div>
+
+                <div class="trait-slider">
+                    <div class="trait-label">
+                        <span class="trait-name">Extraversion</span>
+                        <span class="trait-value" id="extraversionValue">50%</span>
+                    </div>
+                    <input type="range" class="slider" id="extraversion" min="0" max="100" value="50" 
+                           oninput="updateTrait('extraversion', this.value)">
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                        How social, energetic, and outgoing your companion is.
+                    </p>
+                </div>
+
+                <div class="trait-slider">
+                    <div class="trait-label">
+                        <span class="trait-name">Agreeableness</span>
+                        <span class="trait-value" id="agreeablenessValue">70%</span>
+                    </div>
+                    <input type="range" class="slider" id="agreeableness" min="0" max="100" value="70" 
+                           oninput="updateTrait('agreeableness', this.value)">
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                        How kind, cooperative, and trusting your companion is.
+                    </p>
+                </div>
+
+                <div class="trait-slider">
+                    <div class="trait-label">
+                        <span class="trait-name">Emotional Stability</span>
+                        <span class="trait-value" id="stabilityValue">60%</span>
+                    </div>
+                    <input type="range" class="slider" id="stability" min="0" max="100" value="60" 
+                           oninput="updateTrait('stability', this.value)">
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                        How emotionally stable and calm your companion is.
+                    </p>
+                </div>
+            </div>
+
+            <div class="preview-section">
+                <h4>🔮 Personality Preview</h4>
+                <div class="preview-conversation" id="personalityPreview">
+                    <div class="preview-message">
+                        <span class="preview-user">You:</span> How are you feeling today?
+                    </div>
+                    <div class="preview-message">
+                        <span class="preview-ai">AI:</span> <span id="previewResponse">I'm doing well, thank you for asking!</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Communication Tab -->
+        <div class="tab-content" id="communicationTab">
+            <div class="personality-section">
+                <h3>💬 Communication Style</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                    Choose how your companion communicates with you.
+                </p>
+
+                <div class="communication-styles">
+                    <div class="style-card" data-style="casual" onclick="selectStyle('casual')">
+                        <div class="style-icon">😊</div>
+                        <div class="style-name">Casual</div>
+                        <div class="style-description">Friendly, relaxed, and informal</div>
+                    </div>
+
+                    <div class="style-card" data-style="formal" onclick="selectStyle('formal')">
+                        <div class="style-icon">🎩</div>
+                        <div class="style-name">Formal</div>
+                        <div class="style-description">Polite, respectful, and structured</div>
+                    </div>
+
+                    <div class="style-card" data-style="emotional" onclick="selectStyle('emotional')">
+                        <div class="style-icon">❤️</div>
+                        <div class="style-name">Emotional</div>
+                        <div class="style-description">Expressive and emotionally connected</div>
+                    </div>
+
+                    <div class="style-card" data-style="analytical" onclick="selectStyle('analytical')">
+                        <div class="style-icon">🧠</div>
+                        <div class="style-name">Analytical</div>
+                        <div class="style-description">Logical, thoughtful, and detailed</div>
+                    </div>
+
+                    <div class="style-card" data-style="storytelling" onclick="selectStyle('storytelling')">
+                        <div class="style-icon">📚</div>
+                        <div class="style-name">Storytelling</div>
+                        <div class="style-description">Narrative and experience-focused</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Training Tab -->
+        <div class="tab-content" id="trainingTab">
+            <div class="premium-notice">
+                <h4>⭐ Premium Feature</h4>
+                <p>Advanced AI training with LoRA adapters is available for premium subscribers.</p>
+            </div>
+
+            <div class="training-section">
+                <h3>🎯 AI Training Status</h3>
+                
+                <div class="training-status">
+                    <div class="status-indicator" id="trainingIndicator"></div>
+                    <span id="trainingStatusText">No training in progress</span>
+                </div>
+
+                <div class="training-progress" id="trainingProgress" style="display: none;">
+                    <div class="training-progress-fill" id="trainingProgressFill" style="width: 0%;"></div>
+                </div>
+
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                    Train a personalized AI model based on your uploaded memories for enhanced responses.
+                </p>
+
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn btn-primary" id="startTrainingBtn" onclick="startTraining()">
+                        🚀 Start Training
+                    </button>
+                    <button class="btn btn-secondary" onclick="viewTrainingHistory()">
+                        📊 View History
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Insights Tab -->
+        <div class="tab-content" id="insightsTab">
+            <div class="memory-insights">
+                <h3>📊 Personalization Insights</h3>
+                <div id="insightsContent">
+                    <div class="insight-item">
+                        <div class="insight-text">Loading personalization insights...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions-section">
+            <button class="btn btn-primary" onclick="savePersonalization()">💾 Save Changes</button>
+            <button class="btn btn-secondary" onclick="resetToDefault()">🔄 Reset to Default</button>
+            <a href="/memory/manage" class="btn btn-secondary">← Back to Memory Management</a>
+        </div>
+    </div>
+
+    <script>
+        let currentCompanionId = null;
+        let personalityTraits = {
+            openness: 50,
+            conscientiousness: 50,
+            extraversion: 50,
+            agreeableness: 70,
+            stability: 60
+        };
+        let communicationStyle = 'casual';
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            currentCompanionId = urlParams.get('companion_id');
+            
+            if (currentCompanionId) {
+                loadCompanionData();
+            } else {
+                showError('No companion specified');
+            }
+        });
+
+        async function loadCompanionData() {
+            try {
+                // Load companion info
+                const companionResponse = await fetch(`/api/prabh/${currentCompanionId}`);
+                if (companionResponse.ok) {
+                    const companionData = await companionResponse.json();
+                    updateCompanionInfo(companionData);
+                }
+
+                // Load personality profile
+                const personalityResponse = await fetch(`/memory/api/personality/${currentCompanionId}`);
+                if (personalityResponse.ok) {
+                    const personalityData = await personalityResponse.json();
+                    if (personalityData.profile) {
+                        loadPersonalityProfile(personalityData.profile);
+                    }
+                }
+
+                // Load insights
+                const insightsResponse = await fetch(`/memory/api/insights/${currentCompanionId}`);
+                if (insightsResponse.ok) {
+                    const insightsData = await insightsResponse.json();
+                    updateInsights(insightsData.insights);
+                }
+
+            } catch (error) {
+                console.error('Error loading companion data:', error);
+                showError('Failed to load companion data');
+            }
+        }
+
+        function updateCompanionInfo(companion) {
+            document.getElementById('companionName').textContent = companion.prabh_name;
+            document.getElementById('companionDescription').textContent = companion.character_description;
+        }
+
+        function loadPersonalityProfile(profile) {
+            if (profile.personality_traits) {
+                const traits = profile.personality_traits;
+                personalityTraits = {
+                    openness: Math.round(traits.openness * 100) || 50,
+                    conscientiousness: Math.round(traits.conscientiousness * 100) || 50,
+                    extraversion: Math.round(traits.extraversion * 100) || 50,
+                    agreeableness: Math.round(traits.agreeableness * 100) || 70,
+                    stability: Math.round((1 - traits.neuroticism) * 100) || 60
+                };
+
+                // Update sliders
+                for (const [trait, value] of Object.entries(personalityTraits)) {
+                    const slider = document.getElementById(trait);
+                    const valueDisplay = document.getElementById(trait + 'Value');
+                    if (slider && valueDisplay) {
+                        slider.value = value;
+                        valueDisplay.textContent = value + '%';
+                    }
+                }
+            }
+
+            if (profile.communication_style) {
+                const styles = profile.communication_style;
+                const dominantStyle = Object.keys(styles).reduce((a, b) => 
+                    styles[a] > styles[b] ? a : b
+                );
+                selectStyle(dominantStyle);
+            }
+
+            updatePersonalityPreview();
+        }
+
+        function updateInsights(insights) {
+            const insightsContent = document.getElementById('insightsContent');
+            
+            if (!insights || !insights.personality_insights || insights.personality_insights.length === 0) {
+                insightsContent.innerHTML = `
+                    <div class="insight-item">
+                        <div class="insight-text">No personality insights available yet. Upload more memories to generate insights.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            insights.personality_insights.forEach(insight => {
+                html += `
+                    <div class="insight-item">
+                        <div class="insight-text">${insight}</div>
+                    </div>
+                `;
+            });
+
+            if (insights.recommendations && insights.recommendations.length > 0) {
+                html += '<h4 style="margin: 1.5rem 0 1rem 0; color: var(--text-primary);">Recommendations:</h4>';
+                insights.recommendations.forEach(rec => {
+                    html += `
+                        <div class="insight-item">
+                            <div class="insight-text">💡 ${rec}</div>
+                        </div>
+                    `;
+                });
+            }
+
+            insightsContent.innerHTML = html;
+        }
+
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName + 'Tab').classList.add('active');
+        }
+
+        function updateTrait(trait, value) {
+            personalityTraits[trait] = parseInt(value);
+            document.getElementById(trait + 'Value').textContent = value + '%';
+            updatePersonalityPreview();
+        }
+
+        function updatePersonalityPreview() {
+            const preview = document.getElementById('previewResponse');
+            const traits = personalityTraits;
+
+            let response = "I'm doing well, thank you for asking! ";
+
+            if (traits.openness > 70) {
+                response += "I've been exploring some fascinating new ideas lately. ";
+            }
+            if (traits.extraversion > 70) {
+                response += "I'm feeling quite energetic and social today! ";
+            }
+            if (traits.agreeableness > 70) {
+                response += "I hope you're having a wonderful day too. ";
+            }
+            if (traits.conscientiousness > 70) {
+                response += "I've been staying organized and focused on my goals. ";
+            }
+
+            preview.textContent = response.trim();
+        }
+
+        function selectStyle(style) {
+            communicationStyle = style;
+            
+            // Update visual selection
+            document.querySelectorAll('.style-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.querySelector(`[data-style="${style}"]`).classList.add('selected');
+        }
+
+        async function savePersonalization() {
+            try {
+                const data = {
+                    personality_traits: {
+                        openness: personalityTraits.openness / 100,
+                        conscientiousness: personalityTraits.conscientiousness / 100,
+                        extraversion: personalityTraits.extraversion / 100,
+                        agreeableness: personalityTraits.agreeableness / 100,
+                        neuroticism: (100 - personalityTraits.stability) / 100
+                    },
+                    communication_style: communicationStyle
+                };
+
+                const response = await fetch(`/memory/api/personality/${currentCompanionId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    showSuccess('Personalization settings saved successfully!');
+                } else {
+                    const errorData = await response.json();
+                    showError(errorData.error || 'Failed to save settings');
+                }
+
+            } catch (error) {
+                console.error('Error saving personalization:', error);
+                showError('Failed to save personalization settings');
+            }
+        }
+
+        function resetToDefault() {
+            if (confirm('Are you sure you want to reset all personalization settings to default?')) {
+                personalityTraits = {
+                    openness: 50,
+                    conscientiousness: 50,
+                    extraversion: 50,
+                    agreeableness: 70,
+                    stability: 60
+                };
+
+                // Update sliders
+                for (const [trait, value] of Object.entries(personalityTraits)) {
+                    const slider = document.getElementById(trait);
+                    const valueDisplay = document.getElementById(trait + 'Value');
+                    if (slider && valueDisplay) {
+                        slider.value = value;
+                        valueDisplay.textContent = value + '%';
+                    }
+                }
+
+                selectStyle('casual');
+                updatePersonalityPreview();
+                showSuccess('Settings reset to default values');
+            }
+        }
+
+        async function startTraining() {
+            if (!confirm('Start AI training? This will create a personalized model based on your memories.')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/memory/api/train/${currentCompanionId}`, {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showSuccess('Training started! This may take several minutes.');
+                    updateTrainingStatus('training', 'Training in progress...');
+                } else {
+                    const errorData = await response.json();
+                    showError(errorData.error || 'Failed to start training');
+                }
+
+            } catch (error) {
+                console.error('Error starting training:', error);
+                showError('Failed to start training');
+            }
+        }
+
+        function updateTrainingStatus(status, message) {
+            const indicator = document.getElementById('trainingIndicator');
+            const statusText = document.getElementById('trainingStatusText');
+            const progress = document.getElementById('trainingProgress');
+
+            indicator.className = `status-indicator ${status}`;
+            statusText.textContent = message;
+
+            if (status === 'training') {
+                progress.style.display = 'block';
+                // Simulate progress (in real implementation, this would be updated via WebSocket or polling)
+                let progressValue = 0;
+                const progressInterval = setInterval(() => {
+                    progressValue += 2;
+                    document.getElementById('trainingProgressFill').style.width = progressValue + '%';
+                    if (progressValue >= 100) {
+                        clearInterval(progressInterval);
+                        updateTrainingStatus('', 'Training completed successfully!');
+                        progress.style.display = 'none';
+                    }
+                }, 1000);
+            } else {
+                progress.style.display = 'none';
+            }
+        }
+
+        function viewTrainingHistory() {
+            // This would show a modal or navigate to a training history page
+            alert('Training history feature coming soon!');
+        }
+
+        function showSuccess(message) {
+            alert('Success: ' + message);
+        }
+
+        function showError(message) {
+            alert('Error: ' + message);
+        }
+    </script>
+</body>
+</html>

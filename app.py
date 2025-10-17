@@ -29,6 +29,14 @@ except Exception as e:
     phone_verification = None
     payment_service = None
 
+# Initialize memory services
+try:
+    from routes.memory_routes import memory_bp
+    app.register_blueprint(memory_bp)
+    print("✅ Memory routes registered successfully")
+except Exception as e:
+    print(f"⚠️ Memory routes not available: {e}")
+
 print("✅ My Prabh Platform Starting...")
 print(f"✅ Firestore Database: {'Connected' if firestore_db else 'Disabled'}")
 print(f"✅ Firebase Auth: {'Enabled' if firebase_auth else 'Disabled'}") 
@@ -262,7 +270,7 @@ def create_prabh_page():
 
 @app.route('/create-prabh', methods=['POST'])
 def create_prabh():
-    """Create new AI Prabh companion"""
+    """Create new AI Prabh companion with optional memory-based training"""
     if not is_authenticated():
         return jsonify({'error': 'Not authenticated'}), 401
     
@@ -272,6 +280,10 @@ def create_prabh():
         character_description = data.get('character_description', '').strip()
         story_content = data.get('story_content', '').strip()
         personality_traits = data.get('personality_traits', '').strip()
+        
+        # Memory-based training options
+        use_memory_training = data.get('use_memory_training', False)
+        memory_assignment = data.get('memory_assignment', {})
         
         # Validation
         if not prabh_name:
@@ -283,24 +295,68 @@ def create_prabh():
         if len(prabh_name) > 50:
             return jsonify({'error': 'Name must be less than 50 characters'}), 400
         
-        # Enhanced Prabh creation with personality analysis
-        prabh_id = firestore_db.create_prabh(
-            user_id=session['user_id'],
-            prabh_name=prabh_name,
-            character_description=character_description,
-            story_content=story_content,
-            personality_traits=personality_traits
-        )
+        if use_memory_training:
+            # Create memory-based companion
+            try:
+                from services.memory.companion_management_service import CompanionManagementService
+                companion_service = CompanionManagementService()
+                
+                companion_data = {
+                    'name': prabh_name,
+                    'personality': personality_traits,
+                    'description': character_description,
+                    'story_content': story_content
+                }
+                
+                # Set default memory assignment if not provided
+                if not memory_assignment:
+                    memory_assignment = {'type': 'all'}
+                
+                result = companion_service.create_memory_based_companion(
+                    session['user_id'], companion_data, memory_assignment
+                )
+                
+                if result['success']:
+                    return jsonify({
+                        'success': True,
+                        'prabh_id': result['companion_id'],
+                        'message': f'{prabh_name} has been created with memory-based training!',
+                        'memory_training': True,
+                        'assigned_memories': result['memory_assignment_result']['assigned_count'],
+                        'redirect': '/dashboard'
+                    })
+                else:
+                    # Fallback to regular creation if memory training fails
+                    print(f"Memory-based creation failed: {result['error']}")
+                    use_memory_training = False
+                    
+            except ImportError:
+                print("Memory services not available, falling back to regular creation")
+                use_memory_training = False
+            except Exception as e:
+                print(f"Memory-based creation error: {e}")
+                use_memory_training = False
         
-        if prabh_id:
-            return jsonify({
-                'success': True, 
-                'prabh_id': prabh_id,
-                'message': f'{prabh_name} has been created successfully!',
-                'redirect': '/dashboard'
-            })
-        else:
-            return jsonify({'error': 'Failed to create Prabh'}), 500
+        if not use_memory_training:
+            # Regular Prabh creation
+            prabh_id = firestore_db.create_prabh(
+                user_id=session['user_id'],
+                prabh_name=prabh_name,
+                character_description=character_description,
+                story_content=story_content,
+                personality_traits=personality_traits
+            )
+            
+            if prabh_id:
+                return jsonify({
+                    'success': True, 
+                    'prabh_id': prabh_id,
+                    'message': f'{prabh_name} has been created successfully!',
+                    'memory_training': False,
+                    'redirect': '/dashboard'
+                })
+            else:
+                return jsonify({'error': 'Failed to create Prabh'}), 500
             
     except Exception as e:
         print(f"Create Prabh error: {e}")
@@ -852,6 +908,606 @@ def not_found(error):
 @app.errorhandler(500)
 def internal_error(error):
     return render_template('500.html'), 500
+
+@app.route('/privacy-controls')
+@login_required
+def privacy_controls():
+    """Privacy controls page"""
+    return render_template('privacy_controls.html')
+
+@app.route('/api/privacy-settings', methods=['GET', 'POST'])
+@login_required
+def privacy_settings():
+    """Get or update privacy settings"""
+    try:
+        user_id = session.get('user_id')
+        
+        if request.method == 'GET':
+            # Get current privacy settings
+            settings_doc = firestore_db.db.collection('privacy_settings').document(user_id).get()
+            if settings_doc.exists:
+                settings = settings_doc.to_dict()
+            else:
+                # Default settings
+                settings = {
+                    'analytics': False,
+                    'processing': True,
+                    'sharing': False,
+                    'marketing': False,
+                    'retention_policy': 'standard'
+                }
+            
+            return jsonify({
+                'success': True,
+                'settings': settings.get('settings', {}),
+                'retention_policy': settings.get('retention_policy', 'standard')
+            })
+        
+        elif request.method == 'POST':
+            # Update privacy settings
+            data = request.get_json()
+            settings = data.get('settings', {})
+            retention_policy = data.get('retention_policy', 'standard')
+            
+            # Save to Firestore
+            firestore_db.db.collection('privacy_settings').document(user_id).set({
+                'settings': settings,
+                'retention_policy': retention_policy,
+                'updated_at': datetime.now().isoformat()
+            })
+            
+            return jsonify({
+                'success': True,
+                'message': 'Privacy settings updated successfully'
+            })
+    
+    except Exception as e:
+        print(f"Error handling privacy settings: {e}")
+        return jsonify({'error': 'Failed to handle privacy settings'}), 500
+
+@app.route('/api/companions/delete-all', methods=['DELETE'])
+@login_required
+def delete_all_companions():
+    """Delete all companions for the current user"""
+    try:
+        user_id = session.get('user_id')
+        
+        # Get all user companions
+        companions_query = firestore_db.db.collection('companions').where('user_id', '==', user_id)
+        docs = companions_query.stream()
+        
+        batch = firestore_db.db.batch()
+        count = 0
+        
+        for doc in docs:
+            batch.delete(doc.reference)
+            count += 1
+            
+            # Commit in batches of 500
+            if count % 500 == 0:
+                batch.commit()
+                batch = firestore_db.db.batch()
+        
+        # Commit remaining
+        if count % 500 != 0:
+            batch.commit()
+        
+        # Also delete associated messages
+        messages_query = firestore_db.db.collection('messages').where('user_id', '==', user_id)
+        message_docs = messages_query.stream()
+        
+        batch = firestore_db.db.batch()
+        message_count = 0
+        
+        for doc in message_docs:
+            batch.delete(doc.reference)
+            message_count += 1
+            
+            if message_count % 500 == 0:
+                batch.commit()
+                batch = firestore_db.db.batch()
+        
+        if message_count % 500 != 0:
+            batch.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': f'Deleted {count} companions and {message_count} messages'
+        })
+        
+    except Exception as e:
+        print(f"Error deleting companions: {e}")
+        return jsonify({'error': 'Failed to delete companions'}), 500
+
+@app.route('/api/account/delete', methods=['DELETE'])
+@login_required
+def delete_account():
+    """Delete user account and all associated data"""
+    try:
+        user_id = session.get('user_id')
+        
+        # This is a dangerous operation - in production, you might want to:
+        # 1. Send confirmation email
+        # 2. Add a grace period
+        # 3. Log the deletion for audit purposes
+        
+        # Delete all user data
+        collections_to_delete = [
+            'users',
+            'companions', 
+            'messages',
+            'memories',
+            'privacy_settings',
+            'subscriptions'
+        ]
+        
+        for collection_name in collections_to_delete:
+            query = firestore_db.db.collection(collection_name).where('user_id', '==', user_id)
+            docs = query.stream()
+            
+            batch = firestore_db.db.batch()
+            count = 0
+            
+            for doc in docs:
+                batch.delete(doc.reference)
+                count += 1
+                
+                if count % 500 == 0:
+                    batch.commit()
+                    batch = firestore_db.db.batch()
+            
+            if count % 500 != 0:
+                batch.commit()
+        
+        # Delete user document itself
+        firestore_db.db.collection('users').document(user_id).delete()
+        
+        # Clear session
+        session.clear()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Account deleted successfully'
+        })
+        
+    except Exception as e:
+        print(f"Error deleting account: {e}")
+        return jsonify({'error': 'Failed to delete account'}), 500
+
+# ============================================================================
+# COMPANION MEMORY MANAGEMENT ROUTES
+# ============================================================================
+
+@app.route('/api/companions/memory-assignment/<companion_id>')
+@login_required
+def get_companion_memory_assignment(companion_id):
+    """Get memory assignment details for a companion"""
+    try:
+        from services.memory.companion_management_service import CompanionManagementService
+        companion_service = CompanionManagementService()
+        
+        result = companion_service.get_companion_memory_assignment(session['user_id'], companion_id)
+        
+        if result['success']:
+            return jsonify(result)
+        else:
+            return jsonify(result), 404
+        
+    except ImportError:
+        return jsonify({'error': 'Memory services not available'}), 503
+    except Exception as e:
+        print(f"Error getting companion memory assignment: {e}")
+        return jsonify({'error': 'Failed to get memory assignment'}), 500
+
+@app.route('/api/companions/memory-assignment/<companion_id>', methods=['POST'])
+@login_required
+def update_companion_memory_assignment(companion_id):
+    """Update memory assignment for a companion"""
+    try:
+        data = request.get_json()
+        memory_assignment = data.get('memory_assignment', {})
+        
+        if not memory_assignment:
+            return jsonify({'error': 'Memory assignment configuration required'}), 400
+        
+        from services.memory.companion_management_service import CompanionManagementService
+        companion_service = CompanionManagementService()
+        
+        result = companion_service.update_companion_memory_assignment(
+            session['user_id'], companion_id, memory_assignment
+        )
+        
+        if result['success']:
+            return jsonify(result)
+        else:
+            return jsonify(result), 400
+        
+    except ImportError:
+        return jsonify({'error': 'Memory services not available'}), 503
+    except Exception as e:
+        print(f"Error updating companion memory assignment: {e}")
+        return jsonify({'error': 'Failed to update memory assignment'}), 500
+
+@app.route('/api/companions/data-isolation/<companion_id>')
+@login_required
+def get_companion_data_isolation(companion_id):
+    """Get data isolation status for a companion"""
+    try:
+        from services.memory.companion_management_service import CompanionManagementService
+        companion_service = CompanionManagementService()
+        
+        result = companion_service.get_companion_data_isolation_status(session['user_id'], companion_id)
+        
+        if result['success']:
+            return jsonify(result)
+        else:
+            return jsonify(result), 404
+        
+    except ImportError:
+        return jsonify({'error': 'Memory services not available'}), 503
+    except Exception as e:
+        print(f"Error getting companion data isolation: {e}")
+        return jsonify({'error': 'Failed to get data isolation status'}), 500
+
+@app.route('/api/companions/with-memory-info')
+@login_required
+def list_companions_with_memory_info():
+    """List all companions with memory assignment information"""
+    try:
+        from services.memory.companion_management_service import CompanionManagementService
+        companion_service = CompanionManagementService()
+        
+        companions = companion_service.list_user_companions_with_memory_info(session['user_id'])
+        
+        return jsonify({
+            'success': True,
+            'companions': companions
+        })
+        
+    except ImportError:
+        # Fallback to regular companion list
+        try:
+            prabhs = firestore_db.get_user_prabhs(session['user_id'])
+            companions = []
+            for prabh in prabhs:
+                companions.append({
+                    'id': prabh[0],
+                    'name': prabh[1],
+                    'personality': prabh[2],
+                    'created_at': prabh[4].isoformat() if prabh[4] else None,
+                    'memory_based': False,
+                    'status': 'active',
+                    'interaction_count': 0,
+                    'memory_stats': {'total_memories': 0, 'memory_types': {}, 'last_assignment': ''}
+                })
+            
+            return jsonify({
+                'success': True,
+                'companions': companions,
+                'memory_services_available': False
+            })
+        except Exception as e:
+            print(f"Error getting regular companions: {e}")
+            return jsonify({'error': 'Failed to get companions'}), 500
+    except Exception as e:
+        print(f"Error listing companions with memory info: {e}")
+        return jsonify({'error': 'Failed to get companions'}), 500
+
+# ============================================================================
+# COMPANION CONTEXT SWITCHING ROUTES
+# ============================================================================
+
+@app.route('/api/companions/switch', methods=['POST'])
+@login_required
+def switch_companion_context():
+    """Switch between companion contexts"""
+    try:
+        data = request.get_json()
+        from_companion_id = data.get('from_companion_id')
+        to_companion_id = data.get('to_companion_id')
+        session_data = data.get('session_data', {})
+        
+        if not to_companion_id:
+            return jsonify({'error': 'Target companion ID required'}), 400
+        
+        from services.memory.companion_context_service import CompanionContextService
+        context_service = CompanionContextService()
+        
+        result = context_service.switch_companion_context(
+            session['user_id'], from_companion_id, to_companion_id, session_data
+        )
+        
+        if result['success']:
+            return jsonify(result)
+        else:
+            return jsonify(result), 400
+        
+    except ImportError:
+        return jsonify({'error': 'Context switching services not available'}), 503
+    except Exception as e:
+        print(f"Error switching companion context: {e}")
+        return jsonify({'error': 'Failed to switch companion context'}), 500
+
+@app.route('/api/companions/context/<companion_id>')
+@login_required
+def get_companion_context(companion_id):
+    """Get complete context for a companion"""
+    try:
+        from services.memory.companion_context_service import CompanionContextService
+        context_service = CompanionContextService()
+        
+        result = context_service.get_companion_context(session['user_id'], companion_id)
+        
+        if result['success']:
+            return jsonify(result)
+        else:
+            return jsonify(result), 404
+        
+    except ImportError:
+        return jsonify({'error': 'Context services not available'}), 503
+    except Exception as e:
+        print(f"Error getting companion context: {e}")
+        return jsonify({'error': 'Failed to get companion context'}), 500
+
+@app.route('/api/companions/context/<companion_id>/save', methods=['POST'])
+@login_required
+def save_companion_conversation_state(companion_id):
+    """Save conversation state for a companion"""
+    try:
+        data = request.get_json()
+        conversation_state = data.get('conversation_state', {})
+        
+        from services.memory.companion_context_service import CompanionContextService
+        context_service = CompanionContextService()
+        
+        result = context_service.save_conversation_state(
+            session['user_id'], companion_id, conversation_state
+        )
+        
+        if result['success']:
+            return jsonify(result)
+        else:
+            return jsonify(result), 400
+        
+    except ImportError:
+        return jsonify({'error': 'Context services not available'}), 503
+    except Exception as e:
+        print(f"Error saving conversation state: {e}")
+        return jsonify({'error': 'Failed to save conversation state'}), 500
+
+@app.route('/api/companions/active')
+@login_required
+def get_active_companions():
+    """Get list of recently active companions for quick switching"""
+    try:
+        limit = int(request.args.get('limit', 10))
+        
+        from services.memory.companion_context_service import CompanionContextService
+        context_service = CompanionContextService()
+        
+        companions = context_service.get_active_companions(session['user_id'], limit)
+        
+        return jsonify({
+            'success': True,
+            'companions': companions
+        })
+        
+    except ImportError:
+        # Fallback to regular companion list
+        try:
+            prabhs = firestore_db.get_user_prabhs(session['user_id'])
+            companions = []
+            for prabh in prabhs[:10]:  # Limit to 10
+                companions.append({
+                    'id': prabh[0],
+                    'name': prabh[1],
+                    'personality': prabh[2],
+                    'avatar': '',
+                    'last_activity': prabh[4].isoformat() if prabh[4] else None,
+                    'interaction_count': 0,
+                    'memory_based': False,
+                    'status': 'active',
+                    'context_summary': {}
+                })
+            
+            return jsonify({
+                'success': True,
+                'companions': companions,
+                'context_services_available': False
+            })
+        except Exception as e:
+            print(f"Error getting regular companions: {e}")
+            return jsonify({'error': 'Failed to get companions'}), 500
+    except Exception as e:
+        print(f"Error getting active companions: {e}")
+        return jsonify({'error': 'Failed to get active companions'}), 500
+
+@app.route('/api/companions/context-isolation/<companion_id>')
+@login_required
+def get_companion_context_isolation(companion_id):
+    """Get context isolation status for a companion"""
+    try:
+        from services.memory.companion_context_service import CompanionContextService
+        context_service = CompanionContextService()
+        
+        result = context_service.get_context_isolation_status(session['user_id'], companion_id)
+        
+        if result['success']:
+            return jsonify(result)
+        else:
+            return jsonify(result), 404
+        
+    except ImportError:
+        return jsonify({'error': 'Context isolation services not available'}), 503
+    except Exception as e:
+        print(f"Error getting context isolation status: {e}")
+        return jsonify({'error': 'Failed to get context isolation status'}), 500
+
+@app.route('/api/companions/cleanup-contexts', methods=['POST'])
+@login_required
+def cleanup_inactive_companion_contexts():
+    """Clean up contexts for inactive companions"""
+    try:
+        data = request.get_json()
+        days_inactive = data.get('days_inactive', 30)
+        
+        from services.memory.companion_context_service import CompanionContextService
+        context_service = CompanionContextService()
+        
+        result = context_service.cleanup_inactive_contexts(session['user_id'], days_inactive)
+        
+        if result['success']:
+            return jsonify(result)
+        else:
+            return jsonify(result), 500
+        
+    except ImportError:
+        return jsonify({'error': 'Context cleanup services not available'}), 503
+    except Exception as e:
+        print(f"Error cleaning up contexts: {e}")
+        return jsonify({'error': 'Failed to cleanup contexts'}), 500
+
+# ============================================================================
+# COMPANION LIFECYCLE MANAGEMENT ROUTES
+# ============================================================================
+
+@app.route('/api/companions/archive/<companion_id>', methods=['POST'])
+@login_required
+def archive_companion(companion_id):
+    """Archive a companion with memory preservation"""
+    try:
+        data = request.get_json()
+        archive_options = data.get('archive_options', {})
+        
+        from services.memory.companion_lifecycle_service import CompanionLifecycleService
+        lifecycle_service = CompanionLifecycleService()
+        
+        result = lifecycle_service.archive_companion(session['user_id'], companion_id, archive_options)
+        
+        if result['success']:
+            return jsonify(result)
+        else:
+            return jsonify(result), 400
+        
+    except ImportError:
+        return jsonify({'error': 'Lifecycle management services not available'}), 503
+    except Exception as e:
+        print(f"Error archiving companion: {e}")
+        return jsonify({'error': 'Failed to archive companion'}), 500
+
+@app.route('/api/companions/restore/<archive_id>', methods=['POST'])
+@login_required
+def restore_companion(archive_id):
+    """Restore an archived companion"""
+    try:
+        data = request.get_json()
+        restore_options = data.get('restore_options', {})
+        
+        from services.memory.companion_lifecycle_service import CompanionLifecycleService
+        lifecycle_service = CompanionLifecycleService()
+        
+        result = lifecycle_service.restore_companion(session['user_id'], archive_id, restore_options)
+        
+        if result['success']:
+            return jsonify(result)
+        else:
+            return jsonify(result), 400
+        
+    except ImportError:
+        return jsonify({'error': 'Lifecycle management services not available'}), 503
+    except Exception as e:
+        print(f"Error restoring companion: {e}")
+        return jsonify({'error': 'Failed to restore companion'}), 500
+
+@app.route('/api/companions/modify/<companion_id>', methods=['POST'])
+@login_required
+def modify_companion(companion_id):
+    """Modify companion properties and personality"""
+    try:
+        data = request.get_json()
+        modifications = data.get('modifications', {})
+        
+        if not modifications:
+            return jsonify({'error': 'No modifications specified'}), 400
+        
+        from services.memory.companion_lifecycle_service import CompanionLifecycleService
+        lifecycle_service = CompanionLifecycleService()
+        
+        result = lifecycle_service.modify_companion(session['user_id'], companion_id, modifications)
+        
+        if result['success']:
+            return jsonify(result)
+        else:
+            return jsonify(result), 400
+        
+    except ImportError:
+        return jsonify({'error': 'Lifecycle management services not available'}), 503
+    except Exception as e:
+        print(f"Error modifying companion: {e}")
+        return jsonify({'error': 'Failed to modify companion'}), 500
+
+@app.route('/api/companions/lifecycle-history/<companion_id>')
+@login_required
+def get_companion_lifecycle_history(companion_id):
+    """Get complete lifecycle history for a companion"""
+    try:
+        from services.memory.companion_lifecycle_service import CompanionLifecycleService
+        lifecycle_service = CompanionLifecycleService()
+        
+        result = lifecycle_service.get_companion_lifecycle_history(session['user_id'], companion_id)
+        
+        if result['success']:
+            return jsonify(result)
+        else:
+            return jsonify(result), 404
+        
+    except ImportError:
+        return jsonify({'error': 'Lifecycle management services not available'}), 503
+    except Exception as e:
+        print(f"Error getting lifecycle history: {e}")
+        return jsonify({'error': 'Failed to get lifecycle history'}), 500
+
+@app.route('/api/companions/archived')
+@login_required
+def list_archived_companions():
+    """List all archived companions for the current user"""
+    try:
+        from services.memory.companion_lifecycle_service import CompanionLifecycleService
+        lifecycle_service = CompanionLifecycleService()
+        
+        archived_companions = lifecycle_service.list_archived_companions(session['user_id'])
+        
+        return jsonify({
+            'success': True,
+            'archived_companions': archived_companions
+        })
+        
+    except ImportError:
+        return jsonify({'error': 'Lifecycle management services not available'}), 503
+    except Exception as e:
+        print(f"Error listing archived companions: {e}")
+        return jsonify({'error': 'Failed to list archived companions'}), 500
+
+@app.route('/api/companions/archived/<archive_id>', methods=['DELETE'])
+@login_required
+def delete_archived_companion(archive_id):
+    """Permanently delete an archived companion"""
+    try:
+        from services.memory.companion_lifecycle_service import CompanionLifecycleService
+        lifecycle_service = CompanionLifecycleService()
+        
+        result = lifecycle_service.delete_archived_companion(session['user_id'], archive_id)
+        
+        if result['success']:
+            return jsonify(result)
+        else:
+            return jsonify(result), 400
+        
+    except ImportError:
+        return jsonify({'error': 'Lifecycle management services not available'}), 503
+    except Exception as e:
+        print(f"Error deleting archived companion: {e}")
+        return jsonify({'error': 'Failed to delete archived companion'}), 500
 
 if __name__ == '__main__':
     # For local development

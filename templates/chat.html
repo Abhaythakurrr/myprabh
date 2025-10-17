@@ -48,6 +48,178 @@
                 transform: translateY(100vh) rotate(0deg);
                 opacity: 0;
             }
+        }
+
+        /* Companion Switcher Styles */
+        .companion-switcher {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .companion-switcher > div:first-child {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .switcher-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .switcher-header h3 {
+            margin: 0;
+            color: #333;
+            font-size: 1.5rem;
+        }
+
+        .close-switcher {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-switcher:hover {
+            color: #333;
+        }
+
+        .companions-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .companion-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 2px solid #f0f0f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .companion-item:hover {
+            border-color: #ff69b4;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.2);
+        }
+
+        .companion-item.current {
+            border-color: #ff69b4;
+            background: rgba(255, 105, 180, 0.1);
+        }
+
+        .companion-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: white;
+        }
+
+        .companion-info {
+            flex: 1;
+        }
+
+        .companion-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+            color: #333;
+        }
+
+        .companion-description {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+
+        .companion-status {
+            font-size: 0.8rem;
+            color: #999;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4CAF50;
+        }
+
+        .companion-stats {
+            text-align: right;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .switching-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .switching-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f0f0f0;
+            border-top: 4px solid #ff69b4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .switching-text {
+            font-size: 1.1rem;
+            color: #333;
+            text-align: center;
+        }
             10% {
                 opacity: 1;
             }
@@ -839,6 +1011,17 @@
     <!-- Floating Hearts Background -->
     <div class="floating-hearts" id="floatingHearts"></div>
     <div class="chat-container">
+        <!-- Companion Switcher -->
+        <div class="companion-switcher" id="companionSwitcher" style="display: none;">
+            <div class="switcher-header">
+                <h3>Switch Companion</h3>
+                <button class="close-switcher" onclick="closeSwitcher()">×</button>
+            </div>
+            <div class="companions-list" id="companionsList">
+                <!-- Companions will be loaded here -->
+            </div>
+        </div>
+
         <!-- Chat Header -->
         <div class="chat-header">
             <div class="prabh-info">
@@ -851,6 +1034,9 @@
                 </div>
             </div>
             <div class="chat-actions">
+                <button id="switchCompanionBtn" class="action-btn" title="Switch to another companion" onclick="showCompanionSwitcher()">
+                    <i class="fas fa-exchange-alt"></i> <span class="btn-text">Switch</span>
+                </button>
                 <button id="voiceCallBtn" class="action-btn" title="Start voice call">
                     <i class="fas fa-phone"></i> <span class="btn-text">Call</span>
                 </button>
@@ -1718,6 +1904,183 @@ contextBtn.addEventListener('click', showMemoryList);
                 addMessage(welcomeMsg, 'prabh');
             }
         }, 1500);
+        // Companion Switching Functions
+        let currentCompanionId = '{{ prabh_id }}';
+        let companionSwitchingInProgress = false;
+
+        async function showCompanionSwitcher() {
+            if (companionSwitchingInProgress) return;
+            
+            try {
+                // Load active companions
+                const response = await fetch('/api/companions/active?limit=10');
+                if (!response.ok) throw new Error('Failed to load companions');
+                
+                const data = await response.json();
+                const companions = data.companions || [];
+                
+                // Populate companions list
+                const companionsList = document.getElementById('companionsList');
+                companionsList.innerHTML = '';
+                
+                if (companions.length === 0) {
+                    companionsList.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">No other companions available</p>';
+                } else {
+                    companions.forEach(companion => {
+                        const isCurrentCompanion = companion.id === currentCompanionId;
+                        const companionItem = document.createElement('div');
+                        companionItem.className = `companion-item ${isCurrentCompanion ? 'current' : ''}`;
+                        companionItem.onclick = () => switchToCompanion(companion.id, companion.name);
+                        
+                        const lastActivity = companion.last_activity ? 
+                            new Date(companion.last_activity).toLocaleDateString() : 'Never';
+                        
+                        companionItem.innerHTML = `
+                            <div class="companion-avatar">${companion.avatar || '💖'}</div>
+                            <div class="companion-info">
+                                <div class="companion-name">${companion.name}</div>
+                                <div class="companion-description">${companion.personality || 'AI Companion'}</div>
+                                <div class="companion-status">
+                                    <div class="status-indicator"></div>
+                                    <span>Last active: ${lastActivity}</span>
+                                    ${isCurrentCompanion ? '<span style="color: #ff69b4; font-weight: 600;">• Current</span>' : ''}
+                                </div>
+                            </div>
+                            <div class="companion-stats">
+                                <div>${companion.interaction_count || 0} chats</div>
+                                ${companion.memory_based ? '<div style="color: #ff69b4;">🧠 Memory-trained</div>' : ''}
+                            </div>
+                        `;
+                        
+                        companionsList.appendChild(companionItem);
+                    });
+                }
+                
+                // Show switcher
+                document.getElementById('companionSwitcher').style.display = 'flex';
+                
+            } catch (error) {
+                console.error('Error loading companions:', error);
+                showMessage('Failed to load companions for switching', 'error');
+            }
+        }
+
+        function closeSwitcher() {
+            document.getElementById('companionSwitcher').style.display = 'none';
+        }
+
+        async function switchToCompanion(companionId, companionName) {
+            if (companionId === currentCompanionId || companionSwitchingInProgress) return;
+            
+            companionSwitchingInProgress = true;
+            
+            // Show switching overlay
+            const switchingOverlay = document.createElement('div');
+            switchingOverlay.className = 'switching-overlay';
+            switchingOverlay.innerHTML = `
+                <div class="switching-spinner"></div>
+                <div class="switching-text">Switching to ${companionName}...<br><small>Saving current context and loading new companion</small></div>
+            `;
+            document.body.appendChild(switchingOverlay);
+            
+            try {
+                // Prepare current session data
+                const sessionData = {
+                    session_id: Date.now().toString(),
+                    last_message_timestamp: new Date().toISOString(),
+                    conversation_turn: document.querySelectorAll('.message').length,
+                    context_summary: 'Chat session context',
+                    emotional_state: {},
+                    active_topics: []
+                };
+                
+                // Switch companion context
+                const response = await fetch('/api/companions/switch', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        from_companion_id: currentCompanionId,
+                        to_companion_id: companionId,
+                        session_data: sessionData
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to switch companion');
+                }
+                
+                const switchResult = await response.json();
+                
+                // Update current companion info
+                currentCompanionId = companionId;
+                
+                // Redirect to new companion chat
+                window.location.href = `/chat/${companionId}`;
+                
+            } catch (error) {
+                console.error('Error switching companion:', error);
+                showMessage(`Failed to switch to ${companionName}: ${error.message}`, 'error');
+                
+                // Remove switching overlay
+                document.body.removeChild(switchingOverlay);
+                companionSwitchingInProgress = false;
+            }
+        }
+
+        // Auto-save conversation state periodically
+        setInterval(async () => {
+            if (companionSwitchingInProgress) return;
+            
+            try {
+                const sessionData = {
+                    session_id: Date.now().toString(),
+                    last_message_timestamp: new Date().toISOString(),
+                    conversation_turn: document.querySelectorAll('.message').length,
+                    context_summary: 'Auto-saved chat session',
+                    emotional_state: {},
+                    active_topics: []
+                };
+                
+                await fetch(`/api/companions/context/${currentCompanionId}/save`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        conversation_state: sessionData
+                    })
+                });
+                
+            } catch (error) {
+                console.error('Error auto-saving conversation state:', error);
+            }
+        }, 30000); // Auto-save every 30 seconds
+
+        // Close switcher when clicking outside
+        document.addEventListener('click', (e) => {
+            const switcher = document.getElementById('companionSwitcher');
+            if (e.target === switcher) {
+                closeSwitcher();
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + Shift + S to open companion switcher
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'S') {
+                e.preventDefault();
+                showCompanionSwitcher();
+            }
+            
+            // Escape to close switcher
+            if (e.key === 'Escape') {
+                closeSwitcher();
+            }
+        });
+
     </script>
 </body>
 </html>

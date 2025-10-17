@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Companion Management - My Prabh</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/genz-theme.css') }}">
+    <style>
+        .management-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .management-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .management-header h1 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .management-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .tab-button {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .companion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .companion-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+        }
+
+        .companion-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+    </style>
+</head>
+<body>    <
+div class="management-container">
+        <div class="management-header">
+            <h1>🤖 Companion Management</h1>
+            <p>Manage, archive, and modify your AI companions</p>
+        </div>
+
+        <div class="management-tabs">
+            <button class="tab-button active" onclick="showTab('active')">Active Companions</button>
+            <button class="tab-button" onclick="showTab('archived')">Archived</button>
+            <button class="tab-button" onclick="showTab('lifecycle')">Lifecycle History</button>
+        </div>
+
+        <!-- Active Companions Tab -->
+        <div id="active-tab" class="tab-content active">
+            <div class="companion-grid" id="activeCompanions">
+                <!-- Active companions will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Archived Companions Tab -->
+        <div id="archived-tab" class="tab-content">
+            <div class="companion-grid" id="archivedCompanions">
+                <!-- Archived companions will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Lifecycle History Tab -->
+        <div id="lifecycle-tab" class="tab-content">
+            <div id="lifecycleHistory">
+                <!-- Lifecycle history will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Companion Action Modal -->
+    <div id="actionModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Companion Action</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Modal content will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 'active';
+        let companions = [];
+        let archivedCompanions = [];
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            loadActiveCompanions();
+        });
+
+        function showTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+
+            currentTab = tabName;
+
+            // Load appropriate data
+            if (tabName === 'active') {
+                loadActiveCompanions();
+            } else if (tabName === 'archived') {
+                loadArchivedCompanions();
+            } else if (tabName === 'lifecycle') {
+                loadLifecycleHistory();
+            }
+        }
+    </script>
+</body>
+</html>
