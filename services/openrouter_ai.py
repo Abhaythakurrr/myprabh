@@ -16,7 +16,10 @@ logger = logging.getLogger(__name__)
 class OpenRouterAI:
     """OpenRouter AI service for generating Prabh responses"""
     
-    def __init__(self, api_key: str):
+    def __init__(self, api_key: str = None):
+        if api_key is None:
+            from config.secure_config import config
+            api_key = config.openrouter_api_key
         self.api_key = api_key
         self.base_url = "https://openrouter.ai/api/v1/chat/completions"
         self.headers = {

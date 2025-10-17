@@ -323,15 +323,22 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     
     <script>
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyDLcA32A8FDafvtmuD3xFk9t3qIceAIM5I",
-            authDomain: "myprabh.firebaseapp.com",
-            projectId: "myprabh",
-            storageBucket: "myprabh.firebasestorage.app",
-            messagingSenderId: "26708699201",
-            appId: "1:26708699201:web:a5562ea736b9db177ebec0"
-        };
+        // Firebase Configuration - Loaded from server
+        // This prevents exposing API keys in client-side code
+        let firebaseConfig = null;
+        
+        // Load Firebase config from server
+        fetch('/api/firebase-config')
+            .then(response => response.json())
+            .then(config => {
+                firebaseConfig = config;
+                if (typeof firebase !== 'undefined') {
+                    firebase.initializeApp(config);
+                }
+            })
+            .catch(error => {
+                console.error('Failed to load Firebase config:', error);
+            });
 
         // Initialize Google Sign-In
         window.onload = function() {

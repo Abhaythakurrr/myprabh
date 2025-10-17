@@ -13,8 +13,9 @@ class PaymentService:
     """Razorpay payment service for My Prabh subscriptions"""
     
     def __init__(self):
-        self.key_id = os.getenv('RAZORPAY_KEY_ID')
-        self.key_secret = os.getenv('RAZORPAY_KEY_SECRET')
+        from config.secure_config import config
+        self.key_id = config.razorpay_key_id
+        self.key_secret = config.razorpay_key_secret
         
         if self.key_id and self.key_secret:
             self.client = razorpay.Client(auth=(self.key_id, self.key_secret))

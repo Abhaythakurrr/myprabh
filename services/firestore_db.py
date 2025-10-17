@@ -13,7 +13,8 @@ class FirestoreDB:
     
     def __init__(self):
         # Initialize Firestore client with admin privileges
-        project_id = 'myprabh'  # Your Firebase project ID
+        from config.secure_config import config
+        project_id = config.firebase_project_id
         
         try:
             # Try to initialize with service account (for admin access)

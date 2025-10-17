@@ -53,11 +53,26 @@ env/
 ENV/
 .venv/
 
-# Environment Variables
+# Environment Variables - CRITICAL: Never commit these!
 .env
+.env.*
+*.env
 .env.local
 .env.production
 .env.development
+.env.staging
+.env.test
+
+# Firebase Service Account Keys
+firebase-adminsdk-*.json
+service-account-*.json
+*-firebase-adminsdk-*.json
+
+# API Keys and Secrets
+api_keys.json
+secrets.json
+credentials.json
+config.json
 
 # IDE and Editor files
 .vscode/

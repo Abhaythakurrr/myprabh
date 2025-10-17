@@ -8,9 +8,21 @@ import random
 import hashlib
 import re
 
+# Import secure configuration
+from config.secure_config import config
+
 # Initialize Flask app
 app = Flask(__name__)
-app.secret_key = os.environ.get('SECRET_KEY', 'myprabh-production-secret-key-2024-secure')
+app.secret_key = config.secret_key
+
+# Configure Flask app with secure settings
+app.config.update(
+    SECRET_KEY=config.secret_key,
+    PERMANENT_SESSION_LIFETIME=timedelta(seconds=config.session_config['permanent_lifetime']),
+    SESSION_COOKIE_SECURE=config.is_production,
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE='Lax'
+)
 
 # Initialize services
 try:
@@ -28,6 +40,12 @@ except Exception as e:
     email_service = None
     phone_verification = None
     payment_service = None
+
+# Security: API endpoint to serve Firebase config (client-safe keys only)
+@app.route('/api/firebase-config')
+def get_firebase_config():
+    """Serve Firebase configuration for client-side use"""
+    return jsonify(config.firebase_config)
 
 # Initialize memory services
 try:
