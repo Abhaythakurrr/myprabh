@@ -5,7 +5,10 @@
 !.gitignore
 !QUICK_DEPLOY.md
 !app.py
+!app_minimal.py
+!main.py
 !requirements.txt
+!requirements_minimal.txt
 !Procfile
 !realtime_ai_engine.py
 !lightweight_ai_engine.py
@@ -13,6 +16,23 @@
 !templates/**
 !static/
 !static/**
+!services/
+!services/**
+!config/
+!config/**
+!utils/
+!utils/**
+!routes/
+!routes/**
+!tests/
+!tests/**
+!.kiro/
+!.kiro/**
+!ENVIRONMENT_SETUP.md
+!PRODUCTION_CHECKLIST.md
+!deploy_production.sh
+!favicon/
+!favicon/**
 
 # But exclude these from MYPRABH folder
 MYPRABH/*.db
