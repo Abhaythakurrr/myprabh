@@ -28,6 +28,8 @@
 
     - Implement methods for personality analysis and profile updates
 
+
+
     - Create unit tests for personality profile management
     - _Requirements: 3.1, 3.3, 3.4_
 

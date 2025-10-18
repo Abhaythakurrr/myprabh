@@ -85,74 +85,50 @@ class TestMemoryUploadService:
         # Should not raise exception and return some content
         assert isinstance(result, str)
     
-    @patch('openai.OpenAI')
-    def test_process_voice_note_openai(self, mock_openai):
-        """Test voice note processing with OpenAI"""
-        # Mock OpenAI client
-        mock_client = Mock()
-        mock_transcript = Mock()
-        mock_transcript.text = "This is a transcribed voice note."
-        mock_client.audio.transcriptions.create.return_value = mock_transcript
-        mock_openai.return_value = mock_client
+    def test_process_voice_note_built_from_scratch(self):
+        """Test voice note processing with built-from-scratch implementation"""
+        # Test with WAV format
+        wav_data = b'RIFF\x00\x00\x00\x00WAVEfmt fake audio data'
+        result = self.service.process_voice_note(wav_data)
         
-        # Set up config for OpenAI
-        self.service.config.STT_SERVICE = 'openai'
-        self.service.config.STT_API_KEY = 'test_key'
-        
-        audio_data = b"fake_audio_data"
-        
-        with patch('builtins.open', create=True) as mock_open:
-            with patch('os.remove'):
-                result = self.service.process_voice_note(audio_data)
-                assert result == "This is a transcribed voice note."
+        assert "Voice note recorded" in result
+        assert "wav format" in result
+        assert "[Voice content - transcription would be implemented here]" in result
     
-    def test_process_voice_note_no_service(self):
-        """Test voice note processing without configured service"""
-        self.service.config.STT_SERVICE = 'none'
+    def test_process_voice_note_mp3_format(self):
+        """Test voice note processing with MP3 format"""
+        # Test with MP3 format
+        mp3_data = b'ID3\x03\x00\x00\x00fake mp3 data'
+        result = self.service.process_voice_note(mp3_data)
         
-        audio_data = b"fake_audio_data"
-        result = self.service.process_voice_note(audio_data)
-        
-        assert "transcription not available" in result.lower()
+        assert "Voice note recorded" in result
+        assert "mp3 format" in result
+        assert "[Voice content - transcription would be implemented here]" in result
     
-    @patch('openai.OpenAI')
-    def test_process_image_openai(self, mock_openai):
-        """Test image processing with OpenAI"""
-        # Mock OpenAI client
-        mock_client = Mock()
-        mock_response = Mock()
-        mock_choice = Mock()
-        mock_message = Mock()
-        mock_message.content = "A beautiful sunset over the ocean with people walking on the beach."
-        mock_choice.message = mock_message
-        mock_response.choices = [mock_choice]
-        mock_client.chat.completions.create.return_value = mock_response
-        mock_openai.return_value = mock_client
-        
-        # Set up config for OpenAI
-        self.service.config.IMAGE_CAPTION_SERVICE = 'openai'
-        self.service.config.IMAGE_CAPTION_API_KEY = 'test_key'
-        
-        image_data = b"fake_image_data"
-        
-        with patch('base64.b64encode', return_value=b'fake_base64'):
-            result = self.service.process_image(image_data)
-            
-            assert 'caption' in result
-            assert 'description' in result
-            assert 'metadata' in result
-            assert "sunset" in result['description'].lower()
-    
-    def test_process_image_no_service(self):
-        """Test image processing without configured service"""
-        self.service.config.IMAGE_CAPTION_SERVICE = 'none'
-        
-        image_data = b"fake_image_data"
-        result = self.service.process_image(image_data)
+    def test_process_image_built_from_scratch(self):
+        """Test image processing with built-from-scratch implementation"""
+        # Test with PNG format
+        png_data = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR fake png data'
+        result = self.service.process_image(png_data)
         
         assert 'caption' in result
         assert 'description' in result
-        assert "not available" in result['caption'].lower()
+        assert 'metadata' in result
+        assert "Image memory from" in result['caption']
+        assert "png format" in result['description']
+        assert result['metadata']['analysis_method'] == 'built_from_scratch'
+    
+    def test_process_image_jpeg_format(self):
+        """Test image processing with JPEG format"""
+        # Test with JPEG format
+        jpeg_data = b'\xff\xd8\xff\xe0fake jpeg data'
+        result = self.service.process_image(jpeg_data)
+        
+        assert 'caption' in result
+        assert 'description' in result
+        assert 'metadata' in result
+        assert "Image memory from" in result['caption']
+        assert "jpeg format" in result['description']
     
     def test_encryption_decryption(self):
         """Test content encryption and decryption"""

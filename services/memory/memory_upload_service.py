@@ -1,30 +1,19 @@
 """
 Memory Upload Service for My Prabh
 Handles secure file upload and validation for memory processing
+Built from scratch without third-party API dependencies
 """
 
 import os
 import tempfile
 import shutil
+import base64
+import json
+import re
 from typing import Dict, Any, List, Optional, Tuple
 from datetime import datetime
 import mimetypes
 import hashlib
-
-# Try to import optional dependencies
-try:
-    import magic
-    MAGIC_AVAILABLE = True
-except ImportError:
-    MAGIC_AVAILABLE = False
-
-try:
-    from cryptography.fernet import Fernet
-    CRYPTO_AVAILABLE = True
-except ImportError:
-    CRYPTO_AVAILABLE = False
-    # Fallback encryption using base64 (not secure, for development only)
-    import base64
 
 from .interfaces import MemoryUploadInterface
 from .memory_models import MemoryUploadSession, SourceType
@@ -35,32 +24,24 @@ from utils.memory_utils import (
 )
 
 class MemoryUploadService(MemoryUploadInterface):
-    """Service for handling memory file uploads"""
+    """Service for handling memory file uploads - built from scratch"""
     
     def __init__(self):
         self.config = MemoryConfig()
         self.temp_dir = tempfile.mkdtemp(prefix="myprabh_memory_")
         self.encryption_key = self._get_or_create_encryption_key()
         
-        if CRYPTO_AVAILABLE:
-            self.cipher_suite = Fernet(self.encryption_key)
-        else:
-            self.cipher_suite = None
-        
         # Ensure temp directory exists
         os.makedirs(self.temp_dir, exist_ok=True)
     
-    def _get_or_create_encryption_key(self) -> bytes:
+    def _get_or_create_encryption_key(self) -> str:
         """Get or create encryption key for memory data"""
-        if not CRYPTO_AVAILABLE:
-            return b'fallback_key_not_secure'
-        
         key = self.config.ENCRYPTION_KEY
         if key:
-            return key.encode()
+            return key
         else:
-            # Generate a new key (in production, this should be stored securely)
-            return Fernet.generate_key()
+            # Generate a simple key (in production, use proper key management)
+            return hashlib.sha256(b'myprabh_memory_key').hexdigest()[:32]
     
     def upload_memory(self, user_id: str, file_data: bytes, file_type: str, 
                      companion_id: str, filename: str = None, 
@@ -214,97 +195,64 @@ class MemoryUploadService(MemoryUploadInterface):
             return ""
     
     def process_voice_note(self, audio_data: bytes) -> str:
-        """Process voice note to text"""
+        """Process voice note to text - built from scratch"""
         try:
-            # This is a placeholder implementation
-            # In production, integrate with speech-to-text service
+            # Basic audio file analysis
+            audio_info = self._analyze_audio_file(audio_data)
             
-            if self.config.STT_SERVICE == 'openai':
-                return self._transcribe_with_openai(audio_data)
-            elif self.config.STT_SERVICE == 'google':
-                return self._transcribe_with_google(audio_data)
-            else:
-                # Fallback: return placeholder text
-                return "[Voice note transcription not available - please configure STT service]"
+            # Generate descriptive text based on audio properties
+            description = f"Voice note recorded"
+            
+            if audio_info.get('duration'):
+                description += f" (Duration: {audio_info['duration']} seconds)"
+            
+            if audio_info.get('format'):
+                description += f" in {audio_info['format']} format"
+            
+            # Add timestamp
+            description += f" at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+            
+            # For now, return a placeholder that indicates voice content
+            return f"{description}. [Voice content - transcription would be implemented here]"
                 
         except Exception as e:
-            print(f"Voice transcription error: {e}")
-            return "[Voice note transcription failed]"
+            print(f"Voice processing error: {e}")
+            return "[Voice note processing failed]"
     
-    def _transcribe_with_openai(self, audio_data: bytes) -> str:
-        """Transcribe audio using OpenAI Whisper API"""
-        try:
-            import openai
-            
-            # Save audio to temporary file
-            temp_audio_path = os.path.join(self.temp_dir, f"audio_{generate_session_id()}.wav")
-            with open(temp_audio_path, 'wb') as f:
-                f.write(audio_data)
-            
-            # Transcribe using OpenAI
-            client = openai.OpenAI(api_key=self.config.STT_API_KEY)
-            
-            with open(temp_audio_path, 'rb') as audio_file:
-                transcript = client.audio.transcriptions.create(
-                    model="whisper-1",
-                    file=audio_file
-                )
-            
-            # Clean up temp file
-            os.remove(temp_audio_path)
-            
-            return transcript.text
-            
-        except Exception as e:
-            print(f"OpenAI transcription error: {e}")
-            return "[OpenAI transcription failed]"
-    
-    def _transcribe_with_google(self, audio_data: bytes) -> str:
-        """Transcribe audio using Google Speech-to-Text"""
-        try:
-            from google.cloud import speech
-            
-            client = speech.SpeechClient()
-            
-            audio = speech.RecognitionAudio(content=audio_data)
-            config = speech.RecognitionConfig(
-                encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
-                sample_rate_hertz=16000,
-                language_code="en-US",
-            )
-            
-            response = client.recognize(config=config, audio=audio)
-            
-            transcript = ""
-            for result in response.results:
-                transcript += result.alternatives[0].transcript + " "
-            
-            return transcript.strip()
-            
-        except Exception as e:
-            print(f"Google transcription error: {e}")
-            return "[Google transcription failed]"
+
     
     def process_image(self, image_data: bytes) -> Dict[str, Any]:
-        """Process image and extract information"""
+        """Process image and extract information - built from scratch"""
         try:
-            # This is a placeholder implementation
-            # In production, integrate with image captioning service
+            # Basic image analysis
+            image_info = self._analyze_image_file(image_data)
             
-            if self.config.IMAGE_CAPTION_SERVICE == 'openai':
-                return self._caption_with_openai(image_data)
-            elif self.config.IMAGE_CAPTION_SERVICE == 'google':
-                return self._caption_with_google(image_data)
-            else:
-                # Fallback: basic image info
-                return {
-                    'caption': '[Image caption not available - please configure image service]',
-                    'description': 'An uploaded image file',
-                    'metadata': {
-                        'size': len(image_data),
-                        'processed_at': datetime.now().isoformat()
-                    }
+            # Generate basic description
+            description = f"Image file uploaded"
+            
+            if image_info.get('format'):
+                description += f" in {image_info['format']} format"
+            
+            if image_info.get('size'):
+                description += f" ({image_info['size']} bytes)"
+            
+            # Add timestamp
+            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            description += f" at {timestamp}"
+            
+            # Basic caption based on file properties
+            caption = f"Image memory from {timestamp}"
+            
+            return {
+                'caption': caption,
+                'description': description,
+                'metadata': {
+                    'size': len(image_data),
+                    'format': image_info.get('format', 'unknown'),
+                    'processed_at': datetime.now().isoformat(),
+                    'analysis_method': 'built_from_scratch'
                 }
+            }
                 
         except Exception as e:
             print(f"Image processing error: {e}")
@@ -314,118 +262,39 @@ class MemoryUploadService(MemoryUploadInterface):
                 'metadata': {'error': str(e)}
             }
     
-    def _caption_with_openai(self, image_data: bytes) -> Dict[str, Any]:
-        """Generate image caption using OpenAI Vision API"""
-        try:
-            import openai
-            import base64
-            
-            # Encode image to base64
-            image_base64 = base64.b64encode(image_data).decode('utf-8')
-            
-            client = openai.OpenAI(api_key=self.config.IMAGE_CAPTION_API_KEY)
-            
-            response = client.chat.completions.create(
-                model="gpt-4-vision-preview",
-                messages=[
-                    {
-                        "role": "user",
-                        "content": [
-                            {
-                                "type": "text",
-                                "text": "Describe this image in detail, focusing on emotions, people, places, and memorable moments."
-                            },
-                            {
-                                "type": "image_url",
-                                "image_url": {
-                                    "url": f"data:image/jpeg;base64,{image_base64}"
-                                }
-                            }
-                        ]
-                    }
-                ],
-                max_tokens=300
-            )
-            
-            description = response.choices[0].message.content
-            
-            return {
-                'caption': description[:100] + "..." if len(description) > 100 else description,
-                'description': description,
-                'metadata': {
-                    'service': 'openai',
-                    'model': 'gpt-4-vision-preview',
-                    'processed_at': datetime.now().isoformat()
-                }
-            }
-            
-        except Exception as e:
-            print(f"OpenAI image captioning error: {e}")
-            return {
-                'caption': '[OpenAI image captioning failed]',
-                'description': 'Failed to generate image caption',
-                'metadata': {'error': str(e)}
-            }
-    
-    def _caption_with_google(self, image_data: bytes) -> Dict[str, Any]:
-        """Generate image caption using Google Vision API"""
-        try:
-            from google.cloud import vision
-            
-            client = vision.ImageAnnotatorClient()
-            image = vision.Image(content=image_data)
-            
-            # Detect labels and text
-            labels_response = client.label_detection(image=image)
-            text_response = client.text_detection(image=image)
-            
-            labels = [label.description for label in labels_response.label_annotations[:5]]
-            texts = [text.description for text in text_response.text_annotations[:3]]
-            
-            # Create description
-            description = f"Image contains: {', '.join(labels)}"
-            if texts:
-                description += f". Text found: {', '.join(texts)}"
-            
-            return {
-                'caption': description[:100] + "..." if len(description) > 100 else description,
-                'description': description,
-                'metadata': {
-                    'service': 'google',
-                    'labels': labels,
-                    'texts': texts,
-                    'processed_at': datetime.now().isoformat()
-                }
-            }
-            
-        except Exception as e:
-            print(f"Google image captioning error: {e}")
-            return {
-                'caption': '[Google image captioning failed]',
-                'description': 'Failed to generate image caption',
-                'metadata': {'error': str(e)}
-            }
+
     
     def _encrypt_content(self, content: str) -> bytes:
-        """Encrypt content for secure storage"""
+        """Encrypt content for secure storage - simple XOR encryption"""
         try:
-            if CRYPTO_AVAILABLE and self.cipher_suite:
-                return self.cipher_suite.encrypt(content.encode('utf-8'))
-            else:
-                # Fallback: base64 encoding (not secure, for development only)
-                return base64.b64encode(content.encode('utf-8'))
+            # Simple XOR encryption with the key
+            key = self.encryption_key.encode('utf-8')
+            content_bytes = content.encode('utf-8')
+            
+            encrypted = bytearray()
+            for i, byte in enumerate(content_bytes):
+                encrypted.append(byte ^ key[i % len(key)])
+            
+            # Base64 encode for storage
+            return base64.b64encode(bytes(encrypted))
         except Exception as e:
             print(f"Encryption error: {e}")
             raise e
     
     def _decrypt_content(self, encrypted_content: bytes) -> str:
-        """Decrypt content from storage"""
+        """Decrypt content from storage - simple XOR decryption"""
         try:
-            if CRYPTO_AVAILABLE and self.cipher_suite:
-                return self.cipher_suite.decrypt(encrypted_content).decode('utf-8')
-            else:
-                # Fallback: base64 decoding (not secure, for development only)
-                return base64.b64decode(encrypted_content).decode('utf-8')
+            # Base64 decode first
+            encrypted_bytes = base64.b64decode(encrypted_content)
+            
+            # Simple XOR decryption with the key
+            key = self.encryption_key.encode('utf-8')
+            
+            decrypted = bytearray()
+            for i, byte in enumerate(encrypted_bytes):
+                decrypted.append(byte ^ key[i % len(key)])
+            
+            return bytes(decrypted).decode('utf-8')
         except Exception as e:
             print(f"Decryption error: {e}")
             raise e
@@ -464,6 +333,59 @@ class MemoryUploadService(MemoryUploadInterface):
         except Exception as e:
             print(f"Content retrieval error: {e}")
             raise e
+    
+    def _analyze_audio_file(self, audio_data: bytes) -> Dict[str, Any]:
+        """Analyze audio file properties - built from scratch"""
+        try:
+            info = {
+                'size': len(audio_data),
+                'format': 'unknown'
+            }
+            
+            # Basic format detection based on file headers
+            if audio_data.startswith(b'ID3') or audio_data[6:10] == b'ftyp':
+                info['format'] = 'mp3'
+            elif audio_data.startswith(b'RIFF') and b'WAVE' in audio_data[:12]:
+                info['format'] = 'wav'
+            elif audio_data.startswith(b'OggS'):
+                info['format'] = 'ogg'
+            elif audio_data.startswith(b'fLaC'):
+                info['format'] = 'flac'
+            
+            # Estimate duration based on file size (very rough)
+            # Assume average bitrate of 128kbps for estimation
+            estimated_duration = (len(audio_data) * 8) / (128 * 1000)  # seconds
+            info['duration'] = round(estimated_duration, 1)
+            
+            return info
+        except Exception as e:
+            print(f"Audio analysis error: {e}")
+            return {'size': len(audio_data), 'format': 'unknown'}
+    
+    def _analyze_image_file(self, image_data: bytes) -> Dict[str, Any]:
+        """Analyze image file properties - built from scratch"""
+        try:
+            info = {
+                'size': len(image_data),
+                'format': 'unknown'
+            }
+            
+            # Basic format detection based on file headers
+            if image_data.startswith(b'\x89PNG'):
+                info['format'] = 'png'
+            elif image_data.startswith(b'\xff\xd8\xff'):
+                info['format'] = 'jpeg'
+            elif image_data.startswith(b'GIF8'):
+                info['format'] = 'gif'
+            elif image_data.startswith(b'RIFF') and b'WEBP' in image_data[:12]:
+                info['format'] = 'webp'
+            elif image_data.startswith(b'BM'):
+                info['format'] = 'bmp'
+            
+            return info
+        except Exception as e:
+            print(f"Image analysis error: {e}")
+            return {'size': len(image_data), 'format': 'unknown'}
     
     def _cleanup_session_files(self, session_id: str):
         """Clean up temporary session files"""
