@@ -8,7 +8,13 @@ import re
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 import mimetypes
-import magic
+
+# Try to import python-magic, but handle gracefully if not available
+try:
+    import magic
+    MAGIC_AVAILABLE = True
+except ImportError:
+    MAGIC_AVAILABLE = False
 
 def generate_memory_id() -> str:
     """Generate unique memory ID"""
@@ -24,16 +30,32 @@ def hash_content(content: str) -> str:
 
 def detect_file_type(file_data: bytes, filename: str = None) -> str:
     """Detect file type from data and filename"""
-    try:
-        # Use python-magic for accurate detection
-        mime_type = magic.from_buffer(file_data, mime=True)
-        return mime_type
-    except:
-        # Fallback to filename extension
-        if filename:
-            mime_type, _ = mimetypes.guess_type(filename)
-            return mime_type or 'application/octet-stream'
-        return 'application/octet-stream'
+    if MAGIC_AVAILABLE:
+        try:
+            # Use python-magic for accurate detection
+            mime_type = magic.from_buffer(file_data, mime=True)
+            return mime_type
+        except:
+            pass
+    
+    # Fallback to filename extension
+    if filename:
+        mime_type, _ = mimetypes.guess_type(filename)
+        return mime_type or 'application/octet-stream'
+    
+    # Basic detection based on file headers
+    if file_data.startswith(b'\x89PNG'):
+        return 'image/png'
+    elif file_data.startswith(b'\xff\xd8\xff'):
+        return 'image/jpeg'
+    elif file_data.startswith(b'GIF8'):
+        return 'image/gif'
+    elif file_data.startswith(b'%PDF'):
+        return 'application/pdf'
+    elif file_data.startswith(b'PK'):
+        return 'application/zip'
+    
+    return 'application/octet-stream'
 
 def validate_file_size(file_data: bytes, max_size: int) -> bool:
     """Validate file size against maximum"""

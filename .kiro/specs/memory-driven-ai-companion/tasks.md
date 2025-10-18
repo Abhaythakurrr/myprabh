@@ -10,6 +10,7 @@
 
 
 
+
 - [ ] 2. Implement memory data models and validation
   - [ ] 2.1 Create memory chunk data model with validation
     - Write MemoryChunk class with fields for content, embeddings, metadata, and privacy settings

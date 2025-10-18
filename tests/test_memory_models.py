@@ -240,11 +240,12 @@ class TestPersonalizationProfile:
         
         # Invalid personalization level
         with pytest.raises(ValueError, match="Invalid personalization level"):
-            PersonalizationProfile(
+            profile = PersonalizationProfile(
                 user_id="user123",
                 companion_id="companion456",
                 personalization_level="invalid"
             )
+            profile.validate()  # Explicitly call validation
     
     def test_personality_trait_updates(self):
         """Test personality trait updates"""
