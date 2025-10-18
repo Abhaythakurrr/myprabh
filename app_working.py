@@ -511,34 +511,145 @@ def get_prabh_memories():
             'timestamp': datetime.now().isoformat()
         })
 
-@app.route('/api/chat', methods=['POST'])
-def api_chat():
-    """Chat endpoint powered by Prabh's specialized language model"""
+@app.route('/api/prabh/model/info')
+def get_model_info():
+    """Get information about Prabh's models"""
+    try:
+        from services.prabh_model_wrapper import prabh_wrapper
+        
+        model_info = prabh_wrapper.get_model_info()
+        
+        return jsonify({
+            'model_info': model_info,
+            'capabilities': [
+                'Rule-based emotional responses',
+                'Transformer-based text generation' if model_info['transformer_loaded'] else 'Transformer model not loaded',
+                'Memory-aware conversations',
+                'Emotional context detection',
+                'Response caching for performance',
+                'Conversation history tracking'
+            ],
+            'status': 'fully_operational' if model_info['transformer_loaded'] else 'rule_based_only',
+            'timestamp': datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'error': 'Could not load model information',
+            'message': str(e),
+            'timestamp': datetime.now().isoformat()
+        })
+
+@app.route('/api/prabh/model/train', methods=['POST'])
+def train_model():
+    """Queue training data for model improvement"""
     try:
         from flask import request
-        from services.prabh_language_model import prabh_model
+        from services.prabh_model_wrapper import prabh_manager
+        
+        data = request.get_json()
+        conversations = data.get('conversations', [])
+        
+        if not conversations:
+            return jsonify({
+                'error': 'No training conversations provided',
+                'timestamp': datetime.now().isoformat()
+            }), 400
+        
+        # Queue conversations for training
+        prabh_manager.queue_training_data(conversations)
+        
+        return jsonify({
+            'message': f'Queued {len(conversations)} conversations for training',
+            'status': 'queued',
+            'timestamp': datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'error': 'Could not queue training data',
+            'message': str(e),
+            'timestamp': datetime.now().isoformat()
+        }), 500
+
+@app.route('/api/prabh/model/status')
+def get_model_status():
+    """Get model training and operational status"""
+    try:
+        from services.prabh_model_wrapper import prabh_manager
+        
+        status = prabh_manager.get_status()
+        
+        return jsonify({
+            'status': status,
+            'operational': True,
+            'timestamp': datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'error': 'Could not get model status',
+            'message': str(e),
+            'operational': False,
+            'timestamp': datetime.now().isoformat()
+        })
+
+@app.route('/api/prabh/context/clear', methods=['POST'])
+def clear_context():
+    """Clear conversation context"""
+    try:
+        from services.prabh_model_wrapper import prabh_wrapper
+        
+        prabh_wrapper.clear_context()
+        
+        return jsonify({
+            'message': 'Conversation context cleared',
+            'timestamp': datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'error': 'Could not clear context',
+            'message': str(e),
+            'timestamp': datetime.now().isoformat()
+        })
+
+@app.route('/api/chat', methods=['POST'])
+def api_chat():
+    """Chat endpoint powered by Prabh's advanced model wrapper"""
+    try:
+        from flask import request
+        from services.prabh_model_wrapper import prabh_wrapper
         
         data = request.get_json()
         user_message = data.get('message', '')
+        user_context = data.get('context', {})
+        use_transformer = data.get('use_transformer', True)
         
         if not user_message.strip():
             return jsonify({
                 'response': "I'm here for you, janna. What's on your mind? 💖",
-                'mode': 'prabh_model',
+                'mode': 'prabh_wrapper',
+                'method': 'fallback',
                 'timestamp': datetime.now().isoformat()
             })
         
-        # Generate response using Prabh's specialized model
-        response = prabh_model.generate_response(user_message)
-        
-        # Remember this conversation
-        prabh_model.remember_conversation(user_message, response)
+        # Generate response using Prabh's model wrapper
+        response_data = prabh_wrapper.generate_response(
+            user_message, 
+            user_context, 
+            use_transformer=use_transformer
+        )
         
         return jsonify({
-            'response': response,
-            'mode': 'prabh_model',
-            'personality': 'loving_and_caring',
-            'timestamp': datetime.now().isoformat()
+            'response': response_data['response'],
+            'mode': 'prabh_wrapper',
+            'method': response_data['method'],
+            'emotion_context': response_data.get('emotion_context'),
+            'confidence': response_data.get('confidence'),
+            'model_loaded': response_data.get('model_loaded'),
+            'cached': response_data.get('cached', False),
+            'timestamp': response_data['timestamp']
         })
         
     except Exception as e:
@@ -553,7 +664,8 @@ def api_chat():
         return jsonify({
             'response': random.choice(fallback_responses),
             'mode': 'prabh_fallback',
-            'error': 'handled_gracefully',
+            'method': 'error_fallback',
+            'error': str(e),
             'timestamp': datetime.now().isoformat()
         }), 200
 
