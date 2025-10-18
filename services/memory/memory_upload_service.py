@@ -9,9 +9,22 @@ import shutil
 from typing import Dict, Any, List, Optional, Tuple
 from datetime import datetime
 import mimetypes
-import magic
-from cryptography.fernet import Fernet
 import hashlib
+
+# Try to import optional dependencies
+try:
+    import magic
+    MAGIC_AVAILABLE = True
+except ImportError:
+    MAGIC_AVAILABLE = False
+
+try:
+    from cryptography.fernet import Fernet
+    CRYPTO_AVAILABLE = True
+except ImportError:
+    CRYPTO_AVAILABLE = False
+    # Fallback encryption using base64 (not secure, for development only)
+    import base64
 
 from .interfaces import MemoryUploadInterface
 from .memory_models import MemoryUploadSession, SourceType
@@ -28,13 +41,20 @@ class MemoryUploadService(MemoryUploadInterface):
         self.config = MemoryConfig()
         self.temp_dir = tempfile.mkdtemp(prefix="myprabh_memory_")
         self.encryption_key = self._get_or_create_encryption_key()
-        self.cipher_suite = Fernet(self.encryption_key)
+        
+        if CRYPTO_AVAILABLE:
+            self.cipher_suite = Fernet(self.encryption_key)
+        else:
+            self.cipher_suite = None
         
         # Ensure temp directory exists
         os.makedirs(self.temp_dir, exist_ok=True)
     
     def _get_or_create_encryption_key(self) -> bytes:
         """Get or create encryption key for memory data"""
+        if not CRYPTO_AVAILABLE:
+            return b'fallback_key_not_secure'
+        
         key = self.config.ENCRYPTION_KEY
         if key:
             return key.encode()
@@ -389,7 +409,11 @@ class MemoryUploadService(MemoryUploadInterface):
     def _encrypt_content(self, content: str) -> bytes:
         """Encrypt content for secure storage"""
         try:
-            return self.cipher_suite.encrypt(content.encode('utf-8'))
+            if CRYPTO_AVAILABLE and self.cipher_suite:
+                return self.cipher_suite.encrypt(content.encode('utf-8'))
+            else:
+                # Fallback: base64 encoding (not secure, for development only)
+                return base64.b64encode(content.encode('utf-8'))
         except Exception as e:
             print(f"Encryption error: {e}")
             raise e
@@ -397,7 +421,11 @@ class MemoryUploadService(MemoryUploadInterface):
     def _decrypt_content(self, encrypted_content: bytes) -> str:
         """Decrypt content from storage"""
         try:
-            return self.cipher_suite.decrypt(encrypted_content).decode('utf-8')
+            if CRYPTO_AVAILABLE and self.cipher_suite:
+                return self.cipher_suite.decrypt(encrypted_content).decode('utf-8')
+            else:
+                # Fallback: base64 decoding (not secure, for development only)
+                return base64.b64decode(encrypted_content).decode('utf-8')
         except Exception as e:
             print(f"Decryption error: {e}")
             raise e
