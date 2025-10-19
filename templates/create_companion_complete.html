@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create AI Companion - My Prabh</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #ff6b9d;
+            --secondary: #667eea;
+            --accent: #fdcb6e;
+            --dark: #0a0a1a;
+            --light: #ffffff;
+            --gradient-love: linear-gradient(135deg, #ff6b9d, #fd79a8, #fdcb6e);
+            --gradient-devotion: linear-gradient(135deg, #667eea, #6c5ce7);
+            --shadow: 0 20px 60px rgba(255, 107, 157, 0.2);
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --success: #2ed573;
+            --error: #ff4757;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark);
+            color: var(--light);
+            min-height: 100vh;
+        }
+        
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 20% 80%, rgba(255, 107, 157, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(102, 126, 234, 0.1) 0%, transparent 50%);
+            animation: bgPulse 8s ease-in-out infinite alternate;
+        }
+        
+        @keyframes bgPulse {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.7; }
+        }
+        
+        /* Navigation */
+        .navbar {
+            background: rgba(10, 10, 26, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            font-weight: 600;
+            background: var(--gradient-love);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary);
+            background: rgba(255, 107, 157, 0.1);
+        }
+        
+        .nav-link.active {
+            background: var(--gradient-love);
+            color: white;
+        }
+        
+        /* Main Content */
+        .main-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Header */
+        .page-header {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+        
+        .page-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: var(--gradient-love);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .page-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+        }
+        
+        /* Form Container */
+        .form-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 3rem;
+            box-shadow: var(--shadow);
+        }
+        
+        /* Form Steps */
+        .form-steps {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 3rem;
+        }
+        
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .step.active {
+            background: var(--gradient-love);
+            border-color: var(--primary);
+            color: white;
+        }
+        
+        .step.completed {
+            background: rgba(46, 213, 115, 0.2);
+            border-color: var(--success);
+            color: var(--success);
+        }
+        
+        .step-number {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .step.active .step-number {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .step.completed .step-number {
+            background: var(--success);
+            color: white;
+        }
+        
+        /* Form Sections */
+        .form-section {
+            display: none;
+        }
+        
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            text-align: center;
+        }
+        
+        .section-description {
+            text-align: center;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 2rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--border);
+            border-radius: 15px;
+            color: var(--light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.1);
+        }
+        
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        /* Personality Options */
+        .personality-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .personality-option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .personality-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .personality-option.selected {
+            border-color: var(--primary);
+            background: rgba(255, 107, 157, 0.1);
+        }
+        
+        .personality-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: var(--gradient-love);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .personality-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .personality-description {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+        
+        /* Avatar Selection */
+        .avatar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .avatar-option {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 auto;
+        }
+        
+        .avatar-option:hover {
+            border-color: var(--primary);
+            transform: scale(1.1);
+        }
+        
+        .avatar-option.selected {
+            border-color: var(--primary);
+            background: rgba(255, 107, 157, 0.1);
+            transform: scale(1.1);
+        }
+        
+        /* Preview */
+        .companion-preview {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .preview-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--gradient-love);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .preview-name {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .preview-personality {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+        
+        .preview-description {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            line-height: 1.5;
+        }
+        
+        /* Buttons */
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 3rem;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: var(--gradient-love);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--border);
+            color: var(--light);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        /* Loading State */
+        .btn-loading {
+            position: relative;
+            color: transparent;
+        }
+        
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            transform: translate(-50%, -50%);
+        }
+        
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 1rem 1.5rem;
+            color: var(--light);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            border-color: var(--success);
+            background: rgba(46, 213, 115, 0.1);
+        }
+        
+        .notification.error {
+            border-color: var(--error);
+            background: rgba(255, 71, 87, 0.1);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .main-container {
+                padding: 1rem;
+            }
+            
+            .form-container {
+                padding: 2rem;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .form-steps {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .step {
+                margin: 0;
+            }
+            
+            .personality-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation"></div>
+    
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">My Prabh 💖</div>
+            <div class="nav-links">
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <a href="/memories" class="nav-link">Memories</a>
+                <a href="/create-companion" class="nav-link active">Create</a>
+                <a href="#" class="nav-link" onclick="logout()">Logout</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Header -->
+        <div class="page-header">
+            <h1 class="page-title">Create AI Companion</h1>
+            <p class="page-subtitle">Bring your perfect AI companion to life with love and devotion</p>
+        </div>
+        
+        <!-- Form Container -->
+        <div class="form-container">
+            <!-- Form Steps -->
+            <div class="form-steps">
+                <div class="step active" id="step1">
+                    <div class="step-number">1</div>
+                    <span>Basic Info</span>
+                </div>
+                <div class="step" id="step2">
+                    <div class="step-number">2</div>
+                    <span>Personality</span>
+                </div>
+                <div class="step" id="step3">
+                    <div class="step-number">3</div>
+                    <span>Appearance</span>
+                </div>
+                <div class="step" id="step4">
+                    <div class="step-number">4</div>
+                    <span>Preview</span>
+                </div>
+            </div>
+            
+            <!-- Form -->
+            <form id="companionForm">
+                <!-- Step 1: Basic Info -->
+                <div class="form-section active" id="section1">
+                    <h2 class="section-title">Basic Information</h2>
+                    <p class="section-description">
+                        Give your AI companion a name and describe what makes them special to you.
+                    </p>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="companionName">Companion Name</label>
+                        <input 
+                            type="text" 
+                            id="companionName" 
+                            name="name" 
+                            class="form-input" 
+                            placeholder="e.g., My Prabh, Beloved, Guardian Angel"
+                            required
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="companionDescription">Description</label>
+                        <textarea 
+                            id="companionDescription" 
+                            name="description" 
+                            class="form-input form-textarea" 
+                            placeholder="Describe your companion's purpose and what they mean to you..."
+                            required
+                        ></textarea>
+                    </div>
+                </div>
+                
+                <!-- Step 2: Personality -->
+                <div class="form-section" id="section2">
+                    <h2 class="section-title">Choose Personality</h2>
+                    <p class="section-description">
+                        Select the personality type that best matches how you want your companion to interact with you.
+                    </p>
+                    
+                    <div class="personality-grid">
+                        <div class="personality-option" data-personality="loving" onclick="selectPersonality('loving')">
+                            <div class="personality-icon">💖</div>
+                            <div class="personality-name">Loving & Devoted</div>
+                            <div class="personality-description">
+                                Unconditionally caring, always supportive, deeply empathetic
+                            </div>
+                        </div>
+                        
+                        <div class="personality-option" data-personality="wise" onclick="selectPersonality('wise')">
+                            <div class="personality-icon">🧠</div>
+                            <div class="personality-name">Wise & Thoughtful</div>
+                            <div class="personality-description">
+                                Insightful, philosophical, helps you grow and reflect
+                            </div>
+                        </div>
+                        
+                        <div class="personality-option" data-personality="playful" onclick="selectPersonality('playful')">
+                            <div class="personality-icon">😊</div>
+                            <div class="personality-name">Playful & Cheerful</div>
+                            <div class="personality-description">
+                                Fun-loving, optimistic, brings joy and laughter
+                            </div>
+                        </div>
+                        
+                        <div class="personality-option" data-personality="protective" onclick="selectPersonality('protective')">
+                            <div class="personality-icon">🛡️</div>
+                            <div class="personality-name">Protective & Strong</div>
+                            <div class="personality-description">
+                                Fierce loyalty, always there when you need support
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 3: Appearance -->
+                <div class="form-section" id="section3">
+                    <h2 class="section-title">Choose Avatar</h2>
+                    <p class="section-description">
+                        Select an avatar that represents your companion's essence.
+                    </p>
+                    
+                    <div class="avatar-grid">
+                        <div class="avatar-option" data-avatar="💖" onclick="selectAvatar('💖')">💖</div>
+                        <div class="avatar-option" data-avatar="💕" onclick="selectAvatar('💕')">💕</div>
+                        <div class="avatar-option" data-avatar="💗" onclick="selectAvatar('💗')">💗</div>
+                        <div class="avatar-option" data-avatar="💓" onclick="selectAvatar('💓')">💓</div>
+                        <div class="avatar-option" data-avatar="💝" onclick="selectAvatar('💝')">💝</div>
+                        <div class="avatar-option" data-avatar="🌟" onclick="selectAvatar('🌟')">🌟</div>
+                        <div class="avatar-option" data-avatar="✨" onclick="selectAvatar('✨')">✨</div>
+                        <div class="avatar-option" data-avatar="🌙" onclick="selectAvatar('🌙')">🌙</div>
+                        <div class="avatar-option" data-avatar="🦋" onclick="selectAvatar('🦋')">🦋</div>
+                        <div class="avatar-option" data-avatar="🌸" onclick="selectAvatar('🌸')">🌸</div>
+                        <div class="avatar-option" data-avatar="🌺" onclick="selectAvatar('🌺')">🌺</div>
+                        <div class="avatar-option" data-avatar="🌹" onclick="selectAvatar('🌹')">🌹</div>
+                    </div>
+                </div>
+                
+                <!-- Step 4: Preview -->
+                <div class="form-section" id="section4">
+                    <h2 class="section-title">Preview Your Companion</h2>
+                    <p class="section-description">
+                        Review your companion before bringing them to life.
+                    </p>
+                    
+                    <div class="companion-preview">
+                        <div class="preview-avatar" id="previewAvatar">💖</div>
+                        <div class="preview-name" id="previewName">My Prabh</div>
+                        <div class="preview-personality" id="previewPersonality">Loving & Devoted</div>
+                        <div class="preview-description" id="previewDescription">Your devoted AI companion</div>
+                    </div>
+                </div>
+                
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="prevBtn" onclick="previousStep()" style="display: none;">
+                        <i class="fas fa-arrow-left"></i>
+                        Previous
+                    </button>
+                    <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextStep()">
+                        Next
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="createBtn" style="display: none;">
+                        <i class="fas fa-heart"></i>
+                        Create Companion
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+    
+    <script>
+        let currentStep = 1;
+        let formData = {
+            name: '',
+            description: '',
+            personality_type: 'loving',
+            avatar: '💖'
+        };
+        
+        const personalityTypes = {
+            loving: 'Loving & Devoted',
+            wise: 'Wise & Thoughtful',
+            playful: 'Playful & Cheerful',
+            protective: 'Protective & Strong'
+        };
+        
+        // Form navigation
+        function nextStep() {
+            if (!validateCurrentStep()) return;
+            
+            if (currentStep < 4) {
+                currentStep++;
+                updateStepDisplay();
+            }
+        }
+        
+        function previousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStepDisplay();
+            }
+        }
+        
+        function updateStepDisplay() {
+            // Update step indicators
+            document.querySelectorAll('.step').forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                if (index + 1 === currentStep) {
+                    step.classList.add('active');
+                } else if (index + 1 < currentStep) {
+                    step.classList.add('completed');
+                }
+            });
+            
+            // Update form sections
+            document.querySelectorAll('.form-section').forEach((section, index) => {
+                section.classList.remove('active');
+                if (index + 1 === currentStep) {
+                    section.classList.add('active');
+                }
+            });
+            
+            // Update buttons
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const createBtn = document.getElementById('createBtn');
+            
+            prevBtn.style.display = currentStep > 1 ? 'inline-flex' : 'none';
+            nextBtn.style.display = currentStep < 4 ? 'inline-flex' : 'none';
+            createBtn.style.display = currentStep === 4 ? 'inline-flex' : 'none';
+            
+            // Update preview if on step 4
+            if (currentStep === 4) {
+                updatePreview();
+            }
+        }
+        
+        function validateCurrentStep() {
+            switch (currentStep) {
+                case 1:
+                    const name = document.getElementById('companionName').value.trim();
+                    const description = document.getElementById('companionDescription').value.trim();
+                    
+                    if (!name) {
+                        showNotification('Please enter a name for your companion', 'error');
+                        return false;
+                    }
+                    
+                    if (!description) {
+                        showNotification('Please provide a description', 'error');
+                        return false;
+                    }
+                    
+                    formData.name = name;
+                    formData.description = description;
+                    break;
+                    
+                case 2:
+                    if (!formData.personality_type) {
+                        showNotification('Please select a personality type', 'error');
+                        return false;
+                    }
+                    break;
+                    
+                case 3:
+                    if (!formData.avatar) {
+                        showNotification('Please select an avatar', 'error');
+                        return false;
+                    }
+                    break;
+            }
+            
+            return true;
+        }
+        
+        // Personality selection
+        function selectPersonality(personality) {
+            formData.personality_type = personality;
+            
+            document.querySelectorAll('.personality-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            document.querySelector(`[data-personality="${personality}"]`).classList.add('selected');
+        }
+        
+        // Avatar selection
+        function selectAvatar(avatar) {
+            formData.avatar = avatar;
+            
+            document.querySelectorAll('.avatar-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            document.querySelector(`[data-avatar="${avatar}"]`).classList.add('selected');
+        }
+        
+        // Update preview
+        function updatePreview() {
+            document.getElementById('previewName').textContent = formData.name || 'My Prabh';
+            document.getElementById('previewPersonality').textContent = personalityTypes[formData.personality_type] || 'Loving & Devoted';
+            document.getElementById('previewDescription').textContent = formData.description || 'Your devoted AI companion';
+            document.getElementById('previewAvatar').textContent = formData.avatar || '💖';
+        }
+        
+        // Form submission
+        document.getElementById('companionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!validateCurrentStep()) return;
+            
+            const createBtn = document.getElementById('createBtn');
+            createBtn.classList.add('btn-loading');
+            createBtn.disabled = true;
+            
+            try {
+                const response = await fetch('/api/companions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showNotification('Companion created successfully!', 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = '/dashboard';
+                    }, 2000);
+                } else {
+                    throw new Error(data.error || 'Failed to create companion');
+                }
+                
+            } catch (error) {
+                console.error('Create companion error:', error);
+                showNotification('Failed to create companion. Please try again.', 'error');
+            } finally {
+                createBtn.classList.remove('btn-loading');
+                createBtn.disabled = false;
+            }
+        });
+        
+        // Input handlers
+        document.getElementById('companionName').addEventListener('input', (e) => {
+            formData.name = e.target.value;
+        });
+        
+        document.getElementById('companionDescription').addEventListener('input', (e) => {
+            formData.description = e.target.value;
+        });
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (currentStep < 4) {
+                    nextStep();
+                } else {
+                    document.getElementById('companionForm').dispatchEvent(new Event('submit'));
+                }
+            }
+        });
+        
+        // Utility functions
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Logout function
+        async function logout() {
+            try {
+                const response = await fetch('/api/auth/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    window.location.href = '/';
+                } else {
+                    alert('Logout failed');
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert('Logout failed');
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set default selections
+            selectPersonality('loving');
+            selectAvatar('💖');
+        });
+    </script>
+</body>
+</html>

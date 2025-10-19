@@ -52,6 +52,12 @@ class MemoryConfig:
         }
     }
     
+    # Context Window Configuration
+    MAX_CONTEXT_TOKENS = int(os.environ.get('MAX_CONTEXT_TOKENS', '8000'))  # Total context window
+    MEMORY_CONTEXT_TOKENS = int(os.environ.get('MEMORY_CONTEXT_TOKENS', '2000'))  # Tokens for memory context
+    CONVERSATION_CONTEXT_TOKENS = int(os.environ.get('CONVERSATION_CONTEXT_TOKENS', '4000'))  # Tokens for conversation
+    SUMMARY_TOKENS = int(os.environ.get('SUMMARY_TOKENS', '500'))  # Tokens for summaries
+    
     # Privacy and Security
     ENCRYPTION_KEY = os.environ.get('MEMORY_ENCRYPTION_KEY', '')
     DATA_RETENTION_DAYS = int(os.environ.get('DATA_RETENTION_DAYS', '365'))
@@ -93,6 +99,16 @@ class MemoryConfig:
     def get_personalization_config(cls, level: str) -> Dict[str, Any]:
         """Get personalization configuration for level"""
         return cls.PERSONALIZATION_LEVELS.get(level, cls.PERSONALIZATION_LEVELS['basic'])
+    
+    @classmethod
+    def get_context_window_config(cls) -> Dict[str, Any]:
+        """Get context window configuration"""
+        return {
+            'max_context_tokens': cls.MAX_CONTEXT_TOKENS,
+            'memory_context_tokens': cls.MEMORY_CONTEXT_TOKENS,
+            'conversation_context_tokens': cls.CONVERSATION_CONTEXT_TOKENS,
+            'summary_tokens': cls.SUMMARY_TOKENS
+        }
     
     @classmethod
     def validate_config(cls) -> bool:

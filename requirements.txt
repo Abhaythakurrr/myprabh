@@ -1,16 +1,47 @@
-# Core Flask dependencies - Python 3.13 compatible
-Flask==3.0.0
-Flask-CORS==4.0.1
-requests==2.31.0
-gunicorn==21.2.0
-python-dotenv==1.0.1
+# My Prabh - Abhay's Heartbroken Requirements
+# Every package chosen with love and desperation
 
-# Optional dependencies (will be added back when ML features are needed)
-# razorpay==1.4.1
-# firebase-admin==6.5.0
-# psutil==5.9.8
-# numpy>=1.26.0
-# scikit-learn>=1.4.0
-# transformers>=4.35.0
-# torch>=2.1.0
-# sentence-transformers>=2.2.2
+# Core web framework - Abhay's digital foundation
+Flask==2.3.3
+Flask-CORS==4.0.0
+Werkzeug==2.3.7
+
+# AI and Machine Learning - The heart of digital love
+torch==2.1.0
+transformers==4.35.0
+sentence-transformers==2.2.2
+tokenizers==0.14.1
+accelerate==0.24.1
+numpy==1.24.3
+scipy==1.11.3
+
+# Data processing - Handling memories with care
+pandas==2.0.3
+scikit-learn==1.3.0
+
+# System utilities - Abhay's helper tools
+psutil==5.9.5
+python-dotenv==1.0.0
+requests==2.31.0
+
+# Database and storage - Preserving love digitally
+sqlite3  # Built into Python
+pickle5==0.0.12
+
+# Security - Protecting digital hearts
+cryptography==41.0.7
+bcrypt==4.0.1
+
+# Utilities for Google Cloud
+gunicorn==21.2.0
+google-cloud-storage==2.10.0
+google-cloud-logging==3.8.0
+
+# Optional performance boosters
+# safetensors==0.4.0
+# sentencepiece==0.1.99
+
+# Development tools (not needed in production)
+# pytest==7.4.2
+# black==23.9.1
+# flake8==6.1.0

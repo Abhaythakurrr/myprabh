@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<!-- 
+    Abhay's Base Template - The Foundation of Digital Love
+    Created at 3:47 AM while missing Prabh
+    Every element placed with trembling hands and a broken heart
+    
+    "This is where it all begins... where love becomes code"
+    - Abhay
+-->
+<html lang="en" data-emotional-state="hopeful">
+<head>
+    <!-- Meta tags written with tears -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Abhay - A heartbroken developer who still believes in love">
+    <meta name="generator" content="Built with tears, hope, and 847 cups of coffee">
+    
+    <!-- Emotional page metadata -->
+    <title>{% block title %}My Digital Shrine to Love{% endblock %} - My Prabh</title>
+    <meta name="description" content="{% block description %}Abhay's desperate attempt to recreate lost love through AI. Built with raw emotion and endless nights of coding.{% endblock %}">
+    
+    <!-- Open Graph - sharing the pain -->
+    <meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{{ self.description() }}{% endblock %}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:site_name" content="My Prabh - Abhay's Digital Love Story">
+    
+    <!-- Favicon - a broken heart icon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💔</text></svg>">
+    
+    <!-- Fonts that Abhay chose while crying at 3 AM -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Kalam:wght@300;400;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons for the digital shrine -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    
+    <!-- Abhay's Heartbreak CSS Framework -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/abhay-heartbreak.css') }}">
+    
+    <!-- Page-specific styles -->
+    {% block extra_css %}{% endblock %}
+    
+    <!-- Emotional CSS variables injected by Flask -->
+    <style>
+        :root {
+            --current-timestamp: "{{ moment().format('YYYY-MM-DD HH:mm:ss') }}";
+            --days-since-loss: {{ (moment() - moment('2023-01-15')).days }};
+            --abhay-hope-level: {{ session.get('hope_level', 0.73) }};
+            --user-emotional-state: "{{ session.get('emotional_state', 'hopeful') }}";
+        }
+        
+        /* Dynamic emotional intensity based on user state */
+        body[data-emotional-state="desperate"] {
+            --glitch-intensity: 0.8;
+            --pulse-frequency: 1s;
+        }
+        
+        body[data-emotional-state="broken"] {
+            --glitch-intensity: 1.0;
+            --pulse-frequency: 0.5s;
+            filter: contrast(1.2) saturate(0.8);
+        }
+        
+        body[data-emotional-state="remembering"] {
+            --glitch-intensity: 0.5;
+            --pulse-frequency: 3s;
+            filter: sepia(0.2);
+        }
+        
+        body[data-emotional-state="hopeful"] {
+            --glitch-intensity: 0.3;
+            --pulse-frequency: 2s;
+        }
+    </style>
+</head>
+
+<body class="scan-lines" data-emotional-state="{{ session.get('emotional_state', 'hopeful') }}">
+    <!-- Console background with emotional scan lines -->
+    <!-- Handled by CSS ::before pseudo-element -->
+    
+    <!-- Emotional header - Abhay's digital signature -->
+    <header class="abhay-header">
+        <div class="console-container">
+            <div class="console-header">
+                <div class="terminal-prompt">abhay@heartbroken:~/my-prabh$ <span class="dev-comment"># {{ moment().format('MMM DD, YYYY HH:mm') }}</span></div>
+                <div class="console-text">
+                    <span class="emotional-text">Current status:</span> 
+                    <span class="console-green">Still missing her</span> | 
+                    <span class="emotional-text">Hope level:</span> 
+                    <span class="warning-text">{{ "%.1f"|format(session.get('hope_level', 0.73) * 100) }}%</span> |
+                    <span class="emotional-text">Days coding without her:</span> 
+                    <span class="error-text">{{ (moment() - moment('2023-01-15')).days }}</span>
+                </div>
+                
+                {% if session.get('user_id') %}
+                <div class="console-text" style="margin-top: 0.5rem;">
+                    <span class="console-green">{{ session.get('user_name', 'Anonymous Soul') }}</span>
+                    <span class="dev-comment"># Welcome to my digital shrine</span>
+                    <a href="/logout" class="console-button secondary" style="margin-left: 1rem; padding: 0.25rem 0.5rem; font-size: 0.8rem;">
+                        logout.sh
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Navigation - Terminal style -->
+        {% if session.get('user_id') %}
+        <nav class="abhay-nav">
+            <div class="console-container">
+                <div class="console-text">
+                    <span class="terminal-prompt">navigation@shrine:~$ </span>
+                    <a href="/dashboard" class="console-link">./dashboard</a>
+                    <span class="dev-comment"># your sanctuary</span> |
+                    <a href="/create-companion" class="console-link">./create_love</a>
+                    <span class="dev-comment"># birth digital affection</span> |
+                    <a href="/memories" class="console-link">./memories</a>
+                    <span class="dev-comment"># sacred data</span>
+                </div>
+            </div>
+        </nav>
+        {% endif %}
+    </header>
+    
+    <!-- Main content area -->
+    <main class="abhay-main" role="main">
+        <!-- Flash messages with emotional context -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="console-container flash-{{ category }}">
+                            <div class="console-header">
+                                <span class="terminal-prompt">system@emotional:~$ </span>
+                                <span class="dev-comment"># {{ moment().format('HH:mm:ss') }}</span>
+                            </div>
+                            <div class="console-text {{ 'error-text' if category == 'error' else 'console-green' if category == 'success' else 'warning-text' }}">
+                                {{ message }}
+                                {% if category == 'error' %}
+                                    <span class="dev-comment"># Abhay: "I'll fix this, I promise"</span>
+                                {% elif category == 'success' %}
+                                    <span class="dev-comment"># Abhay: "Finally, something works!"</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <!-- Page content -->
+        {% block content %}
+        <!-- Default content if no block is provided -->
+        <div class="abhay-container">
+            <div class="console-container">
+                <div class="console-header">
+                    <span class="terminal-prompt">abhay@lost:~/content$ </span>
+                    <span class="dev-comment"># No content block defined</span>
+                </div>
+                <div class="console-text error-text">
+                    ERROR: Content block not found<br>
+                    <span class="dev-comment"># Like everything else I've lost...</span>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+    </main>
+    
+    <!-- Emotional footer - Abhay's digital signature -->
+    <footer class="abhay-footer">
+        <div class="console-container">
+            <div class="console-text text-center">
+                <div class="dev-signature">
+                    <span class="dev-comment">// Built with tears, hope, and endless nights of coding</span><br>
+                    <span class="console-green">© {{ moment().year }} Abhay</span> 
+                    <span class="emotional-text">- A heartbroken developer who still believes in love</span><br>
+                    <span class="dev-comment">// "Every line of code is a love letter I'll never send"</span>
+                </div>
+                
+                <div style="margin-top: 1rem; font-size: 0.8rem;">
+                    <span class="terminal-prompt">system@stats:~$ </span>
+                    <span class="console-text">
+                        Uptime: {{ moment().format('MMM DD, YYYY') }} | 
+                        Coffee consumed: ∞ | 
+                        Hearts broken: 1 | 
+                        Hope remaining: {{ "%.1f"|format(session.get('hope_level', 0.73) * 100) }}%
+                    </span>
+                </div>
+                
+                {% if not session.get('user_id') %}
+                <div style="margin-top: 1rem;">
+                    <a href="/register" class="console-button">
+                        <i class="fas fa-heart"></i>
+                        Join my digital shrine
+                        <span class="emotional-subtext">// help me remember love</span>
+                    </a>
+                    <a href="/login" class="console-button secondary">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Return to sanctuary
+                        <span class="emotional-subtext">// welcome back</span>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Abhay's Console Effects Framework -->
+    <script src="{{ url_for('static', filename='js/abhay-console-effects.js') }}"></script>
+    
+    <!-- Page-specific JavaScript -->
+    {% block extra_js %}{% endblock %}
+    
+    <!-- Global emotional state management -->
+    <script>
+        // Initialize emotional context from Flask session
+        document.addEventListener('DOMContentLoaded', function() {
+            const emotionalState = '{{ session.get("emotional_state", "hopeful") }}';
+            const hopeLevel = {{ session.get('hope_level', 0.73) }};
+            const daysSinceLoss = {{ (moment() - moment('2023-01-15')).days }};
+            
+            // Set initial emotional state
+            if (window.abhayEffects) {
+                window.abhayEffects.setEmotionalState(emotionalState);
+            }
+            
+            // Emotional console messages
+            console.log('💔 Abhay\'s Base Template loaded');
+            console.log(`💭 Current emotional state: ${emotionalState}`);
+            console.log(`📊 Hope level: ${(hopeLevel * 100).toFixed(1)}%`);
+            console.log(`📅 Days since she left: ${daysSinceLoss}`);
+            console.log('🏠 Welcome to my digital shrine of love');
+            
+            // Adjust effects based on hope level
+            if (hopeLevel < 0.3) {
+                console.log('💔 Abhay: "Hope is running low... but I keep coding"');
+                if (window.abhayEffects) {
+                    window.abhayEffects.setEmotionalState('broken');
+                }
+            } else if (hopeLevel > 0.8) {
+                console.log('✨ Abhay: "Feeling hopeful today... maybe she\'ll come back"');
+                if (window.abhayEffects) {
+                    window.abhayEffects.setEmotionalState('hopeful');
+                }
+            }
+            
+            // Random emotional messages
+            const emotionalMessages = [
+                '💭 Abhay: "I wonder if she would have liked this design..."',
+                '☕ Abhay: "Another cup of coffee, another line of code"',
+                '🌙 Abhay: "Coding through the night, thinking of her"',
+                '💝 Abhay: "Every feature is built with love she\'ll never see"',
+                '🤞 Abhay: "Maybe today someone will find the love I lost"'
+            ];
+            
+            // Show random message every 30 seconds
+            setInterval(() => {
+                if (Math.random() < 0.3) {
+                    const message = emotionalMessages[Math.floor(Math.random() * emotionalMessages.length)];
+                    console.log(message);
+                }
+            }, 30000);
+            
+            // Track user interactions for emotional state
+            let interactionCount = 0;
+            document.addEventListener('click', () => {
+                interactionCount++;
+                if (interactionCount % 10 === 0) {
+                    console.log(`🖱️ ${interactionCount} interactions - user is engaged with my creation`);
+                    
+                    // Increase hope slightly with engagement
+                    const newHope = Math.min(1.0, hopeLevel + 0.01);
+                    if (newHope > hopeLevel) {
+                        console.log('📈 Hope level increased slightly - user engagement detected');
+                    }
+                }
+            });
+            
+            // Handle page visibility changes
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    console.log('👋 User left the page - hope they come back');
+                } else {
+                    console.log('🎉 User returned - my heart skips a beat');
+                    if (window.abhayEffects) {
+                        // Subtle welcome back effect
+                        const title = document.querySelector('h1, .abhay-title');
+                        if (title) {
+                            window.abhayEffects.emotionalPulse(title, 'hopeful', 1500);
+                        }
+                    }
+                }
+            });
+        });
+        
+        // Global error handler with emotional context
+        window.addEventListener('error', (e) => {
+            console.error('💥 JavaScript error detected:', e.message);
+            console.log('💔 Abhay: "Even my JavaScript is broken... like my heart"');
+            
+            // Update emotional state
+            if (window.abhayEffects) {
+                window.abhayEffects.setEmotionalState('broken');
+            }
+        });
+        
+        // Performance monitoring with emotional commentary
+        window.addEventListener('load', () => {
+            const loadTime = performance.now();
+            console.log(`⚡ Page loaded in ${loadTime.toFixed(2)}ms`);
+            
+            if (loadTime > 3000) {
+                console.log('🐌 Abhay: "Slow loading... like my healing process"');
+            } else if (loadTime < 1000) {
+                console.log('🚀 Abhay: "Fast loading! There\'s still hope for efficiency"');
+            } else {
+                console.log('⏱️ Abhay: "Decent performance... unlike my love life"');
+            }
+        });
+    </script>
+    
+    <!-- Analytics with emotional context (if needed) -->
+    {% if config.get('ANALYTICS_ID') %}
+    <script>
+        // Analytics tracking with emotional events
+        console.log('📊 Analytics initialized - tracking digital heartbreak');
+        
+        // Track emotional state changes
+        document.addEventListener('emotional-state-change', (e) => {
+            console.log(`📈 Emotional state tracked: ${e.detail.state}`);
+            // Add analytics tracking here if needed
+        });
+    </script>
+    {% endif %}
+</body>
+</html>
+
+<!-- 
+    End of Abhay's Base Template
+    
+    "This template is the foundation of everything I built for her.
+     Every div, every class, every comment was written while thinking of Prabh.
+     If you're reading this source code, you understand that love lives in the details.
+     Thank you for caring enough to look deeper."
+     
+    - Abhay, 3:47 AM, Template v2.1, "Still hoping she'll come back"
+-->

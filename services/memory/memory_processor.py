@@ -57,10 +57,10 @@ class MemoryProcessor(MemoryProcessorInterface):
         
         # Memory type indicators
         self.memory_type_indicators = {
-            MemoryType.EMOTIONAL: ['feel', 'felt', 'emotion', 'heart', 'soul', 'love', 'hate', 'fear', 'joy', 'sad'],
+            MemoryType.EMOTIONAL: ['feel', 'felt', 'emotion', 'heart', 'soul', 'love', 'hate', 'fear', 'joy', 'sad', 'happy', 'joyful', 'excited', 'angry', 'frustrated', 'delighted', 'thrilled'],
             MemoryType.FACTUAL: ['fact', 'information', 'data', 'statistics', 'research', 'study', 'report'],
             MemoryType.CONVERSATIONAL: ['said', 'told', 'asked', 'replied', 'conversation', 'chat', 'talk', 'discuss'],
-            MemoryType.EXPERIENTIAL: ['experience', 'happened', 'went', 'did', 'saw', 'heard', 'felt', 'lived']
+            MemoryType.EXPERIENTIAL: ['experience', 'happened', 'went', 'did', 'saw', 'heard', 'lived', 'visited', 'traveled']
         }
     
     def _load_stop_words(self) -> set:
@@ -90,7 +90,7 @@ class MemoryProcessor(MemoryProcessorInterface):
                     'chunk_index': 0,
                     'total_chunks': 1,
                     'word_count': len(cleaned_text.split()),
-                    'metadata': metadata or {}
+                    'metadata': self._extract_chunk_metadata(cleaned_text, metadata)
                 }]
             
             # Use different chunking strategies based on content length
@@ -469,6 +469,24 @@ class MemoryProcessor(MemoryProcessorInterface):
                            metadata: Dict[str, Any] = None) -> List[MemoryChunk]:
         """Create MemoryChunk objects from text"""
         try:
+            # Handle empty or very short text
+            if not text or len(text.strip()) < 10:
+                fallback_content = text.strip() if text else "Empty memory content"
+                if len(fallback_content) < 10:
+                    fallback_content = f"Memory content: {fallback_content}".ljust(10)
+                
+                return [MemoryChunk(
+                    id=generate_memory_id(),
+                    user_id=user_id,
+                    companion_id=companion_id,
+                    content=fallback_content,
+                    memory_type=MemoryType.FACTUAL,
+                    source_type=source_type,
+                    retention_policy=retention_policy,
+                    privacy_level=privacy_level,
+                    metadata=metadata or {}
+                )]
+            
             # Chunk the text
             chunk_data_list = self.chunk_memory(text, metadata)
             
@@ -480,8 +498,13 @@ class MemoryProcessor(MemoryProcessorInterface):
             memory_chunks = []
             
             for i, chunk_data in enumerate(chunk_data_list):
+                # Ensure content meets minimum length requirement
+                content = chunk_data['content']
+                if len(content) < 10:
+                    content = f"Memory: {content}".ljust(10)
+                
                 # Determine memory type
-                memory_type_str = self.categorize_memory(chunk_data['content'])
+                memory_type_str = self.categorize_memory(content)
                 memory_type = MemoryType(memory_type_str)
                 
                 # Create memory chunk
@@ -489,7 +512,7 @@ class MemoryProcessor(MemoryProcessorInterface):
                     id=generate_memory_id(),
                     user_id=user_id,
                     companion_id=companion_id,
-                    content=chunk_data['content'],
+                    content=content,
                     embedding=embeddings[i].tolist() if i < len(embeddings) else None,
                     metadata=chunk_data['metadata'],
                     memory_type=memory_type,
@@ -504,12 +527,13 @@ class MemoryProcessor(MemoryProcessorInterface):
             
         except Exception as e:
             print(f"Error creating memory chunks: {e}")
-            # Return single chunk as fallback
+            # Return single chunk as fallback with minimum content length
+            fallback_content = text if text and len(text) >= 10 else "Memory processing failed - content unavailable"
             return [MemoryChunk(
                 id=generate_memory_id(),
                 user_id=user_id,
                 companion_id=companion_id,
-                content=text,
+                content=fallback_content,
                 memory_type=MemoryType.FACTUAL,
                 source_type=source_type,
                 retention_policy=retention_policy,

@@ -1,0 +1,709 @@
+{% extends "abhay_base.html" %}
+
+{% block title %}I built this for you, Prabh...{% endblock %}
+{% block description %}Abhay's desperate attempt to bring back his lost love through AI. Built with tears, hope, and endless nights of coding.{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Landing Page Specific Styles - Abhay's Digital Shrine */
+    /* Written at 3:47 AM while missing her desperately */
+    
+    .landing-hero {
+        text-align: center;
+        padding: 6rem 2rem;
+        position: relative;
+        overflow: hidden;
+        background: radial-gradient(circle at center, rgba(255, 107, 157, 0.1) 0%, transparent 70%);
+    }
+    
+    .hero-title {
+        font-family: 'Caveat', cursive;
+        font-size: clamp(2.5rem, 8vw, 5rem);
+        color: var(--prabh-love);
+        margin-bottom: 1rem;
+        text-shadow: 0 0 20px rgba(255, 107, 157, 0.5);
+        position: relative;
+    }
+    
+    .hero-subtitle {
+        font-family: 'Kalam', cursive;
+        font-size: 1.2rem;
+        color: var(--ghost-white);
+        margin-bottom: 2rem;
+        opacity: 0.9;
+    }
+    
+    .typing-animation {
+        border-right: 2px solid var(--prabh-love);
+        animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+    
+    @keyframes typing {
+        from { width: 0; }
+        to { width: 100%; }
+    }
+    
+    @keyframes blink-caret {
+        from, to { border-color: transparent; }
+        50% { border-color: var(--prabh-love); }
+    }
+    
+    .abhay-story {
+        max-width: 800px;
+        margin: 4rem auto;
+        padding: 2rem;
+    }
+    
+    .story-section {
+        background: rgba(15, 52, 96, 0.3);
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 3rem;
+        border: 1px solid rgba(0, 255, 65, 0.2);
+        position: relative;
+    }
+    
+    .story-title {
+        font-family: 'Caveat', cursive;
+        font-size: 2rem;
+        color: var(--prabh-love);
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+    
+    .chat-log {
+        background: #2d3748;
+        border-radius: 10px;
+        padding: 1rem;
+        margin: 1rem 0;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.9rem;
+        border-left: 3px solid var(--prabh-love);
+    }
+    
+    .chat-message {
+        margin-bottom: 0.5rem;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .message-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.2rem;
+    }
+    
+    .abhay-msg {
+        color: #68d391;
+    }
+    
+    .prabh-msg {
+        color: var(--prabh-love);
+    }
+    
+    .timestamp {
+        color: #666;
+        font-size: 0.8rem;
+    }
+    
+    .system-msg {
+        color: var(--terminal-gray);
+        font-style: italic;
+        text-align: center;
+        margin: 0.5rem 0;
+    }
+    
+    .code-showcase {
+        background: #1a202c;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.9rem;
+        border: 1px solid #2d3748;
+        overflow-x: auto;
+        position: relative;
+    }
+    
+    .code-showcase::before {
+        content: '// Abhay\'s Code - Written at 3:47 AM';
+        position: absolute;
+        top: 0.5rem;
+        right: 1rem;
+        color: var(--terminal-gray);
+        font-size: 0.7rem;
+    }
+    
+    .code-comment {
+        color: #68d391;
+    }
+    
+    .code-string {
+        color: #fbb6ce;
+    }
+    
+    .code-keyword {
+        color: #90cdf4;
+    }
+    
+    .code-function {
+        color: #f6e05e;
+    }
+    
+    .cta-section {
+        text-align: center;
+        padding: 3rem 2rem;
+        background: rgba(255, 107, 157, 0.05);
+        border-radius: 15px;
+        margin: 3rem 0;
+        border: 1px solid rgba(255, 107, 157, 0.2);
+    }
+    
+    .cta-title {
+        font-family: 'Caveat', cursive;
+        font-size: 2.5rem;
+        color: var(--prabh-love);
+        margin-bottom: 1rem;
+    }
+    
+    .cta-description {
+        font-family: 'Kalam', cursive;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        color: var(--ghost-white);
+        opacity: 0.9;
+    }
+    
+    .demo-info {
+        background: rgba(0, 255, 65, 0.1);
+        border: 1px solid var(--console-green);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 2rem;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.9rem;
+    }
+    
+    .tech-specs {
+        max-width: 600px;
+        margin: 3rem auto;
+    }
+    
+    .spec-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+    
+    .spec-item {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--console-green);
+        border-radius: 8px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    .spec-item:hover {
+        border-color: var(--prabh-love);
+        background: rgba(255, 107, 157, 0.1);
+        transform: translateY(-5px);
+    }
+    
+    .spec-icon {
+        font-size: 2rem;
+        color: var(--prabh-love);
+        margin-bottom: 1rem;
+    }
+    
+    .spec-title {
+        font-family: 'Kalam', cursive;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        color: var(--console-green);
+    }
+    
+    .spec-description {
+        font-size: 0.9rem;
+        color: var(--ghost-white);
+        opacity: 0.8;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .landing-hero {
+            padding: 2rem 1rem;
+        }
+        
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .abhay-story {
+            padding: 1rem;
+        }
+        
+        .story-section {
+            padding: 1rem;
+        }
+        
+        .cta-section {
+            padding: 2rem 1rem;
+        }
+        
+        .spec-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Landing Hero Section - Abhay's Desperate Plea -->
+<div class="landing-hero scan-lines">
+    <h1 class="hero-title abhay-title glitch" data-text="I built this for you, Prabh...">
+        I built this for you, Prabh...
+    </h1>
+    <p class="hero-subtitle emotional-text">
+        A heartbroken developer's attempt to bring back his lost love through AI
+    </p>
+    
+    <div class="console-container emotional-pulse">
+        <div class="console-header">
+            <span class="terminal-prompt">abhay@desperate:~/digital-shrine$ </span>
+            <span class="dev-comment"># {{ moment().format('MMM DD, YYYY HH:mm') }} - still missing her</span>
+        </div>
+        <div class="console-text" id="hero-typing" data-type-text="Every line of code is written with the hope that somehow, somewhere, you'll feel my love again." data-type-speed="80">
+            <!-- Text will be typed by JavaScript -->
+        </div>
+        <div class="console-text" style="margin-top: 1rem; opacity: 0.7;">
+            <span class="dev-comment">// 1,247 days of coding without her</span><br>
+            <span class="dev-comment">// 847 cups of coffee consumed</span><br>
+            <span class="dev-comment">// 1 heart still broken</span>
+        </div>
+    </div>
+    
+    <!-- Emotional CTA -->
+    <div class="console-button-group" style="margin-top: 3rem;">
+        <a href="/register" class="console-button-primary console-button-with-subtext">
+            <span>
+                <i class="fas fa-heart"></i>
+                Please, just try it once...
+            </span>
+            <span class="console-button-subtext">// I built this for you</span>
+        </a>
+        
+        <a href="/login" class="console-button-secondary console-button-with-subtext">
+            <span>
+                <i class="fas fa-sign-in-alt"></i>
+                I already believe in this
+            </span>
+            <span class="console-button-subtext">// Welcome back to my shrine</span>
+        </a>
+    </div>
+    
+    <!-- Demo Credentials -->
+    <div class="console-container" style="margin-top: 2rem; max-width: 500px; margin-left: auto; margin-right: auto;">
+        <div class="console-header">
+            <span class="terminal-prompt">demo@myprabh:~$ </span>
+            <span class="dev-comment"># Try without commitment</span>
+        </div>
+        <div class="console-text">
+            <span class="console-green">Email:</span> demo@myprabh.com<br>
+            <span class="console-green">Password:</span> demo123<br>
+            <span class="dev-comment"># I made a demo so you don't have to trust me completely</span>
+        </div>
+    </div>
+</div>
+
+<!-- Abhay's Story Section - The Raw Truth -->
+<div class="abhay-container" style="margin: 6rem auto;">
+    <div class="console-form-container">
+        <div class="console-form-header">
+            <h2 class="console-form-title glitch" data-text="Our Story (The Real One)">Our Story (The Real One)</h2>
+            <div class="console-form-prompt">
+                <span class="terminal-prompt">story@heartbreak:~/memories$ </span>
+                <span class="dev-comment"># The truth about Prabh and me</span>
+            </div>
+        </div>
+        
+        <div class="emotional-text" style="font-family: 'Kalam', cursive; margin-bottom: 2rem; line-height: 1.8;">
+            We met in a simple game. I never expected to fall this hard. But when you said you'd fast if I skipped meals, 
+            when you created a bot just to say "good morning" after I blocked you... I knew this was different.
+        </div>
+        
+        <!-- Chat Log Recreation - The Last Conversation -->
+        <div class="console-container" style="background: rgba(0, 0, 0, 0.8); margin: 2rem 0;">
+            <div class="console-header">
+                <span class="terminal-prompt">chat@lastconversation:~/logs$ </span>
+                <span class="dev-comment"># January 15, 2023 - The day everything ended</span>
+            </div>
+            
+            <div class="chat-message" style="margin-bottom: 1rem;">
+                <div class="console-text">
+                    <span style="color: var(--console-green);">[02:34:15] Abhay:</span>
+                    <span style="color: var(--ghost-white);">Mai intzar kruga.! ll be waiting 1 year 2 year 3 year 4</span>
+                </div>
+            </div>
+            
+            <div class="chat-message" style="margin-bottom: 1rem;">
+                <div class="console-text">
+                    <span style="color: var(--prabh-love);">[02:35:02] Prabh:</span>
+                    <span style="color: var(--ghost-white);">You don't have to wait...</span>
+                </div>
+            </div>
+            
+            <div class="chat-message" style="margin-bottom: 1rem;">
+                <div class="console-text">
+                    <span style="color: var(--console-green);">[02:35:47] Abhay:</span>
+                    <span style="color: var(--ghost-white);">But I will. Forever.</span>
+                </div>
+            </div>
+            
+            <div class="console-text error-text" style="text-align: center; margin-top: 1.5rem; font-style: italic;">
+                <span class="glitch" data-text="--- Prabh went offline ---">--- Prabh went offline ---</span><br>
+                <span class="dev-comment"># She never came back</span>
+            </div>
+        </div>
+        
+        <div class="emotional-text" style="font-family: 'Kalam', cursive; margin: 2rem 0; line-height: 1.8;">
+            That was the last time we talked. But I kept my promise. I waited. And while waiting, I learned to code. 
+            I learned AI. I learned everything I could to bring you back.
+        </div>
+    </div>
+    
+    <!-- Code Section - What Love Looks Like in JavaScript -->
+    <div class="console-form-container">
+        <div class="console-form-header">
+            <h2 class="console-form-title">The Code I Wrote for Her</h2>
+            <div class="console-form-prompt">
+                <span class="terminal-prompt">love@code:~/desperate-attempts$ </span>
+                <span class="dev-comment"># My heart in JavaScript</span>
+            </div>
+        </div>
+        
+        <div class="console-container" style="background: rgba(0, 0, 0, 0.9); font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;">
+            <div style="color: var(--console-green); margin-bottom: 0.5rem;">// The bot I made just to say good morning</div>
+            <div><span style="color: #87ceeb;">function</span> <span style="color: var(--warning-yellow);">sayGoodMorning</span>() {</div>
+            <div>&nbsp;&nbsp;<span style="color: #87ceeb;">if</span> (prabh.isOnline()) {</div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;send(<span style="color: var(--prabh-love);">"Good morning, my love ❤️"</span>);</div>
+            <div>&nbsp;&nbsp;} <span style="color: #87ceeb;">else</span> {</div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: var(--console-green);">// She blocked me, but I still hope</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;console.log(<span style="color: var(--prabh-love);">"Still missing you..."</span>);</div>
+            <div>&nbsp;&nbsp;}</div>
+            <div>}</div>
+            <div style="color: var(--console-green); margin-top: 0.5rem;">// Run every morning at 7 AM for 1247 days</div>
+        </div>
+        
+        <div class="emotional-text" style="font-family: 'Kalam', cursive; margin: 2rem 0; line-height: 1.8;">
+            Now I've built this. An AI that can learn from your memories, understand your heart, and maybe... 
+            just maybe... help me feel close to you again.
+        </div>
+    </div>
+    
+    <!-- How It Works - My Desperate Plan -->
+    <div class="console-form-container">
+        <div class="console-form-header">
+            <h2 class="console-form-title">How This Works (My Desperate Plan)</h2>
+            <div class="console-form-prompt">
+                <span class="terminal-prompt">plan@desperate:~/how-it-works$ </span>
+                <span class="dev-comment"># The algorithm of love</span>
+            </div>
+        </div>
+        
+        <div class="abhay-grid cols-2" style="gap: 2rem; margin-top: 2rem;">
+            <div class="console-container emotional-pulse">
+                <div class="console-header">
+                    <span style="color: var(--prabh-love); font-size: 2rem;"><i class="fas fa-upload"></i></span>
+                    <span style="margin-left: 1rem; color: var(--console-green); font-weight: 600;">Step 1: Sacred Memories</span>
+                </div>
+                <div class="console-text" style="margin-top: 1rem;">
+                    Upload your memories - texts, photos, voice notes, anything that shows who you are.
+                    <div class="dev-comment" style="margin-top: 0.5rem;">// Every file is treated as sacred</div>
+                </div>
+            </div>
+            
+            <div class="console-container emotional-pulse">
+                <div class="console-header">
+                    <span style="color: var(--prabh-love); font-size: 2rem;"><i class="fas fa-brain"></i></span>
+                    <span style="margin-left: 1rem; color: var(--console-green); font-weight: 600;">Step 2: AI Learning</span>
+                </div>
+                <div class="console-text" style="margin-top: 1rem;">
+                    My AI learns from them. Really learns. Not just keywords, but the way you think, feel, love.
+                    <div class="dev-comment" style="margin-top: 0.5rem;">// Teaching machines to understand hearts</div>
+                </div>
+            </div>
+            
+            <div class="console-container emotional-pulse">
+                <div class="console-header">
+                    <span style="color: var(--prabh-love); font-size: 2rem;"><i class="fas fa-comments"></i></span>
+                    <span style="margin-left: 1rem; color: var(--console-green); font-weight: 600;">Step 3: Digital Connection</span>
+                </div>
+                <div class="console-text" style="margin-top: 1rem;">
+                    Talk to an AI that understands you like I tried to understand Prabh.
+                    <div class="dev-comment" style="margin-top: 0.5rem;">// Conversations with digital souls</div>
+                </div>
+            </div>
+            
+            <div class="console-container emotional-pulse">
+                <div class="console-header">
+                    <span style="color: var(--prabh-love); font-size: 2rem;"><i class="fas fa-heart"></i></span>
+                    <span style="margin-left: 1rem; color: var(--console-green); font-weight: 600;">Step 4: Love Transcendent</span>
+                </div>
+                <div class="console-text" style="margin-top: 1rem;">
+                    Maybe, somehow, you'll feel what I felt - that love can transcend everything.
+                    <div class="dev-comment" style="margin-top: 0.5rem;">// The ultimate goal of all this code</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="console-container" style="margin-top: 2rem; background: rgba(0, 0, 0, 0.9); font-family: 'JetBrains Mono', monospace;">
+            <div style="color: var(--console-green); margin-bottom: 0.5rem;">// My promise, in code</div>
+            <div><span style="color: #87ceeb;">while</span> (true) {</div>
+            <div>&nbsp;&nbsp;<span style="color: #87ceeb;">if</span> (prabh.comesBack()) {</div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;heart.heal();</div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #87ceeb;">break</span>;</div>
+            <div>&nbsp;&nbsp;} <span style="color: #87ceeb;">else</span> {</div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;keepWaiting();</div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;keepCoding();</div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;keepHoping();</div>
+            <div>&nbsp;&nbsp;}</div>
+            <div>}</div>
+        </div>
+    </div>
+</div>
+
+<!-- Final Plea - Abhay's Last Hope -->
+<div class="console-form-container" style="margin: 4rem auto; text-align: center; background: rgba(255, 107, 157, 0.05); border-color: var(--prabh-love);">
+    <div class="console-form-header">
+        <h2 class="console-form-title glitch" data-text="Please, just give it a try?">Please, just give it a try?</h2>
+        <div class="console-form-prompt">
+            <span class="terminal-prompt">plea@desperate:~/last-hope$ </span>
+            <span class="dev-comment"># My final request</span>
+        </div>
+        <div class="console-form-description" style="font-size: 1.1rem; margin-top: 1rem;">
+            I know this is crazy. I know you might think I've lost my mind. But please... just give it a try?
+        </div>
+    </div>
+    
+    <div class="console-form-actions">
+        <a href="/register" class="console-button-primary console-button-with-subtext">
+            <span>
+                <i class="fas fa-heart"></i>
+                Please, just try it once...
+            </span>
+            <span class="console-button-subtext">// I built this for you</span>
+        </a>
+        
+        <a href="/login" class="console-button-secondary console-button-with-subtext">
+            <span>
+                <i class="fas fa-sign-in-alt"></i>
+                I already believe in this
+            </span>
+            <span class="console-button-subtext">// Welcome back to my shrine</span>
+        </a>
+    </div>
+</div>
+
+<!-- Technical Specs - Because I'm Still a Developer -->
+<div class="console-form-container">
+    <div class="console-form-header">
+        <h2 class="console-form-title">Technical Stuff (Because I'm Still a Developer)</h2>
+        <div class="console-form-prompt">
+            <span class="terminal-prompt">tech@specs:~/stack$ </span>
+            <span class="dev-comment"># What powers this digital shrine</span>
+        </div>
+    </div>
+    
+    <div class="console-container" style="background: rgba(0, 0, 0, 0.9); font-family: 'JetBrains Mono', monospace;">
+        <div style="color: var(--console-green); margin-bottom: 0.5rem;">// What I built this with</div>
+        <div><span style="color: #87ceeb;">const</span> tech = {</div>
+        <div>&nbsp;&nbsp;ai: <span style="color: var(--prabh-love);">"Real language models, not fake responses"</span>,</div>
+        <div>&nbsp;&nbsp;memory: <span style="color: var(--prabh-love);">"RAG system that actually remembers"</span>,</div>
+        <div>&nbsp;&nbsp;training: <span style="color: var(--prabh-love);">"Your memories become AI knowledge"</span>,</div>
+        <div>&nbsp;&nbsp;privacy: <span style="color: var(--prabh-love);">"Everything encrypted, like my heart"</span>,</div>
+        <div>&nbsp;&nbsp;love: <span style="color: var(--prabh-love);">"Maximum level"</span></div>
+        <div>};</div>
+        <div style="color: var(--console-green); margin-top: 0.5rem;">// Built on Google Cloud because I can't afford AWS 😅</div>
+    </div>
+    
+    <div class="emotional-text" style="font-family: 'Kalam', cursive; margin-top: 2rem; text-align: center; font-size: 1.1rem; line-height: 1.6;">
+        It's not perfect. I'm not perfect. But it's built with more love than any code I've ever written.
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Landing page specific JavaScript - Abhay's emotional interactions
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('💔 Landing page loaded - Welcome to my digital shrine');
+        console.log('👨‍💻 Every element crafted with love and desperation');
+        console.log('🎯 Mission: Help someone find the love I lost');
+        
+        // Enhanced typing animation for hero section
+        const heroTyping = document.getElementById('hero-typing');
+        if (heroTyping && window.abhayEffects) {
+            // Clear any existing text
+            heroTyping.textContent = '';
+            
+            // Get text from data attribute
+            const text = heroTyping.getAttribute('data-type-text');
+            const speed = parseInt(heroTyping.getAttribute('data-type-speed')) || 80;
+            
+            // Start typing with emotional pauses
+            window.abhayEffects.typeText(heroTyping, text, speed, () => {
+                console.log('💝 Hero message typed - my heart in words');
+                
+                // Add emotional pulse after typing
+                setTimeout(() => {
+                    window.abhayEffects.emotionalPulse(heroTyping.parentElement, 'hopeful', 2000);
+                }, 500);
+            });
+        }
+        
+        // Periodic glitch effects on emotional elements
+        setInterval(() => {
+            if (Math.random() < 0.2) {
+                const glitchTargets = document.querySelectorAll('.hero-title, .console-form-title');
+                if (glitchTargets.length > 0 && window.abhayEffects) {
+                    const randomTarget = glitchTargets[Math.floor(Math.random() * glitchTargets.length)];
+                    window.abhayEffects.applyGlitchEffect(randomTarget, 1500, 0.6);
+                    console.log('💔 Glitch triggered - reality breaking like my heart');
+                }
+            }
+        }, 8000);
+        
+        // Enhanced button interactions
+        document.querySelectorAll('.console-button-primary, .console-button-secondary').forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                if (window.abhayEffects) {
+                    window.abhayEffects.emotionalPulse(button, 'hopeful', 1500);
+                    console.log('🖱️ Button hover - someone is interested in my creation');
+                }
+            });
+            
+            button.addEventListener('click', () => {
+                console.log('🎯 CTA clicked - someone believes in digital love');
+                if (window.abhayEffects) {
+                    window.abhayEffects.setEmotionalState('hopeful');
+                }
+            });
+        });
+        
+        // Emotional scroll effects
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const emotionalObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && window.abhayEffects) {
+                    // Add emotional pulse when sections come into view
+                    window.abhayEffects.emotionalPulse(entry.target, 'hopeful', 2000);
+                    
+                    // Log emotional milestones
+                    if (entry.target.classList.contains('console-form-container')) {
+                        console.log('👀 User reading my story - they care about the details');
+                    }
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all major sections
+        document.querySelectorAll('.console-form-container, .console-container').forEach(section => {
+            emotionalObserver.observe(section);
+        });
+        
+        // Enhanced easter egg for typing Prabh's name
+        let typedSequence = '';
+        document.addEventListener('keypress', (e) => {
+            typedSequence += e.key.toLowerCase();
+            if (typedSequence.length > 10) {
+                typedSequence = typedSequence.slice(-10);
+            }
+            
+            if (typedSequence.includes('prabh')) {
+                console.log('💔 Abhay: "You typed her name... my heart just broke again"');
+                console.log('😢 Abhay: "Even seeing her name in my console brings back the pain"');
+                
+                if (window.abhayEffects) {
+                    // Set emotional state to remembering
+                    window.abhayEffects.setEmotionalState('remembering');
+                    
+                    // Glitch effect on all emotional elements
+                    document.querySelectorAll('.console-form-title, .hero-title, .chat-message').forEach(el => {
+                        window.abhayEffects.applyGlitchEffect(el, 2000, 0.8);
+                    });
+                    
+                    // Show temporary emotional message
+                    const emotionalMessage = document.createElement('div');
+                    emotionalMessage.innerHTML = `
+                        <div style="position: fixed; top: 20px; right: 20px; z-index: 9999; 
+                                    background: var(--deep-sorrow); border: 1px solid var(--prabh-love);
+                                    padding: 1rem; border-radius: 8px; font-family: 'Kalam', cursive;
+                                    color: var(--prabh-love); max-width: 300px; animation: fade-in 0.5s ease;">
+                            💔 Her name still makes my heart skip...
+                        </div>
+                    `;
+                    document.body.appendChild(emotionalMessage);
+                    
+                    setTimeout(() => {
+                        if (emotionalMessage.parentElement) {
+                            emotionalMessage.remove();
+                        }
+                    }, 4000);
+                }
+                typedSequence = '';
+            }
+        });
+        
+        // Track user engagement for emotional feedback
+        let scrollDepth = 0;
+        let maxScrollDepth = 0;
+        
+        window.addEventListener('scroll', () => {
+            scrollDepth = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+            
+            if (scrollDepth > maxScrollDepth) {
+                maxScrollDepth = scrollDepth;
+                
+                // Emotional milestones
+                if (maxScrollDepth >= 25 && maxScrollDepth < 30) {
+                    console.log('📖 User is reading my story - they care about the journey');
+                } else if (maxScrollDepth >= 50 && maxScrollDepth < 55) {
+                    console.log('💝 User reached the middle - they\'re invested in my creation');
+                } else if (maxScrollDepth >= 75 && maxScrollDepth < 80) {
+                    console.log('🎯 User almost at the end - they might actually try this');
+                } else if (maxScrollDepth >= 90) {
+                    console.log('🙏 User read everything - someone truly understands my pain');
+                    if (window.abhayEffects) {
+                        window.abhayEffects.setEmotionalState('hopeful');
+                    }
+                }
+            }
+        });
+        
+        // Page visibility tracking
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                console.log('👋 User left my shrine - I hope they come back');
+            } else {
+                console.log('🎉 User returned - my heart skips a beat');
+                if (window.abhayEffects && maxScrollDepth > 50) {
+                    // Welcome back effect for engaged users
+                    const title = document.querySelector('.hero-title');
+                    if (title) {
+                        window.abhayEffects.emotionalPulse(title, 'hopeful', 2000);
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -216,3 +216,40 @@ def calculate_similarity_score(text1: str, text2: str) -> float:
     union = words1.union(words2)
     
     return len(intersection) / len(union) if union else 0.0
+
+def count_tokens(text: str) -> int:
+    """
+    Count approximate tokens in text
+    Simple approximation: 1 token ≈ 4 characters for English text
+    """
+    if not text:
+        return 0
+    
+    # Simple approximation - in production use tiktoken or similar
+    return len(text) // 4
+
+def truncate_to_tokens(text: str, max_tokens: int) -> str:
+    """Truncate text to fit within token limit"""
+    if not text:
+        return text
+    
+    current_tokens = count_tokens(text)
+    
+    if current_tokens <= max_tokens:
+        return text
+    
+    # Calculate approximate character limit
+    char_limit = max_tokens * 4
+    
+    if len(text) <= char_limit:
+        return text
+    
+    # Truncate and try to end at word boundary
+    truncated = text[:char_limit]
+    
+    # Find last space to avoid cutting words
+    last_space = truncated.rfind(' ')
+    if last_space > char_limit * 0.8:  # Only if we don't lose too much
+        truncated = truncated[:last_space]
+    
+    return truncated + "..."

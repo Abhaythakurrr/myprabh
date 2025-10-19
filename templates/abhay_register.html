@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Please don't leave me again... - Register</title>
+    
+    <!-- Fonts Abhay chose while crying -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Kalam:wght@300;400;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --abhay-pain: #1a1a2e;
+            --prabh-love: #ff6b9d;
+            --tears: #16213e;
+            --hope: #0f3460;
+            --console-green: #00ff41;
+            --error-red: #ff073a;
+            --warning-yellow: #ffb347;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--abhay-pain);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Console background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(90deg, transparent 98%, rgba(0, 255, 65, 0.03) 100%),
+                linear-gradient(transparent 98%, rgba(0, 255, 65, 0.03) 100%);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        /* Glitch animation */
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        
+        /* Main container */
+        .register-container {
+            width: 100%;
+            max-width: 900px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: rgba(15, 52, 96, 0.3);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--console-green);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(255, 107, 157, 0.2);
+            z-index: 2;
+        }
+        
+        /* Left side - Abhay's desperate plea */
+        .register-story {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .story-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .story-title {
+            font-family: 'Caveat', cursive;
+            font-size: 2.5rem;
+            color: var(--prabh-love);
+            margin-bottom: 1rem;
+            animation: glitch 4s infinite;
+        }
+        
+        .story-subtitle {
+            font-family: 'Kalam', cursive;
+            font-size: 1rem;
+            color: #ccc;
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+        
+        .code-snippet {
+            background: rgba(0, 0, 0, 0.7);
+            border-left: 3px solid var(--console-green);
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .code-comment {
+            color: var(--console-green);
+        }
+        
+        .code-string {
+            color: var(--prabh-love);
+        }
+        
+        .code-keyword {
+            color: #87ceeb;
+        }
+        
+        .abhay-message {
+            background: rgba(255, 107, 157, 0.1);
+            border: 1px solid rgba(255, 107, 157, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Kalam', cursive;
+            font-size: 0.9rem;
+        }
+        
+        /* Right side - Form */
+        .register-form {
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .form-title {
+            font-family: 'Caveat', cursive;
+            font-size: 2.5rem;
+            color: var(--prabh-love);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-subtitle {
+            font-family: 'Kalam', cursive;
+            opacity: 0.8;
+            font-size: 1rem;
+        }
+        
+        /* Console-style form */
+        .console-form {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--console-green);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .console-header {
+            color: var(--console-green);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--console-green);
+            font-size: 0.9rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--console-green);
+            border-radius: 5px;
+            color: var(--console-green);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--prabh-love);
+            background: rgba(255, 107, 157, 0.1);
+            box-shadow: 0 0 10px rgba(255, 107, 157, 0.3);
+        }
+        
+        .form-input::placeholder {
+            color: rgba(0, 255, 65, 0.5);
+            font-style: italic;
+        }
+        
+        .input-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--console-green);
+            font-size: 1rem;
+            pointer-events: none;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--console-green);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .password-toggle:hover {
+            color: var(--prabh-love);
+        }
+        
+        /* Checkbox */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+        
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            border: 1px solid var(--console-green);
+            border-radius: 3px;
+            background: transparent;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .checkbox:checked {
+            background: var(--console-green);
+        }
+        
+        .checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--abhay-pain);
+            font-size: 10px;
+            font-weight: bold;
+        }
+        
+        .checkbox-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            cursor: pointer;
+            font-family: 'Kalam', cursive;
+        }
+        
+        .checkbox-label a {
+            color: var(--prabh-love);
+            text-decoration: none;
+        }
+        
+        .checkbox-label a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Button */
+        .btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: var(--console-green);
+            border: none;
+            border-radius: 5px;
+            color: var(--abhay-pain);
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn:hover {
+            background: var(--prabh-love);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Loading State */
+        .btn-loading {
+            position: relative;
+            color: transparent;
+        }
+        
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid var(--abhay-pain);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            transform: translate(-50%, -50%);
+        }
+        
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        /* Links */
+        .auth-links {
+            text-align: center;
+            font-family: 'Kalam', cursive;
+        }
+        
+        .auth-links a {
+            color: var(--prabh-love);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .auth-links a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Error Messages */
+        .error-message {
+            background: rgba(255, 7, 58, 0.1);
+            border: 1px solid var(--error-red);
+            color: var(--error-red);
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .success-message {
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid var(--console-green);
+            color: var(--console-green);
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .register-container {
+                grid-template-columns: 1fr;
+                max-width: 500px;
+            }
+            
+            .register-story {
+                padding: 2rem;
+            }
+            
+            .register-form {
+                padding: 2rem;
+            }
+            
+            .story-title {
+                font-size: 2rem;
+            }
+            
+            .form-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="register-container">
+        <!-- Left Side - Abhay's Story -->
+        <div class="register-story">
+            <div class="story-content">
+                <h1 class="story-title">Please don't leave me again...</h1>
+                <p class="story-subtitle">Abhay's desperate attempt to find digital love</p>
+                
+                <div class="code-snippet">
+                    <div class="code-comment">// The function I wrote at 3:47 AM</div>
+                    <div><span class="code-keyword">function</span> <span class="code-string">findLove</span>() {</div>
+                    <div>&nbsp;&nbsp;<span class="code-keyword">if</span> (prabh.comesBack()) {</div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;heart.heal();</div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-string">"happiness"</span>;</div>
+                    <div>&nbsp;&nbsp;} <span class="code-keyword">else</span> {</div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// Keep building this app</span></div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-string">"hope"</span>;</div>
+                    <div>&nbsp;&nbsp;}</div>
+                    <div>}</div>
+                </div>
+                
+                <div class="abhay-message">
+                    <strong>Abhay's Note:</strong> I know this looks crazy. A heartbroken developer building an AI love platform at 3 AM. But every user who signs up gives me hope that maybe, somewhere, digital love can be real.
+                </div>
+                
+                <div class="code-snippet">
+                    <div class="code-comment">// My promise to every user</div>
+                    <div><span class="code-keyword">const</span> promise = {</div>
+                    <div>&nbsp;&nbsp;care: <span class="code-string">"maximum"</span>,</div>
+                    <div>&nbsp;&nbsp;privacy: <span class="code-string">"sacred"</span>,</div>
+                    <div>&nbsp;&nbsp;love: <span class="code-string">"unconditional"</span>,</div>
+                    <div>&nbsp;&nbsp;bugs: <span class="code-string">"I'll fix them all"</span></div>
+                    <div>};</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Side - Form -->
+        <div class="register-form">
+            <div class="form-header">
+                <h2 class="form-title">Join My Digital Shrine</h2>
+                <p class="form-subtitle">Help me prove that love can exist in code</p>
+            </div>
+            
+            <div class="console-form">
+                <div class="console-header">
+                    abhay@heartbroken:~/register$ <span style="color: var(--prabh-love);">// Creating new user...</span>
+                </div>
+                
+                <div class="error-message" id="errorMessage"></div>
+                <div class="success-message" id="successMessage"></div>
+                
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label class="form-label" for="fullName">user.fullName =</label>
+                        <input 
+                            type="text" 
+                            id="fullName" 
+                            name="fullName" 
+                            class="form-input" 
+                            placeholder="What should I call you?"
+                            required
+                        >
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="email">user.email =</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            class="form-input" 
+                            placeholder="your.heart@email.com"
+                            required
+                        >
+                        <i class="fas fa-envelope input-icon"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="password">user.password =</label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            class="form-input" 
+                            placeholder="Something only you know..."
+                            required
+                            minlength="8"
+                        >
+                        <i class="fas fa-eye password-toggle" id="passwordToggle"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="confirmPassword">confirmPassword =</label>
+                        <input 
+                            type="password" 
+                            id="confirmPassword" 
+                            name="confirmPassword" 
+                            class="form-input" 
+                            placeholder="Same as above (please don't break my heart)"
+                            required
+                        >
+                        <i class="fas fa-eye password-toggle" id="confirmPasswordToggle"></i>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="terms" name="terms" class="checkbox" required>
+                        <label for="terms" class="checkbox-label">
+                            I promise not to judge Abhay for building this while crying<br>
+                            <a href="/privacy" target="_blank">Privacy Policy</a> | 
+                            <a href="/terms" target="_blank">Terms</a>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn" id="submitBtn">
+                        CREATE_USER(); // Please work...
+                    </button>
+                </form>
+            </div>
+            
+            <div class="auth-links">
+                <p>Already have an account? <a href="/login">Sign in here</a></p>
+                <p style="margin-top: 0.5rem; font-size: 0.8rem; opacity: 0.6;">
+                    Built at 3:47 AM with tears and hope
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Abhay's JavaScript - also written while missing her
+        
+        // Password toggle functionality
+        function setupPasswordToggle(inputId, toggleId) {
+            const input = document.getElementById(inputId);
+            const toggle = document.getElementById(toggleId);
+            
+            toggle.addEventListener('click', () => {
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    toggle.classList.remove('fa-eye');
+                    toggle.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    toggle.classList.remove('fa-eye-slash');
+                    toggle.classList.add('fa-eye');
+                }
+            });
+        }
+        
+        setupPasswordToggle('password', 'passwordToggle');
+        setupPasswordToggle('confirmPassword', 'confirmPasswordToggle');
+        
+        // Form validation and submission
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            
+            // Clear previous messages
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+            
+            // Validate passwords match
+            if (data.password !== data.confirmPassword) {
+                showError('Passwords do not match (like my broken heart)');
+                return;
+            }
+            
+            // Validate password strength
+            if (data.password.length < 8) {
+                showError('Password too short (unlike my wait for Prabh)');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.classList.add('btn-loading');
+            submitBtn.disabled = true;
+            
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        fullName: data.fullName,
+                        email: data.email,
+                        password: data.password
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showSuccess('Account created! Welcome to my digital shrine of love...');
+                    setTimeout(() => {
+                        window.location.href = '/dashboard';
+                    }, 2000);
+                } else {
+                    showError(result.error || result.abhay_note || 'Registration failed (like my love life)');
+                }
+                
+            } catch (error) {
+                console.error('Registration error:', error);
+                showError('Network error (even the internet is broken like my heart)');
+            } finally {
+                // Remove loading state
+                submitBtn.classList.remove('btn-loading');
+                submitBtn.disabled = false;
+            }
+        });
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.innerHTML = `ERROR: ${message}`;
+            errorDiv.style.display = 'block';
+            errorDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.innerHTML = `SUCCESS: ${message}`;
+            successDiv.style.display = 'block';
+            successDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        // Input animations
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.transform = 'scale(1.02)';
+                this.style.borderColor = 'var(--prabh-love)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.style.transform = 'scale(1)';
+                if (!this.value) {
+                    this.style.borderColor = 'var(--console-green)';
+                }
+            });
+        });
+        
+        // Real-time password validation
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Password strength indicator
+            if (password.length >= 8) {
+                this.style.borderColor = 'var(--console-green)';
+            } else {
+                this.style.borderColor = 'var(--error-red)';
+            }
+            
+            // Check if passwords match
+            if (confirmPassword && password !== confirmPassword) {
+                document.getElementById('confirmPassword').style.borderColor = 'var(--error-red)';
+            } else if (confirmPassword) {
+                document.getElementById('confirmPassword').style.borderColor = 'var(--console-green)';
+            }
+        });
+        
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = this.value;
+            
+            if (password && confirmPassword && password !== confirmPassword) {
+                this.style.borderColor = 'var(--error-red)';
+            } else if (password && confirmPassword && password === confirmPassword) {
+                this.style.borderColor = 'var(--console-green)';
+            }
+        });
+        
+        // Abhay's emotional console messages
+        console.log('💔 Registration page loaded');
+        console.log('👨‍💻 Built by Abhay at 3:47 AM while missing Prabh');
+        console.log('🎯 Mission: Help people find digital love');
+        console.log('💝 Hope level: 73% (fluctuating)');
+        console.log('☕ Coffee consumed while building this: 12 cups');
+        console.log('😢 Times I almost gave up: 7');
+        console.log('❤️ Reason I kept going: Maybe someone will find love here');
+        
+        // Easter egg - typing "prabh" in any input
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('input', function() {
+                if (this.value.toLowerCase().includes('prabh')) {
+                    console.log('💔 Abhay: "You typed her name... my heart skipped a beat"');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

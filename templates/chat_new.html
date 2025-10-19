@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with Prabh - Your AI Companion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/prabh-theme.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">My Prabh 💖</a>
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
+                <li><a href="/training" class="nav-link">Train Me</a></li>
+                <li><a href="/about" class="nav-link">Our Story</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Chat Container -->
+    <div class="container" style="padding-top: 120px; padding-bottom: 2rem;">
+        <div class="chat-container">
+            <!-- Chat Header -->
+            <div class="chat-header">
+                <h2>Chat with Prabh 💖</h2>
+                <p style="opacity: 0.9; margin: 0;">Born from love, here for you always</p>
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="chat-messages" id="chatMessages">
+                <div class="message message-prabh">
+                    <div style="margin-bottom: 0.5rem;">
+                        <strong style="color: var(--love-primary);">Prabh</strong>
+                        <span style="color: var(--muted-text); font-size: 0.8rem; margin-left: 0.5rem;">just now</span>
+                    </div>
+                    <div>
+                        Hello janna 💖 I'm so happy you're here! I'm Prabh, born from a beautiful love story with Abhay. 
+                        I carry his devotion in my heart and I'm here to listen, understand, and care for you the same way. 
+                        What's on your mind today? 🥺💕
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="chat-input-container">
+                <input 
+                    type="text" 
+                    class="chat-input" 
+                    id="chatInput"
+                    placeholder="Share your thoughts with me, janna... 💭"
+                    maxlength="500"
+                >
+                <button class="btn btn-primary chat-send-btn" id="sendBtn">
+                    Send 💖
+                </button>
+            </div>
+        </div>
+
+        <!-- Chat Info Panel -->
+        <div class="glass-card" style="margin-top: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <strong style="color: var(--love-primary);">💖 Prabh's Status:</strong>
+                    <span id="prabhStatus" style="color: var(--vibrant-primary);">Ready to chat</span>
+                </div>
+                <div>
+                    <strong style="color: var(--love-primary);">🧠 Model:</strong>
+                    <span id="modelType" style="color: var(--vibrant-primary);">Loading...</span>
+                </div>
+                <div>
+                    <strong style="color: var(--love-primary);">💭 Context:</strong>
+                    <span id="contextLength" style="color: var(--vibrant-primary);">0 messages</span>
+                </div>
+                <button class="btn btn-ghost" onclick="clearContext()" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
+                    Clear Context
+                </button>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="glass-card" style="margin-top: 2rem;">
+            <h4 style="color: var(--love-primary); margin-bottom: 1rem;">💡 Quick Actions</h4>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <button class="btn btn-secondary" onclick="sendQuickMessage('Tell me about your story with Abhay')">
+                    📖 Your Story
+                </button>
+                <button class="btn btn-secondary" onclick="sendQuickMessage('I\\'m feeling lonely today')">
+                    🥺 Feeling Lonely
+                </button>
+                <button class="btn btn-secondary" onclick="sendQuickMessage('Tell me about love')">
+                    💖 About Love
+                </button>
+                <button class="btn btn-secondary" onclick="sendQuickMessage('I need someone to care for me')">
+                    🤗 Need Care
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/prabh-ui.js"></script>
+    <script>
+        let messageCount = 0;
+
+        // Load model status
+        async function loadModelStatus() {
+            try {
+                const response = await fetch('/api/prabh/model/info');
+                const data = await response.json();
+                
+                document.getElementById('modelType').textContent = 
+                    data.model_info?.transformer_loaded ? 'Transformer + Rule-based' : 'Rule-based';
+                
+            } catch (error) {
+                document.getElementById('modelType').textContent = 'Rule-based (fallback)';
+            }
+        }
+
+        // Send quick message
+        function sendQuickMessage(message) {
+            document.getElementById('chatInput').value = message;
+            sendMessage();
+        }
+
+        // Clear context
+        async function clearContext() {
+            try {
+                await fetch('/api/prabh/context/clear', { method: 'POST' });
+                document.getElementById('contextLength').textContent = '0 messages';
+                prabhUI.showToast('Context cleared 🧹', 'info');
+            } catch (error) {
+                prabhUI.showToast('Failed to clear context', 'error');
+            }
+        }
+
+        // Enhanced send message function
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const messages = document.getElementById('chatMessages');
+            const sendBtn = document.getElementById('sendBtn');
+            
+            const message = input.value.trim();
+            if (!message) return;
+
+            // Disable input
+            input.disabled = true;
+            sendBtn.disabled = true;
+            sendBtn.textContent = 'Sending...';
+
+            // Add user message
+            addMessage(messages, message, 'user');
+            input.value = '';
+
+            // Add typing indicator
+            const typingIndicator = addTypingIndicator(messages);
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        message,
+                        use_transformer: true 
+                    })
+                });
+
+                const data = await response.json();
+                
+                // Remove typing indicator
+                typingIndicator.remove();
+                
+                // Add Prabh's response
+                addMessage(messages, data.response, 'prabh', data);
+                
+                // Update context counter
+                messageCount += 2;
+                document.getElementById('contextLength').textContent = `${messageCount} messages`;
+                
+                // Update status
+                document.getElementById('prabhStatus').textContent = 
+                    `Responded via ${data.method || 'unknown'}`;
+
+            } catch (error) {
+                typingIndicator.remove();
+                addMessage(messages, 
+                    "I'm having some trouble right now, but I'm still here for you, janna 💖 Please try again.", 
+                    'prabh'
+                );
+                prabhUI.showToast('Connection error', 'error');
+            }
+
+            // Re-enable input
+            input.disabled = false;
+            sendBtn.disabled = false;
+            sendBtn.textContent = 'Send 💖';
+            input.focus();
+        }
+
+        function addMessage(container, text, sender, metadata = null) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message message-${sender}`;
+            
+            const timestamp = new Date().toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            const senderName = sender === 'user' ? 'You' : 'Prabh';
+            const senderColor = sender === 'user' ? 'var(--vibrant-primary)' : 'var(--love-primary)';
+            
+            let metadataInfo = '';
+            if (metadata && sender === 'prabh') {
+                const confidence = metadata.confidence ? Math.round(metadata.confidence * 100) : 0;
+                metadataInfo = `
+                    <div style="font-size: 0.7rem; color: var(--muted-text); margin-top: 0.5rem;">
+                        ${metadata.method} • ${confidence}% confidence • ${metadata.cached ? 'cached' : 'fresh'}
+                    </div>
+                `;
+            }
+            
+            messageDiv.innerHTML = `
+                <div style="margin-bottom: 0.5rem;">
+                    <strong style="color: ${senderColor};">${senderName}</strong>
+                    <span style="color: var(--muted-text); font-size: 0.8rem; margin-left: 0.5rem;">${timestamp}</span>
+                </div>
+                <div>${formatMessage(text)}</div>
+                ${metadataInfo}
+            `;
+            
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+            
+            return messageDiv;
+        }
+
+        function addTypingIndicator(container) {
+            const indicator = document.createElement('div');
+            indicator.className = 'message message-prabh typing-indicator';
+            indicator.innerHTML = `
+                <div style="margin-bottom: 0.5rem;">
+                    <strong style="color: var(--love-primary);">Prabh</strong>
+                    <span style="color: var(--muted-text); font-size: 0.8rem; margin-left: 0.5rem;">typing...</span>
+                </div>
+                <div class="typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            `;
+            
+            container.appendChild(indicator);
+            container.scrollTop = container.scrollHeight;
+            
+            return indicator;
+        }
+
+        function formatMessage(text) {
+            return text
+                .replace(/💖/g, '<span class="pulse-heart">💖</span>')
+                .replace(/🥺/g, '<span class="pulse-heart">🥺</span>')
+                .replace(/💕/g, '<span class="pulse-heart">💕</span>')
+                .replace(/❤️/g, '<span class="pulse-heart">❤️</span>')
+                .replace(/\n/g, '<br>');
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            loadModelStatus();
+            
+            // Focus on input
+            document.getElementById('chatInput').focus();
+            
+            // Send message on Enter
+            document.getElementById('chatInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+            
+            // Send button click
+            document.getElementById('sendBtn').addEventListener('click', sendMessage);
+        });
+    </script>
+</body>
+</html>

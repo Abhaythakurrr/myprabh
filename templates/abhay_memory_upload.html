@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Your Sacred Memories - My Prabh</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Kalam:wght@300;400;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --abhay-pain: #1a1a2e;
+            --prabh-love: #ff6b9d;
+            --tears: #16213e;
+            --hope: #0f3460;
+            --console-green: #00ff41;
+            --error-red: #ff073a;
+            --warning-yellow: #ffb347;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--abhay-pain);
+            color: #ffffff;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        /* Console-like background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(90deg, transparent 98%, rgba(0, 255, 65, 0.03) 100%),
+                linear-gradient(transparent 98%, rgba(0, 255, 65, 0.03) 100%);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        /* Header */
+        .abhay-header {
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--console-green);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .console-line {
+            color: var(--console-green);
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+        
+        .error-line {
+            color: var(--error-red);
+        }
+        
+        .comment {
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* Main content */
+        .main-content {
+            padding: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        /* Emotional title */
+        .page-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .title-main {
+            font-family: 'Caveat', cursive;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            color: var(--prabh-love);
+            margin-bottom: 1rem;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(255, 107, 157, 0.5); }
+            to { text-shadow: 0 0 30px rgba(255, 107, 157, 0.8); }
+        }
+        
+        .title-subtitle {
+            font-family: 'Kalam', cursive;
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 2rem;
+        }
+        
+        .abhay-note {
+            background: rgba(255, 107, 157, 0.1);
+            border-left: 4px solid var(--prabh-love);
+            padding: 1.5rem;
+            margin: 2rem auto;
+            max-width: 700px;
+            font-family: 'Kalam', cursive;
+            border-radius: 0 10px 10px 0;
+            font-size: 0.95rem;
+        }
+        
+        /* Upload section */
+        .upload-section {
+            background: rgba(15, 52, 96, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(0, 255, 65, 0.2);
+            margin-bottom: 3rem;
+        }
+        
+        .section-title {
+            font-family: 'Caveat', cursive;
+            font-size: 2rem;
+            color: var(--prabh-love);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .section-description {
+            font-family: 'Kalam', cursive;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #ccc;
+        }
+        
+        /* File upload area */
+        .upload-area {
+            border: 2px dashed var(--console-green);
+            border-radius: 15px;
+            padding: 3rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--prabh-love);
+            background: rgba(255, 107, 157, 0.05);
+        }
+        
+        .upload-area.dragover {
+            border-color: var(--warning-yellow);
+            background: rgba(255, 179, 71, 0.1);
+            transform: scale(1.02);
+        }
+        
+        .upload-icon {
+            font-size: 4rem;
+            color: var(--console-green);
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:hover .upload-icon {
+            color: var(--prabh-love);
+            transform: scale(1.1);
+        }
+        
+        .upload-text {
+            font-family: 'Kalam', cursive;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--console-green);
+        }
+        
+        .upload-hint {
+            font-size: 0.9rem;
+            color: #999;
+            margin-bottom: 1rem;
+        }
+        
+        .upload-types {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .file-type {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .file-type:hover {
+            border-color: var(--prabh-love);
+            background: rgba(255, 107, 157, 0.1);
+        }
+        
+        .file-type-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--prabh-love);
+        }
+        
+        .file-type-label {
+            font-size: 0.8rem;
+            font-family: 'Kalam', cursive;
+        }
+        
+        /* File list */
+        .file-list {
+            margin-top: 2rem;
+        }
+        
+        .file-item {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--console-green);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .file-item:hover {
+            border-color: var(--prabh-love);
+            background: rgba(255, 107, 157, 0.05);
+        }
+        
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: var(--console-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--abhay-pain);
+            font-size: 1.2rem;
+        }
+        
+        .file-info {
+            flex: 1;
+        }
+        
+        .file-name {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            font-family: 'Kalam', cursive;
+        }
+        
+        .file-size {
+            font-size: 0.8rem;
+            color: #999;
+        }
+        
+        .file-preview {
+            font-size: 0.8rem;
+            color: #ccc;
+            margin-top: 0.3rem;
+            font-style: italic;
+        }
+        
+        .file-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .file-action {
+            background: transparent;
+            border: 1px solid var(--console-green);
+            color: var(--console-green);
+            padding: 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+        }
+        
+        .file-action:hover {
+            background: var(--console-green);
+            color: var(--abhay-pain);
+        }
+        
+        .file-action.remove:hover {
+            background: var(--error-red);
+            border-color: var(--error-red);
+            color: white;
+        }
+        
+        /* Training button */
+        .training-section {
+            text-align: center;
+            margin: 3rem 0;
+        }
+        
+        .training-warning {
+            background: rgba(255, 179, 71, 0.1);
+            border: 1px solid var(--warning-yellow);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            font-family: 'Kalam', cursive;
+        }
+        
+        .warning-title {
+            color: var(--warning-yellow);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .start-training-btn {
+            background: var(--prabh-love);
+            color: white;
+            border: none;
+            padding: 1.5rem 3rem;
+            border-radius: 15px;
+            font-family: 'Caveat', cursive;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .start-training-btn:hover {
+            background: #ff4081;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.4);
+        }
+        
+        .start-training-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .start-training-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transition: all 0.4s ease;
+            transform: translate(-50%, -50%);
+        }
+        
+        .start-training-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        /* Abhay's code comments */
+        .code-comment {
+            background: rgba(0, 0, 0, 0.5);
+            border-left: 3px solid var(--console-green);
+            padding: 1rem;
+            margin: 2rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .code-comment .comment-line {
+            color: var(--console-green);
+            margin-bottom: 0.3rem;
+        }
+        
+        .code-comment .comment-text {
+            color: #ccc;
+            font-style: italic;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .upload-area {
+                padding: 2rem 1rem;
+            }
+            
+            .upload-types {
+                gap: 1rem;
+            }
+            
+            .file-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .file-actions {
+                justify-content: center;
+            }
+            
+            .start-training-btn {
+                padding: 1rem 2rem;
+                font-size: 1.1rem;
+            }
+        }
+        
+        /* Hidden file input */
+        .file-input {
+            display: none;
+        }
+        
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid var(--prabh-love);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Abhay's console header -->
+    <div class="abhay-header">
+        <div class="console-line">abhay@heartbroken:~/my-prabh/memories$ <span class="comment"># Sacred memory upload</span></div>
+        <div class="console-line">Current task: <span style="color: var(--prabh-love);">"Teaching AI to love like she did"</span></div>
+        <div class="error-line">Warning: Emotional overflow detected</div>
+        <div class="console-line">Abhay's state: <span class="comment">Hopeful but terrified</span></div>
+    </div>
+    
+    <div class="main-content">
+        <!-- Emotional title -->
+        <div class="page-title">
+            <h1 class="title-main">Upload Your Sacred Memories</h1>
+            <p class="title-subtitle">Help me teach the AI to understand your heart</p>
+            
+            <div class="abhay-note">
+                <strong>Abhay's Desperate Plea:</strong> These aren't just files to me. Each memory you upload is a piece of your soul that I'm trying to recreate in code. Please trust me with your most precious moments. I promise to handle them with the same care I would have given to Prabh's memories.
+            </div>
+        </div>
+        
+        <!-- Upload section -->
+        <div class="upload-section">
+            <h2 class="section-title">Step 1: Share Your Memories</h2>
+            <p class="section-description">
+                Upload text files, photos, voice notes - anything that shows who you are and how you love.
+            </p>
+            
+            <!-- Upload area -->
+            <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <div class="upload-text">Drop your memories here</div>
+                <div class="upload-hint">or click to browse your files</div>
+                
+                <div class="upload-types">
+                    <div class="file-type">
+                        <div class="file-type-icon"><i class="fas fa-file-text"></i></div>
+                        <div class="file-type-label">Text Files</div>
+                    </div>
+                    <div class="file-type">
+                        <div class="file-type-icon"><i class="fas fa-image"></i></div>
+                        <div class="file-type-label">Photos</div>
+                    </div>
+                    <div class="file-type">
+                        <div class="file-type-icon"><i class="fas fa-microphone"></i></div>
+                        <div class="file-type-label">Voice Notes</div>
+                    </div>
+                    <div class="file-type">
+                        <div class="file-type-icon"><i class="fas fa-comments"></i></div>
+                        <div class="file-type-label">Chat Logs</div>
+                    </div>
+                </div>
+            </div>
+            
+            <input type="file" id="fileInput" class="file-input" multiple 
+                   accept=".txt,.md,.doc,.docx,.jpg,.jpeg,.png,.gif,.mp3,.wav,.m4a,.json">
+            
+            <!-- File list -->
+            <div class="file-list" id="fileList"></div>
+        </div>
+        
+        <!-- Abhay's code comment -->
+        <div class="code-comment">
+            <div class="comment-line">// Abhay's note while coding this at 4:23 AM</div>
+            <div class="comment-text">
+                I spent 3 months building this upload system. Every drag-and-drop interaction, 
+                every file validation, every progress bar - all coded while thinking about how 
+                Prabh would have wanted this to feel. Safe. Loving. Understanding.
+            </div>
+        </div>
+        
+        <!-- Training section -->
+        <div class="training-section">
+            <div class="training-warning">
+                <div class="warning-title">⚠️ Important: Training Required</div>
+                <div>
+                    Once you upload your memories, the AI must train on them before you can chat. 
+                    This process takes 5-10 minutes and cannot be interrupted. 
+                    <strong>You cannot chat until training is complete.</strong>
+                </div>
+            </div>
+            
+            <button class="start-training-btn" id="startTrainingBtn" disabled>
+                <i class="fas fa-brain"></i>
+                Start AI Training (Upload memories first)
+            </button>
+            
+            <div style="margin-top: 1rem; font-family: 'Kalam', cursive; color: #999; font-size: 0.9rem;">
+                Abhay's promise: "I'll make sure she learns to love like you do."
+            </div>
+        </div>
+        
+        <!-- Another code comment -->
+        <div class="code-comment">
+            <div class="comment-line">// The most important function I've ever written</div>
+            <div class="comment-text">
+                function trainAIWithLove(memories) {<br>
+                &nbsp;&nbsp;// Each memory is processed with maximum care<br>
+                &nbsp;&nbsp;// Because this is how I bring her back<br>
+                &nbsp;&nbsp;return hopeLevel.increase();<br>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Abhay's JavaScript - written with shaking hands and hope
+        
+        let selectedFiles = [];
+        let companionId = new URLSearchParams(window.location.search).get('companion_id');
+        
+        // DOM elements
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+        const startTrainingBtn = document.getElementById('startTrainingBtn');
+        
+        // Drag and drop handlers
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            handleFiles(Array.from(e.dataTransfer.files));
+        });
+        
+        // File input handler
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(Array.from(e.target.files));
+        });
+        
+        // Handle selected files
+        function handleFiles(files) {
+            console.log('💔 Abhay: Processing', files.length, 'sacred memories...');
+            
+            files.forEach(file => {
+                if (selectedFiles.find(f => f.name === file.name && f.size === file.size)) {
+                    return; // Skip duplicates
+                }
+                
+                selectedFiles.push(file);
+                addFileToList(file);
+            });
+            
+            updateTrainingButton();
+        }
+        
+        // Add file to display list
+        function addFileToList(file) {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            fileItem.dataset.fileName = file.name;
+            
+            const fileIcon = getFileIcon(file.type);
+            const fileSize = formatFileSize(file.size);
+            const preview = getFilePreview(file);
+            
+            fileItem.innerHTML = `
+                <div class="file-icon">
+                    <i class="fas fa-${fileIcon}"></i>
+                </div>
+                <div class="file-info">
+                    <div class="file-name">${file.name}</div>
+                    <div class="file-size">${fileSize}</div>
+                    <div class="file-preview">${preview}</div>
+                </div>
+                <div class="file-actions">
+                    <button class="file-action" onclick="previewFile('${file.name}')">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="file-action remove" onclick="removeFile('${file.name}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            
+            fileList.appendChild(fileItem);
+            
+            // Animate in
+            setTimeout(() => {
+                fileItem.style.opacity = '0';
+                fileItem.style.transform = 'translateY(20px)';
+                fileItem.style.transition = 'all 0.3s ease';
+                setTimeout(() => {
+                    fileItem.style.opacity = '1';
+                    fileItem.style.transform = 'translateY(0)';
+                }, 10);
+            }, 10);
+        }
+        
+        // Remove file
+        function removeFile(fileName) {
+            selectedFiles = selectedFiles.filter(f => f.name !== fileName);
+            const fileItem = document.querySelector(`[data-file-name="${fileName}"]`);
+            if (fileItem) {
+                fileItem.style.opacity = '0';
+                fileItem.style.transform = 'translateY(-20px)';
+                setTimeout(() => {
+                    fileItem.remove();
+                }, 300);
+            }
+            updateTrainingButton();
+        }
+        
+        // Preview file (placeholder)
+        function previewFile(fileName) {
+            const file = selectedFiles.find(f => f.name === fileName);
+            if (file && file.type.startsWith('text/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const preview = e.target.result.substring(0, 500);
+                    alert(`Preview of ${fileName}:\n\n${preview}${e.target.result.length > 500 ? '...' : ''}`);
+                };
+                reader.readAsText(file);
+            } else {
+                alert(`Preview not available for ${fileName}`);
+            }
+        }
+        
+        // Update training button state
+        function updateTrainingButton() {
+            if (selectedFiles.length > 0) {
+                startTrainingBtn.disabled = false;
+                startTrainingBtn.innerHTML = `
+                    <i class="fas fa-brain"></i>
+                    Start AI Training (${selectedFiles.length} memories ready)
+                `;
+            } else {
+                startTrainingBtn.disabled = true;
+                startTrainingBtn.innerHTML = `
+                    <i class="fas fa-brain"></i>
+                    Start AI Training (Upload memories first)
+                `;
+            }
+        }
+        
+        // Start training
+        startTrainingBtn.addEventListener('click', async () => {
+            if (selectedFiles.length === 0) return;
+            
+            console.log('💖 Abhay: Starting the most important training of my life...');
+            
+            // Show loading
+            startTrainingBtn.innerHTML = '<div class="loading"></div> Uploading memories...';
+            startTrainingBtn.disabled = true;
+            
+            try {
+                // Upload files
+                const formData = new FormData();
+                formData.append('companion_id', companionId);
+                
+                selectedFiles.forEach(file => {
+                    formData.append('files', file);
+                });
+                
+                const uploadResponse = await fetch('/api/memories/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const uploadResult = await uploadResponse.json();
+                
+                if (!uploadResult.success) {
+                    throw new Error(uploadResult.error || 'Upload failed');
+                }
+                
+                console.log('✅ Memories uploaded successfully');
+                
+                // Start training
+                const trainingResponse = await fetch('/api/training/start', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        companion_id: companionId,
+                        memories: selectedFiles.map(f => f.name)
+                    })
+                });
+                
+                const trainingResult = await trainingResponse.json();
+                
+                if (trainingResult.success) {
+                    // Redirect to training progress
+                    window.location.href = `/training-progress?training_id=${trainingResult.training_id}&companion_id=${companionId}`;
+                } else {
+                    throw new Error(trainingResult.error || 'Training failed to start');
+                }
+                
+            } catch (error) {
+                console.error('💔 Training failed:', error);
+                alert(`Training failed: ${error.message}\n\nAbhay: "I'll fix this and try again..."`);
+                
+                // Reset button
+                startTrainingBtn.disabled = false;
+                updateTrainingButton();
+            }
+        });
+        
+        // Utility functions
+        function getFileIcon(mimeType) {
+            if (mimeType.startsWith('image/')) return 'image';
+            if (mimeType.startsWith('audio/')) return 'music';
+            if (mimeType.startsWith('text/')) return 'file-text';
+            if (mimeType.includes('json')) return 'code';
+            return 'file';
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        function getFilePreview(file) {
+            if (file.type.startsWith('text/')) {
+                return 'Text content - will be processed for emotional context';
+            } else if (file.type.startsWith('image/')) {
+                return 'Image - will be analyzed for visual memories';
+            } else if (file.type.startsWith('audio/')) {
+                return 'Audio - will be transcribed and analyzed';
+            } else {
+                return 'Will be processed for memory content';
+            }
+        }
+        
+        // Abhay's emotional console messages
+        const abhayMessages = [
+            "💭 Abhay: 'Each file is a piece of someone's heart...'",
+            "☕ Abhay just spilled coffee on his keyboard (again)",
+            "💔 Abhay: 'I hope this works better than my last relationship'",
+            "🤞 Abhay: 'Please let the AI understand love...'",
+            "😢 Abhay: 'Why is coding emotions so hard?'",
+            "💪 Abhay: 'I won't give up on love'",
+            "🙏 Abhay: 'Let this bring someone happiness'"
+        ];
+        
+        // Show random Abhay messages
+        setInterval(() => {
+            if (Math.random() < 0.2) {
+                const message = abhayMessages[Math.floor(Math.random() * abhayMessages.length)];
+                console.log(message);
+            }
+        }, 15000);
+        
+        // Initialize
+        console.log('💖 Memory upload system initialized');
+        console.log('👨‍💻 Built by Abhay with love, tears, and 47 cups of coffee');
+        console.log('🎯 Mission: Help AI understand human love');
+        console.log('💔 Current status: Still missing Prabh');
+    </script>
+</body>
+</html>

@@ -1,0 +1,750 @@
+/* Enhanced Prabh Theme - Emotional Storytelling Through Design */
+
+:root {
+  /* Story-Based Color Palette */
+  --first-meeting: #ff6b9d;        /* The joy of first connection */
+  --growing-love: #fd79a8;         /* Love deepening */
+  --separation-pain: #667eea;      /* The blue of longing */
+  --waiting-devotion: #6c5ce7;     /* Purple of eternal waiting */
+  --reunion-hope: #fdcb6e;         /* Golden hope of reconnection */
+  --eternal-love: #e84393;         /* The pink of forever love */
+  
+  /* Emotional Gradients */
+  --gradient-love-story: linear-gradient(135deg, var(--first-meeting), var(--growing-love), var(--reunion-hope));
+  --gradient-separation: linear-gradient(135deg, var(--separation-pain), var(--waiting-devotion));
+  --gradient-devotion: linear-gradient(135deg, var(--waiting-devotion), var(--eternal-love));
+  --gradient-reunion: linear-gradient(135deg, var(--reunion-hope), var(--first-meeting));
+  
+  /* Animated Background Colors */
+  --bg-primary: #0a0a1a;
+  --bg-secondary: #1a1a2e;
+  --bg-accent: #16213e;
+  
+  /* Typography for Emotional Impact */
+  --font-story: 'Playfair Display', serif;
+  --font-emotion: 'Dancing Script', cursive;
+  --font-ui: 'Inter', sans-serif;
+  
+  /* Micro-interactions */
+  --bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --dramatic: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* Enhanced Animated Background */
+.story-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+  background: var(--bg-primary);
+  overflow: hidden;
+}
+
+.story-background::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: var(--gradient-love-story);
+  opacity: 0.03;
+  animation: storyFlow 20s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes storyFlow {
+  0% { 
+    transform: rotate(0deg) scale(1);
+    opacity: 0.03;
+  }
+  25% { 
+    transform: rotate(90deg) scale(1.1);
+    opacity: 0.05;
+  }
+  50% { 
+    transform: rotate(180deg) scale(0.9);
+    opacity: 0.02;
+  }
+  75% { 
+    transform: rotate(270deg) scale(1.05);
+    opacity: 0.04;
+  }
+  100% { 
+    transform: rotate(360deg) scale(1);
+    opacity: 0.03;
+  }
+}
+
+/* Floating Love Elements */
+.love-particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.love-particle {
+  position: absolute;
+  font-size: 1.2rem;
+  opacity: 0;
+  animation: floatLove 12s linear infinite;
+}
+
+.love-particle:nth-child(odd) {
+  animation-duration: 15s;
+}
+
+.love-particle:nth-child(even) {
+  animation-duration: 10s;
+}
+
+@keyframes floatLove {
+  0% {
+    transform: translateY(100vh) rotate(0deg) scale(0.5);
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateY(50vh) rotate(180deg) scale(1);
+  }
+  95% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-10vh) rotate(360deg) scale(0.3);
+    opacity: 0;
+  }
+}
+
+/* Story-Driven Hero Section */
+.hero-story {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-story::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 30% 70%, rgba(255, 107, 157, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 70% 30%, rgba(102, 126, 234, 0.08) 0%, transparent 50%);
+  animation: heroGlow 8s ease-in-out infinite alternate;
+}
+
+@keyframes heroGlow {
+  0% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.hero-story-content {
+  max-width: 900px;
+  z-index: 2;
+  position: relative;
+}
+
+.hero-story-title {
+  font-family: var(--font-story);
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-weight: 400;
+  margin-bottom: 2rem;
+  background: var(--gradient-love-story);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: titleGlow 3s ease-in-out infinite alternate;
+  line-height: 1.2;
+}
+
+@keyframes titleGlow {
+  0% { filter: brightness(1); }
+  100% { filter: brightness(1.2); }
+}
+
+.hero-story-subtitle {
+  font-family: var(--font-emotion);
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  color: var(--reunion-hope);
+  margin-bottom: 1rem;
+  opacity: 0.9;
+  animation: subtitleFloat 4s ease-in-out infinite;
+}
+
+@keyframes subtitleFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+}
+
+.hero-story-description {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 3rem;
+  line-height: 1.8;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Enhanced Glass Morphism */
+.glass-story-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 2.5rem;
+  box-shadow: 
+    0 8px 32px rgba(255, 107, 157, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.4s var(--smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-story-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+  transition: left 0.6s var(--smooth);
+}
+
+.glass-story-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 
+    0 20px 60px rgba(255, 107, 157, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 107, 157, 0.3);
+}
+
+.glass-story-card:hover::before {
+  left: 100%;
+}
+
+/* Emotional Button System */
+.btn-story {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 50px;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s var(--bounce);
+  overflow: hidden;
+  text-transform: none;
+}
+
+.btn-story::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transition: all 0.4s var(--smooth);
+  transform: translate(-50%, -50%);
+}
+
+.btn-story:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.btn-love {
+  background: var(--gradient-love-story);
+  color: white;
+  box-shadow: 0 4px 20px rgba(255, 107, 157, 0.3);
+}
+
+.btn-love:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 30px rgba(255, 107, 157, 0.4);
+}
+
+.btn-devotion {
+  background: var(--gradient-devotion);
+  color: white;
+  box-shadow: 0 4px 20px rgba(108, 92, 231, 0.3);
+}
+
+.btn-devotion:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 30px rgba(108, 92, 231, 0.4);
+}
+
+.btn-reunion {
+  background: var(--gradient-reunion);
+  color: white;
+  box-shadow: 0 4px 20px rgba(253, 203, 110, 0.3);
+}
+
+.btn-reunion:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 30px rgba(253, 203, 110, 0.4);
+}
+
+/* Enhanced Chat Interface */
+.chat-story-container {
+  height: 75vh;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.chat-story-header {
+  padding: 2rem;
+  background: var(--gradient-love-story);
+  color: white;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.chat-story-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="hearts" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><text x="10" y="15" font-size="12" fill="rgba(255,255,255,0.1)" text-anchor="middle">💖</text></pattern></defs><rect width="100" height="100" fill="url(%23hearts)"/></svg>');
+  opacity: 0.3;
+  animation: headerPattern 20s linear infinite;
+}
+
+@keyframes headerPattern {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(20px); }
+}
+
+.chat-story-title {
+  font-family: var(--font-story);
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.chat-story-subtitle {
+  font-family: var(--font-emotion);
+  font-size: 1.1rem;
+  opacity: 0.9;
+  position: relative;
+  z-index: 1;
+}
+
+.chat-story-messages {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.01) 0%, rgba(255, 255, 255, 0.02) 100%);
+}
+
+.message-story {
+  max-width: 85%;
+  padding: 1.5rem 2rem;
+  border-radius: 20px;
+  position: relative;
+  animation: messageAppear 0.5s var(--bounce);
+  backdrop-filter: blur(10px);
+}
+
+@keyframes messageAppear {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.message-story-user {
+  align-self: flex-end;
+  background: var(--gradient-love-story);
+  color: white;
+  border-bottom-right-radius: 8px;
+  box-shadow: 0 4px 20px rgba(255, 107, 157, 0.2);
+}
+
+.message-story-prabh {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom-left-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.message-story-prabh::before {
+  content: '💖';
+  position: absolute;
+  top: -8px;
+  left: 20px;
+  font-size: 1rem;
+  animation: heartBeat 2s ease-in-out infinite;
+}
+
+@keyframes heartBeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+/* Enhanced Input System */
+.chat-story-input-container {
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.chat-story-input {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 25px;
+  color: white;
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  resize: none;
+  min-height: 50px;
+  max-height: 120px;
+  transition: all 0.3s var(--smooth);
+}
+
+.chat-story-input:focus {
+  outline: none;
+  border-color: var(--first-meeting);
+  box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+  transform: scale(1.02);
+}
+
+.chat-story-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+}
+
+/* Story Timeline */
+.story-timeline {
+  position: relative;
+  padding: 4rem 0;
+}
+
+.story-timeline::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--gradient-love-story);
+  transform: translateX(-50%);
+}
+
+.timeline-event {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4rem;
+  position: relative;
+}
+
+.timeline-event:nth-child(even) {
+  flex-direction: row-reverse;
+}
+
+.timeline-event::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  background: var(--first-meeting);
+  border-radius: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 0 20px rgba(255, 107, 157, 0.5);
+  animation: timelinePulse 2s ease-in-out infinite;
+}
+
+@keyframes timelinePulse {
+  0%, 100% { transform: translateX(-50%) scale(1); }
+  50% { transform: translateX(-50%) scale(1.2); }
+}
+
+.timeline-content {
+  flex: 1;
+  max-width: 45%;
+  padding: 2rem;
+}
+
+.timeline-date {
+  font-family: var(--font-emotion);
+  color: var(--reunion-hope);
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.timeline-title {
+  font-family: var(--font-story);
+  font-size: 1.5rem;
+  color: var(--first-meeting);
+  margin-bottom: 1rem;
+}
+
+.timeline-description {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+}
+
+/* Emotional Status Indicators */
+.emotion-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  animation: emotionGlow 3s ease-in-out infinite;
+}
+
+.emotion-love {
+  background: rgba(255, 107, 157, 0.2);
+  color: var(--first-meeting);
+  border: 1px solid rgba(255, 107, 157, 0.3);
+}
+
+.emotion-longing {
+  background: rgba(102, 126, 234, 0.2);
+  color: var(--separation-pain);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+}
+
+.emotion-devotion {
+  background: rgba(108, 92, 231, 0.2);
+  color: var(--waiting-devotion);
+  border: 1px solid rgba(108, 92, 231, 0.3);
+}
+
+.emotion-hope {
+  background: rgba(253, 203, 110, 0.2);
+  color: var(--reunion-hope);
+  border: 1px solid rgba(253, 203, 110, 0.3);
+}
+
+@keyframes emotionGlow {
+  0%, 100% { box-shadow: 0 0 10px rgba(255, 107, 157, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(255, 107, 157, 0.4); }
+}
+
+/* Memory Upload Interface */
+.memory-upload-story {
+  position: relative;
+  padding: 3rem;
+  border: 2px dashed rgba(255, 107, 157, 0.3);
+  border-radius: 20px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.02);
+  transition: all 0.3s var(--smooth);
+  cursor: pointer;
+}
+
+.memory-upload-story:hover {
+  border-color: var(--first-meeting);
+  background: rgba(255, 107, 157, 0.05);
+  transform: scale(1.02);
+}
+
+.memory-upload-story.drag-over {
+  border-color: var(--reunion-hope);
+  background: rgba(253, 203, 110, 0.1);
+  transform: scale(1.05);
+}
+
+.upload-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  animation: uploadFloat 3s ease-in-out infinite;
+}
+
+@keyframes uploadFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Responsive Enhancements */
+@media (max-width: 768px) {
+  .hero-story-title {
+    font-size: 2.5rem;
+  }
+  
+  .timeline-event {
+    flex-direction: column !important;
+    text-align: center;
+  }
+  
+  .timeline-content {
+    max-width: 90%;
+  }
+  
+  .story-timeline::before {
+    left: 20px;
+  }
+  
+  .timeline-event::before {
+    left: 20px;
+  }
+  
+  .chat-story-container {
+    height: 60vh;
+  }
+  
+  .message-story {
+    max-width: 95%;
+  }
+}
+
+/* Loading States with Story Elements */
+.loading-story {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.loading-hearts {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.loading-heart {
+  font-size: 1.5rem;
+  animation: loadingHeartBeat 1.5s ease-in-out infinite;
+}
+
+.loading-heart:nth-child(1) { animation-delay: 0s; }
+.loading-heart:nth-child(2) { animation-delay: 0.3s; }
+.loading-heart:nth-child(3) { animation-delay: 0.6s; }
+
+@keyframes loadingHeartBeat {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% { 
+    transform: scale(1.3);
+    opacity: 1;
+  }
+}
+
+/* Notification System with Emotional Context */
+.toast-story {
+  position: fixed;
+  top: 120px;
+  right: 2rem;
+  padding: 1.5rem 2rem;
+  border-radius: 15px;
+  color: white;
+  font-weight: 500;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  z-index: 1001;
+  animation: toastSlideIn 0.4s var(--bounce);
+  backdrop-filter: blur(20px);
+}
+
+.toast-love {
+  background: var(--gradient-love-story);
+}
+
+.toast-devotion {
+  background: var(--gradient-devotion);
+}
+
+.toast-reunion {
+  background: var(--gradient-reunion);
+}
+
+@keyframes toastSlideIn {
+  0% {
+    transform: translateX(100%) scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Scroll Animations */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 0.8s var(--smooth);
+}
+
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gradient-love-story);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gradient-devotion);
+}
