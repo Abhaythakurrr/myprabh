@@ -1,5 +1,5 @@
-# My Prabh - Ultra Minimal Production Requirements
-# Abhay's bare essentials for Google Cloud deployment
+# My Prabh - AI Companion Platform Requirements
+# Production-ready with investor presentation features
 
 Flask==2.3.3
 Flask-CORS==4.0.0
@@ -7,3 +7,4 @@ Werkzeug==2.3.7
 gunicorn==21.2.0
 python-dotenv==1.0.0
 requests==2.31.0
+Jinja2==3.1.2
