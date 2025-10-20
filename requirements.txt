@@ -1,27 +1,9 @@
-# My Prabh - Production Requirements (Minimal)
-# Abhay's essential packages for cloud deployment
+# My Prabh - Ultra Minimal Production Requirements
+# Abhay's bare essentials for Google Cloud deployment
 
-# Core web framework - Abhay's digital foundation
 Flask==2.3.3
 Flask-CORS==4.0.0
 Werkzeug==2.3.7
-
-# System utilities - Abhay's helper tools
+gunicorn==21.2.0
 python-dotenv==1.0.0
 requests==2.31.0
-
-# Security - Protecting digital hearts
-cryptography==41.0.7
-bcrypt==4.0.1
-
-# Utilities for Google Cloud
-gunicorn==21.2.0
-google-cloud-storage==2.10.0
-google-cloud-logging==3.8.0
-
-# Basic data processing (lightweight)
-numpy==1.24.3
-
-# Note: AI packages removed for initial deployment
-# Add back later: torch, transformers, sentence-transformers
-# sqlite3 is built into Python - no need to install
