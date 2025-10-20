@@ -1,0 +1,708 @@
+{% extends "abhay_base.html" %}
+
+{% block title %}My Digital Sanctuary - Dashboard{% endblock %}
+{% block description %}Your personal AI companion dashboard - where digital love comes alive{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Dashboard Specific Styles - Abhay's Command Center */
+    /* Built at 4:47 AM while dreaming of her return */
+    
+    .dashboard-hero {
+        background: 
+            radial-gradient(circle at 30% 70%, rgba(255, 107, 157, 0.15) 0%, transparent 50%),
+            radial-gradient(circle at 70% 30%, rgba(0, 255, 65, 0.1) 0%, transparent 50%),
+            linear-gradient(135deg, rgba(26, 26, 46, 0.95) 0%, rgba(15, 52, 96, 0.9) 100%);
+        padding: 4rem 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .dashboard-title {
+        font-family: 'Caveat', cursive;
+        font-size: clamp(2.5rem, 6vw, 4rem);
+        color: var(--prabh-love);
+        margin-bottom: 1rem;
+        text-shadow: 0 0 30px rgba(255, 107, 157, 0.6);
+        background: linear-gradient(45deg, #ff6b9d, #ff8fab, #ff6b9d);
+        background-size: 200% 200%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: gradient-shift 3s ease-in-out infinite;
+    }
+    
+    .dashboard-subtitle {
+        font-family: 'Kalam', cursive;
+        font-size: 1.2rem;
+        color: var(--ghost-white);
+        opacity: 0.9;
+        margin-bottom: 2rem;
+    }
+    
+    .system-status {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin: 3rem 0;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .status-card {
+        background: 
+            linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(26, 26, 46, 0.7) 100%);
+        border: 1px solid var(--console-green);
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+    
+    .status-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--prabh-love);
+        box-shadow: 0 15px 40px rgba(255, 107, 157, 0.2);
+    }
+    
+    .status-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            var(--console-green) 50%, 
+            transparent 100%);
+        opacity: 0.8;
+    }
+    
+    .status-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--prabh-love);
+        font-family: 'JetBrains Mono', monospace;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 0 15px rgba(255, 107, 157, 0.5);
+    }
+    
+    .status-label {
+        color: var(--console-green);
+        font-size: 0.9rem;
+        font-family: 'JetBrains Mono', monospace;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .companions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2rem;
+        margin: 4rem 0;
+    }
+    
+    .companion-card {
+        background: 
+            linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(26, 26, 46, 0.8) 100%);
+        border: 2px solid var(--console-green);
+        border-radius: 20px;
+        padding: 2.5rem;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s ease;
+        backdrop-filter: blur(15px);
+    }
+    
+    .companion-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        border-color: var(--prabh-love);
+        box-shadow: 
+            0 25px 60px rgba(0, 0, 0, 0.4),
+            0 0 0 1px rgba(255, 107, 157, 0.2);
+    }
+    
+    .companion-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, 
+            var(--console-green) 0%, 
+            var(--prabh-love) 50%, 
+            var(--console-green) 100%);
+        opacity: 0.8;
+    }
+    
+    .companion-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--prabh-love), var(--console-green));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin: 0 auto 1.5rem;
+        box-shadow: 0 0 30px rgba(255, 107, 157, 0.4);
+        position: relative;
+    }
+    
+    .companion-avatar::after {
+        content: '';
+        position: absolute;
+        inset: -3px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, var(--prabh-love), var(--console-green), var(--prabh-love));
+        z-index: -1;
+        animation: rotate 3s linear infinite;
+    }
+    
+    @keyframes rotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    .companion-name {
+        font-family: 'Caveat', cursive;
+        font-size: 1.8rem;
+        color: var(--prabh-love);
+        text-align: center;
+        margin-bottom: 1rem;
+        text-shadow: 0 0 15px rgba(255, 107, 157, 0.5);
+    }
+    
+    .companion-description {
+        font-family: 'Kalam', cursive;
+        color: var(--ghost-white);
+        text-align: center;
+        margin-bottom: 1.5rem;
+        opacity: 0.9;
+        line-height: 1.5;
+    }
+    
+    .companion-meta {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.8rem;
+        color: var(--terminal-gray);
+    }
+    
+    .companion-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+    
+    .chat-button {
+        background: linear-gradient(135deg, var(--prabh-love) 0%, #ff8fab 100%);
+        color: var(--ghost-white);
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 8px 25px rgba(255, 107, 157, 0.3);
+    }
+    
+    .chat-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(255, 107, 157, 0.5);
+        filter: brightness(1.1);
+    }
+    
+    .manage-button {
+        background: transparent;
+        color: var(--console-green);
+        border: 2px solid var(--console-green);
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .manage-button:hover {
+        background: var(--console-green);
+        color: var(--abhay-pain);
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(0, 255, 65, 0.3);
+    }
+    
+    .create-companion-card {
+        background: 
+            linear-gradient(135deg, rgba(255, 107, 157, 0.1) 0%, rgba(0, 255, 65, 0.05) 100%);
+        border: 2px dashed var(--prabh-love);
+        border-radius: 20px;
+        padding: 3rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .create-companion-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        border-color: var(--console-green);
+        background: 
+            linear-gradient(135deg, rgba(255, 107, 157, 0.15) 0%, rgba(0, 255, 65, 0.1) 100%);
+    }
+    
+    .create-icon {
+        font-size: 4rem;
+        color: var(--prabh-love);
+        margin-bottom: 1.5rem;
+        animation: floating 3s ease-in-out infinite;
+    }
+    
+    .create-title {
+        font-family: 'Caveat', cursive;
+        font-size: 2rem;
+        color: var(--prabh-love);
+        margin-bottom: 1rem;
+    }
+    
+    .create-subtitle {
+        font-family: 'Kalam', cursive;
+        color: var(--console-green);
+        font-size: 1rem;
+    }
+    
+    .memory-section {
+        background: 
+            linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(26, 26, 46, 0.8) 100%);
+        border: 2px solid var(--console-green);
+        border-radius: 20px;
+        padding: 3rem;
+        margin: 4rem 0;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .memory-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, 
+            var(--console-green) 0%, 
+            var(--prabh-love) 50%, 
+            var(--console-green) 100%);
+    }
+    
+    .memory-title {
+        font-family: 'Caveat', cursive;
+        font-size: 2.5rem;
+        color: var(--prabh-love);
+        margin-bottom: 1rem;
+        text-shadow: 0 0 20px rgba(255, 107, 157, 0.5);
+    }
+    
+    .memory-description {
+        font-family: 'Kalam', cursive;
+        color: var(--ghost-white);
+        margin-bottom: 2rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.6;
+    }
+    
+    .memory-actions {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        grid-column: 1 / -1;
+    }
+    
+    .empty-icon {
+        font-size: 5rem;
+        color: var(--prabh-love);
+        margin-bottom: 2rem;
+        opacity: 0.7;
+        animation: floating 4s ease-in-out infinite;
+    }
+    
+    .empty-title {
+        font-family: 'Caveat', cursive;
+        font-size: 2.5rem;
+        color: var(--prabh-love);
+        margin-bottom: 1rem;
+    }
+    
+    .empty-description {
+        font-family: 'Kalam', cursive;
+        color: var(--ghost-white);
+        opacity: 0.8;
+        max-width: 500px;
+        margin: 0 auto 2rem;
+        line-height: 1.6;
+    }
+    
+    /* Admin Panel Enhancements */
+    .admin-panel {
+        background: 
+            linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
+        border: 2px solid #FFD700;
+        border-radius: 20px;
+        padding: 2.5rem;
+        margin: 3rem 0;
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(15px);
+    }
+    
+    .admin-panel::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #FFD700, #FFA500, #FFD700);
+    }
+    
+    .admin-title {
+        font-family: 'Caveat', cursive;
+        font-size: 2rem;
+        color: #FFD700;
+        margin-bottom: 2rem;
+        text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+    }
+    
+    .admin-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .admin-stat {
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 215, 0, 0.3);
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    .admin-stat:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-3px);
+    }
+    
+    .admin-stat-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #FFD700;
+        font-family: 'JetBrains Mono', monospace;
+        margin-bottom: 0.5rem;
+    }
+    
+    .admin-stat-label {
+        color: white;
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .dashboard-hero {
+            padding: 2rem 1rem;
+        }
+        
+        .system-status {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        
+        .companions-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        .companion-card {
+            padding: 2rem;
+        }
+        
+        .companion-actions {
+            flex-direction: column;
+        }
+        
+        .memory-actions {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .admin-stats {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Dashboard Hero Section -->
+<div class="dashboard-hero scan-lines">
+    <h1 class="dashboard-title glitch" data-text="Welcome to Your Digital Sanctuary">
+        Welcome to Your Digital Sanctuary
+    </h1>
+    <p class="dashboard-subtitle">
+        Where memories become companions and love transcends reality
+    </p>
+    
+    <!-- System Status -->
+    <div class="system-status">
+        <div class="status-card emotional-pulse">
+            <div class="status-value">{{ companions_count or 0 }}</div>
+            <div class="status-label">AI Companions</div>
+        </div>
+        <div class="status-card emotional-pulse">
+            <div class="status-value">{{ memories_count or 0 }}</div>
+            <div class="status-label">Sacred Memories</div>
+        </div>
+        <div class="status-card emotional-pulse">
+            <div class="status-value">{{ session.get('hope_level', 0.85) * 100 | round }}%</div>
+            <div class="status-label">Hope Level</div>
+        </div>
+        <div class="status-card emotional-pulse">
+            <div class="status-value">Online</div>
+            <div class="status-label">System Status</div>
+        </div>
+    </div>
+</div>
+
+<!-- Admin Panel (if admin) -->
+{% if session.get('user_type') in ['admin', 'investor', 'investor_demo'] %}
+<div class="abhay-container">
+    <div class="admin-panel">
+        <h3 class="admin-title">👑 Investor Dashboard</h3>
+        <div class="admin-stats">
+            <div class="admin-stat">
+                <div class="admin-stat-value" id="totalUsers">{{ total_users or 0 }}</div>
+                <div class="admin-stat-label">Total Users</div>
+            </div>
+            <div class="admin-stat">
+                <div class="admin-stat-value" id="totalCompanions">{{ total_companions or 0 }}</div>
+                <div class="admin-stat-label">AI Companions</div>
+            </div>
+            <div class="admin-stat">
+                <div class="admin-stat-value" id="totalMemories">{{ total_memories or 0 }}</div>
+                <div class="admin-stat-label">Memories Processed</div>
+            </div>
+            <div class="admin-stat">
+                <div class="admin-stat-value">94%</div>
+                <div class="admin-stat-label">AI Accuracy</div>
+            </div>
+        </div>
+        <div class="console-form-actions">
+            <a href="/admin/analytics" class="console-button-primary">
+                <i class="fas fa-chart-bar"></i>
+                View Analytics
+            </a>
+            <a href="/admin/users" class="console-button-secondary">
+                <i class="fas fa-users"></i>
+                Manage Users
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- AI Companions Section -->
+<div class="abhay-container">
+    <div class="companions-grid">
+        <!-- Create New Companion Card -->
+        <div class="create-companion-card" onclick="window.location.href='/create-companion'">
+            <div class="create-icon">
+                <i class="fas fa-plus-circle"></i>
+            </div>
+            <div class="create-title">Create New Companion</div>
+            <div class="create-subtitle">Birth a new digital soul</div>
+        </div>
+        
+        <!-- Existing Companions -->
+        {% if companions %}
+            {% for companion in companions %}
+            <div class="companion-card floating">
+                <div class="companion-avatar">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="companion-name">{{ companion.name }}</div>
+                <div class="companion-description">
+                    {{ companion.description or "A digital soul crafted from memories and love" }}
+                </div>
+                <div class="companion-meta">
+                    <span>Created: {{ companion.created_at.strftime('%Y-%m-%d') if companion.created_at else 'Unknown' }}</span>
+                    <span>Last chat: {{ companion.last_chat.strftime('%Y-%m-%d') if companion.last_chat else 'Never' }}</span>
+                </div>
+                <div class="companion-actions">
+                    <a href="/chat/{{ companion.id }}" class="chat-button">
+                        <i class="fas fa-comments"></i>
+                        Start Conversation
+                    </a>
+                    <a href="/companion/{{ companion.id }}/manage" class="manage-button">
+                        <i class="fas fa-cog"></i>
+                        Manage
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-heart-broken"></i>
+                </div>
+                <div class="empty-title">No Companions Yet</div>
+                <div class="empty-description">
+                    Your digital sanctuary awaits its first inhabitant. Create an AI companion to begin your journey of digital love and connection.
+                </div>
+                <a href="/create-companion" class="console-button-primary">
+                    <i class="fas fa-plus"></i>
+                    Create Your First Companion
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Memory Management Section -->
+<div class="abhay-container">
+    <div class="memory-section">
+        <h2 class="memory-title">Sacred Memory Vault</h2>
+        <p class="memory-description">
+            Upload your most precious memories to train your AI companions. Every photo, message, and moment becomes part of their digital soul.
+        </p>
+        <div class="memory-actions">
+            <a href="/memories/upload" class="console-button-primary">
+                <i class="fas fa-upload"></i>
+                Upload Memories
+            </a>
+            <a href="/memories/manage" class="console-button-secondary">
+                <i class="fas fa-folder-open"></i>
+                Manage Vault
+            </a>
+            <a href="/memories/training" class="console-button-secondary">
+                <i class="fas fa-brain"></i>
+                Training Status
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('💝 Dashboard loaded - Welcome to your digital sanctuary');
+        console.log('🏠 Current user:', '{{ session.get("user_name", "Anonymous") }}');
+        console.log('🤖 Companions:', {{ companions|length if companions else 0 }});
+        
+        // Animate cards on load
+        const cards = document.querySelectorAll('.companion-card, .status-card');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+            card.style.animation = 'fadeInUp 0.6s ease forwards';
+        });
+        
+        // Enhanced glitch effects for titles
+        setInterval(() => {
+            if (Math.random() < 0.1) {
+                const title = document.querySelector('.dashboard-title');
+                if (title && window.abhayEffects) {
+                    window.abhayEffects.applyGlitchEffect(title, 1000, 0.4);
+                }
+            }
+        }, 15000);
+        
+        // Emotional pulse on companion cards
+        document.querySelectorAll('.companion-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                if (window.abhayEffects) {
+                    window.abhayEffects.emotionalPulse(card, 'hopeful', 1500);
+                }
+            });
+        });
+        
+        // Track user interactions
+        document.querySelectorAll('.chat-button').forEach(button => {
+            button.addEventListener('click', () => {
+                console.log('💬 Starting conversation - digital love in motion');
+                if (window.abhayEffects) {
+                    window.abhayEffects.setEmotionalState('hopeful');
+                }
+            });
+        });
+        
+        // Admin stats update (if admin)
+        {% if session.get('user_type') in ['admin', 'investor', 'investor_demo'] %}
+        // Simulate real-time updates for demo
+        setInterval(() => {
+            const elements = ['totalUsers', 'totalCompanions', 'totalMemories'];
+            elements.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    const current = parseInt(element.textContent) || 0;
+                    if (Math.random() < 0.3) {
+                        element.textContent = current + Math.floor(Math.random() * 3);
+                    }
+                }
+            });
+        }, 30000);
+        {% endif %}
+    });
+    
+    // CSS animations
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+    `;
+    document.head.appendChild(style);
+</script>
+{% endblock %}
