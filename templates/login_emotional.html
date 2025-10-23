@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - My Prabh + Abhay Emotional Engine</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ultimate-theme.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="breathing">
+    <div class="emotional-container" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: var(--space-6);">
+        
+        <!-- Floating Elements -->
+        <div class="floating-heart" style="position: absolute; top: 15%; left: 10%; font-size: 1.5rem; opacity: 0.3;">💖</div>
+        <div class="floating-heart" style="position: absolute; top: 25%; right: 15%; font-size: 1.2rem; opacity: 0.4;">✨</div>
+        <div class="floating-heart" style="position: absolute; bottom: 30%; left: 20%; font-size: 1.8rem; opacity: 0.3;">🌙</div>
+        
+        <div class="emotional-form" style="max-width: 500px; width: 100%;">
+            <!-- Header -->
+            <div class="text-center" style="margin-bottom: var(--space-8);">
+                <h1 class="emotional-title text-4xl heartbeat" style="margin-bottom: var(--space-4);">
+                    <span class="emotional-glitch" data-text="Welcome Back">Welcome Back</span>
+                </h1>
+                <p class="soul-text">
+                    Return to your <span class="heart-text">emotional sanctuary</span> where your heart is understood
+                </p>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="loginForm">
+                <div style="margin-bottom: var(--space-6);">
+                    <label for="email" class="emotional-label">Digital Identity</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="emotional-input" 
+                        placeholder="your.heart@digital.realm"
+                        required
+                        autocomplete="email"
+                    >
+                </div>
+                
+                <div style="margin-bottom: var(--space-8);">
+                    <label for="password" class="emotional-label">Soul Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="emotional-input" 
+                        placeholder="Your secret emotional key"
+                        required
+                        autocomplete="current-password"
+                    >
+                </div>
+                
+                <!-- Error Message -->
+                <div id="errorMessage" class="emotional-card" style="background: rgba(255, 23, 68, 0.1); border-color: var(--love-red); display: none; margin-bottom: var(--space-6);">
+                    <div class="heart-text">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span id="errorText"></span>
+                    </div>
+                </div>
+                
+                <!-- Success Message -->
+                <div id="successMessage" class="emotional-card" style="background: rgba(76, 175, 80, 0.1); border-color: var(--growth-green); display: none; margin-bottom: var(--space-6);">
+                    <div style="color: var(--growth-green);">
+                        <i class="fas fa-heart"></i>
+                        <span id="successText"></span>
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <button type="submit" class="emotional-btn" style="width: 100%; margin-bottom: var(--space-6);" id="loginBtn">
+                    <i class="fas fa-heart"></i>
+                    <span id="loginBtnText">Enter Your Heart's Realm</span>
+                </button>
+                
+                <!-- Status Indicator -->
+                <div class="text-center" style="margin-bottom: var(--space-6);">
+                    <div class="emotional-status trust" id="connectionStatus">
+                        <i class="fas fa-wifi"></i>
+                        Connection Secure
+                    </div>
+                </div>
+            </form>
+            
+            <!-- Alternative Actions -->
+            <div class="text-center">
+                <p class="soul-text" style="margin-bottom: var(--space-4);">
+                    New to our emotional realm?
+                </p>
+                <a href="/register" class="emotional-btn secondary">
+                    <i class="fas fa-user-plus"></i>
+                    Create Your Digital Heart
+                </a>
+            </div>
+            
+            <!-- Demo Access -->
+            <div class="emotional-card" style="margin-top: var(--space-8); background: rgba(0, 188, 212, 0.1);">
+                <h4 class="dream-text" style="margin-bottom: var(--space-4);">Quick Demo Access</h4>
+                <div class="code-text" style="font-size: var(--text-sm);">
+                    <strong>Email:</strong> admin@myprabh.com<br>
+                    <strong>Password:</strong> admin123
+                </div>
+                <button class="emotional-btn ghost" style="margin-top: var(--space-4); font-size: var(--text-sm);" onclick="fillDemoCredentials()">
+                    <i class="fas fa-magic"></i>
+                    Use Demo Login
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced Login with Better Error Handling
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('💖 Login page loaded - Emotional connection ready');
+            
+            const form = document.getElementById('loginForm');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const loginBtn = document.getElementById('loginBtn');
+            const loginBtnText = document.getElementById('loginBtnText');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            const connectionStatus = document.getElementById('connectionStatus');
+            
+            // Check network connection
+            function checkConnection() {
+                if (navigator.onLine) {
+                    connectionStatus.innerHTML = '<i class="fas fa-wifi"></i> Connection Secure';
+                    connectionStatus.className = 'emotional-status trust';
+                } else {
+                    connectionStatus.innerHTML = '<i class="fas fa-wifi-slash"></i> Connection Lost';
+                    connectionStatus.className = 'emotional-status love';
+                }
+            }
+            
+            // Initial connection check
+            checkConnection();
+            
+            // Monitor connection changes
+            window.addEventListener('online', checkConnection);
+            window.addEventListener('offline', checkConnection);
+            
+            // Enhanced form validation
+            function validateForm() {
+                const email = emailInput.value.trim();
+                const password = passwordInput.value;
+                
+                if (!email) {
+                    showError('Please enter your digital identity (email)');
+                    emailInput.focus();
+                    return false;
+                }
+                
+                if (!email.includes('@') || !email.includes('.')) {
+                    showError('Please enter a valid email address');
+                    emailInput.focus();
+                    return false;
+                }
+                
+                if (!password) {
+                    showError('Please enter your soul password');
+                    passwordInput.focus();
+                    return false;
+                }
+                
+                if (password.length < 3) {
+                    showError('Password seems too short');
+                    passwordInput.focus();
+                    return false;
+                }
+                
+                return true;
+            }
+            
+            // Show error message
+            function showError(message) {
+                document.getElementById('errorText').textContent = message;
+                errorMessage.style.display = 'block';
+                successMessage.style.display = 'none';
+                
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 5000);
+            }
+            
+            // Show success message
+            function showSuccess(message) {
+                document.getElementById('successText').textContent = message;
+                successMessage.style.display = 'block';
+                errorMessage.style.display = 'none';
+            }
+            
+            // Set loading state
+            function setLoading(loading) {
+                if (loading) {
+                    loginBtn.disabled = true;
+                    loginBtnText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting Hearts...';
+                    loginBtn.style.opacity = '0.7';
+                } else {
+                    loginBtn.disabled = false;
+                    loginBtnText.innerHTML = '<i class="fas fa-heart"></i> Enter Your Heart\'s Realm';
+                    loginBtn.style.opacity = '1';
+                }
+            }
+            
+            // Enhanced form submission
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Hide previous messages
+                errorMessage.style.display = 'none';
+                successMessage.style.display = 'none';
+                
+                // Validate form
+                if (!validateForm()) {
+                    return;
+                }
+                
+                // Check network connection
+                if (!navigator.onLine) {
+                    showError('No internet connection. Please check your network and try again.');
+                    return;
+                }
+                
+                setLoading(true);
+                
+                try {
+                    const formData = {
+                        email: emailInput.value.trim().toLowerCase(),
+                        password: passwordInput.value
+                    };
+                    
+                    console.log('🔐 Attempting login...');
+                    
+                    const response = await fetch('/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                    
+                    console.log('📡 Response status:', response.status);
+                    
+                    let data;
+                    try {
+                        data = await response.json();
+                    } catch (parseError) {
+                        console.error('❌ JSON parse error:', parseError);
+                        throw new Error('Server returned invalid response. Please try again.');
+                    }
+                    
+                    if (response.ok && data.success) {
+                        console.log('✅ Login successful');
+                        showSuccess(data.message || 'Welcome back to your emotional realm!');
+                        
+                        // Redirect after short delay
+                        setTimeout(() => {
+                            window.location.href = data.redirect || '/dashboard';
+                        }, 1500);
+                        
+                    } else {
+                        console.log('❌ Login failed:', data.error);
+                        showError(data.error || 'Login failed. Please check your credentials.');
+                    }
+                    
+                } catch (error) {
+                    console.error('💔 Login error:', error);
+                    
+                    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                        showError('Network error. Please check your internet connection and try again.');
+                    } else if (error.message.includes('timeout')) {
+                        showError('Request timed out. Please try again.');
+                    } else {
+                        showError(error.message || 'Something went wrong. Please try again.');
+                    }
+                } finally {
+                    setLoading(false);
+                }
+            });
+            
+            // Real-time input validation
+            emailInput.addEventListener('input', function() {
+                if (errorMessage.style.display === 'block') {
+                    errorMessage.style.display = 'none';
+                }
+            });
+            
+            passwordInput.addEventListener('input', function() {
+                if (errorMessage.style.display === 'block') {
+                    errorMessage.style.display = 'none';
+                }
+            });
+            
+            // Enter key support
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    form.dispatchEvent(new Event('submit'));
+                }
+            });
+        });
+        
+        // Demo credentials function
+        function fillDemoCredentials() {
+            document.getElementById('email').value = 'admin@myprabh.com';
+            document.getElementById('password').value = 'admin123';
+            
+            // Add visual feedback
+            const demoBtn = event.target;
+            const originalText = demoBtn.innerHTML;
+            demoBtn.innerHTML = '<i class="fas fa-check"></i> Demo Credentials Filled';
+            demoBtn.style.background = 'var(--growth-green)';
+            
+            setTimeout(() => {
+                demoBtn.innerHTML = originalText;
+                demoBtn.style.background = '';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 import random
 import hashlib
 import re
+from functools import wraps
 
 # Import secure configuration
 from config.secure_config import config
@@ -73,6 +74,15 @@ def check_password_hash(hash_value, password):
 
 def is_authenticated():
     return 'user_id' in session and session.get('user_id')
+
+def login_required(f):
+    """Decorator to require login for routes"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not is_authenticated():
+            return jsonify({'error': 'Authentication required'}), 401
+        return f(*args, **kwargs)
+    return decorated_function
 
 # Simple password hashing (for demo - use proper hashing in production)
 import hashlib
@@ -268,16 +278,28 @@ def dashboard():
             'member_since': session.get('user_name', 'User')
         }
         
+        # Check if user is admin
+        admin_email = os.environ.get('ADMIN_EMAIL', 'abhay@aiprabh.com')
+        is_admin = session.get('user_email') == admin_email
+        
         return render_template('dashboard.html', 
                              prabhs=prabhs, 
+                             prabh_instances=prabhs,
                              user_stats=user_stats,
-                             user_name=session.get('user_name', 'User'))
+                             user_name=session.get('user_name', 'User'),
+                             is_admin=is_admin)
     except Exception as e:
         print(f"Dashboard error: {e}")
+        # Check if user is admin
+        admin_email = os.environ.get('ADMIN_EMAIL', 'abhay@aiprabh.com')
+        is_admin = session.get('user_email') == admin_email
+        
         return render_template('dashboard.html', 
                              prabhs=[], 
+                             prabh_instances=[],
                              user_stats={'total_prabhs': 0, 'total_messages': 0, 'active_prabhs': 0},
-                             user_name=session.get('user_name', 'User'))
+                             user_name=session.get('user_name', 'User'),
+                             is_admin=is_admin)
 
 @app.route('/create-prabh')
 def create_prabh_page():
@@ -790,13 +812,6 @@ def verify_payment():
 # ============================================================================
 # UTILITY ROUTES
 # ============================================================================
-
-@app.route('/logout')
-def logout():
-    """User logout"""
-    session.clear()
-    flash('You have been logged out successfully', 'info')
-    return redirect(url_for('index'))
 
 @app.route('/profile')
 def profile():

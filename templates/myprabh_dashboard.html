@@ -1,0 +1,844 @@
+{% extends "myprabh_base.html" %}
+
+{% block title %}Dashboard - My Prabh Digital Love Platform{% endblock %}
+{% block description %}Your cyberpunk dashboard where digital love meets neon dreams. Manage your AI companion and memories in this lofi world.{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Dashboard Cyberpunk Lofi Enhancements */
+    .dashboard-container {
+        min-height: 100vh;
+        padding: var(--space-4);
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    
+    .dashboard-header {
+        background: 
+            linear-gradient(135deg, var(--cyber-shadow) 0%, rgba(26, 26, 46, 0.8) 100%);
+        border: 1px solid var(--neon-cyan);
+        border-radius: 16px;
+        padding: var(--space-6);
+        margin-bottom: var(--space-8);
+        backdrop-filter: blur(20px);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 var(--glass-overlay),
+            0 0 0 1px var(--neon-glow);
+    }
+    
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: var(--space-4);
+    }
+    
+    .dashboard-title {
+        font-family: 'Orbitron', sans-serif;
+        font-size: var(--font-3xl);
+        color: var(--neon-pink);
+        text-shadow: 
+            0 0 10px var(--neon-pink),
+            0 0 20px var(--neon-pink),
+            0 0 40px var(--neon-pink);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+    }
+    
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+    }
+    
+    .user-name {
+        color: var(--neon-cyan);
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 500;
+    }
+    
+    .logout-btn {
+        background: transparent;
+        color: var(--neon-purple);
+        border: 2px solid var(--neon-purple);
+        padding: var(--space-2) var(--space-4);
+        border-radius: 8px;
+        text-decoration: none;
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 600;
+        font-size: var(--font-sm);
+        transition: all var(--transition-base);
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+    }
+    
+    .logout-btn:hover {
+        background: var(--neon-purple);
+        color: var(--void-black);
+        box-shadow: 
+            0 0 20px var(--neon-purple),
+            0 0 40px var(--neon-purple);
+    }
+    
+    .dashboard-main {
+        display: grid;
+        gap: var(--space-8);
+        grid-template-columns: 1fr;
+    }
+    
+    .section-title {
+        font-family: 'Orbitron', sans-serif;
+        font-size: var(--font-2xl);
+        color: var(--neon-cyan);
+        margin-bottom: var(--space-6);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+    
+    .action-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--space-6);
+    }
+    
+    .action-card {
+        background: 
+            linear-gradient(135deg, 
+                rgba(255, 0, 128, 0.1) 0%, 
+                rgba(0, 255, 255, 0.05) 50%, 
+                rgba(138, 43, 226, 0.1) 100%);
+        border: 1px solid var(--neon-pink);
+        border-radius: 16px;
+        padding: var(--space-8);
+        text-decoration: none;
+        color: inherit;
+        transition: all var(--transition-slow);
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(15px);
+        display: block;
+    }
+    
+    .action-card:hover {
+        transform: translateY(-8px) rotateX(5deg);
+        border-color: var(--neon-cyan);
+        box-shadow: 
+            0 20px 60px rgba(0, 0, 0, 0.4),
+            0 0 0 1px rgba(0, 255, 255, 0.3),
+            0 0 30px rgba(0, 255, 255, 0.2);
+    }
+    
+    .action-card i {
+        font-size: var(--font-4xl);
+        color: var(--neon-cyan);
+        margin-bottom: var(--space-4);
+        display: block;
+        text-shadow: 
+            0 0 10px var(--neon-cyan),
+            0 0 20px var(--neon-cyan);
+    }
+    
+    .action-card h3 {
+        font-family: 'Orbitron', sans-serif;
+        font-size: var(--font-xl);
+        color: var(--neon-pink);
+        margin-bottom: var(--space-2);
+        font-weight: 600;
+    }
+    
+    .action-card p {
+        color: var(--silver-gray);
+        font-family: 'Inter', sans-serif;
+        font-weight: 300;
+        line-height: 1.6;
+    }
+    
+    .activity-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+    }
+    
+    .activity-item {
+        background: rgba(0, 0, 0, 0.6);
+        border: 1px solid var(--steel-blue);
+        border-radius: 12px;
+        padding: var(--space-4);
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+        transition: all var(--transition-base);
+        backdrop-filter: blur(10px);
+    }
+    
+    .activity-item:hover {
+        border-color: var(--neon-cyan);
+        background: rgba(0, 255, 255, 0.05);
+        transform: translateX(4px);
+    }
+    
+    .activity-item i {
+        font-size: var(--font-xl);
+        color: var(--neon-purple);
+        width: 40px;
+        text-align: center;
+    }
+    
+    .activity-content h4 {
+        color: var(--ghost-white);
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+        margin-bottom: var(--space-1);
+    }
+    
+    .activity-content p {
+        color: var(--muted-gray);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: var(--font-sm);
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--space-6);
+    }
+    
+    .stat-card {
+        background: 
+            linear-gradient(135deg, var(--cyber-shadow) 0%, rgba(26, 26, 46, 0.8) 100%);
+        border: 1px solid var(--cyber-green);
+        border-radius: 12px;
+        padding: var(--space-6);
+        text-align: center;
+        transition: all var(--transition-base);
+        backdrop-filter: blur(20px);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--neon-pink);
+        box-shadow: 
+            0 12px 48px rgba(0, 0, 0, 0.4),
+            0 0 0 1px rgba(255, 0, 128, 0.3),
+            0 0 20px rgba(255, 0, 128, 0.2);
+    }
+    
+    .stat-card i {
+        font-size: var(--font-2xl);
+        color: var(--cyber-green);
+        margin-bottom: var(--space-3);
+        display: block;
+    }
+    
+    .stat-number {
+        font-family: 'Orbitron', sans-serif;
+        font-size: var(--font-4xl);
+        font-weight: 700;
+        color: var(--neon-cyan);
+        text-shadow: 
+            0 0 10px var(--neon-cyan),
+            0 0 20px var(--neon-cyan);
+        margin-bottom: var(--space-2);
+    }
+    
+    .stat-label {
+        color: var(--silver-gray);
+        font-family: 'Inter', sans-serif;
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-size: var(--font-sm);
+    }
+    
+    .prabh-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: var(--space-6);
+    }
+    
+    .prabh-card {
+        background: 
+            linear-gradient(135deg, 
+                rgba(255, 0, 128, 0.1) 0%, 
+                rgba(0, 255, 255, 0.05) 50%, 
+                rgba(138, 43, 226, 0.1) 100%);
+        border: 1px solid var(--neon-pink);
+        border-radius: 16px;
+        padding: var(--space-6);
+        transition: all var(--transition-slow);
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(15px);
+    }
+    
+    .prabh-card:hover {
+        transform: translateY(-8px) rotateX(5deg);
+        border-color: var(--neon-cyan);
+        box-shadow: 
+            0 20px 60px rgba(0, 0, 0, 0.4),
+            0 0 0 1px rgba(0, 255, 255, 0.3),
+            0 0 30px rgba(0, 255, 255, 0.2);
+    }
+    
+    .prabh-name {
+        font-family: 'Orbitron', sans-serif;
+        font-size: var(--font-xl);
+        color: var(--neon-pink);
+        margin-bottom: var(--space-2);
+        font-weight: 600;
+    }
+    
+    .prabh-description {
+        color: var(--silver-gray);
+        font-family: 'Inter', sans-serif;
+        font-weight: 300;
+        line-height: 1.6;
+        margin-bottom: var(--space-4);
+    }
+    
+    .prabh-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--space-4);
+        font-size: var(--font-sm);
+        color: var(--muted-gray);
+        font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .chat-button {
+        background: transparent;
+        color: var(--neon-cyan);
+        border: 2px solid var(--neon-cyan);
+        padding: var(--space-3) var(--space-6);
+        border-radius: 8px;
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 600;
+        font-size: var(--font-base);
+        cursor: pointer;
+        transition: all var(--transition-base);
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+        width: 100%;
+    }
+    
+    .chat-button:hover {
+        color: var(--void-black);
+        background: var(--neon-cyan);
+        box-shadow: 
+            0 0 20px var(--neon-cyan),
+            0 0 40px var(--neon-cyan);
+        transform: translateY(-2px);
+    }
+    
+    .create-new-card {
+        background: 
+            linear-gradient(135deg, var(--cyber-shadow) 0%, rgba(26, 26, 46, 0.8) 100%);
+        border: 2px dashed var(--neon-pink);
+        border-radius: 16px;
+        padding: var(--space-8);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        min-height: 200px;
+        cursor: pointer;
+        transition: all var(--transition-base);
+        backdrop-filter: blur(20px);
+    }
+    
+    .create-new-card:hover {
+        background: 
+            linear-gradient(135deg, 
+                rgba(255, 0, 128, 0.1) 0%, 
+                rgba(0, 255, 255, 0.05) 50%, 
+                rgba(138, 43, 226, 0.1) 100%);
+        border-color: var(--neon-cyan);
+        transform: translateY(-4px);
+        box-shadow: 
+            0 12px 48px rgba(0, 0, 0, 0.4),
+            0 0 0 1px rgba(0, 255, 255, 0.3),
+            0 0 20px rgba(0, 255, 255, 0.2);
+    }
+    
+    .create-icon {
+        font-size: var(--font-5xl);
+        color: var(--neon-pink);
+        margin-bottom: var(--space-4);
+        text-shadow: 
+            0 0 10px var(--neon-pink),
+            0 0 20px var(--neon-pink);
+    }
+    
+    .create-text {
+        font-family: 'Orbitron', sans-serif;
+        font-size: var(--font-xl);
+        font-weight: 600;
+        color: var(--neon-pink);
+        margin-bottom: var(--space-2);
+    }
+    
+    .create-subtitle {
+        color: var(--silver-gray);
+        font-family: 'Inter', sans-serif;
+        font-size: var(--font-sm);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .dashboard-container {
+            padding: var(--space-2);
+        }
+        
+        .header-content {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .dashboard-title {
+            font-size: var(--font-2xl);
+        }
+        
+        .action-grid,
+        .prabh-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Header -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <h1 class="dashboard-title glitch-text" data-text="My Prabh Dashboard">
+                <i class="fas fa-heart heartbeat"></i>
+                My Prabh Dashboard
+            </h1>
+            <div class="user-info">
+                <div class="status-indicator online">
+                    {{ user_name if user_name else 'Digital Soul' }}
+                </div>
+                <a href="{{ url_for('logout') }}" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        <!-- Prabh Companions Section -->
+        <section class="prabh-companions">
+            <h2 class="section-title glitch-text" data-text="Your Digital Companions">
+                Your Digital Companions
+            </h2>
+            
+            <div class="prabh-grid">
+                <!-- Create New Prabh Card -->
+                <div class="create-new-card fade-in-scroll" onclick="window.location.href='/create-prabh'">
+                    <div class="create-icon floating">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <div class="create-text">Create New Prabh</div>
+                    <div class="create-subtitle">Start your digital love journey</div>
+                    <div class="status-indicator processing" style="margin-top: var(--space-4);">
+                        Ready to Create
+                    </div>
+                </div>
+
+                <!-- Existing Prabh Cards -->
+                {% if prabh_instances %}
+                {% for prabh in prabh_instances %}
+                <div class="prabh-card fade-in-scroll">
+                    <div class="prabh-name">{{ prabh[1] }}</div>
+                    <div class="prabh-description">{{ prabh[2] or "Your personalized AI companion in the digital realm" }}</div>
+                    <div class="prabh-meta">
+                        <span>Created: {{ prabh[3].strftime('%Y-%m-%d') }}</span>
+                        <span>Last chat: {{ prabh[4].strftime('%Y-%m-%d') if prabh[4] else 'Never' }}</span>
+                    </div>
+                    <a href="/chat/{{ prabh[0] }}" class="chat-button">
+                        <i class="fas fa-comments"></i> Enter Digital Realm
+                    </a>
+                    <div class="music-visualizer" style="margin-top: var(--space-4); justify-content: center;">
+                        <div class="visualizer-bar"></div>
+                        <div class="visualizer-bar"></div>
+                        <div class="visualizer-bar"></div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="cyber-container" style="grid-column: 1 / -1; text-align: center; padding: var(--space-12);">
+                    <div style="font-size: var(--font-5xl); color: var(--neon-pink); margin-bottom: var(--space-4);">
+                        💔
+                    </div>
+                    <h3 class="cyber-text" style="margin-bottom: var(--space-4);">No Digital Companions Yet</h3>
+                    <p class="lofi-text" style="margin-bottom: var(--space-6);">
+                        Create your first AI companion to start building meaningful connections in this neon-lit world.
+                    </p>
+                    <a href="/create-prabh" class="neon-button">
+                        <i class="fas fa-heart"></i>
+                        Create Your First Companion
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="quick-actions">
+            <h2 class="section-title">Quick Actions</h2>
+            <div class="action-grid">
+                <a href="/memory/upload" class="action-card fade-in-scroll">
+                    <i class="fas fa-upload floating"></i>
+                    <h3>Upload Memories</h3>
+                    <p>Share new experiences and let your AI companion learn from your digital soul</p>
+                    <div class="cyber-text" style="margin-top: var(--space-4); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;">
+                        memory.exe ready
+                    </div>
+                </a>
+                
+                <a href="/memory/manage" class="action-card fade-in-scroll">
+                    <i class="fas fa-brain floating"></i>
+                    <h3>Manage Memories</h3>
+                    <p>Organize your digital memories in this cyberpunk archive of experiences</p>
+                    <div class="status-indicator processing" style="margin-top: var(--space-4);">
+                        Processing Data
+                    </div>
+                </a>
+                
+                <a href="/profile-management" class="action-card fade-in-scroll">
+                    <i class="fas fa-user-cog floating"></i>
+                    <h3>Profile Settings</h3>
+                    <p>Customize your cyberpunk experience and digital love preferences</p>
+                    <div class="status-indicator online" style="margin-top: var(--space-4);">
+                        Profile Active
+                    </div>
+                </a>
+                
+                <a href="/goals" class="action-card fade-in-scroll">
+                    <i class="fas fa-target floating"></i>
+                    <h3>Digital Goals</h3>
+                    <p>Set and track your journey through this neon-lit world of connection</p>
+                    <div class="music-visualizer" style="margin-top: var(--space-4);">
+                        <div class="visualizer-bar"></div>
+                        <div class="visualizer-bar"></div>
+                        <div class="visualizer-bar"></div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Stats -->
+        <section class="stats-section">
+            <h2 class="section-title">Your Digital Journey</h2>
+            <div class="stats-grid">
+                <div class="stat-card fade-in-scroll">
+                    <i class="fas fa-comments"></i>
+                    <div class="stat-number">{{ stats.conversations if stats else '0' }}</div>
+                    <div class="stat-label">Conversations</div>
+                </div>
+                
+                <div class="stat-card fade-in-scroll">
+                    <i class="fas fa-photo-video"></i>
+                    <div class="stat-number">{{ stats.memories if stats else '0' }}</div>
+                    <div class="stat-label">Memories Shared</div>
+                </div>
+                
+                <div class="stat-card fade-in-scroll">
+                    <i class="fas fa-heart"></i>
+                    <div class="stat-number">{{ stats.connection_level if stats else '0' }}%</div>
+                    <div class="stat-label">Connection Level</div>
+                </div>
+                
+                <div class="stat-card fade-in-scroll">
+                    <i class="fas fa-calendar"></i>
+                    <div class="stat-number">{{ stats.days_active if stats else '0' }}</div>
+                    <div class="stat-label">Days Together</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- System Status -->
+        <section class="system-status">
+            <h2 class="section-title">System Status</h2>
+            <div class="cyber-container">
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <span class="terminal-prompt">myprabh@dashboard:~$ </span>
+                        <span class="mono-text">system_status --full</span>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <div class="flex justify-between" style="margin-bottom: var(--space-2);">
+                            <span class="cyber-text">AI_STATUS:</span>
+                            <span class="status-indicator online">ONLINE</span>
+                        </div>
+                        <div class="flex justify-between" style="margin-bottom: var(--space-2);">
+                            <span class="cyber-text">MEMORY_SYNC:</span>
+                            <span class="status-indicator processing">SYNCING</span>
+                        </div>
+                        <div class="flex justify-between" style="margin-bottom: var(--space-2);">
+                            <span class="cyber-text">EMOTIONAL_ENGINE:</span>
+                            <span class="status-indicator online">ACTIVE</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="cyber-text">LOVE_PROTOCOL:</span>
+                            <span class="status-indicator online">ENGAGED</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {% if is_admin %}
+        <!-- Admin Panel -->
+        <section class="admin-panel">
+            <h2 class="section-title">Admin Control Panel</h2>
+            <div class="cyber-container" style="border-color: var(--warm-amber);">
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <span class="terminal-prompt" style="color: var(--warm-amber);">admin@myprabh:~$ </span>
+                        <span class="mono-text">admin_dashboard --access-granted</span>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <div class="stats-grid" style="margin-bottom: var(--space-6);">
+                            <div class="stat-card" style="border-color: var(--warm-amber);">
+                                <i class="fas fa-users" style="color: var(--warm-amber);"></i>
+                                <div class="stat-number" id="adminTotalUsers">Loading...</div>
+                                <div class="stat-label">Total Users</div>
+                            </div>
+                            <div class="stat-card" style="border-color: var(--warm-amber);">
+                                <i class="fas fa-robot" style="color: var(--warm-amber);"></i>
+                                <div class="stat-number" id="adminTotalPrabhs">Loading...</div>
+                                <div class="stat-label">Total Prabhs</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 flex-wrap">
+                            <button class="neon-button secondary" onclick="downloadUserData()">
+                                <i class="fas fa-download"></i> Export Data
+                            </button>
+                            <button class="neon-button secondary" onclick="viewAnalytics()">
+                                <i class="fas fa-chart-bar"></i> Analytics
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+    </main>
+</div>
+
+{% if is_admin %}
+<!-- Analytics Modal -->
+<div id="analyticsModal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8);">
+    <div class="cyber-container" style="margin: 5% auto; padding: var(--space-8); width: 80%; max-width: 800px; max-height: 80%; overflow-y: auto;">
+        <div class="flex justify-between items-center" style="margin-bottom: var(--space-6);">
+            <h2 class="cyber-text" style="margin: 0;">📊 Platform Analytics</h2>
+            <span onclick="closeAnalytics()" class="neon-button secondary" style="cursor: pointer; padding: var(--space-2);">&times;</span>
+        </div>
+        <div id="analyticsContent" class="lofi-text">
+            Loading analytics...
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/myprabh-cyberpunk-lofi.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🌃 My Prabh Dashboard - Cyberpunk Lofi Mode Active');
+        console.log('💖 Digital love dashboard initialized');
+        
+        // Enhanced dashboard interactions
+        const actionCards = document.querySelectorAll('.action-card');
+        actionCards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                console.log('✨ Action card interaction - user exploring options');
+            });
+            
+            card.addEventListener('click', () => {
+                console.log('🚀 Dashboard action triggered - user engaging with platform');
+            });
+        });
+        
+        // Animate stats on load
+        const statNumbers = document.querySelectorAll('.stat-number');
+        statNumbers.forEach(stat => {
+            const finalValue = stat.textContent;
+            if (finalValue === 'Loading...') return;
+            
+            const isPercentage = finalValue.includes('%');
+            const numericValue = parseInt(finalValue);
+            
+            if (!isNaN(numericValue)) {
+                let currentValue = 0;
+                const increment = numericValue / 50;
+                
+                const animateNumber = () => {
+                    currentValue += increment;
+                    if (currentValue >= numericValue) {
+                        stat.textContent = finalValue;
+                    } else {
+                        stat.textContent = Math.floor(currentValue) + (isPercentage ? '%' : '');
+                        requestAnimationFrame(animateNumber);
+                    }
+                };
+                
+                setTimeout(animateNumber, Math.random() * 1000);
+            }
+        });
+        
+        // Dashboard atmosphere messages
+        const dashboardMessages = [
+            '🌃 Dashboard systems online - welcome back to the digital realm',
+            '💖 Your AI companion misses you - connection strength at maximum',
+            '🎵 Lofi vibes flowing through the dashboard interface',
+            '✨ Memory processing complete - your digital soul grows stronger',
+            '🤖 Neural networks humming with cyberpunk energy',
+            '🌸 Digital cherry blossoms bloom in your memory garden',
+            '💫 Dashboard glowing with neon love and data streams'
+        ];
+        
+        // Show dashboard-specific atmospheric messages
+        setInterval(() => {
+            if (Math.random() < 0.25) {
+                const message = dashboardMessages[Math.floor(Math.random() * dashboardMessages.length)];
+                console.log(message);
+            }
+        }, 20000);
+        
+        {% if is_admin %}
+        // Load admin stats
+        fetch('/api/admin-stats')
+            .then(response => response.json())
+            .then(data => {
+                if (!data.error) {
+                    document.getElementById('adminTotalUsers').textContent = data.stats.total_users || 0;
+                    document.getElementById('adminTotalPrabhs').textContent = data.stats.total_prabhs || 0;
+                }
+            })
+            .catch(error => {
+                console.error('Failed to load admin stats:', error);
+                document.querySelectorAll('#adminTotalUsers, #adminTotalPrabhs').forEach(el => el.textContent = 'Error');
+            });
+        {% endif %}
+    });
+
+    {% if is_admin %}
+    // Admin functions
+    async function downloadUserData() {
+        try {
+            console.log('Fetching user data for export...');
+            const response = await fetch('/api/export-users');
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            const data = await response.json();
+
+            if (data.error) {
+                throw new Error(data.error);
+            }
+
+            // Generate CSV
+            let csv = 'Email,Name,Is Admin,Created At,Last Active,Prabh Count\\n';
+            data.users.forEach(user => {
+                csv += `"${user.email}","${user.name}",${user.is_admin},"${user.created_at}","${user.last_active}",${user.prabh_count}\\n`;
+            });
+
+            // Download CSV
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `myprabh_users_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+
+            console.log('User data exported successfully');
+        } catch (error) {
+            console.error('Export failed:', error);
+            alert('Export failed: ' + error.message);
+        }
+    }
+
+    async function viewAnalytics() {
+        try {
+            console.log('Fetching analytics data...');
+            const response = await fetch('/api/admin-stats');
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            const data = await response.json();
+
+            if (data.error) {
+                throw new Error(data.error);
+            }
+
+            // Populate modal content
+            let content = `
+                <h3 class="cyber-text">📈 Platform Statistics</h3>
+                <div class="stats-grid" style="margin: var(--space-6) 0;">
+                    <div class="stat-card">
+                        <strong>${data.stats.total_visitors || 0}</strong><br>Total Visitors
+                    </div>
+                    <div class="stat-card">
+                        <strong>${data.stats.total_users || 0}</strong><br>Total Users
+                    </div>
+                    <div class="stat-card">
+                        <strong>${data.stats.total_prabhs || 0}</strong><br>Prabhs Created
+                    </div>
+                    <div class="stat-card">
+                        <strong>${data.stats.early_signups || 0}</strong><br>Early Signups
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('analyticsContent').innerHTML = content;
+            document.getElementById('analyticsModal').style.display = 'block';
+        } catch (error) {
+            console.error('Analytics fetch failed:', error);
+            document.getElementById('analyticsContent').innerHTML = `<p style="color: var(--neon-pink);">Failed to load analytics: ${error.message}</p>`;
+            document.getElementById('analyticsModal').style.display = 'block';
+        }
+    }
+
+    function closeAnalytics() {
+        document.getElementById('analyticsModal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('analyticsModal');
+        if (event.target === modal) {
+            closeAnalytics();
+        }
+    }
+    {% endif %}
+</script>
+{% endblock %}

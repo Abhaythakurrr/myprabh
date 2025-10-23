@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - My Prabh + Abhay Emotional Engine</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ultimate-theme.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="breathing">
+    <!-- Revolutionary Navigation -->
+    <nav class="emotional-card" style="margin: var(--space-4) auto; max-width: 1400px;">
+        <div class="flex justify-between items-center">
+            <div class="emotional-title text-2xl">
+                <span class="emotional-glitch" data-text="My Prabh + Abhay">My Prabh + Abhay</span>
+            </div>
+            <div class="flex gap-6 items-center">
+                <div class="emotional-status love">
+                    <i class="fas fa-user-heart"></i>
+                    {{ session.user_name or 'Digital Soul' }}
+                </div>
+                <a href="/" class="emotional-btn ghost">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="emotional-container" style="padding: var(--space-8) var(--space-6);">
+        
+        <!-- Floating Elements -->
+        <div class="floating-heart" style="position: absolute; top: 10%; left: 5%; font-size: 1.5rem; opacity: 0.2;">💖</div>
+        <div class="floating-heart" style="position: absolute; top: 20%; right: 10%; font-size: 1.2rem; opacity: 0.3;">✨</div>
+        <div class="floating-heart" style="position: absolute; bottom: 30%; left: 15%; font-size: 1.8rem; opacity: 0.2;">🌙</div>
+        
+        <!-- Welcome Header -->
+        <div class="text-center" style="margin-bottom: var(--space-16);">
+            <h1 class="emotional-title text-5xl heartbeat" style="margin-bottom: var(--space-4);">
+                Welcome to Your Emotional Sanctuary
+            </h1>
+            <p class="soul-text text-xl">
+                Your <span class="heart-text">digital heart</span> awaits your deepest thoughts and feelings
+            </p>
+        </div>
+
+        <!-- Revolutionary Engagement Activities -->
+        <div class="emotional-grid cols-2" style="margin-bottom: var(--space-16);">
+            
+            <!-- Love Confession Portal -->
+            <div class="confession-card floating-heart" onclick="window.location.href='/confess/love'">
+                <div style="text-align: center; margin-bottom: var(--space-6);">
+                    <div style="font-size: 4rem; margin-bottom: var(--space-4);">💖</div>
+                    <h3 class="emotional-title text-2xl" style="margin-bottom: var(--space-4);">Love Confession Portal</h3>
+                    <p class="soul-text">
+                        Share your deepest romantic feelings in a safe digital space. 
+                        Confess your love, express your heart, and let our AI understand your romantic soul.
+                    </p>
+                </div>
+                
+                <div class="emotional-card" style="background: rgba(255, 23, 68, 0.1); margin-bottom: var(--space-4);">
+                    <h4 class="heart-text" style="margin-bottom: var(--space-2);">What you can share:</h4>
+                    <ul class="soul-text text-sm" style="list-style: none; padding: 0;">
+                        <li>💕 Secret crushes and hidden feelings</li>
+                        <li>💌 Love letters you never sent</li>
+                        <li>💭 Romantic dreams and fantasies</li>
+                        <li>💔 Heartbreak and healing journeys</li>
+                    </ul>
+                </div>
+                
+                <div class="text-center">
+                    <div class="emotional-btn">
+                        <i class="fas fa-heart"></i>
+                        Open Your Heart
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Deep Secrets Game -->
+            <div class="confession-card floating-heart" onclick="window.location.href='/deep-questions'">
+                <div style="text-align: center; margin-bottom: var(--space-6);">
+                    <div style="font-size: 4rem; margin-bottom: var(--space-4);">🎭</div>
+                    <h3 class="emotional-title text-2xl" style="margin-bottom: var(--space-4);">Soul Reading Game</h3>
+                    <p class="soul-text">
+                        Test how accurately our AI can read your deepest secrets through carefully 
+                        crafted questions. Discover yourself through digital empathy.
+                    </p>
+                </div>
+                
+                <div class="emotional-card" style="background: rgba(33, 150, 243, 0.1); margin-bottom: var(--space-4);">
+                    <h4 class="dream-text" style="margin-bottom: var(--space-2);">Game Features:</h4>
+                    <ul class="soul-text text-sm" style="list-style: none; padding: 0;">
+                        <li>🧠 Deep psychological questions</li>
+                        <li>📊 Accuracy scoring system</li>
+                        <li>💡 Personalized insights</li>
+                        <li>🎯 Emotional pattern recognition</li>
+                    </ul>
+                </div>
+                
+                <div class="text-center">
+                    <div class="emotional-btn secondary">
+                        <i class="fas fa-brain"></i>
+                        Read My Soul
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- More Engagement Activities -->
+        <div class="emotional-grid cols-3" style="margin-bottom: var(--space-16);">
+            
+            <!-- Secret Sharing -->
+            <div class="confession-card floating-heart" onclick="window.location.href='/confess/secret'">
+                <div style="text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: var(--space-4);">🤫</div>
+                    <h4 class="heart-text text-lg" style="margin-bottom: var(--space-4);">Share Secrets</h4>
+                    <p class="soul-text text-sm" style="margin-bottom: var(--space-4);">
+                        Release what you've been holding inside. Share secrets you've never told anyone.
+                    </p>
+                    <div class="emotional-btn ghost" style="font-size: var(--text-sm);">
+                        <i class="fas fa-lock-open"></i>
+                        Unlock Secrets
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Regret Healing -->
+            <div class="confession-card floating-heart" onclick="window.location.href='/confess/regret'">
+                <div style="text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: var(--space-4);">💔</div>
+                    <h4 class="dream-text text-lg" style="margin-bottom: var(--space-4);">Heal Regrets</h4>
+                    <p class="soul-text text-sm" style="margin-bottom: var(--space-4);">
+                        Let go of what's weighing on your soul. Share regrets and find healing.
+                    </p>
+                    <div class="emotional-btn ghost" style="font-size: var(--text-sm);">
+                        <i class="fas fa-heart-pulse"></i>
+                        Find Healing
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dream Sharing -->
+            <div class="confession-card floating-heart" onclick="window.location.href='/confess/dream'">
+                <div style="text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: var(--space-4);">✨</div>
+                    <h4 class="heart-text text-lg" style="margin-bottom: var(--space-4);">Share Dreams</h4>
+                    <p class="soul-text text-sm" style="margin-bottom: var(--space-4);">
+                        Express your wildest dreams and deepest aspirations in a safe space.
+                    </p>
+                    <div class="emotional-btn ghost" style="font-size: var(--text-sm);">
+                        <i class="fas fa-star"></i>
+                        Dream Freely
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Emotional Stats Dashboard -->
+        <div class="emotional-card" style="margin-bottom: var(--space-16);">
+            <h2 class="emotional-title text-3xl text-center" style="margin-bottom: var(--space-8);">
+                Your Emotional Journey
+            </h2>
+            
+            <div class="emotional-grid cols-4">
+                <div class="text-center">
+                    <div class="emotional-status love" style="font-size: var(--text-2xl); margin-bottom: var(--space-2);">
+                        <i class="fas fa-heart"></i>
+                        <span id="confessionCount">0</span>
+                    </div>
+                    <div class="soul-text">Confessions Shared</div>
+                </div>
+                
+                <div class="text-center">
+                    <div class="emotional-status trust" style="font-size: var(--text-2xl); margin-bottom: var(--space-2);">
+                        <i class="fas fa-brain"></i>
+                        <span id="questionCount">0</span>
+                    </div>
+                    <div class="soul-text">Deep Questions</div>
+                </div>
+                
+                <div class="text-center">
+                    <div class="emotional-status joy" style="font-size: var(--text-2xl); margin-bottom: var(--space-2);">
+                        <i class="fas fa-chart-line"></i>
+                        <span id="accuracyScore">0</span>%
+                    </div>
+                    <div class="soul-text">AI Accuracy</div>
+                </div>
+                
+                <div class="text-center">
+                    <div class="emotional-status growth" style="font-size: var(--text-2xl); margin-bottom: var(--space-2);">
+                        <i class="fas fa-seedling"></i>
+                        <span id="growthLevel">1</span>
+                    </div>
+                    <div class="soul-text">Growth Level</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="emotional-card">
+            <h3 class="emotional-title text-2xl" style="margin-bottom: var(--space-6);">
+                Recent Emotional Connections
+            </h3>
+            
+            <div id="recentActivity">
+                <div class="confession-card" style="margin-bottom: var(--space-4);">
+                    <div class="flex items-center gap-4">
+                        <div class="emotional-status love">
+                            <i class="fas fa-heart"></i>
+                            Love
+                        </div>
+                        <div class="soul-text">
+                            Welcome to your emotional sanctuary! Start by sharing what's in your heart.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Revolutionary Dashboard Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('💖 Emotional Dashboard loaded - Your sanctuary awaits');
+            
+            // Animate stats on load
+            animateStats();
+            
+            // Load recent activity
+            loadRecentActivity();
+            
+            // Add interactive effects
+            setupInteractiveEffects();
+        });
+        
+        function animateStats() {
+            // Animate confession count
+            animateNumber('confessionCount', 0, 3, 2000);
+            
+            // Animate question count  
+            animateNumber('questionCount', 0, 7, 2500);
+            
+            // Animate accuracy score
+            animateNumber('accuracyScore', 0, 87, 3000);
+            
+            // Animate growth level
+            animateNumber('growthLevel', 1, 3, 3500);
+        }
+        
+        function animateNumber(elementId, start, end, duration) {
+            const element = document.getElementById(elementId);
+            const startTime = Date.now();
+            
+            function update() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Easing function for smooth animation
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const current = Math.floor(start + (end - start) * easeOut);
+                
+                element.textContent = current;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            update();
+        }
+        
+        function loadRecentActivity() {
+            // Simulate loading recent activity
+            setTimeout(() => {
+                const activities = [
+                    {
+                        type: 'love',
+                        icon: 'fas fa-heart',
+                        message: 'You opened your heart and shared beautiful feelings',
+                        time: '2 hours ago'
+                    },
+                    {
+                        type: 'trust',
+                        icon: 'fas fa-brain',
+                        message: 'AI accuracy improved to 87% - we understand you better!',
+                        time: '1 day ago'
+                    },
+                    {
+                        type: 'growth',
+                        icon: 'fas fa-seedling',
+                        message: 'Your emotional growth level increased',
+                        time: '3 days ago'
+                    }
+                ];
+                
+                const container = document.getElementById('recentActivity');
+                container.innerHTML = '';
+                
+                activities.forEach((activity, index) => {
+                    const activityElement = document.createElement('div');
+                    activityElement.className = 'confession-card floating-heart';
+                    activityElement.style.animationDelay = `${index * 0.2}s`;
+                    activityElement.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="emotional-status ${activity.type}">
+                                    <i class="${activity.icon}"></i>
+                                </div>
+                                <div>
+                                    <div class="soul-text">${activity.message}</div>
+                                    <div class="soul-text text-sm" style="opacity: 0.7;">${activity.time}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(activityElement);
+                });
+            }, 1000);
+        }
+        
+        function setupInteractiveEffects() {
+            // Add hover effects to confession cards
+            document.querySelectorAll('.confession-card').forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    console.log('💖 Emotional connection detected');
+                });
+            });
+            
+            // Add click effects
+            document.querySelectorAll('.confession-card[onclick]').forEach(card => {
+                card.addEventListener('click', () => {
+                    console.log('🚀 Navigating to emotional experience');
+                });
+            });
+        }
+    </script>
+</body>
+</html>

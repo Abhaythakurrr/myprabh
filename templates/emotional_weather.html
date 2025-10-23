@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌤️ Emotional Weather - My Prabh Heart Engine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            padding: 2rem;
+        }
+
+        .weather-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .weather-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 3rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .weather-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .weather-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .weather-description {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .check-weather-btn {
+            padding: 1.2rem 2.5rem;
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        }
+
+        .check-weather-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 107, 0.4);
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 20px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .weather-result {
+            display: none;
+            margin-top: 2rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .loading {
+            display: none;
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <a href="/dashboard" class="back-btn">← Back to Dashboard</a>
+    
+    <div class="weather-container">
+        <div class="weather-card">
+            <div class="weather-icon">🌤️</div>
+            <h1 class="weather-title">Your Emotional Weather</h1>
+            <p class="weather-description">
+                Let the Heart Engine check your current emotional climate and provide personalized weather insights for your inner world.
+            </p>
+            
+            <button class="check-weather-btn" onclick="checkEmotionalWeather()">
+                🌈 Check My Emotional Weather
+            </button>
+            
+            <div class="loading" id="loading">
+                <p>🌤️ Reading your emotional atmosphere...</p>
+            </div>
+            
+            <div class="weather-result" id="weatherResult">
+                <!-- Weather results will be displayed here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function checkEmotionalWeather() {
+            const button = document.querySelector('.check-weather-btn');
+            const loading = document.getElementById('loading');
+            const result = document.getElementById('weatherResult');
+            
+            button.disabled = true;
+            loading.style.display = 'block';
+            result.style.display = 'none';
+            
+            try {
+                const response = await fetch('/api/emotional-weather');
+                const data = await response.json();
+                
+                if (data.success) {
+                    result.innerHTML = `
+                        <h3>🌈 Your Current Emotional Weather</h3>
+                        <div style="font-size: 3rem; margin: 1rem 0;">${getWeatherEmoji(data.weather.current_condition)}</div>
+                        <p><strong>Condition:</strong> ${data.weather.current_condition}</p>
+                        <p><strong>Empathy Level:</strong> ${Math.round(data.weather.empathy_level * 100)}%</p>
+                        <p><strong>Healing Potential:</strong> ${Math.round(data.weather.healing_potential * 100)}%</p>
+                        <p><strong>Forecast:</strong> ${data.weather.forecast}</p>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+                            <strong>Active Components:</strong> ${data.weather.components_active.join(', ')}
+                        </p>
+                    `;
+                    result.style.display = 'block';
+                }
+            } catch (error) {
+                result.innerHTML = '<p>Unable to read emotional weather right now. Please try again.</p>';
+                result.style.display = 'block';
+            }
+            
+            loading.style.display = 'none';
+            button.disabled = false;
+        }
+        
+        function getWeatherEmoji(condition) {
+            const weatherMap = {
+                'joy': '☀️',
+                'love': '🌈',
+                'hope': '🌅',
+                'gratitude': '🌟',
+                'passion': '🔥',
+                'peace': '🌙',
+                'sadness': '🌧️',
+                'anger': '⛈️',
+                'fear': '🌫️',
+                'confusion': '🌪️'
+            };
+            return weatherMap[condition] || '🌤️';
+        }
+    </script>
+</body>
+</html>

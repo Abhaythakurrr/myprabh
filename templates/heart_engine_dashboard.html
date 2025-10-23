@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💖 Heart Engine Dashboard - My Prabh</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .dashboard-header {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .welcome-section h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-section p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+        }
+
+        .heart-status-mini {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+        }
+
+        .heartbeat-mini {
+            width: 15px;
+            height: 15px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        /* Navigation */
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .nav-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .nav-card-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-card-desc {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+    </style>
+</head><
+body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div class="welcome-section">
+                <h1>💖 Welcome Back, {{ user_name }}!</h1>
+                <p>Your Heart Engine is beating strong and ready to support you</p>
+            </div>
+            <div class="heart-status-mini">
+                <div class="heartbeat-mini"></div>
+                <div>
+                    <div style="font-weight: 600;">Heart Engine Active</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">{{ heart_status.components_active }} components synchronized</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Grid -->
+        <div class="nav-grid">
+            <a href="/chat" class="nav-card">
+                <span class="nav-card-icon">💬</span>
+                <div class="nav-card-title">Heart Chat</div>
+                <div class="nav-card-desc">Talk with your emotionally intelligent companion</div>
+            </a>
+
+            <a href="/confess" class="nav-card">
+                <span class="nav-card-icon">🤫</span>
+                <div class="nav-card-title">Sacred Confessions</div>
+                <div class="nav-card-desc">Share your deepest thoughts in complete safety</div>
+            </a>
+
+            <a href="/heart-status" class="nav-card">
+                <span class="nav-card-icon">📊</span>
+                <div class="nav-card-title">Heart Analytics</div>
+                <div class="nav-card-desc">Monitor your emotional journey and growth</div>
+            </a>
+
+            <a href="/emotional-weather" class="nav-card">
+                <span class="nav-card-icon">🌤️</span>
+                <div class="nav-card-title">Emotional Weather</div>
+                <div class="nav-card-desc">Check your current emotional climate</div>
+            </a>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">💝</div>
+                <div class="stat-number">{{ stats.heart_interactions }}</div>
+                <div class="stat-label">Heart Conversations</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🤗</div>
+                <div class="stat-number">{{ stats.confessions }}</div>
+                <div class="stat-label">Sacred Confessions</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">💖</div>
+                <div class="stat-number">{{ "%.0f"|format(heart_status.average_empathy * 100) }}%</div>
+                <div class="stat-label">Average Empathy</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">✨</div>
+                <div class="stat-number">{{ "%.0f"|format(heart_status.average_authenticity * 100) }}%</div>
+                <div class="stat-label">Authenticity Level</div>
+            </div>
+        </div>
+
+        <!-- Recent Interactions -->
+        {% if recent_interactions %}
+        <div class="recent-section">
+            <h2>💭 Recent Heart Conversations</h2>
+            <div class="interactions-list">
+                {% for interaction in recent_interactions %}
+                <div class="interaction-card">
+                    <div class="interaction-preview">
+                        <strong>You:</strong> {{ interaction.input_text[:100] }}{% if interaction.input_text|length > 100 %}...{% endif %}
+                    </div>
+                    <div class="interaction-response">
+                        <strong>Heart:</strong> {{ interaction.response_text[:150] }}{% if interaction.response_text|length > 150 %}...{% endif %}
+                    </div>
+                    <div class="interaction-meta">
+                        <span class="emotional-tone">💭 {{ interaction.emotional_tone }}</span>
+                        <span class="timestamp">{{ interaction.created_at }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <style>
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #feca57;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+
+        /* Recent Interactions */
+        .recent-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .recent-section h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .interactions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .interaction-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .interaction-preview, .interaction-response {
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .interaction-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .emotional-tone {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+        }
+
+        /* Animations */
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 1rem;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .welcome-section h1 {
+                font-size: 2rem;
+            }
+
+            .nav-grid, .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,808 @@
+/* 
+ * My Prabh + Abhay - Ultimate Emotional Engine Theme
+ * Revolutionary UI/UX with Deep Engagement Design
+ * Not generic - Built for emotional connection and engagement
+ */
+
+/* ===== REVOLUTIONARY COLOR SYSTEM ===== */
+:root {
+    /* Emotional Spectrum Colors */
+    --love-red: #ff1744;              /* Passionate love */
+    --heart-pink: #e91e63;            /* Deep affection */
+    --soul-purple: #9c27b0;           /* Spiritual connection */
+    --dream-blue: #2196f3;            /* Hopeful dreams */
+    --trust-cyan: #00bcd4;            /* Deep trust */
+    --growth-green: #4caf50;          /* Personal growth */
+    --joy-yellow: #ffeb3b;            /* Pure joy */
+    --passion-orange: #ff9800;        /* Creative passion */
+    
+    /* Depth & Shadow Colors */
+    --void-black: #000000;            /* Deepest emotions */
+    --shadow-dark: #121212;           /* Hidden feelings */
+    --midnight-gray: #1e1e1e;         /* Contemplation */
+    --steel-gray: #2d2d2d;            /* Strength */
+    --silver-light: #424242;          /* Clarity */
+    
+    /* Emotional Text Colors */
+    --pure-white: #ffffff;            /* Truth */
+    --soft-white: #f5f5f5;            /* Gentle thoughts */
+    --warm-gray: #9e9e9e;             /* Memories */
+    --cool-gray: #616161;             /* Reflection */
+    
+    /* Interactive States */
+    --hover-glow: rgba(233, 30, 99, 0.3);
+    --focus-ring: rgba(33, 150, 243, 0.5);
+    --active-pulse: rgba(255, 23, 68, 0.4);
+    
+    /* Glassmorphism Effects */
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-shadow: rgba(0, 0, 0, 0.3);
+    
+    /* Typography Scale */
+    --text-xs: 0.75rem;     /* 12px */
+    --text-sm: 0.875rem;    /* 14px */
+    --text-base: 1rem;      /* 16px */
+    --text-lg: 1.125rem;    /* 18px */
+    --text-xl: 1.25rem;     /* 20px */
+    --text-2xl: 1.5rem;     /* 24px */
+    --text-3xl: 1.875rem;   /* 30px */
+    --text-4xl: 2.25rem;    /* 36px */
+    --text-5xl: 3rem;       /* 48px */
+    --text-6xl: 4rem;       /* 64px */
+    
+    /* Spacing System */
+    --space-1: 0.25rem;     /* 4px */
+    --space-2: 0.5rem;      /* 8px */
+    --space-3: 0.75rem;     /* 12px */
+    --space-4: 1rem;        /* 16px */
+    --space-5: 1.25rem;     /* 20px */
+    --space-6: 1.5rem;      /* 24px */
+    --space-8: 2rem;        /* 32px */
+    --space-10: 2.5rem;     /* 40px */
+    --space-12: 3rem;       /* 48px */
+    --space-16: 4rem;       /* 64px */
+    --space-20: 5rem;       /* 80px */
+    --space-24: 6rem;       /* 96px */
+    
+    /* Animation Curves */
+    --ease-emotional: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --ease-heartbeat: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --ease-breath: cubic-bezier(0.4, 0, 0.6, 1);
+    --ease-pulse: cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* ===== REVOLUTIONARY BASE STYLES ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: 
+        radial-gradient(circle at 20% 80%, var(--love-red) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, var(--soul-purple) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, var(--dream-blue) 0%, transparent 50%),
+        linear-gradient(135deg, var(--void-black) 0%, var(--shadow-dark) 50%, var(--midnight-gray) 100%);
+    background-attachment: fixed;
+    color: var(--pure-white);
+    line-height: 1.6;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Revolutionary Animated Background */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(2px 2px at 40px 60px, var(--heart-pink), transparent),
+        radial-gradient(2px 2px at 120px 20px, var(--trust-cyan), transparent),
+        radial-gradient(1px 1px at 200px 90px, var(--soul-purple), transparent),
+        radial-gradient(1px 1px at 300px 40px, var(--dream-blue), transparent),
+        radial-gradient(2px 2px at 80px 120px, var(--love-red), transparent);
+    background-repeat: repeat;
+    background-size: 400px 200px;
+    animation: emotional-particles 25s linear infinite;
+    pointer-events: none;
+    z-index: -2;
+    opacity: 0.6;
+}
+
+@keyframes emotional-particles {
+    0% { transform: translateY(0px) translateX(0px); }
+    25% { transform: translateY(-100px) translateX(50px); }
+    50% { transform: translateY(-200px) translateX(-30px); }
+    75% { transform: translateY(-300px) translateX(80px); }
+    100% { transform: translateY(-400px) translateX(0px); }
+}
+
+/* Emotional Grid Overlay */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(233, 30, 99, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(233, 30, 99, 0.05) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: -1;
+    animation: emotional-grid 8s ease-in-out infinite;
+}
+
+@keyframes emotional-grid {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.7; }
+}
+
+/* ===== REVOLUTIONARY TYPOGRAPHY ===== */
+.emotional-title {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--love-red), var(--heart-pink), var(--soul-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 30px rgba(233, 30, 99, 0.5);
+    letter-spacing: 0.05em;
+    position: relative;
+}
+
+.emotional-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--love-red), var(--heart-pink), var(--soul-purple));
+    border-radius: 2px;
+    animation: title-pulse 3s ease-in-out infinite;
+}
+
+@keyframes title-pulse {
+    0%, 100% { opacity: 0.5; transform: scaleX(0.8); }
+    50% { opacity: 1; transform: scaleX(1); }
+}
+
+.soul-text {
+    font-family: 'Inter', sans-serif;
+    color: var(--soft-white);
+    font-weight: 300;
+    line-height: 1.8;
+    letter-spacing: 0.02em;
+}
+
+.heart-text {
+    color: var(--heart-pink);
+    font-weight: 500;
+    text-shadow: 0 0 10px rgba(233, 30, 99, 0.3);
+}
+
+.dream-text {
+    color: var(--dream-blue);
+    font-weight: 400;
+    text-shadow: 0 0 10px rgba(33, 150, 243, 0.3);
+}
+
+.code-text {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--trust-cyan);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    background: rgba(0, 188, 212, 0.1);
+    padding: var(--space-1) var(--space-2);
+    border-radius: 4px;
+}
+
+/* Revolutionary Glitch Effect */
+.emotional-glitch {
+    position: relative;
+    display: inline-block;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+}
+
+.emotional-glitch::before,
+.emotional-glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.emotional-glitch::before {
+    animation: emotional-glitch-1 1s infinite;
+    color: var(--love-red);
+    z-index: -1;
+}
+
+.emotional-glitch::after {
+    animation: emotional-glitch-2 1s infinite;
+    color: var(--trust-cyan);
+    z-index: -2;
+}
+
+@keyframes emotional-glitch-1 {
+    0%, 14%, 15%, 49%, 50%, 99%, 100% {
+        transform: translate(0);
+    }
+    15%, 49% {
+        transform: translate(-3px, -2px);
+    }
+}
+
+@keyframes emotional-glitch-2 {
+    0%, 20%, 21%, 62%, 63%, 99%, 100% {
+        transform: translate(0);
+    }
+    21%, 62% {
+        transform: translate(3px, 2px);
+    }
+}
+
+/* ===== REVOLUTIONARY COMPONENTS ===== */
+
+/* Emotional Glass Cards */
+.emotional-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: var(--space-8);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s var(--ease-emotional);
+    box-shadow: 
+        0 8px 32px var(--glass-shadow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.emotional-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: var(--heart-pink);
+    box-shadow: 
+        0 20px 60px rgba(233, 30, 99, 0.3),
+        0 0 0 1px var(--heart-pink),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.emotional-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, 
+        var(--love-red) 0%, 
+        var(--heart-pink) 25%, 
+        var(--soul-purple) 50%, 
+        var(--dream-blue) 75%, 
+        var(--trust-cyan) 100%);
+    opacity: 0.8;
+}
+
+/* Holographic Effect */
+.emotional-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+        transparent 30%, 
+        rgba(255, 255, 255, 0.1) 50%, 
+        transparent 70%);
+    transform: rotate(45deg);
+    transition: all 0.6s var(--ease-emotional);
+    opacity: 0;
+}
+
+.emotional-card:hover::after {
+    opacity: 1;
+    animation: holographic-sweep 2s ease-in-out;
+}
+
+@keyframes holographic-sweep {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+/* Revolutionary Buttons */
+.emotional-btn {
+    background: linear-gradient(135deg, var(--heart-pink), var(--love-red));
+    color: var(--pure-white);
+    border: none;
+    padding: var(--space-4) var(--space-8);
+    border-radius: 50px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: var(--text-base);
+    cursor: pointer;
+    transition: all 0.3s var(--ease-heartbeat);
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    box-shadow: 
+        0 4px 15px rgba(233, 30, 99, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.emotional-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 
+        0 8px 25px rgba(233, 30, 99, 0.6),
+        0 0 0 3px rgba(233, 30, 99, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.emotional-btn:active {
+    transform: translateY(-1px) scale(1.02);
+}
+
+.emotional-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.4), 
+        transparent);
+    transition: left 0.5s var(--ease-emotional);
+}
+
+.emotional-btn:hover::before {
+    left: 100%;
+}
+
+/* Button Variants */
+.emotional-btn.secondary {
+    background: linear-gradient(135deg, var(--soul-purple), var(--dream-blue));
+    box-shadow: 
+        0 4px 15px rgba(156, 39, 176, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.emotional-btn.secondary:hover {
+    box-shadow: 
+        0 8px 25px rgba(156, 39, 176, 0.6),
+        0 0 0 3px rgba(156, 39, 176, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.emotional-btn.ghost {
+    background: transparent;
+    border: 2px solid var(--heart-pink);
+    color: var(--heart-pink);
+    box-shadow: none;
+}
+
+.emotional-btn.ghost:hover {
+    background: var(--heart-pink);
+    color: var(--pure-white);
+    box-shadow: 
+        0 8px 25px rgba(233, 30, 99, 0.4),
+        0 0 0 3px rgba(233, 30, 99, 0.2);
+}
+
+/* Revolutionary Forms */
+.emotional-form {
+    background: var(--glass-bg);
+    backdrop-filter: blur(25px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: var(--space-10);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+        0 20px 60px var(--glass-shadow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.emotional-form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, 
+        var(--love-red) 0%, 
+        var(--heart-pink) 25%, 
+        var(--soul-purple) 50%, 
+        var(--dream-blue) 75%, 
+        var(--trust-cyan) 100%);
+    opacity: 0.9;
+}
+
+.emotional-input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: var(--space-4) var(--space-6);
+    color: var(--pure-white);
+    font-family: 'Inter', sans-serif;
+    font-size: var(--text-base);
+    transition: all 0.3s var(--ease-emotional);
+    backdrop-filter: blur(10px);
+}
+
+.emotional-input:focus {
+    outline: none;
+    border-color: var(--heart-pink);
+    background: rgba(233, 30, 99, 0.1);
+    box-shadow: 
+        0 0 0 3px rgba(233, 30, 99, 0.2),
+        0 8px 25px rgba(233, 30, 99, 0.15);
+    transform: translateY(-2px);
+}
+
+.emotional-input::placeholder {
+    color: var(--warm-gray);
+    font-style: italic;
+}
+
+.emotional-label {
+    display: block;
+    color: var(--heart-pink);
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-2);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+/* Revolutionary Status Indicators */
+.emotional-status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    border-radius: 25px;
+    font-family: 'Inter', sans-serif;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    position: relative;
+    overflow: hidden;
+}
+
+.emotional-status.love {
+    background: linear-gradient(135deg, rgba(255, 23, 68, 0.2), rgba(233, 30, 99, 0.2));
+    color: var(--love-red);
+    border: 1px solid var(--love-red);
+}
+
+.emotional-status.joy {
+    background: linear-gradient(135deg, rgba(255, 235, 59, 0.2), rgba(255, 152, 0, 0.2));
+    color: var(--joy-yellow);
+    border: 1px solid var(--joy-yellow);
+}
+
+.emotional-status.trust {
+    background: linear-gradient(135deg, rgba(0, 188, 212, 0.2), rgba(33, 150, 243, 0.2));
+    color: var(--trust-cyan);
+    border: 1px solid var(--trust-cyan);
+}
+
+.emotional-status.growth {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(139, 195, 74, 0.2));
+    color: var(--growth-green);
+    border: 1px solid var(--growth-green);
+}
+
+.emotional-status::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: emotional-pulse 2s infinite;
+}
+
+@keyframes emotional-pulse {
+    0%, 100% { 
+        opacity: 1; 
+        transform: scale(1); 
+        box-shadow: 0 0 0 0 currentColor;
+    }
+    50% { 
+        opacity: 0.7; 
+        transform: scale(1.2); 
+        box-shadow: 0 0 0 8px transparent;
+    }
+}
+
+/* Revolutionary Confession Cards */
+.confession-card {
+    background: linear-gradient(135deg, 
+        rgba(233, 30, 99, 0.1) 0%, 
+        rgba(156, 39, 176, 0.05) 50%, 
+        rgba(33, 150, 243, 0.1) 100%);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(233, 30, 99, 0.3);
+    border-radius: 20px;
+    padding: var(--space-6);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s var(--ease-emotional);
+    cursor: pointer;
+}
+
+.confession-card:hover {
+    transform: translateY(-5px) rotateX(2deg);
+    border-color: var(--heart-pink);
+    box-shadow: 
+        0 15px 40px rgba(233, 30, 99, 0.3),
+        0 0 0 1px var(--heart-pink);
+}
+
+.confession-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--love-red), var(--heart-pink), var(--soul-purple));
+    opacity: 0.8;
+}
+
+/* Revolutionary Floating Elements */
+.floating-heart {
+    animation: float-heart 6s ease-in-out infinite;
+}
+
+.floating-heart:nth-child(odd) {
+    animation-delay: -3s;
+}
+
+@keyframes float-heart {
+    0%, 100% { 
+        transform: translateY(0px) rotate(0deg) scale(1); 
+    }
+    33% { 
+        transform: translateY(-20px) rotate(2deg) scale(1.05); 
+    }
+    66% { 
+        transform: translateY(10px) rotate(-2deg) scale(0.95); 
+    }
+}
+
+/* Revolutionary Heartbeat Animation */
+.heartbeat {
+    animation: emotional-heartbeat 2s ease-in-out infinite;
+}
+
+@keyframes emotional-heartbeat {
+    0%, 100% { transform: scale(1); }
+    10% { transform: scale(1.1); }
+    20% { transform: scale(1); }
+    30% { transform: scale(1.1); }
+    40% { transform: scale(1); }
+}
+
+/* Revolutionary Breathing Effect */
+.breathing {
+    animation: emotional-breathing 4s ease-in-out infinite;
+}
+
+@keyframes emotional-breathing {
+    0%, 100% { 
+        transform: scale(1); 
+        opacity: 0.9; 
+    }
+    50% { 
+        transform: scale(1.02); 
+        opacity: 1; 
+    }
+}
+
+/* ===== LAYOUT SYSTEM ===== */
+
+/* Revolutionary Container */
+.emotional-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+}
+
+/* Revolutionary Grid */
+.emotional-grid {
+    display: grid;
+    gap: var(--space-8);
+}
+
+.emotional-grid.cols-1 { grid-template-columns: 1fr; }
+.emotional-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.emotional-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.emotional-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* Revolutionary Flex Utilities */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-wrap { flex-wrap: wrap; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.items-end { align-items: flex-end; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.justify-around { justify-content: space-around; }
+.gap-2 { gap: var(--space-2); }
+.gap-4 { gap: var(--space-4); }
+.gap-6 { gap: var(--space-6); }
+.gap-8 { gap: var(--space-8); }
+
+/* Revolutionary Text Utilities */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+.text-xs { font-size: var(--text-xs); }
+.text-sm { font-size: var(--text-sm); }
+.text-base { font-size: var(--text-base); }
+.text-lg { font-size: var(--text-lg); }
+.text-xl { font-size: var(--text-xl); }
+.text-2xl { font-size: var(--text-2xl); }
+.text-3xl { font-size: var(--text-3xl); }
+.text-4xl { font-size: var(--text-4xl); }
+.text-5xl { font-size: var(--text-5xl); }
+.text-6xl { font-size: var(--text-6xl); }
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 1024px) {
+    .emotional-grid.cols-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .emotional-grid.cols-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --text-5xl: 2.5rem;
+        --text-4xl: 2rem;
+        --text-3xl: 1.75rem;
+    }
+    
+    .emotional-container {
+        padding: 0 var(--space-4);
+    }
+    
+    .emotional-grid.cols-2,
+    .emotional-grid.cols-3,
+    .emotional-grid.cols-4 {
+        grid-template-columns: 1fr;
+    }
+    
+    .emotional-card {
+        padding: var(--space-6);
+    }
+    
+    .emotional-form {
+        padding: var(--space-6);
+    }
+    
+    .emotional-btn {
+        padding: var(--space-3) var(--space-6);
+        font-size: var(--text-sm);
+    }
+}
+
+@media (max-width: 480px) {
+    .emotional-container {
+        padding: 0 var(--space-3);
+    }
+    
+    .emotional-card {
+        padding: var(--space-4);
+        border-radius: 16px;
+    }
+    
+    .emotional-form {
+        padding: var(--space-4);
+        border-radius: 16px;
+    }
+}
+
+/* ===== ACCESSIBILITY ===== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .emotional-glitch::before,
+    .emotional-glitch::after {
+        display: none;
+    }
+    
+    body::before,
+    body::after {
+        animation: none;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    :root {
+        --love-red: #ff0000;
+        --heart-pink: #ff69b4;
+        --pure-white: #ffffff;
+        --void-black: #000000;
+    }
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+    
+    .emotional-card,
+    .emotional-form,
+    .confession-card {
+        border: 1px solid black;
+        background: white;
+        box-shadow: none;
+    }
+    
+    .emotional-btn {
+        background: white;
+        color: black;
+        border: 1px solid black;
+    }
+    
+    .emotional-glitch::before,
+    .emotional-glitch::after,
+    body::before,
+    body::after {
+        display: none;
+    }
+}
+
+/* 
+ * End of Ultimate Emotional Engine Theme
+ * Revolutionary UI/UX for deep emotional connection
+ * Where every pixel tells a story of the heart
+ */

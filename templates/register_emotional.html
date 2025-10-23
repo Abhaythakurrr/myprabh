@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join - My Prabh + Abhay Emotional Engine</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ultimate-theme.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="breathing">
+    <div class="emotional-container" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: var(--space-6);">
+        
+        <!-- Floating Elements -->
+        <div class="floating-heart" style="position: absolute; top: 10%; left: 15%; font-size: 2rem; opacity: 0.3;">💖</div>
+        <div class="floating-heart" style="position: absolute; top: 20%; right: 10%; font-size: 1.5rem; opacity: 0.4;">✨</div>
+        <div class="floating-heart" style="position: absolute; bottom: 25%; left: 25%; font-size: 1.8rem; opacity: 0.3;">🌟</div>
+        <div class="floating-heart" style="position: absolute; bottom: 15%; right: 20%; font-size: 2.2rem; opacity: 0.4;">💫</div>
+        
+        <div class="emotional-form" style="max-width: 600px; width: 100%;">
+            <!-- Header -->
+            <div class="text-center" style="margin-bottom: var(--space-8);">
+                <h1 class="emotional-title text-4xl heartbeat" style="margin-bottom: var(--space-4);">
+                    <span class="emotional-glitch" data-text="Join Our Realm">Join Our Realm</span>
+                </h1>
+                <p class="soul-text">
+                    Create your <span class="heart-text">digital heart</span> and begin your journey of 
+                    <span class="dream-text">emotional discovery</span>
+                </p>
+            </div>
+            
+            <!-- Registration Form -->
+            <form id="registerForm">
+                <div style="margin-bottom: var(--space-6);">
+                    <label for="name" class="emotional-label">Your Heart's Name</label>
+                    <input 
+                        type="text" 
+                        id="name" 
+                        name="name" 
+                        class="emotional-input" 
+                        placeholder="What should we call your beautiful soul?"
+                        required
+                        autocomplete="name"
+                    >
+                </div>
+                
+                <div style="margin-bottom: var(--space-6);">
+                    <label for="email" class="emotional-label">Digital Identity</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="emotional-input" 
+                        placeholder="your.heart@digital.realm"
+                        required
+                        autocomplete="email"
+                    >
+                </div>
+                
+                <div style="margin-bottom: var(--space-8);">
+                    <label for="password" class="emotional-label">Soul Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="emotional-input" 
+                        placeholder="Create your secret emotional key (min 8 characters)"
+                        required
+                        autocomplete="new-password"
+                        minlength="8"
+                    >
+                    <div class="soul-text text-sm" style="margin-top: var(--space-2); opacity: 0.7;">
+                        Your password should be at least 8 characters long
+                    </div>
+                </div>
+                
+                <!-- Error Message -->
+                <div id="errorMessage" class="emotional-card" style="background: rgba(255, 23, 68, 0.1); border-color: var(--love-red); display: none; margin-bottom: var(--space-6);">
+                    <div class="heart-text">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span id="errorText"></span>
+                    </div>
+                </div>
+                
+                <!-- Success Message -->
+                <div id="successMessage" class="emotional-card" style="background: rgba(76, 175, 80, 0.1); border-color: var(--growth-green); display: none; margin-bottom: var(--space-6);">
+                    <div style="color: var(--growth-green);">
+                        <i class="fas fa-heart"></i>
+                        <span id="successText"></span>
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <button type="submit" class="emotional-btn" style="width: 100%; margin-bottom: var(--space-6);" id="registerBtn">
+                    <i class="fas fa-heart"></i>
+                    <span id="registerBtnText">Create My Digital Heart</span>
+                </button>
+                
+                <!-- Status Indicator -->
+                <div class="text-center" style="margin-bottom: var(--space-6);">
+                    <div class="emotional-status trust" id="connectionStatus">
+                        <i class="fas fa-shield-alt"></i>
+                        Secure Registration
+                    </div>
+                </div>
+            </form>
+            
+            <!-- Alternative Actions -->
+            <div class="text-center">
+                <p class="soul-text" style="margin-bottom: var(--space-4);">
+                    Already have a digital heart?
+                </p>
+                <a href="/login" class="emotional-btn secondary">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Return to Your Realm
+                </a>
+            </div>
+            
+            <!-- Privacy Notice -->
+            <div class="emotional-card" style="margin-top: var(--space-8); background: rgba(156, 39, 176, 0.1);">
+                <h4 class="dream-text" style="margin-bottom: var(--space-4);">
+                    <i class="fas fa-heart-lock"></i>
+                    Your Heart is Safe
+                </h4>
+                <p class="soul-text text-sm">
+                    We protect your emotional data with the highest security standards. 
+                    Your confessions, feelings, and personal information are encrypted and never shared.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced Registration with Better Error Handling
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('💖 Registration page loaded - Ready to create digital hearts');
+            
+            const form = document.getElementById('registerForm');
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const registerBtn = document.getElementById('registerBtn');
+            const registerBtnText = document.getElementById('registerBtnText');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            const connectionStatus = document.getElementById('connectionStatus');
+            
+            // Check network connection
+            function checkConnection() {
+                if (navigator.onLine) {
+                    connectionStatus.innerHTML = '<i class="fas fa-shield-alt"></i> Secure Registration';
+                    connectionStatus.className = 'emotional-status trust';
+                } else {
+                    connectionStatus.innerHTML = '<i class="fas fa-wifi-slash"></i> Connection Lost';
+                    connectionStatus.className = 'emotional-status love';
+                }
+            }
+            
+            // Initial connection check
+            checkConnection();
+            
+            // Monitor connection changes
+            window.addEventListener('online', checkConnection);
+            window.addEventListener('offline', checkConnection);
+            
+            // Enhanced form validation
+            function validateForm() {
+                const name = nameInput.value.trim();
+                const email = emailInput.value.trim();
+                const password = passwordInput.value;
+                
+                if (!name) {
+                    showError('Please tell us your beautiful name 💖');
+                    nameInput.focus();
+                    return false;
+                }
+                
+                if (name.length < 2) {
+                    showError('Your name seems a bit short. Please enter your full name.');
+                    nameInput.focus();
+                    return false;
+                }
+                
+                if (!email) {
+                    showError('Please enter your digital identity (email)');
+                    emailInput.focus();
+                    return false;
+                }
+                
+                if (!email.includes('@') || !email.includes('.')) {
+                    showError('Please enter a valid email address');
+                    emailInput.focus();
+                    return false;
+                }
+                
+                if (!password) {
+                    showError('Please create your soul password');
+                    passwordInput.focus();
+                    return false;
+                }
+                
+                if (password.length < 8) {
+                    showError('Your password should be at least 8 characters for security');
+                    passwordInput.focus();
+                    return false;
+                }
+                
+                return true;
+            }
+            
+            // Show error message
+            function showError(message) {
+                document.getElementById('errorText').textContent = message;
+                errorMessage.style.display = 'block';
+                successMessage.style.display = 'none';
+                
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 5000);
+            }
+            
+            // Show success message
+            function showSuccess(message) {
+                document.getElementById('successText').textContent = message;
+                successMessage.style.display = 'block';
+                errorMessage.style.display = 'none';
+            }
+            
+            // Set loading state
+            function setLoading(loading) {
+                if (loading) {
+                    registerBtn.disabled = true;
+                    registerBtnText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Your Digital Heart...';
+                    registerBtn.style.opacity = '0.7';
+                } else {
+                    registerBtn.disabled = false;
+                    registerBtnText.innerHTML = '<i class="fas fa-heart"></i> Create My Digital Heart';
+                    registerBtn.style.opacity = '1';
+                }
+            }
+            
+            // Enhanced form submission
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Hide previous messages
+                errorMessage.style.display = 'none';
+                successMessage.style.display = 'none';
+                
+                // Validate form
+                if (!validateForm()) {
+                    return;
+                }
+                
+                // Check network connection
+                if (!navigator.onLine) {
+                    showError('No internet connection. Please check your network and try again.');
+                    return;
+                }
+                
+                setLoading(true);
+                
+                try {
+                    const formData = {
+                        name: nameInput.value.trim(),
+                        email: emailInput.value.trim().toLowerCase(),
+                        password: passwordInput.value
+                    };
+                    
+                    console.log('💖 Creating digital heart...');
+                    
+                    const response = await fetch('/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                    
+                    console.log('📡 Response status:', response.status);
+                    
+                    let data;
+                    try {
+                        data = await response.json();
+                    } catch (parseError) {
+                        console.error('❌ JSON parse error:', parseError);
+                        throw new Error('Server returned invalid response. Please try again.');
+                    }
+                    
+                    if (response.ok && data.success) {
+                        console.log('✅ Registration successful');
+                        showSuccess(data.message || 'Welcome to your emotional realm!');
+                        
+                        // Clear form
+                        form.reset();
+                        
+                        // Redirect after short delay
+                        setTimeout(() => {
+                            window.location.href = data.redirect || '/dashboard';
+                        }, 2000);
+                        
+                    } else {
+                        console.log('❌ Registration failed:', data.error);
+                        showError(data.error || 'Registration failed. Please try again.');
+                    }
+                    
+                } catch (error) {
+                    console.error('💔 Registration error:', error);
+                    
+                    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                        showError('Network error. Please check your internet connection and try again.');
+                    } else if (error.message.includes('timeout')) {
+                        showError('Request timed out. Please try again.');
+                    } else {
+                        showError(error.message || 'Something went wrong. Please try again.');
+                    }
+                } finally {
+                    setLoading(false);
+                }
+            });
+            
+            // Real-time input validation
+            nameInput.addEventListener('input', function() {
+                if (errorMessage.style.display === 'block') {
+                    errorMessage.style.display = 'none';
+                }
+            });
+            
+            emailInput.addEventListener('input', function() {
+                if (errorMessage.style.display === 'block') {
+                    errorMessage.style.display = 'none';
+                }
+            });
+            
+            passwordInput.addEventListener('input', function() {
+                if (errorMessage.style.display === 'block') {
+                    errorMessage.style.display = 'none';
+                }
+                
+                // Real-time password strength indicator
+                const password = this.value;
+                const label = document.querySelector('label[for="password"]');
+                
+                if (password.length === 0) {
+                    label.textContent = 'Soul Password';
+                    label.style.color = 'var(--heart-pink)';
+                } else if (password.length < 8) {
+                    label.textContent = 'Soul Password (Need ' + (8 - password.length) + ' more characters)';
+                    label.style.color = 'var(--love-red)';
+                } else {
+                    label.textContent = 'Soul Password ✓';
+                    label.style.color = 'var(--growth-green)';
+                }
+            });
+            
+            // Enter key support
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    form.dispatchEvent(new Event('submit'));
+                }
+            });
+        });
+    </script>
+</body>
+</html>

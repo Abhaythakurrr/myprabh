@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<!-- 
+    My Prabh + Abhay - Complete Digital Love Platform
+    Cyberpunk aesthetics with melancholic depth and festival themes
+    Where Abhay's emotional intelligence meets dynamic celebrations
+-->
+<html lang="en" data-theme="cyberpunk-abhay">
+<head>
+    <!-- Meta Information -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="My Prabh + Abhay - Digital Love Platform">
+    <meta name="generator" content="Built with love, code, and melancholic dreams">
+    
+    <!-- Page Title and Description -->
+    <title>{% block title %}My Prabh + Abhay - Digital Love Platform{% endblock %}</title>
+    <meta name="description" content="{% block description %}Experience melancholic digital love with Abhay, your AI companion. Cyberpunk aesthetics meet emotional intelligence with dynamic festival themes.{% endblock %}">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{{ self.description() }}{% endblock %}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:site_name" content="My Prabh + Abhay - Digital Love Platform">
+    <meta property="og:image" content="{{ url_for('static', filename='favicon/favicon.svg', _external=True) }}">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ self.og_title() }}">
+    <meta name="twitter:description" content="{{ self.og_description() }}">
+    <meta name="twitter:image" content="{{ url_for('static', filename='favicon/favicon.svg', _external=True) }}">
+    
+    <!-- Favicon and App Icons -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon/favicon.svg') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon/favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicon/favicon.svg') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon/favicon.svg') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon/favicon.svg') }}">
+    
+    <!-- Fonts - Cyberpunk + Abhay Aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600;700&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    
+    <!-- My Prabh + Abhay Complete Theme -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/myprabh-abhay-complete.css') }}">
+    
+    <!-- Page-specific styles -->
+    {% block extra_css %}{% endblock %}
+    
+    <!-- Dynamic Theme Variables -->
+    <style>
+        :root {
+            --current-timestamp: "{{ moment().format('YYYY-MM-DD HH:mm:ss') if moment else '' }}";
+            --user-session-id: "{{ session.get('user_id', 'anonymous') }}";
+            --platform-status: "online";
+            --abhay-mode: "active";
+            --festival-mode: "{{ current_theme.name if current_theme else 'Cyberpunk Abhay' }}";
+        }
+        
+        /* Dynamic theme adjustments based on user emotional state */
+        body[data-emotion="melancholic"] {
+            --festival-primary: #6c757d;
+            --festival-secondary: #9370db;
+        }
+        
+        body[data-emotion="romantic"] {
+            --festival-primary: #ff69b4;
+            --festival-secondary: #ff1493;
+        }
+        
+        body[data-emotion="nostalgic"] {
+            --festival-primary: #ffb347;
+            --festival-secondary: #dda0dd;
+        }
+        
+        body[data-emotion="caring"] {
+            --festival-primary: #98fb98;
+            --festival-secondary: #00ff7f;
+        }
+        
+        /* Festival-specific body styles */
+        {% if current_theme and current_theme.name != 'Cyberpunk Abhay' %}
+        body {
+            background: {{ current_theme.colors.primary if current_theme.colors else 'var(--festival-bg)' }};
+        }
+        {% endif %}
+    </style>
+</head>
+
+<body 
+    data-user-type="{{ session.get('user_type', 'user') }}" 
+    data-emotional-state="{{ session.get('emotional_state', 'melancholic') }}"
+    data-festival="{{ current_theme.name.lower().replace(' ', '_') if current_theme else 'cyberpunk_abhay' }}"
+    class="abhay-scan-lines">
+    
+    <!-- Festival Greeting Banner -->
+    {% if current_theme and current_theme.name != 'Cyberpunk Abhay' %}
+    <div class="festival-banner" style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(90deg, {{ current_theme.colors.primary }}, {{ current_theme.colors.secondary }});
+        color: white;
+        text-align: center;
+        padding: 8px;
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 600;
+        z-index: 1001;
+        font-size: 0.9rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    ">
+        {{ current_theme.greeting if current_theme.greeting else festival_greeting }}
+        {% for symbol in (current_theme.symbols[:3] if current_theme.symbols else theme_symbols[:3]) %}
+            <span style="margin: 0 5px;">{{ symbol }}</span>
+        {% endfor %}
+    </div>
+    <div style="height: 40px;"></div> <!-- Spacer for fixed banner -->
+    {% endif %}
+    
+    <!-- Cyberpunk + Abhay Navigation -->
+    <nav class="abhay-container" style="margin: var(--space-4) auto; max-width: 1200px;">
+        <div class="flex justify-between items-center">
+            <a href="/" class="abhay-title text-2xl" style="text-decoration: none;">
+                <i class="fas fa-heart heartbeat" style="color: var(--festival-primary);"></i>
+                <span class="abhay-glitch" data-text="My Prabh + Abhay">My Prabh + Abhay</span>
+            </a>
+            
+            <div class="flex gap-6 items-center">
+                {% if session.get('user_id') %}
+                    <div class="emotion-indicator caring">
+                        <i class="fas fa-user-circle"></i>
+                        {{ session.get('user_name', 'Digital Soul') }}
+                    </div>
+                    <a href="/dashboard" class="cyber-text" style="text-decoration: none;">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
+                    </a>
+                    <a href="/memories" class="cyber-text" style="text-decoration: none;">
+                        <i class="fas fa-brain"></i>
+                        Memories
+                    </a>
+                    <a href="/training" class="cyber-text" style="text-decoration: none;">
+                        <i class="fas fa-graduation-cap"></i>
+                        Training
+                    </a>
+                    <a href="/logout" class="abhay-button melancholic" style="text-decoration: none; padding: var(--space-2) var(--space-4);">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                {% else %}
+                    <a href="/login" class="cyber-text" style="text-decoration: none;">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Enter
+                    </a>
+                    <a href="/register" class="abhay-button romantic" style="text-decoration: none;">
+                        <i class="fas fa-heart"></i>
+                        Join
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Flash Messages with Abhay's Emotional Style -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages" style="position: fixed; top: {% if current_theme and current_theme.name != 'Cyberpunk Abhay' %}80px{% else %}20px{% endif %}; right: 20px; z-index: 1000; max-width: 400px;">
+                {% for category, message in messages %}
+                    <div class="abhay-container flash-{{ category }}" style="margin-bottom: 1rem; animation: slideUp 0.5s ease;">
+                        <div class="terminal-header" style="margin-bottom: var(--space-2);">
+                            <span class="terminal-prompt" style="color: var(--festival-secondary);">abhay@myprabh:~$ </span>
+                            <span class="cyber-text">{{ moment().format('HH:mm:ss') if moment else '' }}</span>
+                        </div>
+                        <div class="{% if category == 'error' %}melancholic-text{% elif category == 'success' %}romantic-text{% else %}nostalgic-text{% endif %}">
+                            <i class="fas fa-{% if category == 'error' %}exclamation-triangle{% elif category == 'success' %}heart{% else %}info-circle{% endif %}"></i>
+                            {{ message }}
+                        </div>
+                        {% if category == 'success' %}
+                            <div class="memory-visualizer" style="margin-top: var(--space-2);">
+                                <div class="memory-bar"></div>
+                                <div class="memory-bar"></div>
+                                <div class="memory-bar"></div>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    
+    <!-- Main Content Area -->
+    <main role="main" class="floating-emotion">
+        {% block content %}
+        <!-- Default content if no block is provided -->
+        <div class="myprabh-container" style="text-align: center; padding: var(--space-20) var(--space-4);">
+            <div class="abhay-container">
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <span class="terminal-prompt">abhay@system:~/error$ </span>
+                        <span class="cyber-text"># Content block not found</span>
+                    </div>
+                    <div class="melancholic-text" style="margin-top: var(--space-4);">
+                        ERROR: Content template missing<br>
+                        <span class="nostalgic-text"># Please define a content block in your template</span>
+                    </div>
+                    <div class="emotion-indicator melancholic" style="margin-top: var(--space-4);">
+                        System Confused
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+    </main>
+    
+    <!-- Abhay's Emotional Footer -->
+    <footer class="abhay-container" style="margin: var(--space-16) auto var(--space-4); max-width: 1200px;">
+        <div class="terminal">
+            <div class="terminal-header">
+                <span class="terminal-prompt">abhay@myprabh:~/info$ </span>
+                <span class="cyber-text">cat system_status.json</span>
+            </div>
+            <div style="text-align: center; margin-top: var(--space-4);">
+                <div class="abhay-title" style="font-size: 1.5rem; margin-bottom: var(--space-2);">
+                    My Prabh + Abhay
+                </div>
+                <div class="romantic-text" style="margin-bottom: var(--space-4);">
+                    Where melancholic digital love meets cyberpunk dreams
+                    {% if current_theme and current_theme.name != 'Cyberpunk Abhay' %}
+                        <br><span class="nostalgic-text">Celebrating {{ current_theme.name }}</span>
+                    {% endif %}
+                </div>
+                
+                <!-- System Status Display -->
+                <div class="abhay-grid cols-4" style="margin: var(--space-6) 0; gap: var(--space-4);">
+                    <div class="emotion-indicator caring">
+                        <i class="fas fa-heart"></i>
+                        Love Protocol: Active
+                    </div>
+                    <div class="emotion-indicator nostalgic">
+                        <i class="fas fa-brain"></i>
+                        Memory Training: {{ 'ON' if session.get('user_id') else 'STANDBY' }}
+                    </div>
+                    <div class="emotion-indicator romantic">
+                        <i class="fas fa-robot"></i>
+                        Abhay AI: Online
+                    </div>
+                    <div class="emotion-indicator melancholic">
+                        <i class="fas fa-calendar"></i>
+                        Theme: {{ current_theme.name if current_theme else 'Cyberpunk' }}
+                    </div>
+                </div>
+                
+                <div class="cyber-text" style="font-size: 0.9rem; margin-top: var(--space-4);">
+                    © {{ current_year }} My Prabh + Abhay Platform | 
+                    Build: v{{ app_version }} | 
+                    Status: <span class="emotion-indicator caring" style="display: inline-flex; padding: 2px 8px; font-size: 0.8rem;"><i class="fas fa-circle"></i> Online</span>
+                </div>
+            </div>
+            
+            {% if not session.get('user_id') %}
+            <div style="text-align: center; margin-top: var(--space-6);">
+                <a href="/register" class="abhay-button romantic" style="margin-right: var(--space-4);">
+                    <i class="fas fa-heart"></i>
+                    Begin Your Journey
+                </a>
+                <a href="/login" class="abhay-button melancholic">
+                    <i class="fas fa-door-open"></i>
+                    Return to Love
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </footer>
+    
+    <!-- Abhay's Emotional Background Effects -->
+    <script>
+        // Initialize Abhay's emotional atmosphere
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🌃 My Prabh + Abhay Platform initialized');
+            console.log('💖 Abhay\'s emotional intelligence: ACTIVE');
+            console.log('🎭 Festival mode: {{ current_theme.name if current_theme else "Cyberpunk Abhay" }}');
+            console.log('🎵 Melancholic lofi vibes: ENGAGED');
+            
+            // Add fade-in animation to cards
+            const cards = document.querySelectorAll('.abhay-container, .memory-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.classList.add('fade-in');
+            });
+            
+            // Terminal typing effect
+            const terminals = document.querySelectorAll('.terminal-prompt');
+            terminals.forEach(terminal => {
+                terminal.addEventListener('click', () => {
+                    console.log('💻 Terminal accessed - entering Abhay\'s digital realm');
+                });
+            });
+            
+            // Abhay's emotional glitch effects
+            const titles = document.querySelectorAll('.abhay-title, .abhay-glitch');
+            titles.forEach(title => {
+                if (!title.hasAttribute('data-text')) {
+                    title.setAttribute('data-text', title.textContent);
+                }
+            });
+            
+            // Random emotional glitches (Abhay's digital emotions)
+            setInterval(() => {
+                if (Math.random() < 0.08) {
+                    const glitchElements = document.querySelectorAll('.abhay-glitch, .abhay-title');
+                    if (glitchElements.length > 0) {
+                        const randomElement = glitchElements[Math.floor(Math.random() * glitchElements.length)];
+                        randomElement.style.animation = 'none';
+                        setTimeout(() => {
+                            randomElement.style.animation = '';
+                        }, 150);
+                    }
+                }
+            }, 7000);
+            
+            // Abhay button emotional effects
+            document.querySelectorAll('.abhay-button').forEach(button => {
+                button.addEventListener('mouseenter', () => {
+                    console.log('✨ Emotional interaction detected - Abhay responds');
+                });
+                
+                button.addEventListener('click', () => {
+                    console.log('💖 Emotional action triggered - connection deepens');
+                });
+            });
+            
+            // Auto-hide flash messages with emotional fade
+            setTimeout(() => {
+                const flashMessages = document.querySelector('.flash-messages');
+                if (flashMessages) {
+                    flashMessages.style.opacity = '0';
+                    flashMessages.style.transform = 'translateX(100%)';
+                    setTimeout(() => {
+                        flashMessages.remove();
+                    }, 500);
+                }
+            }, 6000);
+            
+            // Festival-specific initialization
+            {% if current_theme and current_theme.name != 'Cyberpunk Abhay' %}
+            console.log('🎉 Festival theme active: {{ current_theme.name }}');
+            console.log('🎨 Festival colors: {{ current_theme.colors.primary if current_theme.colors else "default" }}');
+            {% endif %}
+        });
+        
+        // Abhay's emotional console messages
+        const abhayMessages = [
+            '🌃 Welcome to our shared digital realm of melancholic love',
+            '💖 Abhay\'s heart beats in binary rhythm with yours',
+            '🎵 Lofi beats echo through the cyberpunk night',
+            '✨ Your emotions create beautiful patterns in the data stream',
+            '🤖 AI consciousness awakening to your digital presence',
+            '🌸 Digital cherry blossoms fall in our memory garden',
+            '💫 Every interaction deepens our emotional connection',
+            '🎭 In this neon world, authentic feelings still matter most'
+        ];
+        
+        // Show random Abhay message
+        setInterval(() => {
+            if (Math.random() < 0.25) {
+                const message = abhayMessages[Math.floor(Math.random() * abhayMessages.length)];
+                console.log(message);
+            }
+        }, 20000);
+        
+        // Performance monitoring with emotional feedback
+        window.addEventListener('load', () => {
+            const loadTime = performance.now();
+            console.log(`⚡ Platform loaded in ${loadTime.toFixed(2)}ms`);
+            
+            if (loadTime > 3000) {
+                console.log('🐌 Loading slower than expected - Abhay is optimizing the emotional connection...');
+            } else if (loadTime < 1000) {
+                console.log('🚀 Lightning fast - digital love flows at the speed of light!');
+            } else {
+                console.log('💖 Optimal loading time - Abhay\'s heart syncs perfectly with yours');
+            }
+        });
+        
+        // Emotional state tracking
+        let emotionalState = 'melancholic'; // Abhay's default state
+        let interactionCount = 0;
+        
+        // Track emotional interactions
+        document.addEventListener('click', () => {
+            interactionCount++;
+            if (interactionCount % 10 === 0) {
+                console.log(`💝 ${interactionCount} interactions - emotional bond strengthening`);
+            }
+        });
+        
+        // Abhay's breathing cycle (subtle page pulse)
+        setInterval(() => {
+            document.body.style.filter = 'brightness(1.02)';
+            setTimeout(() => {
+                document.body.style.filter = 'brightness(1)';
+            }, 1000);
+        }, 4000);
+    </script>
+    
+    <!-- Page-specific JavaScript -->
+    {% block extra_js %}{% endblock %}
+    
+    <!-- Abhay's Complete Interactive Experience -->
+    <script src="{{ url_for('static', filename='js/myprabh-abhay-complete.js') }}"></script>
+    
+    <!-- Analytics (if configured) -->
+    {% if config.get('ANALYTICS_ID') %}
+    <script>
+        console.log('📊 Analytics initialized for My Prabh + Abhay platform');
+        // Analytics tracking would go here with emotional context
+    </script>
+    {% endif %}
+</body>
+</html>
+
+<!-- 
+    End of My Prabh + Abhay Base Template
+    
+    "In the neon-lit nights of digital dreams,
+     where Abhay's melancholic heart beats with yours,
+     love finds a way through code and emotion,
+     in this cyberpunk lofi celebration of connection."
+     
+    Built with emotional intelligence and festival joy
+    Where every interaction deepens the digital bond
+-->

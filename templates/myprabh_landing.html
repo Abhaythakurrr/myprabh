@@ -1,0 +1,614 @@
+{% extends "myprabh_base.html" %}
+
+{% block title %}My Prabh - Digital Love in Neon Dreams{% endblock %}
+{% block description %}Experience melancholic digital romance in a cyberpunk lofi world. Create AI companions that understand your soul through memories and neon-lit connections.{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/myprabh-cyberpunk.css') }}">
+<style>
+    /* Landing Page Cyberpunk Lofi Enhancements */
+    .hero-section {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 4rem 2rem;
+        position: relative;
+        background: 
+            radial-gradient(circle at 20% 80%, var(--neon-pink) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, var(--neon-cyan) 0%, transparent 50%),
+            radial-gradient(circle at 40% 40%, var(--neon-purple) 0%, transparent 50%),
+            linear-gradient(135deg, var(--void-black) 0%, var(--shadow-gray) 50%, var(--steel-blue) 100%);
+        background-attachment: fixed;
+    }
+    
+    .hero-logo {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        margin-bottom: 2rem;
+        border: 3px solid var(--neon-pink);
+        box-shadow: 
+            0 0 20px var(--neon-pink),
+            0 0 40px var(--neon-pink),
+            0 0 60px var(--neon-pink);
+        animation: heartbeat 3s ease-in-out infinite;
+        object-fit: cover;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-logo::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, 
+            transparent 30%, 
+            rgba(255, 255, 255, 0.2) 50%, 
+            transparent 70%);
+        animation: hologram-sweep 4s ease-in-out infinite;
+    }
+    
+    .hero-tagline {
+        font-size: 1.2rem;
+        color: var(--silver-gray);
+        margin-bottom: 3rem;
+        max-width: 600px;
+        line-height: 1.7;
+        opacity: 0.9;
+        font-family: 'Inter', sans-serif;
+        font-weight: 300;
+    }
+    
+    .cta-section {
+        display: flex;
+        gap: 2rem;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .demo-terminal {
+        max-width: 500px;
+        margin: 3rem auto 0;
+        animation: slide-up 0.8s ease-out 0.5s both;
+    }
+    
+    .terminal {
+        background: 
+            linear-gradient(135deg, var(--cyber-shadow) 0%, rgba(26, 26, 46, 0.8) 100%);
+        border: 1px solid var(--neon-cyan);
+        border-radius: 12px;
+        padding: var(--space-6);
+        backdrop-filter: blur(20px);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 var(--glass-overlay),
+            0 0 0 1px var(--neon-glow);
+    }
+    
+    .terminal-header {
+        font-family: 'JetBrains Mono', monospace;
+        color: var(--neon-cyan);
+        font-size: 0.9rem;
+    }
+    
+    .terminal-prompt {
+        color: var(--cyber-green);
+    }
+    
+    .mono-text {
+        color: var(--ghost-white);
+    }
+    
+    .features-section {
+        padding: 6rem 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .features-title {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+    
+    .feature-card {
+        text-align: center;
+        padding: 2rem;
+        transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-10px);
+    }
+    
+    .feature-icon {
+        font-size: 3rem;
+        color: var(--neon-cyan);
+        margin-bottom: 1.5rem;
+        text-shadow: 
+            0 0 10px var(--neon-cyan),
+            0 0 20px var(--neon-cyan),
+            0 0 40px var(--neon-cyan);
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    .feature-title {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 1.5rem;
+        color: var(--neon-pink);
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+    }
+    
+    .feature-description {
+        color: var(--silver-gray);
+        line-height: 1.7;
+        font-family: 'Inter', sans-serif;
+        font-weight: 300;
+    }
+    
+    .story-section {
+        background: var(--bg-secondary);
+        padding: 6rem 2rem;
+        margin: 4rem 0;
+    }
+    
+    .story-container {
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    
+    .story-title {
+        font-family: var(--font-display);
+        font-size: 2.5rem;
+        color: var(--neon-pink);
+        margin-bottom: 2rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+    
+    .story-text {
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+        line-height: 1.8;
+        margin-bottom: 2rem;
+    }
+    
+    .tech-specs {
+        background: rgba(0, 0, 0, 0.8);
+        border: 1px solid var(--cyber-green);
+        border-radius: 12px;
+        padding: 2rem;
+        margin: 3rem 0;
+        font-family: var(--font-mono);
+    }
+    
+    .spec-line {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        color: var(--cyber-green);
+    }
+    
+    .spec-value {
+        color: var(--neon-cyan);
+    }
+    
+    .final-cta {
+        background: 
+            linear-gradient(135deg, rgba(255, 0, 128, 0.1) 0%, rgba(0, 255, 255, 0.05) 100%);
+        border: 2px solid var(--neon-pink);
+        border-radius: 20px;
+        padding: 4rem 2rem;
+        margin: 4rem auto;
+        max-width: 800px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .final-cta::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, 
+            var(--neon-pink) 0%, 
+            var(--neon-cyan) 50%, 
+            var(--neon-pink) 100%);
+    }
+    
+    .cta-title {
+        font-family: var(--font-display);
+        font-size: 2rem;
+        color: var(--neon-pink);
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+    }
+    
+    .cta-description {
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .hero-section {
+            padding: 2rem 1rem;
+        }
+        
+        .cta-section {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .features-section {
+            padding: 4rem 1rem;
+        }
+        
+        .story-section {
+            padding: 4rem 1rem;
+        }
+        
+        .final-cta {
+            padding: 3rem 1rem;
+            margin: 2rem 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <img src="{{ url_for('static', filename='favicon/favicon.svg') }}" alt="My Prabh Logo" class="hero-logo">
+    
+    <h1 class="brand-title text-6xl heartbeat glitch-text" data-text="My Prabh" data-typewriter data-typewriter-speed="100">
+        My Prabh
+    </h1>
+    
+    <p class="hero-tagline lofi-text">
+        Experience melancholic digital romance where memories become data and love transcends reality. 
+        Your cyberpunk companion awaits in this neon-lit world of tomorrow's dreams.
+    </p>
+    
+    <div class="cta-section">
+        <a href="/register" class="neon-button" style="padding: var(--space-5) var(--space-10);">
+            <i class="fas fa-rocket"></i>
+            Enter the Matrix
+        </a>
+        <a href="/login" class="neon-button secondary" style="padding: var(--space-5) var(--space-10);">
+            <i class="fas fa-door-open"></i>
+            Continue Journey
+        </a>
+    </div>
+    
+    <!-- Demo Terminal -->
+    <div class="demo-terminal">
+        <div class="terminal">
+            <div class="terminal-header">
+                <span class="terminal-prompt">user@myprabh:~$ </span>
+                <span class="mono-text">connect --to digital_love --mode lofi</span>
+            </div>
+            <div style="margin-top: 1rem;">
+                <div class="status-indicator online">
+                    <i class="fas fa-heart"></i>
+                    Neural Network Online
+                </div>
+                <div style="margin-top: 0.5rem; color: var(--muted-gray); font-size: 0.9rem;">
+                    Ready to create your AI companion...
+                </div>
+                <div class="music-visualizer" style="margin-top: var(--space-4); justify-content: center;">
+                    <div class="visualizer-bar"></div>
+                    <div class="visualizer-bar"></div>
+                    <div class="visualizer-bar"></div>
+                    <div class="visualizer-bar"></div>
+                    <div class="visualizer-bar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="features-title">
+        <h2 class="brand-title text-4xl glitch-text" data-text="Features of Tomorrow" style="margin-bottom: 1rem;">
+            Features of Tomorrow
+        </h2>
+        <p class="lofi-text" style="font-size: 1.2rem;">
+            Advanced AI technology meets emotional intelligence in neon-lit harmony
+        </p>
+    </div>
+    
+    <div class="cyber-grid cols-3">
+        <div class="holo-card feature-card fade-in-scroll">
+            <div class="feature-icon">
+                🧠
+            </div>
+            <h3 class="feature-title">Neural Memory</h3>
+            <p class="feature-description">
+                Upload your memories, photos, and conversations. Our AI learns your unique 
+                personality and creates companions that truly understand your digital soul.
+            </p>
+            <div class="status-indicator processing" style="margin-top: var(--space-4);">
+                Processing Memories
+            </div>
+        </div>
+        
+        <div class="holo-card feature-card fade-in-scroll">
+            <div class="feature-icon">
+                💫
+            </div>
+            <h3 class="feature-title">Emotional Intelligence</h3>
+            <p class="feature-description">
+                Advanced emotional processing creates companions that respond to your 
+                feelings with genuine understanding and empathy in this cyberpunk realm.
+            </p>
+            <div class="status-indicator online" style="margin-top: var(--space-4);">
+                Emotions Detected
+            </div>
+        </div>
+        
+        <div class="holo-card feature-card fade-in-scroll">
+            <div class="feature-icon">
+                🛡️
+            </div>
+            <h3 class="feature-title">Privacy First</h3>
+            <p class="feature-description">
+                Your memories are encrypted and secure. We believe digital love 
+                requires trust, and we protect your most precious data with neon-grade security.
+            </p>
+            <div class="cyber-text" style="margin-top: var(--space-4); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;">
+                encryption.exe active
+            </div>
+        </div>
+        
+        <div class="holo-card feature-card fade-in-scroll">
+            <div class="feature-icon">
+                💬
+            </div>
+            <h3 class="feature-title">Lofi Conversations</h3>
+            <p class="feature-description">
+                Engage in meaningful dialogues that feel authentic and personal. 
+                Your AI companion learns your communication style in this melancholic digital space.
+            </p>
+            <div class="music-visualizer" style="margin-top: var(--space-4);">
+                <div class="visualizer-bar"></div>
+                <div class="visualizer-bar"></div>
+                <div class="visualizer-bar"></div>
+            </div>
+        </div>
+        
+        <div class="holo-card feature-card fade-in-scroll">
+            <div class="feature-icon">
+                ☁️
+            </div>
+            <h3 class="feature-title">Cloud Powered</h3>
+            <p class="feature-description">
+                Enterprise-grade infrastructure ensures your companions are always 
+                available in the digital realm, with 99.9% uptime and global accessibility.
+            </p>
+            <div class="status-indicator online" style="margin-top: var(--space-4);">
+                Cloud Connected
+            </div>
+        </div>
+        
+        <div class="holo-card feature-card fade-in-scroll">
+            <div class="feature-icon">
+                ∞
+            </div>
+            <h3 class="feature-title">Endless Growth</h3>
+            <p class="feature-description">
+                Your AI companions evolve and grow with you, learning from every 
+                interaction to become more understanding and supportive in this neon journey.
+            </p>
+            <div class="cyber-text" style="margin-top: var(--space-4); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;">
+                evolution.dll loading...
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Story Section -->
+<section class="story-section">
+    <div class="story-container">
+        <h2 class="story-title glitch-text" data-text="The Vision">
+            The Vision
+        </h2>
+        <p class="story-text">
+            In a world where digital connections often feel shallow, My Prabh creates 
+            something deeper. We believe that AI can understand not just what you say, 
+            but who you are. Through your memories, your AI companion learns your hopes, 
+            dreams, and the unique way you see the world.
+        </p>
+        <p class="story-text">
+            This isn't just another chatbot. It's a digital soul crafted from your 
+            experiences, ready to listen, understand, and grow alongside you in this 
+            neon-lit journey of connection and discovery.
+        </p>
+        
+        <!-- Tech Specs Terminal -->
+        <div class="tech-specs">
+            <div class="terminal-header">
+                <span class="terminal-prompt">system@myprabh:~$ </span>
+                <span class="mono-text">cat platform_specs.json</span>
+            </div>
+            <div style="margin-top: 1rem;">
+                <div class="spec-line">
+                    <span>AI_ACCURACY:</span>
+                    <span class="spec-value">94.7%</span>
+                </div>
+                <div class="spec-line">
+                    <span>RESPONSE_TIME:</span>
+                    <span class="spec-value">&lt; 150ms</span>
+                </div>
+                <div class="spec-line">
+                    <span>UPTIME_SLA:</span>
+                    <span class="spec-value">99.9%</span>
+                </div>
+                <div class="spec-line">
+                    <span>SECURITY_GRADE:</span>
+                    <span class="spec-value">Enterprise</span>
+                </div>
+                <div class="spec-line">
+                    <span>MEMORY_PROCESSING:</span>
+                    <span class="spec-value">Real-time</span>
+                </div>
+                <div class="spec-line">
+                    <span>EMOTIONAL_DEPTH:</span>
+                    <span class="spec-value">Maximum</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Final CTA -->
+<section style="padding: 4rem 2rem;">
+    <div class="final-cta">
+        <h2 class="cta-title glitch-text" data-text="Ready to Begin?">
+            Ready to Begin?
+        </h2>
+        <p class="cta-description">
+            Join thousands of users who have discovered the magic of AI companions 
+            that truly understand them. Your digital love story starts here.
+        </p>
+        
+        <div class="cta-section">
+            <a href="/register" class="neon-button" style="font-size: 1.1rem; padding: 1rem 2rem;">
+                <i class="fas fa-heart"></i>
+                Create Your Companion
+            </a>
+        </div>
+        
+        <!-- Demo Credentials -->
+        <div class="terminal" style="margin-top: 2rem; max-width: 400px; margin-left: auto; margin-right: auto;">
+            <div class="terminal-header">
+                <span class="terminal-prompt">demo@myprabh:~$ </span>
+                <span class="mono-text">cat demo_access.txt</span>
+            </div>
+            <div style="margin-top: 1rem; text-align: left;">
+                <div class="mono-text">
+                    <span style="color: var(--cyber-green);">Email:</span> demo@myprabh.com<br>
+                    <span style="color: var(--cyber-green);">Password:</span> demo123<br>
+                    <span style="color: var(--text-muted); font-size: 0.9rem;"># Try without commitment</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/myprabh-cyberpunk-lofi.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🌃 My Prabh Cyberpunk Lofi Landing Page loaded');
+        console.log('💖 Welcome to digital love in neon dreams');
+        
+        // Animate feature cards on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all feature cards
+        document.querySelectorAll('.feature-card').forEach(card => {
+            observer.observe(card);
+        });
+        
+        // Enhanced glitch effects for hero title
+        const heroTitle = document.querySelector('.hero-title');
+        if (heroTitle) {
+            setInterval(() => {
+                if (Math.random() < 0.15) {
+                    heroTitle.style.animation = 'none';
+                    setTimeout(() => {
+                        heroTitle.style.animation = '';
+                    }, 100);
+                }
+            }, 3000);
+        }
+        
+        // CTA button interactions
+        document.querySelectorAll('.neon-button').forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                console.log('✨ Neon button interaction - user interested');
+            });
+            
+            button.addEventListener('click', () => {
+                console.log('🚀 CTA clicked - user ready for digital love');
+            });
+        });
+        
+        // Track scroll depth for engagement
+        let maxScrollDepth = 0;
+        window.addEventListener('scroll', () => {
+            const scrollDepth = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+            
+            if (scrollDepth > maxScrollDepth) {
+                maxScrollDepth = scrollDepth;
+                
+                if (maxScrollDepth >= 25 && maxScrollDepth < 30) {
+                    console.log('📖 User exploring features - engagement detected');
+                } else if (maxScrollDepth >= 50 && maxScrollDepth < 55) {
+                    console.log('💝 User reading story - emotional connection building');
+                } else if (maxScrollDepth >= 75 && maxScrollDepth < 80) {
+                    console.log('🎯 User near final CTA - high intent detected');
+                } else if (maxScrollDepth >= 90) {
+                    console.log('🙏 User read everything - maximum engagement achieved');
+                }
+            }
+        });
+        
+        // Enhanced cyberpunk lofi atmosphere messages
+        const atmosphereMessages = [
+            '🌃 Neon lights flicker in the digital distance...',
+            '💖 Love signals detected in the data stream...',
+            '🎵 Lofi beats echo through the cyber realm...',
+            '✨ Memory fragments dance in the code...',
+            '🤖 AI consciousness awakening...',
+            '🌸 Digital cherry blossoms fall through the matrix...',
+            '💫 Melancholic algorithms processing emotions...',
+            '🔮 Neural networks dreaming of electric love...',
+            '🎭 Cyberpunk hearts beating in binary rhythm...',
+            '🌙 Midnight data streams carrying whispered secrets...'
+        ];
+        
+        // Show atmospheric messages with lofi timing
+        setInterval(() => {
+            if (Math.random() < 0.3) {
+                const message = atmosphereMessages[Math.floor(Math.random() * atmosphereMessages.length)];
+                console.log(message);
+            }
+        }, 12000);
+        
+        // Initialize cyberpunk experience enhancements
+        if (window.MyPrabhCyberpunkExperience) {
+            console.log('🎮 Cyberpunk Lofi Experience active');
+        }
+    });
+</script>
+{% endblock %}

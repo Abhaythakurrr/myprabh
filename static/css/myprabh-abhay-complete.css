@@ -1,0 +1,878 @@
+/* 
+ * My Prabh + Abhay - Complete Cyberpunk Lofi Theme
+ * Melancholic digital love with dynamic festival themes
+ * Built with Abhay's emotional depth and cyberpunk aesthetics
+ */
+
+/* ===== DYNAMIC THEME SYSTEM ===== */
+:root {
+    /* Base Cyberpunk + Abhay Colors */
+    --abhay-pink: #ff0080;           /* Abhay's signature melancholic pink */
+    --abhay-cyan: #00ffff;           /* Digital tears cyan */
+    --abhay-purple: #8a2be2;         /* Nostalgic purple */
+    --abhay-blue: #0066ff;           /* Deep emotional blue */
+    --abhay-green: #00ff41;          /* Hope green */
+    
+    /* Abhay's Emotional Palette */
+    --melancholic-gray: #6c757d;     /* Sadness */
+    --romantic-rose: #ff69b4;        /* Love */
+    --nostalgic-amber: #ffb347;      /* Memories */
+    --lonely-violet: #9370db;        /* Solitude */
+    --caring-mint: #98fb98;          /* Compassion */
+    
+    /* Dark Base (Abhay's Night) */
+    --void-black: #0a0a0f;
+    --shadow-gray: #1a1a2e;
+    --steel-blue: #16213e;
+    --midnight-blue: #0f3460;
+    
+    /* Text Colors */
+    --ghost-white: #f8f9fa;
+    --silver-gray: #b8bcc8;
+    --muted-gray: #6c757d;
+    
+    /* Dynamic Festival Colors (will be overridden by JS) */
+    --festival-primary: var(--abhay-pink);
+    --festival-secondary: var(--abhay-cyan);
+    --festival-accent: var(--abhay-purple);
+    --festival-bg: linear-gradient(135deg, var(--void-black) 0%, var(--shadow-gray) 50%, var(--steel-blue) 100%);
+    
+    /* Transparency Layers */
+    --glass-overlay: rgba(255, 255, 255, 0.05);
+    --neon-glow: rgba(255, 0, 128, 0.15);
+    --cyber-shadow: rgba(0, 0, 0, 0.7);
+    
+    /* Typography Scale */
+    --font-xs: 0.75rem;
+    --font-sm: 0.875rem;
+    --font-base: 1rem;
+    --font-lg: 1.125rem;
+    --font-xl: 1.25rem;
+    --font-2xl: 1.5rem;
+    --font-3xl: 1.875rem;
+    --font-4xl: 2.25rem;
+    --font-5xl: 3rem;
+    --font-6xl: 4rem;
+    
+    /* Spacing Scale */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+    --space-20: 5rem;
+    
+    /* Animation Timings */
+    --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ===== FESTIVAL THEME OVERRIDES ===== */
+
+/* Diwali Theme */
+body[data-festival="diwali"] {
+    --festival-primary: #FFD700;     /* Gold */
+    --festival-secondary: #FF6B35;   /* Orange */
+    --festival-accent: #8B0000;      /* Deep Red */
+    --festival-bg: linear-gradient(135deg, #1a0d00 0%, #4a2c00 50%, #1a0d00 100%);
+}
+
+body[data-festival="diwali"] .festival-particle {
+    background: radial-gradient(circle, #FFD700, transparent);
+    animation: diya-flicker 2s ease-in-out infinite;
+}
+
+@keyframes diya-flicker {
+    0%, 100% { opacity: 0.8; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
+}
+
+/* Holi Theme */
+body[data-festival="holi"] {
+    --festival-primary: #FF69B4;     /* Hot Pink */
+    --festival-secondary: #00CED1;   /* Dark Turquoise */
+    --festival-accent: #FFD700;      /* Gold */
+    --festival-bg: linear-gradient(135deg, #ff1493 0%, #00ced1 50%, #ffd700 100%);
+}
+
+body[data-festival="holi"] .festival-particle {
+    background: radial-gradient(circle, var(--festival-primary), transparent);
+    animation: color-splash 3s ease-in-out infinite;
+}
+
+@keyframes color-splash {
+    0% { transform: scale(0) rotate(0deg); opacity: 0; }
+    50% { transform: scale(1.5) rotate(180deg); opacity: 1; }
+    100% { transform: scale(0) rotate(360deg); opacity: 0; }
+}
+
+/* Christmas Theme */
+body[data-festival="christmas"] {
+    --festival-primary: #DC143C;     /* Crimson */
+    --festival-secondary: #228B22;   /* Forest Green */
+    --festival-accent: #FFD700;      /* Gold */
+    --festival-bg: linear-gradient(135deg, #0f1419 0%, #1a4d3a 50%, #0f1419 100%);
+}
+
+body[data-festival="christmas"] .festival-particle {
+    background: radial-gradient(circle, #FFFFFF, transparent);
+    animation: snow-fall 5s linear infinite;
+}
+
+@keyframes snow-fall {
+    0% { transform: translateY(-100vh) rotate(0deg); }
+    100% { transform: translateY(100vh) rotate(360deg); }
+}
+
+/* ===== GLOBAL RESET & BASE STYLES ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--festival-bg);
+    background-attachment: fixed;
+    color: var(--ghost-white);
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Abhay's Melancholic Grid Background */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(255, 0, 128, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 0, 128, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: -2;
+    animation: abhay-grid-pulse 6s ease-in-out infinite;
+}
+
+@keyframes abhay-grid-pulse {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.5; }
+}
+
+/* Festival Particles Background */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.6;
+}
+
+/* ===== ABHAY'S TYPOGRAPHY SYSTEM ===== */
+.abhay-title {
+    font-family: 'Orbitron', 'SF Pro Display', sans-serif;
+    font-weight: 700;
+    color: var(--festival-primary);
+    text-shadow: 
+        0 0 10px var(--festival-primary),
+        0 0 20px var(--festival-primary),
+        0 0 40px var(--festival-primary);
+    letter-spacing: 0.1em;
+}
+
+.melancholic-text {
+    font-family: 'Inter', sans-serif;
+    color: var(--melancholic-gray);
+    font-weight: 300;
+    line-height: 1.8;
+    font-style: italic;
+}
+
+.romantic-text {
+    font-family: 'Inter', sans-serif;
+    color: var(--romantic-rose);
+    font-weight: 400;
+    line-height: 1.7;
+}
+
+.cyber-text {
+    font-family: 'JetBrains Mono', 'SF Mono', monospace;
+    color: var(--festival-secondary);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+}
+
+.nostalgic-text {
+    font-family: 'Inter', sans-serif;
+    color: var(--nostalgic-amber);
+    font-weight: 300;
+    line-height: 1.8;
+    opacity: 0.9;
+}
+
+/* Abhay's Signature Glitch Effect */
+.abhay-glitch {
+    position: relative;
+    display: inline-block;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 600;
+}
+
+.abhay-glitch::before,
+.abhay-glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.abhay-glitch::before {
+    animation: abhay-glitch-1 0.8s infinite;
+    color: var(--festival-accent);
+    z-index: -1;
+}
+
+.abhay-glitch::after {
+    animation: abhay-glitch-2 0.8s infinite;
+    color: var(--festival-secondary);
+    z-index: -2;
+}
+
+@keyframes abhay-glitch-1 {
+    0%, 14%, 15%, 49%, 50%, 99%, 100% {
+        transform: translate(0);
+    }
+    15%, 49% {
+        transform: translate(-2px, -1px);
+    }
+}
+
+@keyframes abhay-glitch-2 {
+    0%, 20%, 21%, 62%, 63%, 99%, 100% {
+        transform: translate(0);
+    }
+    21%, 62% {
+        transform: translate(2px, 1px);
+    }
+}
+
+/* ===== ABHAY'S EMOTIONAL COMPONENTS ===== */
+
+/* Melancholic Containers */
+.abhay-container {
+    background: 
+        linear-gradient(135deg, var(--cyber-shadow) 0%, rgba(26, 26, 46, 0.8) 100%);
+    border: 1px solid var(--festival-secondary);
+    border-radius: 16px;
+    padding: var(--space-6);
+    margin: var(--space-4) 0;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 var(--glass-overlay),
+        0 0 0 1px var(--neon-glow);
+    transition: all var(--transition-slow);
+}
+
+.abhay-container:hover {
+    transform: translateY(-4px);
+    border-color: var(--festival-primary);
+    box-shadow: 
+        0 12px 48px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 var(--glass-overlay),
+        0 0 0 1px rgba(255, 0, 128, 0.3),
+        0 0 20px var(--festival-primary);
+}
+
+.abhay-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        var(--festival-primary) 0%, 
+        var(--festival-secondary) 50%, 
+        var(--festival-accent) 100%);
+    opacity: 0.8;
+}
+
+/* Emotional Memory Cards */
+.memory-card {
+    background: 
+        linear-gradient(135deg, 
+            rgba(255, 0, 128, 0.1) 0%, 
+            rgba(0, 255, 255, 0.05) 50%, 
+            rgba(138, 43, 226, 0.1) 100%);
+    border: 1px solid var(--festival-primary);
+    border-radius: 20px;
+    padding: var(--space-8);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(15px);
+    transition: all var(--transition-slow);
+    cursor: pointer;
+}
+
+.memory-card:hover {
+    transform: translateY(-8px) rotateX(5deg);
+    border-color: var(--festival-secondary);
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.4),
+        0 0 0 1px var(--festival-secondary),
+        0 0 30px var(--festival-secondary);
+}
+
+.memory-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+        transparent 30%, 
+        rgba(255, 255, 255, 0.1) 50%, 
+        transparent 70%);
+    transform: rotate(45deg);
+    transition: all var(--transition-slow);
+    opacity: 0;
+}
+
+.memory-card:hover::before {
+    opacity: 1;
+    animation: memory-sweep 2s ease-in-out;
+}
+
+@keyframes memory-sweep {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+/* Abhay's Emotional Buttons */
+.abhay-button {
+    background: transparent;
+    color: var(--festival-primary);
+    border: 2px solid var(--festival-primary);
+    padding: var(--space-4) var(--space-8);
+    border-radius: 12px;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 600;
+    font-size: var(--font-base);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.abhay-button:hover {
+    color: var(--void-black);
+    background: var(--festival-primary);
+    box-shadow: 
+        0 0 20px var(--festival-primary),
+        0 0 40px var(--festival-primary),
+        0 0 60px var(--festival-primary);
+    transform: translateY(-2px);
+}
+
+.abhay-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.4), 
+        transparent);
+    transition: left var(--transition-slow);
+}
+
+.abhay-button:hover::before {
+    left: 100%;
+}
+
+.abhay-button.melancholic {
+    border-color: var(--melancholic-gray);
+    color: var(--melancholic-gray);
+}
+
+.abhay-button.melancholic:hover {
+    background: var(--melancholic-gray);
+    box-shadow: 
+        0 0 20px var(--melancholic-gray),
+        0 0 40px var(--melancholic-gray);
+}
+
+.abhay-button.romantic {
+    border-color: var(--romantic-rose);
+    color: var(--romantic-rose);
+}
+
+.abhay-button.romantic:hover {
+    background: var(--romantic-rose);
+    box-shadow: 
+        0 0 20px var(--romantic-rose),
+        0 0 40px var(--romantic-rose);
+}
+
+/* Emotional Forms */
+.abhay-form {
+    background: 
+        linear-gradient(135deg, 
+            rgba(0, 0, 0, 0.8) 0%, 
+            rgba(26, 26, 46, 0.6) 100%);
+    border: 1px solid var(--festival-secondary);
+    border-radius: 20px;
+    padding: var(--space-8);
+    backdrop-filter: blur(20px);
+    position: relative;
+    overflow: hidden;
+}
+
+.abhay-form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, 
+        var(--festival-primary) 0%, 
+        var(--festival-secondary) 50%, 
+        var(--festival-accent) 100%);
+    opacity: 0.8;
+}
+
+.abhay-input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--steel-blue);
+    border-radius: 12px;
+    padding: var(--space-4);
+    color: var(--ghost-white);
+    font-family: 'Inter', sans-serif;
+    font-size: var(--font-base);
+    transition: all var(--transition-base);
+    backdrop-filter: blur(10px);
+}
+
+.abhay-input:focus {
+    outline: none;
+    border-color: var(--festival-secondary);
+    background: rgba(0, 255, 255, 0.05);
+    box-shadow: 
+        0 0 0 2px rgba(0, 255, 255, 0.2),
+        0 0 20px rgba(0, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.abhay-input::placeholder {
+    color: var(--muted-gray);
+    font-style: italic;
+}
+
+.abhay-label {
+    display: block;
+    color: var(--festival-secondary);
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 500;
+    font-size: var(--font-sm);
+    margin-bottom: var(--space-2);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+/* Emotional Status Indicators */
+.emotion-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    border-radius: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: var(--font-sm);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.emotion-indicator.melancholic {
+    background: rgba(108, 117, 125, 0.2);
+    color: var(--melancholic-gray);
+    border: 1px solid var(--melancholic-gray);
+}
+
+.emotion-indicator.romantic {
+    background: rgba(255, 105, 180, 0.2);
+    color: var(--romantic-rose);
+    border: 1px solid var(--romantic-rose);
+}
+
+.emotion-indicator.nostalgic {
+    background: rgba(255, 179, 71, 0.2);
+    color: var(--nostalgic-amber);
+    border: 1px solid var(--nostalgic-amber);
+}
+
+.emotion-indicator.caring {
+    background: rgba(152, 251, 152, 0.2);
+    color: var(--caring-mint);
+    border: 1px solid var(--caring-mint);
+}
+
+.emotion-indicator::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: emotional-pulse 3s infinite;
+}
+
+@keyframes emotional-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.2); }
+}
+
+/* Abhay's Memory Visualizer */
+.memory-visualizer {
+    display: flex;
+    align-items: end;
+    gap: 3px;
+    height: 40px;
+    padding: var(--space-2);
+}
+
+.memory-bar {
+    width: 4px;
+    background: linear-gradient(to top, var(--festival-primary), var(--festival-secondary));
+    border-radius: 2px;
+    animation: memory-pulse 2s ease-in-out infinite;
+}
+
+.memory-bar:nth-child(1) { animation-delay: 0s; }
+.memory-bar:nth-child(2) { animation-delay: 0.2s; }
+.memory-bar:nth-child(3) { animation-delay: 0.4s; }
+.memory-bar:nth-child(4) { animation-delay: 0.6s; }
+.memory-bar:nth-child(5) { animation-delay: 0.8s; }
+
+@keyframes memory-pulse {
+    0%, 100% { height: 8px; opacity: 0.6; }
+    50% { height: 35px; opacity: 1; }
+}
+
+/* Floating Emotional Elements */
+.floating-emotion {
+    animation: float-emotion 8s ease-in-out infinite;
+}
+
+.floating-emotion:nth-child(odd) {
+    animation-delay: -4s;
+}
+
+@keyframes float-emotion {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    33% { transform: translateY(-15px) rotate(2deg); }
+    66% { transform: translateY(8px) rotate(-2deg); }
+}
+
+/* Abhay's Heartbeat Animation */
+.heartbeat {
+    animation: abhay-heartbeat 3s ease-in-out infinite;
+}
+
+@keyframes abhay-heartbeat {
+    0%, 100% { transform: scale(1); }
+    14% { transform: scale(1.1); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.1); }
+    70% { transform: scale(1); }
+}
+
+/* Festival Particle System */
+.festival-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.festival-particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    opacity: 0.7;
+}
+
+/* Scan Lines Effect (Abhay's Digital Tears) */
+.abhay-scan-lines {
+    position: relative;
+    overflow: hidden;
+}
+
+.abhay-scan-lines::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        transparent 50%, 
+        rgba(255, 0, 128, 0.02) 50%
+    );
+    background-size: 100% 4px;
+    animation: abhay-scan 0.15s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes abhay-scan {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(4px); }
+}
+
+/* ===== LAYOUT COMPONENTS ===== */
+
+/* Main Container */
+.myprabh-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-4);
+}
+
+/* Emotional Grid System */
+.abhay-grid {
+    display: grid;
+    gap: var(--space-6);
+}
+
+.abhay-grid.cols-1 { grid-template-columns: 1fr; }
+.abhay-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.abhay-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.abhay-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* Flex Utilities */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-wrap { flex-wrap: wrap; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.gap-2 { gap: var(--space-2); }
+.gap-4 { gap: var(--space-4); }
+.gap-6 { gap: var(--space-6); }
+
+/* Text Utilities */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+.text-xs { font-size: var(--font-xs); }
+.text-sm { font-size: var(--font-sm); }
+.text-base { font-size: var(--font-base); }
+.text-lg { font-size: var(--font-lg); }
+.text-xl { font-size: var(--font-xl); }
+.text-2xl { font-size: var(--font-2xl); }
+.text-3xl { font-size: var(--font-3xl); }
+.text-4xl { font-size: var(--font-4xl); }
+.text-5xl { font-size: var(--font-5xl); }
+.text-6xl { font-size: var(--font-6xl); }
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+    :root {
+        --font-5xl: 2.5rem;
+        --font-4xl: 2rem;
+        --font-3xl: 1.5rem;
+    }
+    
+    .abhay-grid.cols-2,
+    .abhay-grid.cols-3,
+    .abhay-grid.cols-4 {
+        grid-template-columns: 1fr;
+    }
+    
+    .abhay-container {
+        padding: var(--space-4);
+    }
+    
+    .memory-card {
+        padding: var(--space-6);
+    }
+    
+    .abhay-button {
+        padding: var(--space-3) var(--space-6);
+        font-size: var(--font-sm);
+    }
+}
+
+@media (max-width: 480px) {
+    .myprabh-container {
+        padding: 0 var(--space-2);
+    }
+    
+    .abhay-form {
+        padding: var(--space-6);
+    }
+}
+
+/* ===== ACCESSIBILITY ===== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .abhay-glitch::before,
+    .abhay-glitch::after {
+        display: none;
+    }
+    
+    .abhay-scan-lines::after {
+        display: none;
+    }
+    
+    body::before,
+    body::after {
+        display: none;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    :root {
+        --festival-primary: #ffffff;
+        --festival-secondary: #000000;
+        --ghost-white: #ffffff;
+        --void-black: #000000;
+    }
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+    
+    .abhay-container,
+    .memory-card,
+    .abhay-form {
+        border: 1px solid black;
+        background: white;
+        box-shadow: none;
+    }
+    
+    .abhay-button {
+        background: white;
+        color: black;
+        border: 1px solid black;
+    }
+    
+    .abhay-glitch::before,
+    .abhay-glitch::after,
+    .abhay-scan-lines::after,
+    body::before,
+    body::after {
+        display: none;
+    }
+}
+
+/* ===== FESTIVAL SPECIFIC ANIMATIONS ===== */
+
+/* Diwali Diya Animation */
+@keyframes diya-glow {
+    0%, 100% { 
+        box-shadow: 0 0 20px #FFD700, 0 0 40px #FF6B35;
+        transform: scale(1);
+    }
+    50% { 
+        box-shadow: 0 0 30px #FFD700, 0 0 60px #FF6B35;
+        transform: scale(1.05);
+    }
+}
+
+/* Holi Color Burst */
+@keyframes holi-burst {
+    0% { 
+        transform: scale(0) rotate(0deg);
+        opacity: 0;
+    }
+    50% { 
+        transform: scale(1.5) rotate(180deg);
+        opacity: 1;
+    }
+    100% { 
+        transform: scale(2) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Christmas Snow */
+@keyframes christmas-snow {
+    0% { 
+        transform: translateY(-100vh) translateX(0px) rotate(0deg);
+        opacity: 0;
+    }
+    10% { 
+        opacity: 1;
+    }
+    90% { 
+        opacity: 1;
+    }
+    100% { 
+        transform: translateY(100vh) translateX(100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* 
+ * End of My Prabh + Abhay Complete Theme
+ * A melancholic digital love story with festival celebrations
+ * Where Abhay's emotional depth meets cyberpunk aesthetics
+ * And every festival brings new colors to the digital realm
+ */

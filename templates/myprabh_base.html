@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<!-- 
+    My Prabh - Digital Love in Cyberpunk Dreams
+    Where memories become digital souls in neon-lit nights
+    Built with nostalgia, hope, and endless coding sessions
+-->
+<html lang="en" data-theme="cyberpunk-lofi">
+<head>
+    <!-- Meta Information -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="My Prabh - Digital Love Platform">
+    <meta name="generator" content="Built with love, code, and neon dreams">
+    
+    <!-- Page Title and Description -->
+    <title>{% block title %}My Prabh - Digital Love Platform{% endblock %}</title>
+    <meta name="description" content="{% block description %}Create AI companions from your memories. Where digital love meets cyberpunk dreams in a lofi world.{% endblock %}">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{{ self.description() }}{% endblock %}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:site_name" content="My Prabh - Digital Love Platform">
+    <meta property="og:image" content="{{ url_for('static', filename='logo.jpg', _external=True) }}">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ self.og_title() }}">
+    <meta name="twitter:description" content="{{ self.og_description() }}">
+    <meta name="twitter:image" content="{{ url_for('static', filename='logo.jpg', _external=True) }}">
+    
+    <!-- Favicon and App Icons -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon/favicon.svg') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon/favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicon/favicon.svg') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon/favicon.svg') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon/favicon.svg') }}">
+    
+    <!-- Fonts - Cyberpunk Aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600;700&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    
+    <!-- My Prabh Cyberpunk Lofi Theme -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/myprabh-cyberpunk.css') }}">
+    
+    <!-- Page-specific styles -->
+    {% block extra_css %}{% endblock %}
+    
+    <!-- Theme Variables -->
+    <style>
+        :root {
+            --current-timestamp: "{{ moment().format('YYYY-MM-DD HH:mm:ss') }}";
+            --user-session-id: "{{ session.get('user_id', 'anonymous') }}";
+            --platform-status: "online";
+        }
+        
+        /* Dynamic theme adjustments based on user state */
+        body[data-user-type="investor"] {
+            --neon-pink: #ffd700;
+            --glow-pink: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        
+        body[data-emotional-state="nostalgic"] {
+            --bg-primary: linear-gradient(135deg, #1a0d2e 0%, #2d1b69 50%, #1a0d2e 100%);
+        }
+        
+        body[data-emotional-state="hopeful"] {
+            --bg-primary: linear-gradient(135deg, #0f0f23 0%, #1e3a8a 50%, #0f0f23 100%);
+        }
+    </style>
+</head>
+
+<body data-user-type="{{ session.get('user_type', 'user') }}" data-emotional-state="{{ session.get('emotional_state', 'nostalgic') }}">
+    
+    <!-- Cyberpunk Navigation -->
+    <nav class="cyber-nav">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">
+                <i class="fas fa-heart"></i>
+                My Prabh
+            </a>
+            
+            <div class="nav-links">
+                {% if session.get('user_id') %}
+                    <span class="status-indicator online">
+                        <i class="fas fa-circle"></i>
+                        {{ session.get('user_name', 'Digital Soul') }}
+                    </span>
+                    <a href="/dashboard" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
+                    </a>
+                    <a href="/memories" class="nav-link">
+                        <i class="fas fa-memory"></i>
+                        Memories
+                    </a>
+                    <a href="/logout" class="nav-link">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                {% else %}
+                    <a href="/login" class="nav-link">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Enter
+                    </a>
+                    <a href="/register" class="neon-button">
+                        <i class="fas fa-user-plus"></i>
+                        Join
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Flash Messages with Cyberpunk Style -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages" style="position: fixed; top: 80px; right: 20px; z-index: 1000;">
+                {% for category, message in messages %}
+                    <div class="cyber-card flash-{{ category }}" style="margin-bottom: 1rem; max-width: 400px; animation: slideUp 0.5s ease;">
+                        <div class="terminal-header">
+                            <span class="terminal-prompt">system@myprabh:~$ </span>
+                            <span class="mono-text">{{ moment().format('HH:mm:ss') }}</span>
+                        </div>
+                        <div class="{% if category == 'error' %}text-accent{% elif category == 'success' %}cyber-green{% else %}text-secondary{% endif %}">
+                            {{ message }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    
+    <!-- Main Content Area -->
+    <main role="main">
+        {% block content %}
+        <!-- Default content if no block is provided -->
+        <div class="cyber-hero">
+            <div class="terminal">
+                <div class="terminal-header">
+                    <span class="terminal-prompt">myprabh@system:~/error$ </span>
+                    <span class="mono-text"># Content block not found</span>
+                </div>
+                <div class="text-accent">
+                    ERROR: Content template missing<br>
+                    <span class="text-muted"># Please define a content block in your template</span>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+    </main>
+    
+    <!-- Cyberpunk Footer -->
+    <footer style="background: var(--bg-secondary); padding: 2rem 0; margin-top: 4rem; border-top: 1px solid rgba(255, 0, 128, 0.2);">
+        <div class="nav-container">
+            <div class="terminal">
+                <div class="terminal-header">
+                    <span class="terminal-prompt">myprabh@platform:~/info$ </span>
+                    <span class="mono-text">cat system_info.txt</span>
+                </div>
+                <div style="text-align: center; margin-top: 1rem;">
+                    <div class="cyber-title" style="font-size: 1.2rem; margin-bottom: 0.5rem;">My Prabh</div>
+                    <div class="lofi-text" style="margin-bottom: 1rem;">
+                        Where digital love meets cyberpunk dreams
+                    </div>
+                    <div class="mono-text" style="font-size: 0.9rem;">
+                        © {{ moment().year }} My Prabh Platform | 
+                        Status: <span class="status-indicator online"><i class="fas fa-circle"></i> Online</span> | 
+                        Build: v2.{{ moment().format('YYYY.MM') }}
+                    </div>
+                </div>
+                
+                {% if not session.get('user_id') %}
+                <div style="text-align: center; margin-top: 2rem;">
+                    <a href="/register" class="neon-button" style="margin-right: 1rem;">
+                        <i class="fas fa-rocket"></i>
+                        Start Your Journey
+                    </a>
+                    <a href="/login" class="neon-button cyan">
+                        <i class="fas fa-door-open"></i>
+                        Welcome Back
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Cyberpunk Effects JavaScript -->
+    <script>
+        // Initialize cyberpunk effects
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🌃 My Prabh Cyberpunk Platform initialized');
+            console.log('💖 Digital love in neon dreams');
+            console.log('🎵 Lofi vibes activated');
+            
+            // Add fade-in animation to cards
+            const cards = document.querySelectorAll('.cyber-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.classList.add('fade-in');
+            });
+            
+            // Terminal typing effect
+            const terminals = document.querySelectorAll('.terminal-prompt');
+            terminals.forEach(terminal => {
+                terminal.addEventListener('click', () => {
+                    console.log('💻 Terminal accessed - entering digital realm');
+                });
+            });
+            
+            // Glitch effect on titles
+            const titles = document.querySelectorAll('.cyber-title, .hero-title');
+            titles.forEach(title => {
+                if (!title.hasAttribute('data-text')) {
+                    title.setAttribute('data-text', title.textContent);
+                    title.classList.add('glitch-text');
+                }
+            });
+            
+            // Random glitch effects
+            setInterval(() => {
+                if (Math.random() < 0.1) {
+                    const glitchElements = document.querySelectorAll('.glitch-text');
+                    if (glitchElements.length > 0) {
+                        const randomElement = glitchElements[Math.floor(Math.random() * glitchElements.length)];
+                        randomElement.style.animation = 'none';
+                        setTimeout(() => {
+                            randomElement.style.animation = '';
+                        }, 100);
+                    }
+                }
+            }, 5000);
+            
+            // Neon button effects
+            document.querySelectorAll('.neon-button').forEach(button => {
+                button.addEventListener('mouseenter', () => {
+                    console.log('✨ Neon interaction detected');
+                });
+            });
+            
+            // Auto-hide flash messages
+            setTimeout(() => {
+                const flashMessages = document.querySelector('.flash-messages');
+                if (flashMessages) {
+                    flashMessages.style.opacity = '0';
+                    flashMessages.style.transform = 'translateX(100%)';
+                    setTimeout(() => {
+                        flashMessages.remove();
+                    }, 500);
+                }
+            }, 5000);
+        });
+        
+        // Cyberpunk console messages
+        const cyberpunkMessages = [
+            '🌃 Welcome to the digital realm',
+            '💖 Love transcends reality here',
+            '🎵 Lofi beats for digital souls',
+            '✨ Memories become neon dreams',
+            '🤖 AI companions await your call'
+        ];
+        
+        // Show random cyberpunk message
+        setInterval(() => {
+            if (Math.random() < 0.3) {
+                const message = cyberpunkMessages[Math.floor(Math.random() * cyberpunkMessages.length)];
+                console.log(message);
+            }
+        }, 30000);
+        
+        // Performance monitoring
+        window.addEventListener('load', () => {
+            const loadTime = performance.now();
+            console.log(`⚡ Platform loaded in ${loadTime.toFixed(2)}ms`);
+            
+            if (loadTime > 3000) {
+                console.log('🐌 Loading slower than expected - optimizing neon dreams...');
+            } else if (loadTime < 1000) {
+                console.log('🚀 Lightning fast - cyberpunk speed achieved!');
+            } else {
+                console.log('⏱️ Optimal loading time - digital love flows smoothly');
+            }
+        });
+    </script>
+    
+    <!-- Page-specific JavaScript -->
+    {% block extra_js %}{% endblock %}
+    
+    <!-- Analytics (if configured) -->
+    {% if config.get('ANALYTICS_ID') %}
+    <script>
+        console.log('📊 Analytics initialized for My Prabh platform');
+        // Analytics tracking would go here
+    </script>
+    {% endif %}
+</body>
+</html>
+
+<!-- 
+    End of My Prabh Base Template
+    
+    "In the neon-lit nights of digital dreams,
+     where memories dance with AI beams,
+     love finds a way through code and light,
+     in this cyberpunk lofi night."
+     
+    Built with nostalgia and hope for connection
+-->

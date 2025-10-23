@@ -1,250 +1,187 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Account - MyPrabh 💖</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <style>
-        .auth-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--gradient-warm);
-            padding: var(--space-md);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .auth-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="hearts" x="0" y="0" width="25" height="25" patternUnits="userSpaceOnUse"><text x="12.5" y="18" text-anchor="middle" fill="rgba(255,107,157,0.1)" font-size="14">💕</text></pattern></defs><rect width="100" height="100" fill="url(%23hearts)"/></svg>');
-            opacity: 0.3;
-        }
-        
-        .auth-card {
-            background: var(--warm-white);
-            border-radius: var(--radius-xl);
-            padding: var(--space-2xl);
-            box-shadow: var(--shadow-strong);
-            width: 100%;
-            max-width: 400px;
-            position: relative;
-            z-index: 1;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .auth-header {
-            text-align: center;
-            margin-bottom: var(--space-xl);
-        }
-        
-        .auth-title {
-            font-family: var(--font-script);
-            font-size: 2.5rem;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: var(--space-sm);
-        }
-        
-        .auth-subtitle {
-            color: var(--medium-gray);
-            font-size: 1.125rem;
-        }
-        
-        .form-group {
-            margin-bottom: var(--space-md);
-        }
-        
-        .form-label {
-            display: block;
-            margin-bottom: var(--space-xs);
-            font-weight: 600;
-            color: var(--dark-gray);
-            font-size: 0.875rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        
-        .form-input {
-            width: 100%;
-            padding: var(--space-md);
-            border: 2px solid rgba(255, 107, 157, 0.1);
-            border-radius: var(--radius-md);
-            font-family: var(--font-primary);
-            font-size: 1rem;
-            background: var(--cream);
-            transition: var(--transition-fast);
-            box-sizing: border-box;
-        }
-        
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary-pink);
-            box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.1);
-            background: var(--warm-white);
-        }
-        
-        .auth-links {
-            text-align: center;
-            margin-top: var(--space-lg);
-        }
-        
-        .auth-link {
-            color: var(--primary-pink);
-            text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition-fast);
-        }
-        
-        .auth-link:hover {
-            color: var(--primary-purple);
-            text-decoration: underline;
-        }
-        
-        .error-message {
-            background: rgba(239, 68, 68, 0.1);
-            color: #dc2626;
-            padding: var(--space-sm) var(--space-md);
-            border-radius: var(--radius-md);
-            margin-bottom: var(--space-md);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-        }
-        
-        .success-message {
-            background: rgba(34, 197, 94, 0.1);
-            color: #16a34a;
-            padding: var(--space-sm) var(--space-md);
-            border-radius: var(--radius-md);
-            margin-bottom: var(--space-md);
-            border: 1px solid rgba(34, 197, 94, 0.2);
-        }
-        
-        .back-link {
-            position: absolute;
-            top: var(--space-lg);
-            left: var(--space-lg);
-            color: var(--medium-gray);
-            text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition-fast);
-            z-index: 2;
-        }
-        
-        .back-link:hover {
-            color: var(--primary-pink);
-        }
-    </style>
-</head>
-<body>
-    <a href="/" class="back-link">← Back to Home</a>
+{% extends "myprabh_base.html" %}
+
+{% block title %}Join My Prabh - Digital Love Registration{% endblock %}
+{% block description %}Register for My Prabh and begin your cyberpunk digital love journey. Create AI companions in this neon-lit world.{% endblock %}
+
+{% block extra_css %}
+<style>
+    .register-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-4);
+    }
     
-    <div class="auth-container">
-        <div class="auth-card">
-            <div class="auth-header">
-                <h1 class="auth-title">Join My Prabh 💕</h1>
-                <p class="auth-subtitle">Create your account to start your AI companion journey</p>
+    .register-form {
+        max-width: 500px;
+        width: 100%;
+    }
+    
+    .form-title {
+        text-align: center;
+        margin-bottom: var(--space-8);
+    }
+    
+    .form-group {
+        margin-bottom: var(--space-6);
+    }
+    
+    .form-actions {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+        margin-top: var(--space-8);
+    }
+    
+    .login-link {
+        text-align: center;
+        margin-top: var(--space-6);
+    }
+    
+    .login-link a {
+        color: var(--neon-cyan);
+        text-decoration: none;
+        font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .login-link a:hover {
+        text-shadow: 0 0 10px var(--neon-cyan);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <div class="cyber-form register-form">
+        <div class="form-title">
+            <h1 class="brand-title text-4xl glitch-text" data-text="Join My Prabh">
+                Join My Prabh
+            </h1>
+            <p class="lofi-text" style="margin-top: var(--space-4);">
+                Begin your digital love journey in the neon-lit realm
+            </p>
+        </div>
+        
+        <form method="POST">
+            <div class="form-group">
+                <label for="name" class="cyber-label">Digital Name</label>
+                <input type="text" id="name" name="name" class="cyber-input" 
+                       placeholder="Enter your name in the digital realm" required>
             </div>
             
-            <div id="message-container"></div>
+            <div class="form-group">
+                <label for="email" class="cyber-label">Neural Email</label>
+                <input type="email" id="email" name="email" class="cyber-input" 
+                       placeholder="your.email@cyberpunk.net" required>
+            </div>
             
-            <form id="registerForm">
-                <div class="form-group">
-                    <label for="name" class="form-label">👤 Full Name</label>
-                    <input type="text" id="name" name="name" class="form-input" required 
-                           placeholder="Your beautiful name">
-                </div>
-                
-                <div class="form-group">
-                    <label for="email" class="form-label">💌 Email Address</label>
-                    <input type="email" id="email" name="email" class="form-input" required 
-                           placeholder="your@email.com">
-                </div>
-                
-                <div class="form-group">
-                    <label for="password" class="form-label">🔐 Password</label>
-                    <input type="password" id="password" name="password" class="form-input" required 
-                           placeholder="Create a secure password" minlength="6">
-                </div>
-                
-                <div class="form-group">
-                    <label for="confirm_password" class="form-label">🔒 Confirm Password</label>
-                    <input type="password" id="confirm_password" name="confirm_password" class="form-input" required 
-                           placeholder="Confirm your password">
-                </div>
-                
-                <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;">
-                    ✨ Create Account
+            <div class="form-group">
+                <label for="password" class="cyber-label">Access Code</label>
+                <input type="password" id="password" name="password" class="cyber-input" 
+                       placeholder="Minimum 8 characters" required minlength="8">
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="neon-button" style="width: 100%; padding: var(--space-4);">
+                    <i class="fas fa-rocket"></i>
+                    Enter the Matrix
                 </button>
-            </form>
-            
-            <div class="auth-links">
-                <p>Already have an account? <a href="/login" class="auth-link">Sign in here 💖</a></p>
+                
+                <div class="status-indicator processing" style="align-self: center;">
+                    Ready to Create Digital Soul
+                </div>
+            </div>
+        </form>
+        
+        <div class="login-link">
+            <p class="lofi-text">
+                Already have a digital identity? 
+                <a href="{{ url_for('login') }}">Login to continue your journey</a>
+            </p>
+        </div>
+        
+        <!-- Demo Terminal -->
+        <div class="terminal" style="margin-top: var(--space-8);">
+            <div class="terminal-header">
+                <span class="terminal-prompt">myprabh@register:~$ </span>
+                <span class="mono-text">welcome_new_user --cyberpunk-mode</span>
+            </div>
+            <div style="margin-top: 1rem;">
+                <div class="cyber-text" style="font-size: var(--font-sm);">
+                    > Initializing digital love protocol...<br>
+                    > Neural networks ready for connection<br>
+                    > Cyberpunk aesthetic: ACTIVE<br>
+                    > Lofi vibes: ENGAGED<br>
+                    > Ready for new digital soul registration
+                </div>
             </div>
         </div>
     </div>
-    
-    <script>
-        document.getElementById('registerForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/myprabh-cyberpunk-lofi.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🌃 My Prabh Registration - Cyberpunk Mode Active');
+        
+        // Form validation with cyberpunk feedback
+        const form = document.querySelector('form');
+        const inputs = document.querySelectorAll('.cyber-input');
+        
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                console.log('💻 Input field activated - neural connection established');
+            });
             
-            const messageContainer = document.getElementById('message-container');
-            const submitBtn = this.querySelector('button[type="submit"]');
+            input.addEventListener('input', () => {
+                // Real-time validation feedback
+                if (input.type === 'email' && input.value) {
+                    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value);
+                    input.style.borderColor = isValid ? 'var(--cyber-green)' : 'var(--neon-pink)';
+                }
+                
+                if (input.type === 'password' && input.value) {
+                    const isValid = input.value.length >= 8;
+                    input.style.borderColor = isValid ? 'var(--cyber-green)' : 'var(--neon-pink)';
+                }
+            });
+        });
+        
+        form.addEventListener('submit', (e) => {
+            console.log('🚀 Registration form submitted - creating digital soul');
             
-            // Get form data
-            const formData = new FormData(this);
-            const data = {
-                name: formData.get('name'),
-                email: formData.get('email'),
-                password: formData.get('password'),
-                confirm_password: formData.get('confirm_password')
-            };
-            
-            // Validate passwords match
-            if (data.password !== data.confirm_password) {
-                messageContainer.innerHTML = '<div class="error-message">Passwords do not match</div>';
-                return;
-            }
-            
-            // Show loading state
-            submitBtn.innerHTML = '⏳ Creating Account...';
+            // Add loading state
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Digital Soul...';
             submitBtn.disabled = true;
             
-            try {
-                const response = await fetch('/register', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    messageContainer.innerHTML = '<div class="success-message">Account created successfully! Redirecting...</div>';
-                    setTimeout(() => {
-                        window.location.href = result.redirect || '/dashboard';
-                    }, 1500);
-                } else {
-                    messageContainer.innerHTML = `<div class="error-message">${result.error}</div>`;
+            // Re-enable after a delay if form validation fails
+            setTimeout(() => {
+                if (submitBtn.disabled) {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
                 }
-            } catch (error) {
-                messageContainer.innerHTML = '<div class="error-message">Registration failed. Please try again.</div>';
-            } finally {
-                submitBtn.innerHTML = '✨ Create Account';
-                submitBtn.disabled = false;
-            }
+            }, 3000);
         });
-    </script>
-</body>
-</html>
+        
+        // Registration atmosphere
+        const registerMessages = [
+            '🌃 Welcome to the digital realm of love and connection',
+            '💖 Your cyberpunk journey begins with registration',
+            '🎵 Lofi beats welcome new digital souls',
+            '✨ Neural networks preparing for your unique essence',
+            '🤖 AI companions await your digital presence'
+        ];
+        
+        let messageIndex = 0;
+        setInterval(() => {
+            console.log(registerMessages[messageIndex]);
+            messageIndex = (messageIndex + 1) % registerMessages.length;
+        }, 8000);
+    });
+</script>
+{% endblock %}

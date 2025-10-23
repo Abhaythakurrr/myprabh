@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💖 Heart Engine Chat - My Prabh</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Header */
+        .chat-header {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .heart-status {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .heartbeat-indicator {
+            width: 20px;
+            height: 20px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            animation: heartbeat 1.5s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+        }
+
+        .heart-info h1 {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        .heart-info p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        /* Messages Area */
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .message {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .user .message-avatar {
+            background: linear-gradient(45deg, #feca57, #ff9ff3);
+        }
+
+        .heart .message-avatar {
+            background: linear-gradient(45deg, #ff6b6b, #48dbfb);
+            animation: pulse 2s infinite;
+        }
+
+        .message-content {
+            max-width: 70%;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+
+        .user .message-content {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .message-text {
+            color: white;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+
+        .message-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .emotional-indicators {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .indicator {
+            padding: 0.2rem 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            font-size: 0.7rem;
+        }
+
+        /* Input Area */
+        .input-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            padding: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+
+        .message-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            padding: 1rem 1.5rem;
+            color: white;
+            font-size: 1rem;
+            resize: none;
+            min-height: 50px;
+            max-height: 150px;
+            transition: all 0.3s ease;
+        }
+
+        .message-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .message-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .send-button {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        .send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Loading animation */
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-style: italic;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 0.2rem;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: typingDot 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingDot {
+            0%, 60%, 100% { opacity: 0.3; transform: scale(0.8); }
+            30% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .chat-container {
+                height: 100vh;
+            }
+
+            .chat-header {
+                padding: 1rem;
+            }
+
+            .heart-info h1 {
+                font-size: 1.2rem;
+            }
+
+            .nav-buttons {
+                display: none;
+            }
+
+            .messages-container {
+                padding: 1rem;
+            }
+
+            .message-content {
+                max-width: 85%;
+            }
+
+            .input-container {
+                padding: 1rem;
+            }
+        }
+
+        /* Welcome message */
+        .welcome-message {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-message h2 {
+            color: white;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <!-- Header -->
+        <div class="chat-header">
+            <div class="heart-status">
+                <div class="heartbeat-indicator"></div>
+                <div class="heart-info">
+                    <h1>💖 Heart Engine Chat</h1>
+                    <p>Powered by 15+ emotional components • Always listening with love</p>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <a href="/dashboard" class="nav-btn">📊 Dashboard</a>
+                <a href="/confess" class="nav-btn">🤫 Confess</a>
+                <a href="/logout" class="nav-btn">👋 Logout</a>
+            </div>
+        </div>
+
+        <!-- Messages -->
+        <div class="messages-container" id="messagesContainer">
+            <div class="welcome-message">
+                <h2>Welcome to Your Heart Engine Chat 💫</h2>
+                <p>I'm here to listen, understand, and support you with genuine empathy and love. Share whatever is on your heart - I'm equipped with advanced emotional intelligence to truly understand and care for you.</p>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-container">
+            <div class="typing-indicator" id="typingIndicator">
+                <span>Heart Engine is processing your emotions</span>
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+            <div class="input-wrapper">
+                <textarea 
+                    id="messageInput" 
+                    class="message-input" 
+                    placeholder="Share what's in your heart... 💭"
+                    rows="1"
+                ></textarea>
+                <button id="sendButton" class="send-button">
+                    <span>💌</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class HeartEngineChat {
+            constructor() {
+                this.messagesContainer = document.getElementById('messagesContainer');
+                this.messageInput = document.getElementById('messageInput');
+                this.sendButton = document.getElementById('sendButton');
+                this.typingIndicator = document.getElementById('typingIndicator');
+                
+                this.initializeEventListeners();
+                this.autoResizeTextarea();
+            }
+
+            initializeEventListeners() {
+                this.sendButton.addEventListener('click', () => this.sendMessage());
+                this.messageInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        this.sendMessage();
+                    }
+                });
+            }
+
+            autoResizeTextarea() {
+                this.messageInput.addEventListener('input', () => {
+                    this.messageInput.style.height = 'auto';
+                    this.messageInput.style.height = Math.min(this.messageInput.scrollHeight, 150) + 'px';
+                });
+            }
+
+            async sendMessage() {
+                const message = this.messageInput.value.trim();
+                if (!message) return;
+
+                // Disable input
+                this.messageInput.disabled = true;
+                this.sendButton.disabled = true;
+
+                // Add user message
+                this.addMessage(message, 'user');
+                this.messageInput.value = '';
+                this.messageInput.style.height = 'auto';
+
+                // Show typing indicator
+                this.showTypingIndicator();
+
+                try {
+                    const response = await fetch('/api/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ message: message })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        this.addMessage(data.response, 'heart', {
+                            emotional_tone: data.emotional_tone,
+                            empathy_level: data.empathy_level,
+                            authenticity: data.authenticity,
+                            love_language_used: data.love_language_used,
+                            components_used: data.heart_metadata.components_used
+                        });
+                    } else {
+                        this.addMessage('I apologize, but I\'m having trouble processing your message right now. Please try again.', 'heart');
+                    }
+                } catch (error) {
+                    console.error('Chat error:', error);
+                    this.addMessage('I\'m experiencing some technical difficulties. Please try again in a moment.', 'heart');
+                }
+
+                // Hide typing indicator and re-enable input
+                this.hideTypingIndicator();
+                this.messageInput.disabled = false;
+                this.sendButton.disabled = false;
+                this.messageInput.focus();
+            }
+
+            addMessage(text, sender, metadata = {}) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}`;
+
+                const avatar = document.createElement('div');
+                avatar.className = 'message-avatar';
+                avatar.textContent = sender === 'user' ? '👤' : '💖';
+
+                const content = document.createElement('div');
+                content.className = 'message-content';
+
+                const messageText = document.createElement('div');
+                messageText.className = 'message-text';
+                messageText.textContent = text;
+
+                content.appendChild(messageText);
+
+                // Add metadata for heart messages
+                if (sender === 'heart' && Object.keys(metadata).length > 0) {
+                    const meta = document.createElement('div');
+                    meta.className = 'message-meta';
+
+                    const indicators = document.createElement('div');
+                    indicators.className = 'emotional-indicators';
+
+                    if (metadata.emotional_tone) {
+                        const toneIndicator = document.createElement('span');
+                        toneIndicator.className = 'indicator';
+                        toneIndicator.textContent = `💭 ${metadata.emotional_tone}`;
+                        indicators.appendChild(toneIndicator);
+                    }
+
+                    if (metadata.empathy_level) {
+                        const empathyIndicator = document.createElement('span');
+                        empathyIndicator.className = 'indicator';
+                        empathyIndicator.textContent = `💝 ${Math.round(metadata.empathy_level * 100)}% empathy`;
+                        indicators.appendChild(empathyIndicator);
+                    }
+
+                    if (metadata.love_language_used) {
+                        const loveIndicator = document.createElement('span');
+                        loveIndicator.className = 'indicator';
+                        loveIndicator.textContent = `💕 ${metadata.love_language_used}`;
+                        indicators.appendChild(loveIndicator);
+                    }
+
+                    const timestamp = document.createElement('span');
+                    timestamp.textContent = new Date().toLocaleTimeString();
+
+                    meta.appendChild(indicators);
+                    meta.appendChild(timestamp);
+                    content.appendChild(meta);
+                }
+
+                messageDiv.appendChild(avatar);
+                messageDiv.appendChild(content);
+
+                this.messagesContainer.appendChild(messageDiv);
+                this.scrollToBottom();
+            }
+
+            showTypingIndicator() {
+                this.typingIndicator.style.display = 'flex';
+            }
+
+            hideTypingIndicator() {
+                this.typingIndicator.style.display = 'none';
+            }
+
+            scrollToBottom() {
+                this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
+            }
+        }
+
+        // Initialize chat when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new HeartEngineChat();
+        });
+    </script>
+</body>
+</html>

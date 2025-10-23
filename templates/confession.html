@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confession - My Prabh + Abhay Emotional Engine</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ultimate-theme.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="breathing">
+    <!-- Back Navigation -->
+    <div class="emotional-container" style="padding: var(--space-6) var(--space-6) 0;">
+        <a href="/dashboard" class="emotional-btn ghost" style="margin-bottom: var(--space-8);">
+            <i class="fas fa-arrow-left"></i>
+            Back to Sanctuary
+        </a>
+    </div>
+
+    <div class="emotional-container" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: var(--space-6);">
+        
+        <!-- Floating Hearts -->
+        <div class="floating-heart" style="position: absolute; top: 15%; left: 10%; font-size: 2rem; opacity: 0.3;">💖</div>
+        <div class="floating-heart" style="position: absolute; top: 25%; right: 15%; font-size: 1.5rem; opacity: 0.4;">✨</div>
+        <div class="floating-heart" style="position: absolute; bottom: 30%; left: 20%; font-size: 1.8rem; opacity: 0.3;">🌙</div>
+        <div class="floating-heart" style="position: absolute; bottom: 20%; right: 25%; font-size: 2.2rem; opacity: 0.4;">💫</div>
+        
+        <div class="emotional-form" style="max-width: 800px; width: 100%;">
+            <!-- Header -->
+            <div class="text-center" style="margin-bottom: var(--space-10);">
+                <div style="font-size: 5rem; margin-bottom: var(--space-4);">
+                    {% if confession_type == 'love' %}💖
+                    {% elif confession_type == 'secret' %}🤫
+                    {% elif confession_type == 'regret' %}💔
+                    {% elif confession_type == 'dream' %}✨
+                    {% else %}💭{% endif %}
+                </div>
+                
+                <h1 class="emotional-title text-4xl heartbeat" style="margin-bottom: var(--space-4);">
+                    {% if confession_type == 'love' %}Love Confession Portal
+                    {% elif confession_type == 'secret' %}Secret Sharing Sanctuary  
+                    {% elif confession_type == 'regret' %}Regret Healing Space
+                    {% elif confession_type == 'dream' %}Dream Expression Chamber
+                    {% else %}Emotional Confession{% endif %}
+                </h1>
+                
+                <p class="soul-text text-lg">
+                    {% if confession_type == 'love' %}
+                        Share your deepest romantic feelings in this safe digital space. 
+                        Your heart's truth will be heard and understood with compassion.
+                    {% elif confession_type == 'secret' %}
+                        Release the secrets you've been carrying alone. 
+                        This is your sanctuary where no judgment exists, only understanding.
+                    {% elif confession_type == 'regret' %}
+                        Let go of what's been weighing on your soul. 
+                        Healing begins when we acknowledge our regrets with kindness.
+                    {% elif confession_type == 'dream' %}
+                        Express your wildest dreams and deepest aspirations. 
+                        Your dreams deserve to be heard and celebrated.
+                    {% else %}
+                        Share what's in your heart. This is your safe space for emotional expression.
+                    {% endif %}
+                </p>
+            </div>
+            
+            <!-- Confession Form -->
+            <form id="confessionForm">
+                <div style="margin-bottom: var(--space-6);">
+                    <label for="confessionTitle" class="emotional-label">
+                        {% if confession_type == 'love' %}What's This Love About?
+                        {% elif confession_type == 'secret' %}Your Secret's Title
+                        {% elif confession_type == 'regret' %}What Do You Regret?
+                        {% elif confession_type == 'dream' %}Your Dream's Name
+                        {% else %}Give It a Title{% endif %}
+                    </label>
+                    <input 
+                        type="text" 
+                        id="confessionTitle" 
+                        name="title" 
+                        class="emotional-input" 
+                        placeholder="{% if confession_type == 'love' %}The person who has my heart...
+                        {% elif confession_type == 'secret' %}Something I've never told anyone...
+                        {% elif confession_type == 'regret' %}I wish I had said...
+                        {% elif confession_type == 'dream' %}My biggest dream is...
+                        {% else %}What's on your heart...{% endif %}"
+                        required
+                    >
+                </div>
+                
+                <div style="margin-bottom: var(--space-8);">
+                    <label for="confessionContent" class="emotional-label">
+                        Open Your Heart Completely
+                    </label>
+                    <textarea 
+                        id="confessionContent" 
+                        name="content" 
+                        class="emotional-input" 
+                        rows="8"
+                        placeholder="{% if confession_type == 'love' %}I've been thinking about them every day. The way they smile makes my heart race, and I dream about telling them how I feel. I love how they...
+                        {% elif confession_type == 'secret' %}There's something I've never told anyone, not even my closest friends. It's been weighing on my heart for so long, and I need to release it...
+                        {% elif confession_type == 'regret' %}I regret not saying how much they meant to me when I had the chance. If I could go back, I would tell them...
+                        {% elif confession_type == 'dream' %}My biggest dream is something I've been afraid to say out loud. I imagine a future where I...
+                        {% else %}What's really in your heart right now? Share everything you're feeling...{% endif %}"
+                        required
+                        style="resize: vertical; min-height: 200px;"
+                    ></textarea>
+                    
+                    <div class="soul-text text-sm" style="margin-top: var(--space-2); opacity: 0.7;">
+                        <i class="fas fa-lock"></i>
+                        Your confession is completely private and secure. Only our AI will analyze it to provide emotional insights.
+                    </div>
+                </div>
+                
+                <!-- Privacy Options -->
+                <div class="emotional-card" style="background: rgba(156, 39, 176, 0.1); margin-bottom: var(--space-8);">
+                    <h4 class="dream-text" style="margin-bottom: var(--space-4);">
+                        <i class="fas fa-shield-heart"></i>
+                        Privacy & Anonymity
+                    </h4>
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" id="anonymous" name="anonymous" checked style="transform: scale(1.2);">
+                        <label for="anonymous" class="soul-text">
+                            Keep this confession completely anonymous (recommended)
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Error/Success Messages -->
+                <div id="errorMessage" class="emotional-card" style="background: rgba(255, 23, 68, 0.1); border-color: var(--love-red); display: none; margin-bottom: var(--space-6);">
+                    <div class="heart-text">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span id="errorText"></span>
+                    </div>
+                </div>
+                
+                <div id="successMessage" class="emotional-card" style="background: rgba(76, 175, 80, 0.1); border-color: var(--growth-green); display: none; margin-bottom: var(--space-6);">
+                    <div style="color: var(--growth-green);">
+                        <i class="fas fa-heart"></i>
+                        <span id="successText"></span>
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <button type="submit" class="emotional-btn" style="width: 100%; margin-bottom: var(--space-6);" id="confessionBtn">
+                    <i class="fas fa-heart"></i>
+                    <span id="confessionBtnText">
+                        {% if confession_type == 'love' %}Confess My Love
+                        {% elif confession_type == 'secret' %}Share My Secret
+                        {% elif confession_type == 'regret' %}Release My Regret
+                        {% elif confession_type == 'dream' %}Express My Dream
+                        {% else %}Share My Heart{% endif %}
+                    </span>
+                </button>
+                
+                <!-- Connection Status -->
+                <div class="text-center">
+                    <div class="emotional-status trust" id="connectionStatus">
+                        <i class="fas fa-heart-pulse"></i>
+                        Emotional Connection Active
+                    </div>
+                </div>
+            </form>
+            
+            <!-- AI Analysis Results -->
+            <div id="analysisResults" style="display: none; margin-top: var(--space-10);">
+                <div class="emotional-card" style="background: rgba(233, 30, 99, 0.1);">
+                    <h3 class="emotional-title text-2xl" style="margin-bottom: var(--space-6);">
+                        <i class="fas fa-brain"></i>
+                        AI Emotional Analysis
+                    </h3>
+                    
+                    <div id="emotionAnalysis" class="soul-text" style="margin-bottom: var(--space-6);"></div>
+                    
+                    <div id="emotionSuggestions" class="dream-text"></div>
+                    
+                    <div class="text-center" style="margin-top: var(--space-8);">
+                        <a href="/dashboard" class="emotional-btn secondary">
+                            <i class="fas fa-home"></i>
+                            Return to Sanctuary
+                        </a>
+                        <a href="/deep-questions" class="emotional-btn ghost" style="margin-left: var(--space-4);">
+                            <i class="fas fa-brain"></i>
+                            Try Soul Reading Game
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Revolutionary Confession Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('💖 Confession portal loaded - Your heart is safe here');
+            
+            const form = document.getElementById('confessionForm');
+            const titleInput = document.getElementById('confessionTitle');
+            const contentInput = document.getElementById('confessionContent');
+            const confessionBtn = document.getElementById('confessionBtn');
+            const confessionBtnText = document.getElementById('confessionBtnText');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            const analysisResults = document.getElementById('analysisResults');
+            
+            // Enhanced form submission
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const title = titleInput.value.trim();
+                const content = contentInput.value.trim();
+                const anonymous = document.getElementById('anonymous').checked;
+                
+                // Validation
+                if (!title) {
+                    showError('Please give your confession a title 💖');
+                    titleInput.focus();
+                    return;
+                }
+                
+                if (!content) {
+                    showError('Please share what\'s in your heart 💭');
+                    contentInput.focus();
+                    return;
+                }
+                
+                if (content.length < 10) {
+                    showError('Please share a bit more from your heart (at least 10 characters)');
+                    contentInput.focus();
+                    return;
+                }
+                
+                setLoading(true);
+                
+                try {
+                    const response = await fetch('/api/submit-confession', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            type: '{{ confession_type }}',
+                            title: title,
+                            content: content,
+                            anonymous: anonymous
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok && data.success) {
+                        showSuccess(data.message);
+                        showAnalysis(data.emotion_analysis);
+                        form.style.display = 'none';
+                    } else {
+                        showError(data.error || 'Failed to submit confession');
+                    }
+                    
+                } catch (error) {
+                    console.error('Confession error:', error);
+                    showError('Network error. Please check your connection and try again.');
+                } finally {
+                    setLoading(false);
+                }
+            });
+            
+            function showError(message) {
+                document.getElementById('errorText').textContent = message;
+                errorMessage.style.display = 'block';
+                successMessage.style.display = 'none';
+                
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 5000);
+            }
+            
+            function showSuccess(message) {
+                document.getElementById('successText').textContent = message;
+                successMessage.style.display = 'block';
+                errorMessage.style.display = 'none';
+            }
+            
+            function setLoading(loading) {
+                if (loading) {
+                    confessionBtn.disabled = true;
+                    confessionBtnText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Your Heart...';
+                    confessionBtn.style.opacity = '0.7';
+                } else {
+                    confessionBtn.disabled = false;
+                    confessionBtnText.innerHTML = '{{ "Confess My Love" if confession_type == "love" else "Share My Heart" }}';
+                    confessionBtn.style.opacity = '1';
+                }
+            }
+            
+            function showAnalysis(analysis) {
+                const emotionAnalysis = document.getElementById('emotionAnalysis');
+                const emotionSuggestions = document.getElementById('emotionSuggestions');
+                
+                emotionAnalysis.innerHTML = `
+                    <div class="emotional-status ${analysis.dominant_emotion}" style="margin-bottom: var(--space-4);">
+                        <i class="fas fa-heart"></i>
+                        Detected Emotion: ${analysis.dominant_emotion.charAt(0).toUpperCase() + analysis.dominant_emotion.slice(1)}
+                    </div>
+                    <p>Our AI has analyzed your emotional expression with ${Math.round(analysis.confidence * 100)}% confidence.</p>
+                `;
+                
+                if (analysis.suggestions && analysis.suggestions.length > 0) {
+                    emotionSuggestions.innerHTML = `
+                        <h4 style="margin-bottom: var(--space-4);">💡 Personalized Insights:</h4>
+                        <ul style="list-style: none; padding: 0;">
+                            ${analysis.suggestions.map(suggestion => `
+                                <li style="margin-bottom: var(--space-2);">
+                                    <i class="fas fa-lightbulb" style="margin-right: var(--space-2);"></i>
+                                    ${suggestion}
+                                </li>
+                            `).join('')}
+                        </ul>
+                    `;
+                }
+                
+                analysisResults.style.display = 'block';
+                analysisResults.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            // Real-time character count
+            contentInput.addEventListener('input', function() {
+                const count = this.value.length;
+                const label = document.querySelector('label[for="confessionContent"]');
+                
+                if (count === 0) {
+                    label.textContent = 'Open Your Heart Completely';
+                } else if (count < 50) {
+                    label.textContent = `Open Your Heart Completely (${count} characters - share more 💖)`;
+                } else if (count < 200) {
+                    label.textContent = `Open Your Heart Completely (${count} characters - beautiful so far ✨)`;
+                } else {
+                    label.textContent = `Open Your Heart Completely (${count} characters - your heart is speaking 💫)`;
+                }
+            });
+            
+            // Auto-save draft (optional)
+            let saveTimeout;
+            contentInput.addEventListener('input', function() {
+                clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(() => {
+                    localStorage.setItem('confession_draft_{{ confession_type }}', JSON.stringify({
+                        title: titleInput.value,
+                        content: contentInput.value,
+                        timestamp: Date.now()
+                    }));
+                }, 2000);
+            });
+            
+            // Load draft if exists
+            const draft = localStorage.getItem('confession_draft_{{ confession_type }}');
+            if (draft) {
+                try {
+                    const draftData = JSON.parse(draft);
+                    const draftAge = Date.now() - draftData.timestamp;
+                    
+                    // Only load draft if less than 1 hour old
+                    if (draftAge < 3600000) {
+                        titleInput.value = draftData.title || '';
+                        contentInput.value = draftData.content || '';
+                        
+                        if (draftData.content) {
+                            showSuccess('We found a draft of your confession and restored it 💖');
+                        }
+                    }
+                } catch (e) {
+                    console.log('Could not load draft:', e);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
