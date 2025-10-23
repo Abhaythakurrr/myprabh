@@ -26,9 +26,7 @@ PyJWT==2.8.0
 openai==1.3.5
 sentence-transformers==2.2.2
 transformers==4.35.2
-torch==2.1.1
-torchvision==0.16.1
-torchaudio==2.1.1
+torch>=2.5.0
 numpy==1.24.4
 scikit-learn==1.3.2
 pandas==2.1.3
@@ -42,8 +40,6 @@ langdetect==1.0.9
 
 # Memory & Embeddings
 faiss-cpu==1.7.4
-chromadb==0.4.18
-pinecone-client==2.2.4
 
 # HTTP Requests & APIs
 requests==2.31.0
@@ -61,10 +57,7 @@ python-magic==0.4.27
 PyPDF2==3.0.1
 python-docx==1.1.0
 
-# Audio Processing (for voice features)
-librosa==0.10.1
-soundfile==0.12.1
-pydub==0.25.1
+
 
 # Web Scraping (for festival data)
 beautifulsoup4==4.12.2
@@ -139,13 +132,9 @@ holidays==0.36
 hijri-converter==2.3.1
 convertdate==2.4.0
 
-# Image Processing
-opencv-python==4.8.1.78
-imageio==2.31.6
 
-# Cyberpunk Effects & Graphics
-matplotlib==3.8.2
-seaborn==0.13.0
+
+
 
 # Memory Optimization
 psutil==5.9.6
