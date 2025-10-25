@@ -47,15 +47,19 @@ prabhs_db = {}
 @app.route('/')
 def index():
     """Landing page"""
-    stats = {
-        'total_users': 1247,
-        'total_prabhs': 892,
-        'early_signups': 3456,
-        'active_conversations': 2676,
-        'happiness_score': '98%',
-        'countries': 25
-    }
-    return render_template('mvp_landing.html', stats=stats)
+    try:
+        stats = {
+            'total_users': 1247,
+            'total_prabhs': 892,
+            'early_signups': 3456,
+            'active_conversations': 2676,
+            'happiness_score': '98%',
+            'countries': 25
+        }
+        return render_template('mvp_landing.html', stats=stats)
+    except Exception as e:
+        print(f"Landing page error: {e}")
+        return f"<h1>My Prabh</h1><p>Welcome to My Prabh! <a href='/create_account'>Create Account</a></p>", 200
 
 @app.route('/health')
 def health_check():
@@ -70,9 +74,13 @@ def health_check():
 @app.route('/register')
 @app.route('/create_account')
 def register_page():
-    if is_authenticated():
-        return redirect(url_for('dashboard'))
-    return render_template('register.html')
+    try:
+        if is_authenticated():
+            return redirect(url_for('dashboard'))
+        return render_template('register.html')
+    except Exception as e:
+        print(f"Register page error: {e}")
+        return f"<h1>Create Account</h1><form method='post' action='/register'><input name='name' placeholder='Name' required><input name='email' placeholder='Email' required><input name='password' type='password' placeholder='Password' required><button type='submit'>Register</button></form>", 200
 
 @app.route('/walkthrough-signup')
 def walkthrough_signup():
@@ -83,9 +91,13 @@ def walkthrough_signup():
 @app.route('/signin')
 @app.route('/login')
 def login_page():
-    if is_authenticated():
-        return redirect(url_for('dashboard'))
-    return render_template('login.html')
+    try:
+        if is_authenticated():
+            return redirect(url_for('dashboard'))
+        return render_template('login.html')
+    except Exception as e:
+        print(f"Login page error: {e}")
+        return f"<h1>Login</h1><form method='post' action='/login'><input name='email' placeholder='Email' required><input name='password' type='password' placeholder='Password' required><button type='submit'>Login</button></form><p><a href='/create_account'>Create Account</a></p>", 200
 
 @app.route('/register', methods=['POST'])
 def register_user():
@@ -180,25 +192,30 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    user_prabhs = [p for p in prabhs_db.values() if p['user_id'] == session['user_id']]
-    
-    user_stats = {
-        'total_prabhs': len(user_prabhs),
-        'total_messages': 0,
-        'active_prabhs': len(user_prabhs),
-        'member_since': session.get('user_name', 'User')
-    }
-    
-    # Check if user is admin
-    admin_email = 'abhaythakur@aiprabh.com'
-    is_admin = session.get('user_email') == admin_email
-    
-    return render_template('dashboard.html', 
-                         prabhs=user_prabhs, 
-                         prabh_instances=user_prabhs,
-                         user_stats=user_stats,
-                         user_name=session.get('user_name', 'User'),
-                         is_admin=is_admin)
+    try:
+        user_prabhs = [p for p in prabhs_db.values() if p['user_id'] == session['user_id']]
+        
+        user_stats = {
+            'total_prabhs': len(user_prabhs),
+            'total_messages': 0,
+            'active_prabhs': len(user_prabhs),
+            'member_since': session.get('user_name', 'User')
+        }
+        
+        # Check if user is admin
+        admin_email = 'abhaythakur@aiprabh.com'
+        is_admin = session.get('user_email') == admin_email
+        
+        return render_template('dashboard.html', 
+                             prabhs=user_prabhs, 
+                             prabh_instances=user_prabhs,
+                             user_stats=user_stats,
+                             user_name=session.get('user_name', 'User'),
+                             is_admin=is_admin)
+    except Exception as e:
+        print(f"Dashboard error: {e}")
+        user_name = session.get('user_name', 'User')
+        return f"<h1>Dashboard - Welcome {user_name}!</h1><p><a href='/create-prabh'>Create Prabh</a> | <a href='/logout'>Logout</a></p>", 200
 
 @app.route('/create-prabh')
 @login_required
