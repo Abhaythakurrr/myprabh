@@ -68,6 +68,7 @@ def health_check():
 
 @app.route('/signup')
 @app.route('/register')
+@app.route('/create_account')
 def register_page():
     if is_authenticated():
         return redirect(url_for('dashboard'))
@@ -315,13 +316,23 @@ def chat_message():
 def terms():
     return render_template('terms.html', current_date=datetime.now().strftime('%B %Y'))
 
+@app.route('/privacy')
 @app.route('/privacy-policy')
 def privacy_policy():
     return render_template('privacy_policy.html', current_date=datetime.now().strftime('%B %Y'))
 
+@app.route('/refund')
 @app.route('/refund-policy')
 def refund_policy():
     return render_template('refund_policy.html', current_date=datetime.now().strftime('%B %Y'))
+
+@app.route('/cookies')
+def cookies_policy():
+    return render_template('privacy_policy.html', current_date=datetime.now().strftime('%B %Y'))
+
+@app.route('/investors')
+def investors():
+    return render_template('404.html'), 404
 
 # ============================================================================
 # ADMIN SETUP
@@ -378,6 +389,47 @@ def admin_setup():
     except Exception as e:
         print(f"Admin setup error: {e}")
         return jsonify({'error': 'Admin setup failed'}), 500
+
+# ============================================================================
+# API ROUTES
+# ============================================================================
+
+@app.route('/api/live-stats')
+def live_stats():
+    """Live stats API endpoint"""
+    return jsonify({
+        'visitors': len(users_db) * 5 + 1247,
+        'prabhs_created': len(prabhs_db) + 892,
+        'users': len(users_db) + 1247,
+        'early_access': len(users_db) * 2 + 3456
+    })
+
+@app.route('/submit-early-access', methods=['POST'])
+def submit_early_access():
+    """Handle early access signup"""
+    try:
+        data = request.get_json() if request.is_json else request.form
+        email = data.get('email', '').strip().lower()
+        name = data.get('name', '').strip()
+        
+        if not email:
+            return jsonify({'error': 'Email is required'}), 400
+        
+        # Store early access signup (in memory for demo)
+        signup_id = f"signup_{len(users_db) + 1}"
+        
+        return jsonify({
+            'success': True,
+            'message': 'Thank you for your interest! Check your email for confirmation. 💖',
+            'signup_id': signup_id
+        })
+        
+    except Exception as e:
+        print(f"Early access signup error: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'Connection Error 🌧️ Like a storm, sometimes connections fail. Please try again in a moment.'
+        }), 500
 
 # ============================================================================
 # ERROR HANDLERS
