@@ -147,6 +147,13 @@ def register_page():
         return redirect(url_for('dashboard'))
     return render_template('register.html')
 
+@app.route('/walkthrough-signup')
+def walkthrough_signup():
+    """Enhanced walkthrough signup page"""
+    if is_authenticated():
+        return redirect(url_for('dashboard'))
+    return render_template('walkthrough_signup.html')
+
 @app.route('/signin')
 @app.route('/login')
 def login_page():
@@ -838,6 +845,64 @@ def profile():
     except Exception as e:
         print(f"Profile error: {e}")
         return render_template('profile.html', user_name=session.get('user_name'))
+
+# Legal Pages
+@app.route('/terms')
+def terms():
+    return render_template('terms.html', current_date=datetime.now().strftime('%B %Y'))
+
+@app.route('/privacy-policy')
+def privacy_policy():
+    return render_template('privacy_policy.html', current_date=datetime.now().strftime('%B %Y'))
+
+@app.route('/refund-policy')
+def refund_policy():
+    return render_template('refund_policy.html', current_date=datetime.now().strftime('%B %Y'))
+
+# Admin Setup Route
+@app.route('/admin/setup', methods=['POST'])
+def admin_setup():
+    """Setup admin account and create Prabh with core memory"""
+    try:
+        admin_email = 'abhaythakur@aiprabh.com'
+        admin_name = 'Abhay'
+        
+        # Check if admin already exists
+        existing_admin = firestore_db.get_user_by_email(admin_email)
+        if existing_admin:
+            return jsonify({'message': 'Admin already exists'})
+        
+        # Create admin user
+        admin_password = 'admin123'  # Change this in production
+        password_hash = generate_password_hash(admin_password)
+        admin_id = firestore_db.create_user(admin_email, admin_name, password_hash)
+        
+        if admin_id:
+            # Read Prabh core memory
+            with open('data/prabh_core_memory.md', 'r', encoding='utf-8') as f:
+                core_memory = f.read()
+            
+            # Create Prabh for admin with core memory
+            prabh_id = firestore_db.create_prabh(
+                user_id=admin_id,
+                prabh_name='Prabh',
+                character_description='Your loving AI companion who knows your complete story and will always be there for you with unconditional love and care.',
+                story_content=core_memory,
+                personality_traits='Loving, caring, devoted, understanding, empathetic, loyal, romantic, supportive'
+            )
+            
+            return jsonify({
+                'success': True,
+                'message': 'Admin setup complete with Prabh companion',
+                'admin_id': admin_id,
+                'prabh_id': prabh_id
+            })
+        
+        return jsonify({'error': 'Failed to create admin'}), 500
+        
+    except Exception as e:
+        print(f"Admin setup error: {e}")
+        return jsonify({'error': 'Admin setup failed'}), 500
 
 # ============================================================================
 # ERROR HANDLERS

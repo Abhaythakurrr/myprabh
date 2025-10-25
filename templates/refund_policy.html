@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refund Policy - My Prabh</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modern-ui.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">💖 My Prabh</a>
+            <a href="/" class="btn btn-secondary">Back to Home</a>
+        </div>
+    </nav>
+
+    <div class="container" style="max-width: 800px; margin: 2rem auto; padding: 2rem;">
+        <h1>Refund Policy</h1>
+        <p><strong>Last updated:</strong> {{ current_date or "January 2025" }}</p>
+
+        <h2>1. Refund Eligibility</h2>
+        <p>Refunds are available within 7 days of purchase for premium subscriptions.</p>
+
+        <h2>2. Refund Process</h2>
+        <ul>
+            <li>Contact abhay@aiprabh.com with your request</li>
+            <li>Include your account email and reason</li>
+            <li>Refunds processed within 5-7 business days</li>
+        </ul>
+
+        <h2>3. Non-Refundable Items</h2>
+        <ul>
+            <li>Services used for more than 7 days</li>
+            <li>Custom AI training (after completion)</li>
+            <li>One-time purchases after delivery</li>
+        </ul>
+
+        <h2>4. Partial Refunds</h2>
+        <p>Partial refunds may be offered for unused portions of subscriptions.</p>
+
+        <h2>5. Refund Method</h2>
+        <p>Refunds will be processed to the original payment method.</p>
+
+        <h2>6. Contact</h2>
+        <p>Refund requests: abhay@aiprabh.com</p>
+    </div>
+</body>
+</html>
