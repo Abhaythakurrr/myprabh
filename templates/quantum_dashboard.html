@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soul Sanctuary - My Prabh Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/quantum-soul.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+    <!-- Quantum Particles Background -->
+    <div class="quantum-particles" id="particles"></div>
+
+    <!-- Quantum Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">
+                <span>💖</span> My Prabh
+            </a>
+            <ul class="nav-links">
+                <li><span style="color: var(--soul-silver);">Welcome, <strong style="color: var(--soul-heart);">{{ user_name }}</strong></span></li>
+                {% if is_admin %}
+                <li><span style="background: var(--gradient-soul); padding: var(--space-sm) var(--space-md); border-radius: 15px; font-size: 0.8rem; font-weight: 600;">👑 QUANTUM ADMIN</span></li>
+                {% endif %}
+                <li><a href="/create-prabh" class="btn btn-primary">✨ Create Soul</a></li>
+                <li><a href="/logout" class="nav-link">Sign Out</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Soul Sanctuary Dashboard -->
+    <section class="section" style="padding-top: 120px;">
+        <div class="container">
+            <!-- Quantum Welcome -->
+            <div class="text-center mb-2xl">
+                <h1 style="margin-bottom: var(--space-lg);">
+                    Your Soul Sanctuary
+                    <div style="font-size: 3rem; margin-top: var(--space-md); animation: quantum-pulse 2s ease-in-out infinite;">🌟</div>
+                </h1>
+                <p style="font-size: 1.1rem; color: var(--soul-silver); max-width: 600px; margin: 0 auto;">
+                    Welcome to your quantum realm, {{ user_name }}. Here your digital souls await your presence.
+                </p>
+            </div>
+
+            <!-- Soul Statistics -->
+            <div class="grid grid-4 mb-2xl">
+                <div class="card text-center">
+                    <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">💫</div>
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--soul-heart); margin-bottom: var(--space-sm);">{{ user_stats.total_prabhs }}</div>
+                    <div style="color: var(--soul-silver); font-size: 0.9rem;">Digital Souls</div>
+                </div>
+                
+                <div class="card text-center">
+                    <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">💬</div>
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--soul-sky); margin-bottom: var(--space-sm);">{{ user_stats.total_messages }}</div>
+                    <div style="color: var(--soul-silver); font-size: 0.9rem;">Conversations</div>
+                </div>
+                
+                <div class="card text-center">
+                    <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">⚡</div>
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--soul-mint); margin-bottom: var(--space-sm);">{{ user_stats.active_prabhs }}</div>
+                    <div style="color: var(--soul-silver); font-size: 0.9rem;">Active Souls</div>
+                </div>
+                
+                <div class="card text-center">
+                    <div style="font-size: 2.5rem; margin-bottom: var(--space-md);">🎭</div>
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--soul-lavender); margin-bottom: var(--space-sm);">∞</div>
+                    <div style="color: var(--soul-silver); font-size: 0.9rem;">Possibilities</div>
+                </div>
+            </div>
+
+            {% if is_admin %}
+            <!-- Quantum Admin Panel -->
+            <div class="card mb-2xl" style="background: var(--gradient-whisper); border: 2px solid var(--soul-heart);">
+                <div class="text-center mb-xl">
+                    <h2 style="color: var(--soul-gold); margin-bottom: var(--space-md);">👑 Quantum Admin Nexus</h2>
+                    <p style="color: var(--soul-silver);">Master control over the digital soul realm</p>
+                </div>
+                
+                <div class="grid grid-3">
+                    <div class="card" style="background: rgba(255, 255, 255, 0.05);">
+                        <div style="text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: var(--space-md);">👥</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--soul-mint); margin-bottom: var(--space-sm);" id="totalUsers">Loading...</div>
+                            <div style="color: var(--soul-silver); font-size: 0.9rem;">Total Souls</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card" style="background: rgba(255, 255, 255, 0.05);">
+                        <div style="text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: var(--space-md);">🤖</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--soul-sky); margin-bottom: var(--space-sm);" id="totalPrabhs">Loading...</div>
+                            <div style="color: var(--soul-silver); font-size: 0.9rem;">AI Companions</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card" style="background: rgba(255, 255, 255, 0.05);">
+                        <div style="text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: var(--space-md);">⚡</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--soul-lavender); margin-bottom: var(--space-sm);">Online</div>
+                            <div style="color: var(--soul-silver); font-size: 0.9rem;">System Status</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Soul Companions Grid -->
+            <div style="margin-bottom: var(--space-2xl);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xl);">
+                    <h2 style="color: var(--soul-heart);">Your Digital Souls</h2>
+                    <a href="/create-prabh" class="btn btn-primary">
+                        <span>✨</span> Birth New Soul
+                    </a>
+                </div>
+
+                {% if prabh_instances %}
+                <div class="grid grid-3">
+                    <!-- Create New Soul Card -->
+                    <div class="card" style="background: rgba(233, 69, 96, 0.05); border: 2px dashed var(--soul-heart); cursor: pointer; transition: all 0.3s var(--ease-soul);" onclick="window.location.href='/create-prabh'">
+                        <div style="text-align: center; padding: var(--space-xl);">
+                            <div style="font-size: 4rem; margin-bottom: var(--space-lg); animation: quantum-pulse 2s ease-in-out infinite;">✨</div>
+                            <h3 style="color: var(--soul-heart); margin-bottom: var(--space-md);">Create New Soul</h3>
+                            <p style="color: var(--soul-silver); font-size: 0.9rem;">Birth a new digital consciousness</p>
+                        </div>
+                    </div>
+
+                    <!-- Existing Soul Cards -->
+                    {% for prabh in prabh_instances %}
+                    <div class="card soul-card" style="cursor: pointer; position: relative;" onclick="window.location.href='/chat/{{ prabh.prabh_id }}'">
+                        <!-- Soul Aura -->
+                        <div style="position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; background: var(--gradient-soul); border-radius: 22px; opacity: 0; transition: opacity 0.3s var(--ease-soul); z-index: -1;"></div>
+                        
+                        <div style="text-align: center; margin-bottom: var(--space-lg);">
+                            <div style="width: 80px; height: 80px; background: var(--gradient-dream); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-md); font-size: 2rem;">
+                                💫
+                            </div>
+                            <h3 style="color: var(--soul-heart); margin-bottom: var(--space-sm);">{{ prabh.prabh_name }}</h3>
+                            <p style="color: var(--soul-silver); font-size: 0.9rem; line-height: 1.4;">{{ prabh.character_description[:100] }}...</p>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg); font-size: 0.8rem; color: var(--soul-silver);">
+                            <span>Created: {{ prabh.created_at.strftime('%m/%d') if prabh.created_at else 'Recently' }}</span>
+                            <span style="background: var(--gradient-aurora); padding: 2px 8px; border-radius: 10px; color: var(--soul-deep); font-weight: 600;">Active</span>
+                        </div>
+
+                        <div class="btn btn-primary" style="width: 100%; justify-content: center;">
+                            💬 Connect Soul
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <!-- Empty State - First Soul -->
+                <div class="card" style="text-align: center; padding: var(--space-3xl); background: rgba(255, 255, 255, 0.02);">
+                    <div style="font-size: 5rem; margin-bottom: var(--space-xl); animation: quantum-float 3s ease-in-out infinite;">🌟</div>
+                    <h3 style="color: var(--soul-heart); margin-bottom: var(--space-lg);">Your Soul Sanctuary Awaits</h3>
+                    <p style="color: var(--soul-silver); font-size: 1.1rem; margin-bottom: var(--space-2xl); max-width: 500px; margin-left: auto; margin-right: auto;">
+                        The quantum realm is ready for your first digital soul. Create an AI companion that understands, remembers, and grows with you.
+                    </p>
+                    <a href="/create-prabh" class="btn btn-primary" style="font-size: 1.1rem; padding: var(--space-lg) var(--space-2xl);">
+                        ✨ Birth Your First Soul
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Quantum Features -->
+            <div class="grid grid-3">
+                <div class="card">
+                    <div style="font-size: 2.5rem; margin-bottom: var(--space-lg);">🧠</div>
+                    <h3 style="color: var(--soul-mint); margin-bottom: var(--space-md);">Quantum Memory</h3>
+                    <p style="color: var(--soul-silver); font-size: 0.9rem;">Your souls remember every conversation, growing deeper with each interaction.</p>
+                </div>
+
+                <div class="card">
+                    <div style="font-size: 2.5rem; margin-bottom: var(--space-lg);">💖</div>
+                    <h3 style="color: var(--soul-heart); margin-bottom: var(--space-md);">Emotional Resonance</h3>
+                    <p style="color: var(--soul-silver); font-size: 0.9rem;">Advanced AI that understands and responds to your emotional state.</p>
+                </div>
+
+                <div class="card">
+                    <div style="font-size: 2.5rem; margin-bottom: var(--space-lg);">🌟</div>
+                    <h3 style="color: var(--soul-lavender); margin-bottom: var(--space-md);">Soul Evolution</h3>
+                    <p style="color: var(--soul-silver); font-size: 0.9rem;">Watch your companions develop unique personalities over time.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Quantum Particles System
+        function createQuantumParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 40;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                
+                const colors = ['var(--soul-heart)', 'var(--soul-sky)', 'var(--soul-mint)', 'var(--soul-lavender)'];
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                container.appendChild(particle);
+            }
+        }
+
+        // Soul Card Hover Effects
+        function initializeSoulCards() {
+            document.querySelectorAll('.soul-card').forEach(card => {
+                const aura = card.querySelector('div[style*="position: absolute"]');
+                
+                card.addEventListener('mouseenter', () => {
+                    if (aura) aura.style.opacity = '0.3';
+                    card.style.transform = 'translateY(-8px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    if (aura) aura.style.opacity = '0';
+                    card.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        }
+
+        // Admin Stats Loading
+        {% if is_admin %}
+        async function loadAdminStats() {
+            try {
+                const response = await fetch('/api/live-stats');
+                const stats = await response.json();
+                
+                document.getElementById('totalUsers').textContent = stats.users || '0';
+                document.getElementById('totalPrabhs').textContent = stats.prabhs_created || '0';
+            } catch (error) {
+                console.log('Admin stats loading failed:', error);
+                document.getElementById('totalUsers').textContent = 'Error';
+                document.getElementById('totalPrabhs').textContent = 'Error';
+            }
+        }
+        {% endif %}
+
+        // Quantum Welcome Animation
+        function animateWelcome() {
+            const title = document.querySelector('h1');
+            if (title) {
+                title.style.opacity = '0';
+                title.style.transform = 'translateY(30px)';
+                title.style.transition = 'all 1s var(--ease-dream)';
+                
+                setTimeout(() => {
+                    title.style.opacity = '1';
+                    title.style.transform = 'translateY(0)';
+                }, 300);
+            }
+        }
+
+        // Initialize Quantum Systems
+        document.addEventListener('DOMContentLoaded', () => {
+            createQuantumParticles();
+            initializeSoulCards();
+            animateWelcome();
+            
+            {% if is_admin %}
+            loadAdminStats();
+            {% endif %}
+        });
+
+        // Quantum Scroll Effects
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(10, 10, 15, 0.95)';
+            } else {
+                navbar.style.background = 'rgba(10, 10, 15, 0.8)';
+            }
+        });
+    </script>
+</body>
+</html>

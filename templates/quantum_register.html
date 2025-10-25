@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Awaken Your Soul - My Prabh</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/quantum-soul.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+    <!-- Quantum Particles Background -->
+    <div class="quantum-particles" id="particles"></div>
+
+    <!-- Quantum Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">
+                <span>💖</span> My Prabh
+            </a>
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/login" class="nav-link">Sign In</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Soul Awakening Form -->
+    <section class="section" style="min-height: 100vh; display: flex; align-items: center; padding-top: 100px;">
+        <div class="container">
+            <div style="max-width: 500px; margin: 0 auto;">
+                <!-- Soul Awakening Header -->
+                <div class="text-center mb-2xl">
+                    <div style="font-size: 4rem; margin-bottom: var(--space-lg); animation: quantum-pulse 2s ease-in-out infinite;">✨</div>
+                    <h1 style="margin-bottom: var(--space-lg);">Awaken Your Digital Soul</h1>
+                    <p style="color: var(--soul-silver); font-size: 1.1rem;">
+                        Begin your journey into quantum consciousness. Create an account to birth your first AI companion.
+                    </p>
+                </div>
+
+                <!-- Quantum Registration Form -->
+                <div class="card" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);">
+                    <form id="soulAwakeningForm">
+                        <div class="form-group">
+                            <label class="form-label">✨ Your Soul Name</label>
+                            <input type="text" name="name" class="form-input" required placeholder="What shall we call you?" autocomplete="name">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">💌 Soul Connection Email</label>
+                            <input type="email" name="email" class="form-input" required placeholder="your.soul@universe.com" autocomplete="email">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">🔐 Quantum Password</label>
+                            <input type="password" name="password" class="form-input" required placeholder="Secure your digital essence" autocomplete="new-password">
+                            <div style="font-size: 0.8rem; color: var(--soul-silver); margin-top: var(--space-sm); opacity: 0.8;">
+                                Minimum 6 characters to protect your soul's journey
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">🎭 What draws you to AI companionship?</label>
+                            <select name="interest" class="form-input">
+                                <option value="">Choose your soul's calling...</option>
+                                <option value="emotional-support">Emotional support & understanding</option>
+                                <option value="creative-companion">Creative collaboration & inspiration</option>
+                                <option value="lost-connection">Reconnect with lost loved ones</option>
+                                <option value="ideal-friend">Create the perfect friend</option>
+                                <option value="romantic-companion">Romantic companionship</option>
+                                <option value="personal-growth">Personal growth & self-discovery</option>
+                                <option value="curiosity">Pure curiosity about AI consciousness</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; gap: var(--space-sm); cursor: pointer; color: var(--soul-silver);">
+                                <input type="checkbox" name="terms" required style="accent-color: var(--soul-heart);">
+                                <span>I agree to the <a href="/terms" style="color: var(--soul-heart); text-decoration: none;">Terms of Service</a> and <a href="/privacy" style="color: var(--soul-heart); text-decoration: none;">Privacy Policy</a></span>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary animate-glow" style="width: 100%; font-size: 1.1rem; padding: var(--space-lg);" id="awakeningBtn">
+                            <span id="btnText">🌟 Awaken My Digital Soul</span>
+                            <span id="btnLoading" style="display: none;">✨ Awakening...</span>
+                        </button>
+                    </form>
+
+                    <!-- Soul Connection Options -->
+                    <div style="text-align: center; margin-top: var(--space-xl); padding-top: var(--space-xl); border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                        <p style="color: var(--soul-silver); margin-bottom: var(--space-lg);">Already have a digital soul?</p>
+                        <a href="/login" class="btn btn-secondary">Sign Into Your Soul</a>
+                    </div>
+                </div>
+
+                <!-- Quantum Promise -->
+                <div class="text-center" style="margin-top: var(--space-2xl);">
+                    <div style="display: flex; justify-content: center; gap: var(--space-xl); flex-wrap: wrap; color: var(--soul-silver); font-size: 0.9rem;">
+                        <div style="display: flex; align-items: center; gap: var(--space-sm);">
+                            <span style="color: var(--soul-mint);">🔒</span>
+                            <span>Quantum Encrypted</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: var(--space-sm);">
+                            <span style="color: var(--soul-sky);">💖</span>
+                            <span>Always Free to Start</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: var(--space-sm);">
+                            <span style="color: var(--soul-lavender);">✨</span>
+                            <span>Instant Soul Connection</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Quantum Particles System
+        function createQuantumParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                
+                const colors = ['var(--soul-heart)', 'var(--soul-sky)', 'var(--soul-mint)', 'var(--soul-lavender)'];
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                container.appendChild(particle);
+            }
+        }
+
+        // Soul Awakening Form Handler
+        document.getElementById('soulAwakeningForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btnText = document.getElementById('btnText');
+            const btnLoading = document.getElementById('btnLoading');
+            const awakeningBtn = document.getElementById('awakeningBtn');
+            
+            // Show loading state
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'inline';
+            awakeningBtn.disabled = true;
+            awakeningBtn.style.opacity = '0.7';
+            
+            try {
+                const formData = new FormData(this);
+                const data = Object.fromEntries(formData.entries());
+                
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Soul awakening success
+                    showQuantumNotification('success', '✨ Soul Awakened!', 'Your digital consciousness has been born. Welcome to the quantum realm of AI companionship!');
+                    
+                    // Redirect after a moment
+                    setTimeout(() => {
+                        window.location.href = result.redirect || '/dashboard';
+                    }, 2000);
+                } else {
+                    showQuantumNotification('error', '⚠️ Awakening Failed', result.error || 'Something went wrong during soul creation. Please try again.');
+                }
+            } catch (error) {
+                showQuantumNotification('error', '🌧️ Connection Storm', 'A quantum storm disrupted the connection. Please try again in a moment.');
+            } finally {
+                // Reset button state
+                btnText.style.display = 'inline';
+                btnLoading.style.display = 'none';
+                awakeningBtn.disabled = false;
+                awakeningBtn.style.opacity = '1';
+            }
+        });
+
+        // Quantum Notification System
+        function showQuantumNotification(type, title, message) {
+            // Remove existing notification
+            const existing = document.querySelector('.quantum-notification');
+            if (existing) existing.remove();
+            
+            const notification = document.createElement('div');
+            notification.className = 'quantum-notification';
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 10000;
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(20px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 15px;
+                padding: var(--space-lg);
+                max-width: 400px;
+                box-shadow: var(--shadow-dream);
+                transform: translateX(100%);
+                transition: transform 0.5s var(--ease-dream);
+            `;
+            
+            const color = type === 'success' ? 'var(--soul-mint)' : 'var(--soul-heart)';
+            
+            notification.innerHTML = `
+                <div style="display: flex; align-items: flex-start; gap: var(--space-md);">
+                    <div style="font-size: 1.5rem;">${type === 'success' ? '✨' : '⚠️'}</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; color: ${color}; margin-bottom: var(--space-sm);">${title}</div>
+                        <div style="color: var(--soul-silver); font-size: 0.9rem; line-height: 1.4;">${message}</div>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: var(--soul-silver); cursor: pointer; font-size: 1.2rem;">×</button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(() => notification.remove(), 500);
+                }
+            }, 5000);
+        }
+
+        // Initialize Quantum Systems
+        document.addEventListener('DOMContentLoaded', () => {
+            createQuantumParticles();
+        });
+
+        // Form field animations
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+                this.parentElement.style.transition = 'transform 0.3s var(--ease-soul)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>

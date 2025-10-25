@@ -1,0 +1,488 @@
+/* Quantum Soul Design System - 90 Years of Design Evolution */
+/* Inspired by Bauhaus, Art Deco, Swiss Design, Material Design, and Future Aesthetics */
+
+:root {
+  /* Quantum Color Palette - Emotional Resonance */
+  --soul-deep: #0a0a0f;
+  --soul-void: #1a1a2e;
+  --soul-whisper: #16213e;
+  --soul-dream: #0f3460;
+  --soul-heart: #e94560;
+  --soul-blush: #f38ba8;
+  --soul-gold: #f9e2af;
+  --soul-mint: #a6e3a1;
+  --soul-sky: #89b4fa;
+  --soul-lavender: #cba6f7;
+  --soul-pearl: #f5f5f5;
+  --soul-silver: #bac2de;
+  
+  /* Quantum Gradients */
+  --gradient-soul: linear-gradient(135deg, var(--soul-heart) 0%, var(--soul-lavender) 100%);
+  --gradient-dream: linear-gradient(45deg, var(--soul-dream) 0%, var(--soul-sky) 100%);
+  --gradient-whisper: linear-gradient(180deg, var(--soul-void) 0%, var(--soul-whisper) 100%);
+  --gradient-aurora: linear-gradient(90deg, var(--soul-mint) 0%, var(--soul-sky) 50%, var(--soul-lavender) 100%);
+  
+  /* Typography - Emotional Hierarchy */
+  --font-soul: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-dream: 'Playfair Display', Georgia, serif;
+  --font-code: 'JetBrains Mono', 'Fira Code', monospace;
+  
+  /* Quantum Spacing - Golden Ratio Based */
+  --space-xs: 0.236rem;
+  --space-sm: 0.382rem;
+  --space-md: 0.618rem;
+  --space-lg: 1rem;
+  --space-xl: 1.618rem;
+  --space-2xl: 2.618rem;
+  --space-3xl: 4.236rem;
+  
+  /* Quantum Shadows - Depth Psychology */
+  --shadow-whisper: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  --shadow-soul: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  --shadow-dream: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  --shadow-void: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  
+  /* Quantum Motion - Emotional Timing */
+  --ease-soul: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-dream: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --ease-whisper: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Quantum Reset - Pure Foundation */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Quantum Body - Soul Container */
+body {
+  font-family: var(--font-soul);
+  background: var(--soul-deep);
+  color: var(--soul-pearl);
+  line-height: 1.618;
+  font-size: 16px;
+  overflow-x: hidden;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(233, 69, 96, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(203, 166, 247, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(137, 180, 250, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Quantum Typography - Emotional Hierarchy */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-dream);
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: var(--space-md);
+  background: var(--gradient-soul);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+h1 { font-size: clamp(2rem, 5vw, 4rem); }
+h2 { font-size: clamp(1.5rem, 4vw, 3rem); }
+h3 { font-size: clamp(1.25rem, 3vw, 2rem); }
+
+p {
+  margin-bottom: var(--space-lg);
+  color: var(--soul-silver);
+}
+
+/* Quantum Buttons - Interactive Souls */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-xl);
+  border: none;
+  border-radius: 50px;
+  font-family: var(--font-soul);
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-soul);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s var(--ease-soul);
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn-primary {
+  background: var(--gradient-soul);
+  color: white;
+  box-shadow: var(--shadow-soul);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-dream);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--soul-pearl);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Quantum Cards - Memory Containers */
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-whisper);
+  transition: all 0.4s var(--ease-soul);
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--gradient-aurora);
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-soul);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-soul);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+/* Quantum Forms - Soul Input */
+.form-group {
+  margin-bottom: var(--space-xl);
+  position: relative;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: var(--space-sm);
+  font-weight: 500;
+  color: var(--soul-gold);
+  font-size: 0.9rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: var(--space-md) var(--space-lg);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: var(--soul-pearl);
+  font-family: var(--font-soul);
+  font-size: 1rem;
+  transition: all 0.3s var(--ease-soul);
+  backdrop-filter: blur(10px);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--soul-heart);
+  box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.form-input::placeholder {
+  color: var(--soul-silver);
+  opacity: 0.7;
+}
+
+/* Quantum Navigation - Soul Guide */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(10, 10, 15, 0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: var(--space-lg) 0;
+  transition: all 0.3s var(--ease-soul);
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-xl);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-brand {
+  font-family: var(--font-dream);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--soul-heart);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xl);
+  list-style: none;
+}
+
+.nav-link {
+  color: var(--soul-silver);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s var(--ease-soul);
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--gradient-soul);
+  transition: width 0.3s var(--ease-soul);
+}
+
+.nav-link:hover {
+  color: var(--soul-pearl);
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* Quantum Containers - Space Harmony */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-xl);
+}
+
+.section {
+  padding: var(--space-3xl) 0;
+  position: relative;
+}
+
+/* Quantum Grid - Sacred Geometry */
+.grid {
+  display: grid;
+  gap: var(--space-xl);
+}
+
+.grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.grid-3 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+.grid-4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+
+/* Quantum Animations - Soul Motion */
+@keyframes quantum-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes quantum-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes quantum-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(233, 69, 96, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(233, 69, 96, 0.6); }
+}
+
+.animate-float { animation: quantum-float 3s ease-in-out infinite; }
+.animate-pulse { animation: quantum-pulse 2s ease-in-out infinite; }
+.animate-glow { animation: quantum-glow 2s ease-in-out infinite; }
+
+/* Quantum Utilities - Design Atoms */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+
+.gap-sm { gap: var(--space-sm); }
+.gap-md { gap: var(--space-md); }
+.gap-lg { gap: var(--space-lg); }
+.gap-xl { gap: var(--space-xl); }
+
+.mb-sm { margin-bottom: var(--space-sm); }
+.mb-md { margin-bottom: var(--space-md); }
+.mb-lg { margin-bottom: var(--space-lg); }
+.mb-xl { margin-bottom: var(--space-xl); }
+
+/* Quantum Responsive - Universal Harmony */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 var(--space-lg);
+  }
+  
+  .nav-container {
+    padding: 0 var(--space-lg);
+  }
+  
+  .nav-links {
+    gap: var(--space-lg);
+  }
+  
+  .section {
+    padding: var(--space-2xl) 0;
+  }
+  
+  .grid {
+    gap: var(--space-lg);
+  }
+}
+
+/* Quantum Scrollbar - Elegant Navigation */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--soul-void);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gradient-soul);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--soul-heart);
+}
+
+/* Quantum Selection - Interactive Feedback */
+::selection {
+  background: var(--soul-heart);
+  color: white;
+}
+
+::-moz-selection {
+  background: var(--soul-heart);
+  color: white;
+}
+
+/* Quantum Focus - Accessibility Soul */
+:focus-visible {
+  outline: 2px solid var(--soul-heart);
+  outline-offset: 2px;
+}
+
+/* Quantum Loading - Anticipation Design */
+.loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  animation: loading-shimmer 1.5s infinite;
+}
+
+@keyframes loading-shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Quantum Particles - Ambient Life */
+.quantum-particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: var(--soul-heart);
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: particle-float 20s linear infinite;
+}
+
+@keyframes particle-float {
+  0% {
+    transform: translateY(100vh) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.3;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(-100px) translateX(100px);
+    opacity: 0;
+  }
+}
