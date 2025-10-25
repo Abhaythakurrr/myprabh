@@ -311,14 +311,42 @@ def chat_message():
         if not prabh_data or prabh_data['user_id'] != session['user_id']:
             return jsonify({'error': 'Prabh not found'}), 404
         
-        # Simple AI response (fallback)
-        response = f"As {prabh_data['prabh_name']}, I understand what you're saying. {message} sounds important to you. Tell me more about how you're feeling. 💖"
+        # Get AI response using natural AI service
+        try:
+            from services.natural_ai_service import NaturalAIService
+            ai_service = NaturalAIService()
+            
+            # Get conversation history (mock for now)
+            conversation_history = []
+            
+            ai_response = ai_service.get_response(
+                prabh_data={
+                    'name': prabh_data['prabh_name'],
+                    'description': prabh_data['character_description'],
+                    'personality_traits': prabh_data.get('personality_traits', 'loving, caring, understanding'),
+                    'story_content': prabh_data.get('story_content', ''),
+                    'primary_role': 'companion',
+                    'communication_style': 'casual'
+                },
+                user_message=message,
+                conversation_history=conversation_history
+            )
+            
+            if ai_response['success']:
+                response = ai_response['response']
+            else:
+                response = f"I'm having trouble finding the right words right now, but I'm here with you. Can you tell me more about what's on your mind? 💖"
+                
+        except Exception as e:
+            print(f"AI Service Error: {e}")
+            response = f"My thoughts feel a bit scattered right now, but I want to hear what you're saying. Tell me more about how you're feeling. 💖"
         
         return jsonify({
             'success': True,
             'response': response,
             'timestamp': datetime.now().isoformat(),
-            'character_name': prabh_data['prabh_name']
+            'character_name': prabh_data['prabh_name'],
+            'model_used': ai_response.get('model_used', 'fallback') if 'ai_response' in locals() else 'fallback'
         })
         
     except Exception as e:
