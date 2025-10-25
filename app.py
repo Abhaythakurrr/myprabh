@@ -56,7 +56,7 @@ def index():
             'happiness_score': '98%',
             'countries': 25
         }
-        return render_template('quantum_landing.html', stats=stats)
+        return render_template('unicorn_landing.html', stats=stats)
     except Exception as e:
         print(f"Landing page error: {e}")
         return f"<h1>My Prabh</h1><p>Welcome to My Prabh! <a href='/create_account'>Create Account</a></p>", 200
@@ -77,7 +77,7 @@ def register_page():
     try:
         if is_authenticated():
             return redirect(url_for('dashboard'))
-        return render_template('quantum_register.html')
+        return render_template('unicorn_register.html')
     except Exception as e:
         print(f"Register page error: {e}")
         return f"<h1>Create Account</h1><form method='post' action='/register'><input name='name' placeholder='Name' required><input name='email' placeholder='Email' required><input name='password' type='password' placeholder='Password' required><button type='submit'>Register</button></form>", 200
@@ -94,7 +94,7 @@ def login_page():
     try:
         if is_authenticated():
             return redirect(url_for('dashboard'))
-        return render_template('login.html')
+        return render_template('unicorn_login.html')
     except Exception as e:
         print(f"Login page error: {e}")
         return f"<h1>Login</h1><form method='post' action='/login'><input name='email' placeholder='Email' required><input name='password' type='password' placeholder='Password' required><button type='submit'>Login</button></form><p><a href='/create_account'>Create Account</a></p>", 200
@@ -206,7 +206,7 @@ def dashboard():
         admin_email = 'abhaythakur@aiprabh.com'
         is_admin = session.get('user_email') == admin_email
         
-        return render_template('quantum_dashboard.html', 
+        return render_template('unicorn_dashboard.html', 
                              prabhs=user_prabhs, 
                              prabh_instances=user_prabhs,
                              user_stats=user_stats,
@@ -220,7 +220,7 @@ def dashboard():
 @app.route('/create-prabh')
 @login_required
 def create_prabh_page():
-    return render_template('create_prabh.html')
+    return render_template('unicorn_create_companion.html')
 
 @app.route('/create-prabh', methods=['POST'])
 @login_required
@@ -286,7 +286,7 @@ def chat_interface(prabh_id):
         'message_count': 0
     }
     
-    return render_template('chat.html', 
+    return render_template('unicorn_chat.html', 
                          prabh_id=prabh_id,
                          prabh_data=prabh_context,
                          chat_history=[],

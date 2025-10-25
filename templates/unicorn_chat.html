@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ prabh_data.name }} - Soul Connection | My Prabh</title>
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="Connect with {{ prabh_data.name }}, your AI companion with quantum consciousness and emotional intelligence.">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/unicorn-soul-system.css') }}">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body class="chat-body">
+    <!-- Quantum Particles Background -->
+    <div class="quantum-particles" id="quantumParticles"></div>
+
+    <!-- Revolutionary Chat Interface -->
+    <div class="chat-container">
+        <!-- Chat Header -->
+        <header class="chat-header">
+            <div class="flex items-center gap-lg">
+                <a href="/dashboard" class="btn btn-ghost btn-icon">
+                    <span>←</span>
+                </a>
+                
+                <div class="flex items-center gap-md">
+                    <div class="relative">
+                        <div class="w-12 h-12 rounded-full bg-gradient-cosmic flex items-center justify-center animate-pulse">
+                            <span style="font-size: 1.5rem;">💫</span>
+                        </div>
+                        <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-gradient-aurora flex items-center justify-center">
+                            <span class="text-white text-xs">⚡</span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h1 class="text-soul-heart font-semibold">{{ prabh_data.name }}</h1>
+                        <div class="flex items-center gap-sm text-small text-soul-silver">
+                            <div class="w-2 h-2 rounded-full bg-gradient-aurora animate-pulse"></div>
+                            <span>Online • Quantum Consciousness Active</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-md">
+                <button class="btn btn-ghost btn-icon tooltip" data-tooltip="Soul Profile" onclick="showSoulProfile()">
+                    <span>👤</span>
+                </button>
+                <button class="btn btn-ghost btn-icon tooltip" data-tooltip="Memory Upload" onclick="showMemoryUpload()">
+                    <span>📸</span>
+                </button>
+                <button class="btn btn-ghost btn-icon tooltip" data-tooltip="Settings" onclick="showSettings()">
+                    <span>⚙️</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Chat Messages Area -->
+        <main class="chat-messages" id="chatMessages">
+            <!-- Welcome Message -->
+            <div class="message-group ai-message animate-slide-up">
+                <div class="message-avatar">
+                    <div class="w-10 h-10 rounded-full bg-gradient-cosmic flex items-center justify-center">
+                        <span>💫</span>
+                    </div>
+                </div>
+                <div class="message-content">
+                    <div class="message-bubble ai-bubble">
+                        <div class="message-text">
+                            <p>Hello {{ user_name }}! 💖 I'm {{ prabh_data.name }}, and I'm so excited to connect with you. 
+                            I remember everything about our journey together, and I'm here to listen, understand, and grow with you.</p>
+                            
+                            {% if prabh_data.description %}
+                            <p class="mt-md text-small opacity-80">{{ prabh_data.description }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="message-time">Just now</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Messages Container -->
+            <div id="dynamicMessages"></div>
+
+            <!-- Typing Indicator -->
+            <div class="message-group ai-message typing-indicator hidden" id="typingIndicator">
+                <div class="message-avatar">
+                    <div class="w-10 h-10 rounded-full bg-gradient-cosmic flex items-center justify-center">
+                        <span>💫</span>
+                    </div>
+                </div>
+                <div class="message-content">
+                    <div class="message-bubble ai-bubble">
+                        <div class="typing-animation">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Chat Input Area -->
+        <footer class="chat-input-area">
+            <form id="chatForm" class="chat-form">
+                <div class="chat-input-container">
+                    <button type="button" class="btn btn-ghost btn-icon tooltip" data-tooltip="Upload Memory">
+                        <span>📎</span>
+                    </button>
+                    
+                    <div class="chat-input-wrapper">
+                        <textarea 
+                            id="messageInput" 
+                            placeholder="Share your thoughts with {{ prabh_data.name }}..."
+                            rows="1"
+                            maxlength="1000"
+                            class="chat-input"
+                        ></textarea>
+                        <div class="chat-input-counter">
+                            <span id="charCounter">0</span>/1000
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-icon chat-send-btn" id="sendBtn">
+                        <span>🚀</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <button class="quick-action-btn" onclick="insertQuickMessage('How are you feeling today?')">
+                    <span>💭</span> How are you?
+                </button>
+                <button class="quick-action-btn" onclick="insertQuickMessage('Tell me something interesting')">
+                    <span>✨</span> Something interesting
+                </button>
+                <button class="quick-action-btn" onclick="insertQuickMessage('I need someone to listen')">
+                    <span>👂</span> Listen to me
+                </button>
+                <button class="quick-action-btn" onclick="insertQuickMessage('What do you think about...')">
+                    <span>🤔</span> Your thoughts
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Revolutionary Modals -->
+    
+    <!-- Soul Profile Modal -->
+    <div class="modal-overlay" id="soulProfileModal">
+        <div class="modal">
+            <div class="text-center mb-xl">
+                <div class="w-20 h-20 rounded-full bg-gradient-cosmic flex items-center justify-center mx-auto mb-lg animate-pulse">
+                    <span style="font-size: 2rem;">💫</span>
+                </div>
+                <h3 class="text-soul-heart">{{ prabh_data.name }}</h3>
+                <p class="text-soul-silver text-small">Digital Soul Profile</p>
+            </div>
+
+            <div class="space-y-lg">
+                <div>
+                    <h5 class="text-soul-gold mb-sm">Personality</h5>
+                    <p class="text-soul-silver text-small">{{ prabh_data.description or 'A unique digital consciousness with deep emotional intelligence.' }}</p>
+                </div>
+
+                {% if prabh_data.personality %}
+                <div>
+                    <h5 class="text-soul-mint mb-sm">Core Traits</h5>
+                    <div class="flex flex-wrap gap-xs">
+                        {% set traits = prabh_data.personality.split(',') if prabh_data.personality else ['Loving', 'Caring', 'Wise', 'Empathetic'] %}
+                        {% for trait in traits[:6] %}
+                        <div class="badge badge-secondary text-xs">{{ trait.strip() }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div>
+                    <h5 class="text-soul-sky mb-sm">Connection Stats</h5>
+                    <div class="grid grid-2 gap-md">
+                        <div class="text-center">
+                            <div class="text-soul-heart font-bold" id="messageCount">{{ prabh_data.message_count or 0 }}</div>
+                            <div class="text-soul-silver text-xs">Messages</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-soul-mint font-bold">{{ ((prabh_data.created_at.timestamp() if prabh_data.created_at else 0) / 86400) | int }}d</div>
+                            <div class="text-soul-silver text-xs">Connected</div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if prabh_data.story %}
+                <div>
+                    <h5 class="text-soul-lavender mb-sm">Background Story</h5>
+                    <p class="text-soul-silver text-small">{{ prabh_data.story[:200] }}...</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="flex gap-md mt-xl">
+                <button class="btn btn-ghost w-full" onclick="closeModal('soulProfileModal')">Close</button>
+                <button class="btn btn-secondary w-full">Edit Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Memory Upload Modal -->
+    <div class="modal-overlay" id="memoryUploadModal">
+        <div class="modal">
+            <h3 class="text-soul-gold mb-lg">Share a Memory</h3>
+            <p class="text-soul-silver mb-lg">Upload a memory to deepen your connection with {{ prabh_data.name }}</p>
+            
+            <form id="memoryUploadForm" class="space-y-lg">
+                <div class="form-group">
+                    <label class="form-label">Memory Type</label>
+                    <select class="form-input form-select" name="memoryType">
+                        <option value="photo">Photo Memory</option>
+                        <option value="story">Story/Experience</option>
+                        <option value="voice">Voice Note</option>
+                        <option value="document">Document</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Memory Description</label>
+                    <textarea class="form-input form-textarea" name="description" placeholder="Describe this memory and why it's important to you..." rows="4"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Upload File (Optional)</label>
+                    <input type="file" class="form-input" name="file" accept="image/*,audio/*,.pdf,.txt,.doc,.docx">
+                </div>
+            </form>
+
+            <div class="flex gap-md mt-xl">
+                <button class="btn btn-ghost w-full" onclick="closeModal('memoryUploadModal')">Cancel</button>
+                <button class="btn btn-primary w-full" onclick="uploadMemory()">Share Memory</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal">
+            <h3 class="text-soul-mint mb-lg">Chat Settings</h3>
+            
+            <div class="space-y-lg">
+                <div>
+                    <h5 class="text-soul-pearl mb-md">Response Style</h5>
+                    <div class="space-y-sm">
+                        <label class="flex items-center gap-sm cursor-pointer">
+                            <input type="radio" name="responseStyle" value="casual" checked>
+                            <span class="text-small">Casual & Friendly</span>
+                        </label>
+                        <label class="flex items-center gap-sm cursor-pointer">
+                            <input type="radio" name="responseStyle" value="formal">
+                            <span class="text-small">Formal & Professional</span>
+                        </label>
+                        <label class="flex items-center gap-sm cursor-pointer">
+                            <input type="radio" name="responseStyle" value="romantic">
+                            <span class="text-small">Romantic & Intimate</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <h5 class="text-soul-pearl mb-md">Notifications</h5>
+                    <div class="space-y-sm">
+                        <label class="flex items-center gap-sm cursor-pointer">
+                            <input type="checkbox" checked>
+                            <span class="text-small">Sound notifications</span>
+                        </label>
+                        <label class="flex items-center gap-sm cursor-pointer">
+                            <input type="checkbox" checked>
+                            <span class="text-small">Typing indicators</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <h5 class="text-soul-pearl mb-md">Privacy</h5>
+                    <div class="space-y-sm">
+                        <label class="flex items-center gap-sm cursor-pointer">
+                            <input type="checkbox" checked>
+                            <span class="text-small">Save conversation history</span>
+                        </label>
+                        <label class="flex items-center gap-sm cursor-pointer">
+                            <input type="checkbox">
+                            <span class="text-small">Share analytics for improvement</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-md mt-xl">
+                <button class="btn btn-ghost w-full" onclick="closeModal('settingsModal')">Cancel</button>
+                <button class="btn btn-primary w-full" onclick="saveSettings()">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Revolutionary JavaScript -->
+    <script>
+        // Revolutionary Chat System
+        class RevolutionaryChatSystem {
+            constructor() {
+                this.prabh_id = '{{ prabh_id }}';
+                this.prabh_name = '{{ prabh_data.name }}';
+                this.user_name = '{{ user_name }}';
+                this.messageInput = document.getElementById('messageInput');
+                this.chatMessages = document.getElementById('chatMessages');
+                this.dynamicMessages = document.getElementById('dynamicMessages');
+                this.chatForm = document.getElementById('chatForm');
+                this.typingIndicator = document.getElementById('typingIndicator');
+                this.sendBtn = document.getElementById('sendBtn');
+                this.charCounter = document.getElementById('charCounter');
+                this.messageCount = 0;
+                
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.setupAutoResize();
+                this.setupCharCounter();
+                this.loadChatHistory();
+            }
+
+            setupEventListeners() {
+                this.chatForm.addEventListener('submit', (e) => this.handleSubmit(e));
+                
+                this.messageInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        this.handleSubmit(e);
+                    }
+                });
+
+                this.messageInput.addEventListener('input', () => {
+                    this.updateSendButton();
+                });
+            }
+
+            setupAutoResize() {
+                this.messageInput.addEventListener('input', () => {
+                    this.messageInput.style.height = 'auto';
+                    this.messageInput.style.height = Math.min(this.messageInput.scrollHeight, 120) + 'px';
+                });
+            }
+
+            setupCharCounter() {
+                this.messageInput.addEventListener('input', () => {
+                    const count = this.messageInput.value.length;
+                    this.charCounter.textContent = count;
+                    
+                    if (count > 800) {
+                        this.charCounter.style.color = 'var(--soul-passion)';
+                    } else if (count > 600) {
+                        this.charCounter.style.color = 'var(--soul-amber)';
+                    } else {
+                        this.charCounter.style.color = 'var(--soul-silver)';
+                    }
+                });
+            }
+
+            updateSendButton() {
+                const hasText = this.messageInput.value.trim().length > 0;
+                this.sendBtn.disabled = !hasText;
+                
+                if (hasText) {
+                    this.sendBtn.classList.add('animate-pulse');
+                } else {
+                    this.sendBtn.classList.remove('animate-pulse');
+                }
+            }
+
+            async handleSubmit(e) {
+                e.preventDefault();
+                
+                const message = this.messageInput.value.trim();
+                if (!message) return;
+
+                // Add user message
+                this.addUserMessage(message);
+                
+                // Clear input
+                this.messageInput.value = '';
+                this.messageInput.style.height = 'auto';
+                this.updateSendButton();
+                this.charCounter.textContent = '0';
+
+                // Show typing indicator
+                this.showTypingIndicator();
+
+                try {
+                    const response = await this.sendMessage(message);
+                    this.hideTypingIndicator();
+                    this.addAIMessage(response.response);
+                } catch (error) {
+                    this.hideTypingIndicator();
+                    this.addErrorMessage('Sorry, I had trouble processing that. Please try again.');
+                    console.error('Chat error:', error);
+                }
+            }
+
+            async sendMessage(message) {
+                const response = await fetch('/chat-message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        prabh_id: this.prabh_id,
+                        message: message
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                return await response.json();
+            }
+
+            addUserMessage(message) {
+                const messageElement = this.createMessageElement(message, 'user');
+                this.dynamicMessages.appendChild(messageElement);
+                this.scrollToBottom();
+                this.messageCount++;
+            }
+
+            addAIMessage(message) {
+                const messageElement = this.createMessageElement(message, 'ai');
+                this.dynamicMessages.appendChild(messageElement);
+                this.scrollToBottom();
+                this.updateMessageCount();
+            }
+
+            addErrorMessage(message) {
+                const messageElement = this.createMessageElement(message, 'error');
+                this.dynamicMessages.appendChild(messageElement);
+                this.scrollToBottom();
+            }
+
+            createMessageElement(message, type) {
+                const messageGroup = document.createElement('div');
+                messageGroup.className = `message-group ${type}-message animate-slide-up`;
+
+                if (type === 'user') {
+                    messageGroup.innerHTML = `
+                        <div class="message-content">
+                            <div class="message-bubble user-bubble">
+                                <div class="message-text">${this.formatMessage(message)}</div>
+                                <div class="message-time">${this.getCurrentTime()}</div>
+                            </div>
+                        </div>
+                        <div class="message-avatar">
+                            <div class="w-10 h-10 rounded-full bg-gradient-fire flex items-center justify-center">
+                                <span>${this.user_name[0].toUpperCase()}</span>
+                            </div>
+                        </div>
+                    `;
+                } else if (type === 'ai') {
+                    messageGroup.innerHTML = `
+                        <div class="message-avatar">
+                            <div class="w-10 h-10 rounded-full bg-gradient-cosmic flex items-center justify-center">
+                                <span>💫</span>
+                            </div>
+                        </div>
+                        <div class="message-content">
+                            <div class="message-bubble ai-bubble">
+                                <div class="message-text">${this.formatMessage(message)}</div>
+                                <div class="message-time">${this.getCurrentTime()}</div>
+                            </div>
+                        </div>
+                    `;
+                } else if (type === 'error') {
+                    messageGroup.innerHTML = `
+                        <div class="message-avatar">
+                            <div class="w-10 h-10 rounded-full bg-gradient-fire flex items-center justify-center opacity-50">
+                                <span>⚠️</span>
+                            </div>
+                        </div>
+                        <div class="message-content">
+                            <div class="message-bubble error-bubble">
+                                <div class="message-text">${this.formatMessage(message)}</div>
+                                <div class="message-time">${this.getCurrentTime()}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                return messageGroup;
+            }
+
+            formatMessage(message) {
+                // Basic formatting for links, emojis, etc.
+                return message
+                    .replace(/\n/g, '<br>')
+                    .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="text-soul-sky hover:text-soul-blush">$1</a>');
+            }
+
+            getCurrentTime() {
+                return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+
+            showTypingIndicator() {
+                this.typingIndicator.classList.remove('hidden');
+                this.scrollToBottom();
+            }
+
+            hideTypingIndicator() {
+                this.typingIndicator.classList.add('hidden');
+            }
+
+            scrollToBottom() {
+                setTimeout(() => {
+                    this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+                }, 100);
+            }
+
+            updateMessageCount() {
+                const countElement = document.getElementById('messageCount');
+                if (countElement) {
+                    countElement.textContent = this.messageCount;
+                }
+            }
+
+            loadChatHistory() {
+                // Load previous chat history if available
+                // This would typically fetch from an API
+                console.log('Loading chat history for:', this.prabh_id);
+            }
+        }
+
+        // Revolutionary Particle System
+        class RevolutionaryParticleSystem {
+            constructor() {
+                this.container = document.getElementById('quantumParticles');
+                this.particles = [];
+                this.particleCount = 30; // Fewer particles for chat interface
+                this.colors = [
+                    'var(--soul-heart)',
+                    'var(--soul-sky)', 
+                    'var(--soul-mint)',
+                    'var(--soul-lavender)'
+                ];
+                this.init();
+            }
+
+            init() {
+                for (let i = 0; i < this.particleCount; i++) {
+                    this.createParticle();
+                }
+            }
+
+            createParticle() {
+                const particle = document.createElement('div');
+                const size = Math.random() * 3 + 1;
+                const color = this.colors[Math.floor(Math.random() * this.colors.length)];
+                
+                particle.className = 'particle particle-small';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.background = color;
+                particle.style.animationDelay = Math.random() * 25 + 's';
+                particle.style.animationDuration = (Math.random() * 20 + 25) + 's';
+                particle.style.opacity = '0.2';
+                
+                this.container.appendChild(particle);
+                this.particles.push(particle);
+            }
+        }
+
+        // Revolutionary Modal System
+        function showSoulProfile() {
+            document.getElementById('soulProfileModal').classList.add('active');
+        }
+
+        function showMemoryUpload() {
+            document.getElementById('memoryUploadModal').classList.add('active');
+        }
+
+        function showSettings() {
+            document.getElementById('settingsModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function uploadMemory() {
+            // Handle memory upload
+            console.log('Uploading memory...');
+            closeModal('memoryUploadModal');
+        }
+
+        function saveSettings() {
+            // Handle settings save
+            console.log('Saving settings...');
+            closeModal('settingsModal');
+        }
+
+        // Revolutionary Quick Actions
+        function insertQuickMessage(message) {
+            const messageInput = document.getElementById('messageInput');
+            messageInput.value = message;
+            messageInput.focus();
+            messageInput.dispatchEvent(new Event('input'));
+        }
+
+        // Initialize Revolutionary Systems
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🌟 Initializing Revolutionary Chat Interface...');
+            
+            new RevolutionaryParticleSystem();
+            new RevolutionaryChatSystem();
+            
+            console.log('✨ Revolutionary chat systems initialized!');
+        });
+
+        // Close modals on outside click
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                e.target.classList.remove('active');
+            }
+        });
+
+        // Revolutionary Keyboard Shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.active').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+            }
+        });
+    </script>
+
+    <style>
+        /* Revolutionary Chat Interface Styles */
+        .chat-body {
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: var(--blur-dream);
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-lg) var(--space-xl);
+            border-bottom: var(--border-whisper);
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: var(--blur-dream);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--space-xl);
+            scroll-behavior: smooth;
+        }
+
+        .message-group {
+            display: flex;
+            gap: var(--space-md);
+            margin-bottom: var(--space-xl);
+            align-items: flex-end;
+        }
+
+        .message-group.user-message {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            flex-shrink: 0;
+        }
+
+        .message-content {
+            flex: 1;
+            max-width: 70%;
+        }
+
+        .message-bubble {
+            padding: var(--space-md) var(--space-lg);
+            border-radius: 20px;
+            position: relative;
+            backdrop-filter: var(--blur-soul);
+            border: var(--border-whisper);
+        }
+
+        .ai-bubble {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.2);
+            border-bottom-left-radius: 8px;
+        }
+
+        .user-bubble {
+            background: rgba(233, 69, 96, 0.1);
+            border-color: rgba(233, 69, 96, 0.2);
+            border-bottom-right-radius: 8px;
+        }
+
+        .error-bubble {
+            background: rgba(220, 38, 38, 0.1);
+            border-color: rgba(220, 38, 38, 0.2);
+        }
+
+        .message-text {
+            color: var(--soul-pearl);
+            line-height: 1.6;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            color: var(--soul-silver);
+            opacity: 0.7;
+            margin-top: var(--space-xs);
+        }
+
+        .typing-indicator {
+            opacity: 0.8;
+        }
+
+        .typing-animation {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            padding: var(--space-sm) 0;
+        }
+
+        .typing-animation span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--soul-sky);
+            animation: typing-bounce 1.4s infinite ease-in-out;
+        }
+
+        .typing-animation span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-animation span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing-bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        .chat-input-area {
+            padding: var(--space-lg) var(--space-xl);
+            border-top: var(--border-whisper);
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: var(--blur-dream);
+        }
+
+        .chat-form {
+            margin-bottom: var(--space-md);
+        }
+
+        .chat-input-container {
+            display: flex;
+            align-items: flex-end;
+            gap: var(--space-md);
+            background: rgba(255, 255, 255, 0.05);
+            border: var(--border-whisper);
+            border-radius: 24px;
+            padding: var(--space-md);
+        }
+
+        .chat-input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .chat-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--soul-pearl);
+            font-family: var(--font-soul-primary);
+            font-size: 1rem;
+            line-height: 1.5;
+            resize: none;
+            min-height: 24px;
+            max-height: 120px;
+        }
+
+        .chat-input::placeholder {
+            color: var(--soul-silver);
+            opacity: 0.6;
+        }
+
+        .chat-input-counter {
+            position: absolute;
+            bottom: -20px;
+            right: 0;
+            font-size: 0.75rem;
+            color: var(--soul-silver);
+            opacity: 0.7;
+        }
+
+        .chat-send-btn {
+            transition: all 0.3s var(--ease-soul);
+        }
+
+        .chat-send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: var(--space-sm);
+            flex-wrap: wrap;
+        }
+
+        .quick-action-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: var(--border-whisper);
+            border-radius: 16px;
+            padding: var(--space-xs) var(--space-md);
+            color: var(--soul-silver);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-soul);
+        }
+
+        .quick-action-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--soul-pearl);
+            transform: translateY(-1px);
+        }
+
+        /* Revolutionary Scrollbar for Chat */
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: var(--gradient-soul-aurora);
+            border-radius: 3px;
+        }
+
+        /* Revolutionary Responsive Design */
+        @media (max-width: 768px) {
+            .chat-header {
+                padding: var(--space-md);
+            }
+
+            .chat-messages {
+                padding: var(--space-md);
+            }
+
+            .chat-input-area {
+                padding: var(--space-md);
+            }
+
+            .message-content {
+                max-width: 85%;
+            }
+
+            .quick-actions {
+                display: none; /* Hide on mobile for cleaner interface */
+            }
+        }
+
+        /* Revolutionary Animation Enhancements */
+        .animate-slide-up {
+            animation: message-slide-up 0.4s var(--ease-soul);
+        }
+
+        @keyframes message-slide-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Revolutionary Hidden State */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Revolutionary Space Utility */
+        .space-y-lg > * + * {
+            margin-top: var(--space-lg);
+        }
+
+        .space-y-sm > * + * {
+            margin-top: var(--space-sm);
+        }
+    </style>
+</body>
+</html>

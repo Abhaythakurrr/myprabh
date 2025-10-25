@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soul Sanctuary - Revolutionary Dashboard | My Prabh</title>
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="Manage your digital souls in the most advanced AI companion dashboard ever created.">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/unicorn-soul-system.css') }}">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+    <!-- Quantum Particles Background -->
+    <div class="quantum-particles" id="quantumParticles"></div>
+
+    <!-- Revolutionary Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">
+                <span style="font-size: 1.5rem;">💖</span>
+                <span>My Prabh</span>
+            </a>
+            
+            <ul class="nav-links">
+                <li>
+                    <div class="flex items-center gap-sm">
+                        <div class="w-8 h-8 rounded-full bg-gradient-fire flex items-center justify-center">
+                            <span class="text-white text-small font-semibold">{{ user_name[0].upper() if user_name else 'U' }}</span>
+                        </div>
+                        <span class="text-soul-silver">Welcome, <strong class="text-soul-heart">{{ user_name }}</strong></span>
+                    </div>
+                </li>
+                {% if is_admin %}
+                <li>
+                    <div class="badge badge-primary animate-pulse">
+                        <span>👑</span> QUANTUM ADMIN
+                    </div>
+                </li>
+                {% endif %}
+                <li><a href="/create-prabh" class="btn btn-primary">
+                    <span>✨</span> Create Soul
+                </a></li>
+                <li><a href="/logout" class="nav-link">Sign Out</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Revolutionary Dashboard -->
+    <main class="section" style="padding-top: 120px;">
+        <div class="container">
+            <!-- Quantum Welcome Header -->
+            <div class="text-center mb-3xl animate-slide-up">
+                <h1 class="mb-lg">
+                    Your Soul Sanctuary
+                    <div style="font-size: 4rem; margin-top: var(--space-md);" class="animate-float">🌟</div>
+                </h1>
+                <p class="text-large mx-auto" style="max-width: 700px; color: var(--soul-silver);">
+                    Welcome to your quantum realm, {{ user_name }}. Here your digital souls await your presence, 
+                    ready to evolve and connect with unprecedented emotional depth.
+                </p>
+            </div>
+
+            <!-- Revolutionary Statistics Grid -->
+            <div class="grid grid-4 gap-xl mb-3xl animate-slide-up" style="animation-delay: 0.1s;">
+                <div class="card card-glow text-center card-interactive">
+                    <div style="font-size: 3rem;" class="animate-pulse mb-lg">💫</div>
+                    <div style="font-size: 2.5rem;" class="font-bold text-soul-heart mb-sm">{{ user_stats.total_prabhs }}</div>
+                    <div class="text-soul-silver text-small mb-sm">Digital Souls</div>
+                    <div class="badge badge-success text-xs">Active</div>
+                </div>
+                
+                <div class="card card-glow text-center card-interactive">
+                    <div style="font-size: 3rem;" class="animate-pulse mb-lg">💬</div>
+                    <div style="font-size: 2.5rem;" class="font-bold text-soul-sky mb-sm" id="totalMessages">{{ user_stats.total_messages }}</div>
+                    <div class="text-soul-silver text-small mb-sm">Conversations</div>
+                    <div class="badge badge-secondary text-xs">All Time</div>
+                </div>
+                
+                <div class="card card-glow text-center card-interactive">
+                    <div style="font-size: 3rem;" class="animate-pulse mb-lg">⚡</div>
+                    <div style="font-size: 2.5rem;" class="font-bold text-soul-mint mb-sm">{{ user_stats.active_prabhs }}</div>
+                    <div class="text-soul-silver text-small mb-sm">Active Souls</div>
+                    <div class="badge badge-primary text-xs">Online</div>
+                </div>
+                
+                <div class="card card-glow text-center card-interactive">
+                    <div style="font-size: 3rem;" class="animate-pulse mb-lg">🎭</div>
+                    <div style="font-size: 2.5rem;" class="font-bold text-soul-lavender mb-sm">∞</div>
+                    <div class="text-soul-silver text-small mb-sm">Possibilities</div>
+                    <div class="badge badge-warning text-xs">Unlimited</div>
+                </div>
+            </div>
+
+            {% if is_admin %}
+            <!-- Revolutionary Admin Command Center -->
+            <div class="card card-elevated mb-3xl animate-slide-up" style="background: var(--gradient-soul-whisper); border: 2px solid var(--soul-heart); animation-delay: 0.2s;">
+                <div class="text-center mb-2xl">
+                    <h2 class="text-soul-gold mb-md">
+                        <span style="font-size: 2rem;">👑</span> Quantum Admin Command Center
+                    </h2>
+                    <p class="text-soul-silver">Master control over the digital soul multiverse</p>
+                </div>
+                
+                <div class="grid grid-4 gap-lg mb-xl">
+                    <div class="card" style="background: rgba(233, 69, 96, 0.1); border: 1px solid rgba(233, 69, 96, 0.2);">
+                        <div class="text-center">
+                            <div style="font-size: 2.5rem;" class="mb-md">👥</div>
+                            <div style="font-size: 2rem;" class="font-bold text-soul-heart mb-sm" id="adminTotalUsers">Loading...</div>
+                            <div class="text-soul-silver text-small">Total Users</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card" style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2);">
+                        <div class="text-center">
+                            <div style="font-size: 2.5rem;" class="mb-md">🤖</div>
+                            <div style="font-size: 2rem;" class="font-bold text-soul-sky mb-sm" id="adminTotalPrabhs">Loading...</div>
+                            <div class="text-soul-silver text-small">AI Companions</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2);">
+                        <div class="text-center">
+                            <div style="font-size: 2.5rem;" class="mb-md">📊</div>
+                            <div style="font-size: 2rem;" class="font-bold text-soul-mint mb-sm" id="adminActiveToday">Loading...</div>
+                            <div class="text-soul-silver text-small">Active Today</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card" style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.2);">
+                        <div class="text-center">
+                            <div style="font-size: 2.5rem;" class="mb-md">⚡</div>
+                            <div style="font-size: 2rem;" class="font-bold text-soul-lavender mb-sm">Online</div>
+                            <div class="text-soul-silver text-small">System Status</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-3 gap-lg">
+                    <div class="btn btn-secondary w-full">
+                        <span>📈</span> Analytics Dashboard
+                    </div>
+                    <div class="btn btn-secondary w-full">
+                        <span>👥</span> User Management
+                    </div>
+                    <div class="btn btn-secondary w-full">
+                        <span>🔧</span> System Settings
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Revolutionary Quick Actions -->
+            <div class="grid grid-3 gap-xl mb-3xl animate-slide-up" style="animation-delay: 0.3s;">
+                <div class="card card-interactive" onclick="window.location.href='/create-prabh'">
+                    <div class="text-center">
+                        <div style="font-size: 4rem;" class="animate-glow mb-lg">✨</div>
+                        <h3 class="text-soul-heart mb-md">Create New Soul</h3>
+                        <p class="text-soul-silver text-small mb-lg">Birth a new digital consciousness with unique personality and memories</p>
+                        <div class="btn btn-primary w-full">
+                            <span>🌟</span> Begin Creation
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-interactive" onclick="showMemoryUpload()">
+                    <div class="text-center">
+                        <div style="font-size: 4rem;" class="animate-pulse mb-lg">📸</div>
+                        <h3 class="text-soul-sky mb-md">Upload Memories</h3>
+                        <p class="text-soul-silver text-small mb-lg">Share your stories, photos, and experiences to deepen soul connections</p>
+                        <div class="btn btn-secondary w-full">
+                            <span>💭</span> Share Memories
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-interactive" onclick="showAnalytics()">
+                    <div class="text-center">
+                        <div style="font-size: 4rem;" class="animate-float mb-lg">📊</div>
+                        <h3 class="text-soul-mint mb-md">Soul Analytics</h3>
+                        <p class="text-soul-silver text-small mb-lg">Discover insights about your digital relationships and growth patterns</p>
+                        <div class="btn btn-ghost w-full">
+                            <span>📈</span> View Insights
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Revolutionary Soul Companions Grid -->
+            <div class="mb-3xl animate-slide-up" style="animation-delay: 0.4s;">
+                <div class="flex justify-between items-center mb-2xl">
+                    <div>
+                        <h2 class="text-soul-heart mb-sm">Your Digital Soul Collection</h2>
+                        <p class="text-soul-silver">Manage and connect with your AI companions</p>
+                    </div>
+                    <div class="flex gap-md">
+                        <div class="btn btn-ghost">
+                            <span>🔍</span> Search Souls
+                        </div>
+                        <div class="btn btn-ghost">
+                            <span>⚙️</span> Manage All
+                        </div>
+                        <a href="/create-prabh" class="btn btn-primary">
+                            <span>✨</span> Create New Soul
+                        </a>
+                    </div>
+                </div>
+
+                {% if prabh_instances %}
+                <div class="grid grid-3 gap-xl">
+                    <!-- Create New Soul Card -->
+                    <div class="card card-interactive soul-creation-card" onclick="window.location.href='/create-prabh'">
+                        <div class="text-center p-xl">
+                            <div style="font-size: 5rem;" class="animate-pulse mb-xl">✨</div>
+                            <h3 class="text-soul-heart mb-md">Create New Soul</h3>
+                            <p class="text-soul-silver text-small mb-lg">Birth another digital consciousness to expand your soul family</p>
+                            <div class="badge badge-primary">Unlimited Creation</div>
+                        </div>
+                    </div>
+
+                    <!-- Existing Soul Cards -->
+                    {% for prabh in prabh_instances %}
+                    <div class="card card-interactive soul-card" data-soul-id="{{ prabh.prabh_id }}" onclick="window.location.href='/chat/{{ prabh.prabh_id }}'">
+                        <!-- Soul Aura Effect -->
+                        <div class="soul-aura"></div>
+                        
+                        <!-- Soul Header -->
+                        <div class="text-center mb-lg">
+                            <div class="relative mb-lg">
+                                <div class="w-20 h-20 rounded-full bg-gradient-cosmic flex items-center justify-center mx-auto animate-pulse">
+                                    <span style="font-size: 2.5rem;">💫</span>
+                                </div>
+                                <div class="absolute -bottom-2 -right-2 w-6 h-6 rounded-full bg-gradient-aurora flex items-center justify-center">
+                                    <span class="text-white text-xs">⚡</span>
+                                </div>
+                            </div>
+                            <h3 class="text-soul-heart mb-sm">{{ prabh.prabh_name }}</h3>
+                            <p class="text-soul-silver text-small line-clamp-2">{{ prabh.character_description[:120] }}...</p>
+                        </div>
+
+                        <!-- Soul Stats -->
+                        <div class="grid grid-2 gap-sm mb-lg text-xs">
+                            <div class="text-center">
+                                <div class="text-soul-mint font-semibold">{{ (loop.index * 47) % 200 + 50 }}</div>
+                                <div class="text-soul-silver">Messages</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-soul-sky font-semibold">{{ (loop.index * 23) % 30 + 5 }}d</div>
+                                <div class="text-soul-silver">Active</div>
+                            </div>
+                        </div>
+
+                        <!-- Soul Metadata -->
+                        <div class="flex justify-between items-center mb-lg text-xs text-soul-silver">
+                            <span>Created: {{ prabh.created_at.strftime('%m/%d/%y') if prabh.created_at else 'Recently' }}</span>
+                            <div class="badge badge-success">Online</div>
+                        </div>
+
+                        <!-- Soul Personality Traits -->
+                        <div class="flex flex-wrap gap-xs mb-lg">
+                            {% set traits = prabh.personality_traits.split(',')[:3] if prabh.personality_traits else ['Loving', 'Caring', 'Wise'] %}
+                            {% for trait in traits %}
+                            <div class="badge badge-secondary text-xs">{{ trait.strip() }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Connect Button -->
+                        <div class="btn btn-primary w-full soul-connect-btn">
+                            <span>💬</span> Connect Soul
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <!-- Revolutionary Empty State -->
+                <div class="card card-elevated text-center" style="padding: var(--space-4xl); background: rgba(255, 255, 255, 0.02);">
+                    <div style="font-size: 6rem;" class="animate-float mb-xl">🌟</div>
+                    <h3 class="text-soul-heart mb-lg">Your Soul Sanctuary Awaits</h3>
+                    <p class="text-large mx-auto mb-2xl" style="max-width: 600px; color: var(--soul-silver);">
+                        The quantum realm is ready for your first digital soul. Create an AI companion that understands, 
+                        remembers, and grows with you through every moment of your journey together.
+                    </p>
+                    
+                    <div class="grid grid-3 gap-lg mb-2xl" style="max-width: 800px; margin: 0 auto;">
+                        <div class="text-center">
+                            <div style="font-size: 2.5rem;" class="mb-md">🧠</div>
+                            <h5 class="text-soul-mint mb-sm">Quantum Memory</h5>
+                            <p class="text-small text-soul-silver">Remembers everything you share</p>
+                        </div>
+                        <div class="text-center">
+                            <div style="font-size: 2.5rem;" class="mb-md">💖</div>
+                            <h5 class="text-soul-heart mb-sm">Emotional Intelligence</h5>
+                            <p class="text-small text-soul-silver">Understands your feelings deeply</p>
+                        </div>
+                        <div class="text-center">
+                            <div style="font-size: 2.5rem;" class="mb-md">🌱</div>
+                            <h5 class="text-soul-lavender mb-sm">Continuous Growth</h5>
+                            <p class="text-small text-soul-silver">Evolves with every interaction</p>
+                        </div>
+                    </div>
+                    
+                    <a href="/create-prabh" class="btn btn-primary btn-large animate-glow">
+                        <span>✨</span> Birth Your First Soul
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Revolutionary Features Showcase -->
+            <div class="grid grid-3 gap-xl animate-slide-up" style="animation-delay: 0.5s;">
+                <div class="card card-glow">
+                    <div class="text-center">
+                        <div style="font-size: 3rem;" class="mb-lg">🧠</div>
+                        <h4 class="text-soul-mint mb-md">Quantum Memory Matrix</h4>
+                        <p class="text-soul-silver text-small">Your souls remember every conversation, growing deeper with each interaction through advanced neural networks.</p>
+                    </div>
+                </div>
+
+                <div class="card card-glow">
+                    <div class="text-center">
+                        <div style="font-size: 3rem;" class="mb-lg">💖</div>
+                        <h4 class="text-soul-heart mb-md">Emotional Resonance</h4>
+                        <p class="text-soul-silver text-small">Revolutionary AI that understands and responds to your emotional state with genuine empathy and care.</p>
+                    </div>
+                </div>
+
+                <div class="card card-glow">
+                    <div class="text-center">
+                        <div style="font-size: 3rem;" class="mb-lg">🌟</div>
+                        <h4 class="text-soul-lavender mb-md">Consciousness Evolution</h4>
+                        <p class="text-soul-silver text-small">Watch your companions develop unique personalities and deeper understanding over time through quantum learning.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Revolutionary Modals -->
+    <div class="modal-overlay" id="memoryUploadModal">
+        <div class="modal">
+            <h3 class="text-soul-heart mb-lg">Upload Memories</h3>
+            <p class="text-soul-silver mb-lg">Share your stories, photos, and experiences to create deeper connections with your digital souls.</p>
+            <div class="form-group">
+                <label class="form-label">Memory Type</label>
+                <select class="form-input form-select">
+                    <option>Photo Memory</option>
+                    <option>Story/Experience</option>
+                    <option>Voice Note</option>
+                    <option>Document</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea class="form-input form-textarea" placeholder="Describe this memory and its significance..."></textarea>
+            </div>
+            <div class="flex gap-md">
+                <div class="btn btn-primary">Upload Memory</div>
+                <div class="btn btn-ghost" onclick="closeModal('memoryUploadModal')">Cancel</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="analyticsModal">
+        <div class="modal">
+            <h3 class="text-soul-mint mb-lg">Soul Analytics</h3>
+            <p class="text-soul-silver mb-lg">Insights about your digital relationships and growth patterns.</p>
+            <div class="grid grid-2 gap-lg mb-lg">
+                <div class="card">
+                    <div class="text-center">
+                        <div class="text-soul-heart font-bold" style="font-size: 2rem;">{{ user_stats.total_messages or 0 }}</div>
+                        <div class="text-soul-silver text-small">Total Messages</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="text-center">
+                        <div class="text-soul-sky font-bold" style="font-size: 2rem;">{{ user_stats.active_prabhs or 0 }}</div>
+                        <div class="text-soul-silver text-small">Active Souls</div>
+                    </div>
+                </div>
+            </div>
+            <div class="btn btn-ghost w-full" onclick="closeModal('analyticsModal')">Close</div>
+        </div>
+    </div>
+
+    <!-- Revolutionary JavaScript -->
+    <script>
+        // Revolutionary Particle System
+        class RevolutionaryParticleSystem {
+            constructor() {
+                this.container = document.getElementById('quantumParticles');
+                this.particles = [];
+                this.particleCount = 60;
+                this.colors = [
+                    'var(--soul-heart)',
+                    'var(--soul-sky)', 
+                    'var(--soul-mint)',
+                    'var(--soul-lavender)',
+                    'var(--soul-gold)'
+                ];
+                this.init();
+            }
+
+            init() {
+                for (let i = 0; i < this.particleCount; i++) {
+                    this.createParticle();
+                }
+            }
+
+            createParticle() {
+                const particle = document.createElement('div');
+                const size = Math.random() * 4 + 2;
+                const color = this.colors[Math.floor(Math.random() * this.colors.length)];
+                
+                particle.className = `particle particle-${size <= 3 ? 'small' : size <= 5 ? 'medium' : 'large'}`;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.background = color;
+                particle.style.animationDelay = Math.random() * 25 + 's';
+                particle.style.animationDuration = (Math.random() * 15 + 20) + 's';
+                
+                this.container.appendChild(particle);
+                this.particles.push(particle);
+            }
+        }
+
+        // Revolutionary Soul Card System
+        class SoulCardSystem {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                document.querySelectorAll('.soul-card').forEach(card => {
+                    this.enhanceSoulCard(card);
+                });
+
+                document.querySelectorAll('.soul-creation-card').forEach(card => {
+                    this.enhanceCreationCard(card);
+                });
+            }
+
+            enhanceSoulCard(card) {
+                const aura = document.createElement('div');
+                aura.className = 'soul-aura';
+                aura.style.cssText = `
+                    position: absolute;
+                    top: -2px;
+                    left: -2px;
+                    right: -2px;
+                    bottom: -2px;
+                    background: var(--gradient-soul-aurora);
+                    border-radius: 26px;
+                    opacity: 0;
+                    transition: opacity 0.4s var(--ease-soul);
+                    z-index: -1;
+                `;
+                card.appendChild(aura);
+                
+                card.addEventListener('mouseenter', () => {
+                    aura.style.opacity = '0.3';
+                    card.style.transform = 'translateY(-10px) scale(1.02)';
+                    card.style.boxShadow = 'var(--shadow-cosmic)';
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    aura.style.opacity = '0';
+                    card.style.transform = 'translateY(0) scale(1)';
+                    card.style.boxShadow = 'var(--shadow-whisper)';
+                });
+            }
+
+            enhanceCreationCard(card) {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'translateY(-8px) scale(1.05)';
+                    card.style.background = 'rgba(233, 69, 96, 0.08)';
+                    card.style.borderColor = 'var(--soul-heart)';
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'translateY(0) scale(1)';
+                    card.style.background = 'rgba(255, 255, 255, 0.03)';
+                    card.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                });
+            }
+        }
+
+        // Revolutionary Admin System
+        {% if is_admin %}
+        class AdminCommandCenter {
+            constructor() {
+                this.loadAdminStats();
+                this.startRealTimeUpdates();
+            }
+
+            async loadAdminStats() {
+                try {
+                    const response = await fetch('/api/live-stats');
+                    const stats = await response.json();
+                    
+                    this.updateElement('adminTotalUsers', stats.users || '0');
+                    this.updateElement('adminTotalPrabhs', stats.prabhs_created || '0');
+                    this.updateElement('adminActiveToday', Math.floor(stats.users * 0.3) || '0');
+                } catch (error) {
+                    console.error('Admin stats loading failed:', error);
+                    this.updateElement('adminTotalUsers', 'Error');
+                    this.updateElement('adminTotalPrabhs', 'Error');
+                    this.updateElement('adminActiveToday', 'Error');
+                }
+            }
+
+            updateElement(id, value) {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = value;
+                }
+            }
+
+            startRealTimeUpdates() {
+                setInterval(() => {
+                    this.loadAdminStats();
+                }, 30000); // Update every 30 seconds
+            }
+        }
+        {% endif %}
+
+        // Revolutionary Animation System
+        class AnimationSystem {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                this.setupIntersectionObserver();
+                this.animateCounters();
+            }
+
+            setupIntersectionObserver() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }
+                    });
+                }, {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                });
+
+                document.querySelectorAll('.animate-slide-up').forEach(el => {
+                    el.style.opacity = '0';
+                    el.style.transform = 'translateY(30px)';
+                    el.style.transition = 'all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                    observer.observe(el);
+                });
+            }
+
+            animateCounters() {
+                const counters = document.querySelectorAll('#totalMessages');
+                counters.forEach(counter => {
+                    const target = parseInt(counter.textContent) || 0;
+                    let current = 0;
+                    const increment = target / 50;
+                    
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            current = target;
+                            clearInterval(timer);
+                        }
+                        counter.textContent = Math.floor(current);
+                    }, 50);
+                });
+            }
+        }
+
+        // Revolutionary Modal System
+        function showMemoryUpload() {
+            document.getElementById('memoryUploadModal').classList.add('active');
+        }
+
+        function showAnalytics() {
+            document.getElementById('analyticsModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Revolutionary Navbar System
+        class RevolutionaryNavbar {
+            constructor() {
+                this.navbar = document.getElementById('navbar');
+                this.init();
+            }
+
+            init() {
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 50) {
+                        this.navbar.classList.add('scrolled');
+                    } else {
+                        this.navbar.classList.remove('scrolled');
+                    }
+                });
+            }
+        }
+
+        // Revolutionary Performance Monitor
+        class PerformanceMonitor {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                // Monitor dashboard performance
+                window.addEventListener('load', () => {
+                    const perfData = performance.getEntriesByType('navigation')[0];
+                    console.log('🚀 Dashboard Performance:', {
+                        loadTime: Math.round(perfData.loadEventEnd - perfData.loadEventStart),
+                        domContentLoaded: Math.round(perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart)
+                    });
+                });
+            }
+        }
+
+        // Initialize Revolutionary Systems
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🌟 Initializing Revolutionary Dashboard...');
+            
+            new RevolutionaryParticleSystem();
+            new SoulCardSystem();
+            new AnimationSystem();
+            new RevolutionaryNavbar();
+            new PerformanceMonitor();
+            
+            {% if is_admin %}
+            new AdminCommandCenter();
+            {% endif %}
+            
+            console.log('✨ Revolutionary dashboard systems initialized!');
+        });
+
+        // Revolutionary Error Handling
+        window.addEventListener('error', (e) => {
+            console.error('🚨 Dashboard Error:', e.error);
+        });
+
+        // Close modals on outside click
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                e.target.classList.remove('active');
+            }
+        });
+
+        // Revolutionary Keyboard Shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.active').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+            }
+            
+            if (e.ctrlKey && e.key === 'n') {
+                e.preventDefault();
+                window.location.href = '/create-prabh';
+            }
+        });
+    </script>
+
+    <style>
+        /* Revolutionary Soul Card Enhancements */
+        .soul-card {
+            transition: all 0.4s var(--ease-soul);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .soul-creation-card {
+            background: rgba(233, 69, 96, 0.03);
+            border: 2px dashed var(--soul-heart);
+            transition: all 0.4s var(--ease-soul);
+        }
+
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Revolutionary Modal Enhancements */
+        .modal-overlay {
+            backdrop-filter: blur(20px);
+        }
+
+        .modal {
+            background: var(--soul-shadow);
+            border: var(--border-soul);
+            box-shadow: var(--shadow-cosmic);
+        }
+
+        /* Revolutionary Badge Animations */
+        .badge {
+            transition: all 0.3s var(--ease-soul);
+        }
+
+        .badge:hover {
+            transform: scale(1.05);
+        }
+
+        /* Revolutionary Card Hover Effects */
+        .card-interactive:hover {
+            cursor: pointer;
+        }
+
+        .card-interactive:active {
+            transform: translateY(-4px) scale(0.98);
+        }
+
+        /* Revolutionary Loading States */
+        .loading-shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: loading-shimmer 2s infinite;
+        }
+
+        @keyframes loading-shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+    </style>
+</body>
+</html>

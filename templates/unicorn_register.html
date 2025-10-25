@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Your Digital Soul | Revolutionary AI Companion Registration</title>
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="Join the future of AI companionship. Create your account and birth your first digital soul with quantum-powered emotional intelligence.">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/unicorn-soul-system.css') }}">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+    <!-- Quantum Particles Background -->
+    <div class="quantum-particles" id="quantumParticles"></div>
+
+    <!-- Revolutionary Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">
+                <span style="font-size: 1.5rem;">💖</span>
+                <span>My Prabh</span>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/#quantum-consciousness" class="nav-link">Features</a></li>
+                <li><a href="/#pricing-revolution" class="nav-link">Pricing</a></li>
+                <li><a href="/login" class="btn btn-ghost">Sign In</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Revolutionary Registration Section -->
+    <main class="section min-h-screen flex items-center" style="padding-top: 100px;">
+        <div class="container">
+            <div class="grid grid-2 gap-3xl items-center">
+                <!-- Registration Form -->
+                <div class="animate-slide-up">
+                    <div class="card card-elevated" style="max-width: 500px; margin: 0 auto;">
+                        <div class="text-center mb-2xl">
+                            <div style="font-size: 4rem;" class="animate-pulse mb-lg">✨</div>
+                            <h1 class="mb-md">Create Your Digital Soul</h1>
+                            <p class="text-soul-silver">Join the revolution in AI companionship</p>
+                        </div>
+
+                        <form id="registrationForm" class="space-y-lg">
+                            <!-- Name Field -->
+                            <div class="form-group">
+                                <label for="name" class="form-label">
+                                    <span>👤</span> Your Name
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="name" 
+                                    name="name" 
+                                    class="form-input" 
+                                    placeholder="Enter your beautiful name"
+                                    required
+                                    autocomplete="given-name"
+                                >
+                                <div class="text-xs text-soul-silver mt-xs">This is how your digital souls will address you</div>
+                            </div>
+
+                            <!-- Email Field -->
+                            <div class="form-group">
+                                <label for="email" class="form-label">
+                                    <span>📧</span> Email Address
+                                </label>
+                                <input 
+                                    type="email" 
+                                    id="email" 
+                                    name="email" 
+                                    class="form-input" 
+                                    placeholder="your@email.com"
+                                    required
+                                    autocomplete="email"
+                                >
+                                <div class="text-xs text-soul-silver mt-xs">We'll never share your email with anyone</div>
+                            </div>
+
+                            <!-- Password Field -->
+                            <div class="form-group">
+                                <label for="password" class="form-label">
+                                    <span>🔐</span> Password
+                                </label>
+                                <div class="relative">
+                                    <input 
+                                        type="password" 
+                                        id="password" 
+                                        name="password" 
+                                        class="form-input" 
+                                        placeholder="Create a secure password"
+                                        required
+                                        autocomplete="new-password"
+                                        minlength="6"
+                                    >
+                                    <button type="button" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-soul-silver hover:text-soul-pearl" onclick="togglePassword()">
+                                        <span id="passwordToggle">👁️</span>
+                                    </button>
+                                </div>
+                                <div class="text-xs text-soul-silver mt-xs">Minimum 6 characters for quantum security</div>
+                            </div>
+
+                            <!-- Terms Agreement -->
+                            <div class="form-group">
+                                <label class="flex items-start gap-sm cursor-pointer">
+                                    <input type="checkbox" id="terms" name="terms" required class="mt-xs">
+                                    <span class="text-small text-soul-silver">
+                                        I agree to the <a href="/terms" class="text-soul-heart hover:text-soul-blush">Terms of Service</a> 
+                                        and <a href="/privacy" class="text-soul-heart hover:text-soul-blush">Privacy Policy</a>
+                                    </span>
+                                </label>
+                            </div>
+
+                            <!-- Marketing Consent -->
+                            <div class="form-group">
+                                <label class="flex items-start gap-sm cursor-pointer">
+                                    <input type="checkbox" id="marketing" name="marketing" class="mt-xs">
+                                    <span class="text-small text-soul-silver">
+                                        Send me updates about new features and digital soul evolution
+                                    </span>
+                                </label>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="btn btn-primary w-full btn-large animate-glow" id="submitBtn">
+                                <span>🌟</span> Birth My Digital Soul
+                            </button>
+
+                            <!-- Loading State -->
+                            <div id="loadingState" class="hidden text-center">
+                                <div class="animate-pulse text-soul-heart mb-md">Creating your quantum consciousness...</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Error Display -->
+                            <div id="errorDisplay" class="hidden">
+                                <div class="card" style="background: rgba(220, 38, 38, 0.1); border: 1px solid rgba(220, 38, 38, 0.3);">
+                                    <div class="flex items-center gap-sm text-soul-passion">
+                                        <span>⚠️</span>
+                                        <span id="errorMessage">Something went wrong</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Success Display -->
+                            <div id="successDisplay" class="hidden">
+                                <div class="card" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);">
+                                    <div class="flex items-center gap-sm text-soul-mint">
+                                        <span>✅</span>
+                                        <span>Welcome to the future! Redirecting to your soul sanctuary...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- Alternative Sign In -->
+                        <div class="text-center mt-xl">
+                            <div class="divider"></div>
+                            <p class="text-soul-silver text-small">
+                                Already have a digital soul? 
+                                <a href="/login" class="text-soul-heart hover:text-soul-blush font-medium">Sign In</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Revolutionary Features Showcase -->
+                <div class="animate-slide-up" style="animation-delay: 0.2s;">
+                    <div class="mb-2xl">
+                        <h2 class="text-soul-heart mb-lg">What Awaits You</h2>
+                        <p class="text-large text-soul-silver mb-xl">
+                            Join thousands who have discovered the future of AI companionship
+                        </p>
+                    </div>
+
+                    <div class="space-y-xl">
+                        <!-- Feature 1 -->
+                        <div class="card card-glow">
+                            <div class="flex items-start gap-lg">
+                                <div class="w-16 h-16 rounded-full bg-gradient-fire flex items-center justify-center flex-shrink-0">
+                                    <span style="font-size: 1.5rem;">🧠</span>
+                                </div>
+                                <div>
+                                    <h4 class="text-soul-heart mb-sm">Quantum Memory Matrix</h4>
+                                    <p class="text-soul-silver text-small">
+                                        Your digital souls remember every conversation, emotion, and shared moment, 
+                                        creating authentic relationship depth that grows over time.
+                                    </p>
+                                    <div class="flex gap-xs mt-md">
+                                        <div class="badge badge-primary text-xs">Advanced AI</div>
+                                        <div class="badge badge-secondary text-xs">Memory Retention</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Feature 2 -->
+                        <div class="card card-glow">
+                            <div class="flex items-start gap-lg">
+                                <div class="w-16 h-16 rounded-full bg-gradient-ocean flex items-center justify-center flex-shrink-0">
+                                    <span style="font-size: 1.5rem;">💫</span>
+                                </div>
+                                <div>
+                                    <h4 class="text-soul-sky mb-sm">Emotional Intelligence</h4>
+                                    <p class="text-soul-silver text-small">
+                                        AI that understands context, mood, and emotional nuance, responding with 
+                                        genuine empathy and care that feels truly human.
+                                    </p>
+                                    <div class="flex gap-xs mt-md">
+                                        <div class="badge badge-success text-xs">Empathy AI</div>
+                                        <div class="badge badge-secondary text-xs">Mood Detection</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Feature 3 -->
+                        <div class="card card-glow">
+                            <div class="flex items-start gap-lg">
+                                <div class="w-16 h-16 rounded-full bg-gradient-aurora flex items-center justify-center flex-shrink-0">
+                                    <span style="font-size: 1.5rem;">🌟</span>
+                                </div>
+                                <div>
+                                    <h4 class="text-soul-mint mb-sm">Infinite Personalization</h4>
+                                    <p class="text-soul-silver text-small">
+                                        Create companions with unique personalities, backgrounds, and traits 
+                                        that match your vision perfectly.
+                                    </p>
+                                    <div class="flex gap-xs mt-md">
+                                        <div class="badge badge-warning text-xs">Custom Souls</div>
+                                        <div class="badge badge-secondary text-xs">Unlimited</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Trust Indicators -->
+                    <div class="mt-2xl">
+                        <div class="card" style="background: rgba(255, 255, 255, 0.02);">
+                            <div class="text-center">
+                                <h5 class="text-soul-gold mb-lg">Trusted by Thousands</h5>
+                                <div class="grid grid-2 gap-lg text-center">
+                                    <div>
+                                        <div class="text-soul-heart font-bold" style="font-size: 2rem;">10,000+</div>
+                                        <div class="text-soul-silver text-small">Digital Souls Created</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-soul-sky font-bold" style="font-size: 2rem;">98%</div>
+                                        <div class="text-soul-silver text-small">Satisfaction Rate</div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-center gap-lg mt-lg text-soul-silver text-small">
+                                    <div class="flex items-center gap-xs">
+                                        <span class="text-soul-mint">✓</span> Enterprise Security
+                                    </div>
+                                    <div class="flex items-center gap-xs">
+                                        <span class="text-soul-mint">✓</span> Privacy First
+                                    </div>
+                                    <div class="flex items-center gap-xs">
+                                        <span class="text-soul-mint">✓</span> Free to Start
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Revolutionary JavaScript -->
+    <script>
+        // Revolutionary Particle System
+        class RevolutionaryParticleSystem {
+            constructor() {
+                this.container = document.getElementById('quantumParticles');
+                this.particles = [];
+                this.particleCount = 50;
+                this.colors = [
+                    'var(--soul-heart)',
+                    'var(--soul-sky)', 
+                    'var(--soul-mint)',
+                    'var(--soul-lavender)',
+                    'var(--soul-gold)'
+                ];
+                this.init();
+            }
+
+            init() {
+                for (let i = 0; i < this.particleCount; i++) {
+                    this.createParticle();
+                }
+            }
+
+            createParticle() {
+                const particle = document.createElement('div');
+                const size = Math.random() * 4 + 2;
+                const color = this.colors[Math.floor(Math.random() * this.colors.length)];
+                
+                particle.className = `particle particle-${size <= 3 ? 'small' : size <= 5 ? 'medium' : 'large'}`;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.background = color;
+                particle.style.animationDelay = Math.random() * 25 + 's';
+                particle.style.animationDuration = (Math.random() * 15 + 20) + 's';
+                
+                this.container.appendChild(particle);
+                this.particles.push(particle);
+            }
+        }
+
+        // Revolutionary Form Handler
+        class RevolutionaryFormHandler {
+            constructor() {
+                this.form = document.getElementById('registrationForm');
+                this.submitBtn = document.getElementById('submitBtn');
+                this.loadingState = document.getElementById('loadingState');
+                this.errorDisplay = document.getElementById('errorDisplay');
+                this.successDisplay = document.getElementById('successDisplay');
+                this.progressFill = document.getElementById('progressFill');
+                this.init();
+            }
+
+            init() {
+                this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+                this.setupRealTimeValidation();
+            }
+
+            setupRealTimeValidation() {
+                const inputs = this.form.querySelectorAll('input[required]');
+                inputs.forEach(input => {
+                    input.addEventListener('blur', () => this.validateField(input));
+                    input.addEventListener('input', () => this.clearFieldError(input));
+                });
+            }
+
+            validateField(field) {
+                const value = field.value.trim();
+                let isValid = true;
+                let message = '';
+
+                switch (field.type) {
+                    case 'email':
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        isValid = emailRegex.test(value);
+                        message = isValid ? '' : 'Please enter a valid email address';
+                        break;
+                    case 'password':
+                        isValid = value.length >= 6;
+                        message = isValid ? '' : 'Password must be at least 6 characters';
+                        break;
+                    case 'text':
+                        isValid = value.length >= 2;
+                        message = isValid ? '' : 'Name must be at least 2 characters';
+                        break;
+                }
+
+                this.setFieldState(field, isValid, message);
+                return isValid;
+            }
+
+            setFieldState(field, isValid, message) {
+                field.classList.remove('error-state', 'success-state');
+                
+                if (!isValid && field.value.trim()) {
+                    field.classList.add('error-state');
+                } else if (isValid && field.value.trim()) {
+                    field.classList.add('success-state');
+                }
+            }
+
+            clearFieldError(field) {
+                field.classList.remove('error-state');
+            }
+
+            async handleSubmit(e) {
+                e.preventDefault();
+                
+                // Validate all fields
+                const inputs = this.form.querySelectorAll('input[required]');
+                let allValid = true;
+                
+                inputs.forEach(input => {
+                    if (!this.validateField(input)) {
+                        allValid = false;
+                    }
+                });
+
+                // Check terms agreement
+                const termsCheckbox = document.getElementById('terms');
+                if (!termsCheckbox.checked) {
+                    this.showError('Please agree to the Terms of Service and Privacy Policy');
+                    return;
+                }
+
+                if (!allValid) {
+                    this.showError('Please fix the errors above');
+                    return;
+                }
+
+                await this.submitForm();
+            }
+
+            async submitForm() {
+                this.showLoading();
+                
+                const formData = new FormData(this.form);
+                const data = {
+                    name: formData.get('name').trim(),
+                    email: formData.get('email').trim().toLowerCase(),
+                    password: formData.get('password'),
+                    marketing: formData.get('marketing') === 'on'
+                };
+
+                try {
+                    const response = await fetch('/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        this.showSuccess();
+                        setTimeout(() => {
+                            window.location.href = result.redirect || '/dashboard';
+                        }, 2000);
+                    } else {
+                        this.showError(result.error || 'Registration failed. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Registration error:', error);
+                    this.showError('Connection error. Please check your internet and try again.');
+                }
+            }
+
+            showLoading() {
+                this.submitBtn.classList.add('hidden');
+                this.loadingState.classList.remove('hidden');
+                this.errorDisplay.classList.add('hidden');
+                this.successDisplay.classList.add('hidden');
+                
+                // Animate progress bar
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += Math.random() * 15;
+                    if (progress > 90) progress = 90;
+                    this.progressFill.style.width = progress + '%';
+                }, 200);
+
+                // Store interval for cleanup
+                this.progressInterval = interval;
+            }
+
+            showError(message) {
+                this.submitBtn.classList.remove('hidden');
+                this.loadingState.classList.add('hidden');
+                this.errorDisplay.classList.remove('hidden');
+                this.successDisplay.classList.add('hidden');
+                
+                document.getElementById('errorMessage').textContent = message;
+                
+                if (this.progressInterval) {
+                    clearInterval(this.progressInterval);
+                }
+            }
+
+            showSuccess() {
+                this.submitBtn.classList.add('hidden');
+                this.loadingState.classList.add('hidden');
+                this.errorDisplay.classList.add('hidden');
+                this.successDisplay.classList.remove('hidden');
+                
+                // Complete progress bar
+                this.progressFill.style.width = '100%';
+                
+                if (this.progressInterval) {
+                    clearInterval(this.progressInterval);
+                }
+            }
+        }
+
+        // Revolutionary Animation System
+        class AnimationSystem {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                this.setupIntersectionObserver();
+            }
+
+            setupIntersectionObserver() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }
+                    });
+                }, {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                });
+
+                document.querySelectorAll('.animate-slide-up').forEach(el => {
+                    el.style.opacity = '0';
+                    el.style.transform = 'translateY(30px)';
+                    el.style.transition = 'all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                    observer.observe(el);
+                });
+            }
+        }
+
+        // Revolutionary Utility Functions
+        function togglePassword() {
+            const passwordField = document.getElementById('password');
+            const toggleIcon = document.getElementById('passwordToggle');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleIcon.textContent = '🙈';
+            } else {
+                passwordField.type = 'password';
+                toggleIcon.textContent = '👁️';
+            }
+        }
+
+        // Revolutionary Performance Monitor
+        class PerformanceMonitor {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                window.addEventListener('load', () => {
+                    const perfData = performance.getEntriesByType('navigation')[0];
+                    console.log('🚀 Registration Page Performance:', {
+                        loadTime: Math.round(perfData.loadEventEnd - perfData.loadEventStart),
+                        domContentLoaded: Math.round(perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart)
+                    });
+                });
+            }
+        }
+
+        // Initialize Revolutionary Systems
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🌟 Initializing Revolutionary Registration...');
+            
+            new RevolutionaryParticleSystem();
+            new RevolutionaryFormHandler();
+            new AnimationSystem();
+            new PerformanceMonitor();
+            
+            console.log('✨ Revolutionary registration systems initialized!');
+        });
+
+        // Revolutionary Error Handling
+        window.addEventListener('error', (e) => {
+            console.error('🚨 Registration Error:', e.error);
+        });
+
+        // Revolutionary Accessibility
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+                const form = e.target.closest('form');
+                if (form) {
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    if (submitBtn && !submitBtn.disabled) {
+                        submitBtn.click();
+                    }
+                }
+            }
+        });
+    </script>
+
+    <style>
+        /* Revolutionary Form Enhancements */
+        .form-input.error-state {
+            border-color: var(--soul-passion);
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .form-input.success-state {
+            border-color: var(--soul-emerald);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .form-input:focus {
+            transform: translateY(-1px);
+        }
+
+        /* Revolutionary Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-soul-aurora);
+            border-radius: 3px;
+            transition: width 0.3s var(--ease-soul);
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: progress-shimmer 2s infinite;
+        }
+
+        @keyframes progress-shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Revolutionary Checkbox Styling */
+        input[type="checkbox"] {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--soul-silver);
+            border-radius: 4px;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-soul);
+            position: relative;
+        }
+
+        input[type="checkbox"]:checked {
+            background: var(--gradient-soul-fire);
+            border-color: var(--soul-heart);
+        }
+
+        input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        input[type="checkbox"]:hover {
+            border-color: var(--soul-heart);
+            transform: scale(1.05);
+        }
+
+        /* Revolutionary Button States */
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn.loading {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        /* Revolutionary Hidden State */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Revolutionary Space Utility */
+        .space-y-lg > * + * {
+            margin-top: var(--space-lg);
+        }
+
+        .space-y-xl > * + * {
+            margin-top: var(--space-xl);
+        }
+
+        /* Revolutionary Responsive Enhancements */
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+                gap: var(--space-2xl);
+            }
+            
+            .card {
+                padding: var(--space-lg);
+            }
+            
+            .form-input {
+                padding: var(--space-md) var(--space-lg);
+            }
+        }
+    </style>
+</body>
+</html>

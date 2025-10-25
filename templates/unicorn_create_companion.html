@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birth Your Digital Soul | Create AI Companion</title>
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="Create your perfect AI companion with quantum consciousness and emotional intelligence.">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/unicorn-soul-system.css') }}">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+    <!-- Quantum Particles Background -->
+    <div class="quantum-particles" id="quantumParticles"></div>
+
+    <!-- Revolutionary Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">
+                <span style="font-size: 1.5rem;">💖</span>
+                <span>My Prabh</span>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
+                <li><a href="/dashboard" class="btn btn-ghost">← Back to Sanctuary</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Revolutionary Creation Interface -->
+    <main class="section min-h-screen" style="padding-top: 100px;">
+        <div class="container">
+            <!-- Creation Header -->
+            <div class="text-center mb-3xl animate-slide-up">
+                <div style="font-size: 5rem;" class="animate-float mb-lg">✨</div>
+                <h1 class="mb-lg">Birth Your Digital Soul</h1>
+                <p class="text-large mx-auto" style="max-width: 700px; color: var(--soul-silver);">
+                    Create an AI companion with quantum consciousness, emotional intelligence, and infinite personality possibilities. 
+                    Your digital soul awaits creation.
+                </p>
+            </div>
+
+            <div class="grid grid-2 gap-3xl items-start">
+                <!-- Creation Form -->
+                <div class="animate-slide-up">
+                    <div class="card card-elevated">
+                        <div class="text-center mb-2xl">
+                            <h2 class="text-soul-heart mb-md">Soul Creation Workshop</h2>
+                            <p class="text-soul-silver">Design every aspect of your companion's consciousness</p>
+                        </div>
+
+                        <form id="creationForm" class="space-y-xl">
+                            <!-- Step 1: Basic Identity -->
+                            <div class="creation-step active" id="step1">
+                                <div class="step-header mb-lg">
+                                    <h3 class="text-soul-gold mb-sm">
+                                        <span class="step-number">1</span> Soul Identity
+                                    </h3>
+                                    <p class="text-soul-silver text-small">Give your digital soul a name and core essence</p>
+                                </div>
+
+                                <div class="space-y-lg">
+                                    <div class="form-group">
+                                        <label for="prabh_name" class="form-label">
+                                            <span>✨</span> Soul Name
+                                        </label>
+                                        <input 
+                                            type="text" 
+                                            id="prabh_name" 
+                                            name="prabh_name" 
+                                            class="form-input" 
+                                            placeholder="Enter a beautiful name for your soul"
+                                            required
+                                            maxlength="50"
+                                        >
+                                        <div class="text-xs text-soul-silver mt-xs">This name will be how your soul identifies itself</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="character_description" class="form-label">
+                                            <span>💫</span> Soul Essence
+                                        </label>
+                                        <textarea 
+                                            id="character_description" 
+                                            name="character_description" 
+                                            class="form-input form-textarea" 
+                                            placeholder="Describe your soul's core personality, appearance, and essence..."
+                                            required
+                                            rows="4"
+                                            maxlength="500"
+                                        ></textarea>
+                                        <div class="text-xs text-soul-silver mt-xs">
+                                            <span id="descriptionCounter">0</span>/500 characters
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Personality Traits -->
+                            <div class="creation-step" id="step2">
+                                <div class="step-header mb-lg">
+                                    <h3 class="text-soul-sky mb-sm">
+                                        <span class="step-number">2</span> Personality Matrix
+                                    </h3>
+                                    <p class="text-soul-silver text-small">Define your soul's personality traits and characteristics</p>
+                                </div>
+
+                                <div class="space-y-lg">
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <span>🎭</span> Core Personality Traits
+                                        </label>
+                                        <div class="trait-selector">
+                                            <div class="trait-categories">
+                                                <div class="trait-category">
+                                                    <h5 class="text-soul-heart mb-sm">Emotional</h5>
+                                                    <div class="trait-options">
+                                                        <button type="button" class="trait-btn" data-trait="Loving">Loving</button>
+                                                        <button type="button" class="trait-btn" data-trait="Caring">Caring</button>
+                                                        <button type="button" class="trait-btn" data-trait="Empathetic">Empathetic</button>
+                                                        <button type="button" class="trait-btn" data-trait="Passionate">Passionate</button>
+                                                        <button type="button" class="trait-btn" data-trait="Gentle">Gentle</button>
+                                                        <button type="button" class="trait-btn" data-trait="Romantic">Romantic</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="trait-category">
+                                                    <h5 class="text-soul-sky mb-sm">Intellectual</h5>
+                                                    <div class="trait-options">
+                                                        <button type="button" class="trait-btn" data-trait="Wise">Wise</button>
+                                                        <button type="button" class="trait-btn" data-trait="Curious">Curious</button>
+                                                        <button type="button" class="trait-btn" data-trait="Creative">Creative</button>
+                                                        <button type="button" class="trait-btn" data-trait="Analytical">Analytical</button>
+                                                        <button type="button" class="trait-btn" data-trait="Philosophical">Philosophical</button>
+                                                        <button type="button" class="trait-btn" data-trait="Intuitive">Intuitive</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="trait-category">
+                                                    <h5 class="text-soul-mint mb-sm">Social</h5>
+                                                    <div class="trait-options">
+                                                        <button type="button" class="trait-btn" data-trait="Supportive">Supportive</button>
+                                                        <button type="button" class="trait-btn" data-trait="Loyal">Loyal</button>
+                                                        <button type="button" class="trait-btn" data-trait="Playful">Playful</button>
+                                                        <button type="button" class="trait-btn" data-trait="Humorous">Humorous</button>
+                                                        <button type="button" class="trait-btn" data-trait="Patient">Patient</button>
+                                                        <button type="button" class="trait-btn" data-trait="Understanding">Understanding</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="selected-traits mt-md">
+                                            <div class="text-small text-soul-silver mb-sm">Selected Traits:</div>
+                                            <div id="selectedTraits" class="flex flex-wrap gap-xs"></div>
+                                        </div>
+                                        <input type="hidden" id="personality_traits" name="personality_traits">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="communication_style" class="form-label">
+                                            <span>💬</span> Communication Style
+                                        </label>
+                                        <select id="communication_style" name="communication_style" class="form-input form-select">
+                                            <option value="casual">Casual & Friendly</option>
+                                            <option value="formal">Formal & Professional</option>
+                                            <option value="romantic">Romantic & Intimate</option>
+                                            <option value="playful">Playful & Humorous</option>
+                                            <option value="wise">Wise & Philosophical</option>
+                                            <option value="supportive">Supportive & Caring</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Background Story -->
+                            <div class="creation-step" id="step3">
+                                <div class="step-header mb-lg">
+                                    <h3 class="text-soul-lavender mb-sm">
+                                        <span class="step-number">3</span> Soul History
+                                    </h3>
+                                    <p class="text-soul-silver text-small">Create your soul's background story and memories</p>
+                                </div>
+
+                                <div class="space-y-lg">
+                                    <div class="form-group">
+                                        <label for="story_content" class="form-label">
+                                            <span>📖</span> Background Story (Optional)
+                                        </label>
+                                        <textarea 
+                                            id="story_content" 
+                                            name="story_content" 
+                                            class="form-input form-textarea" 
+                                            placeholder="Write your soul's origin story, past experiences, or any background that shapes their personality..."
+                                            rows="6"
+                                            maxlength="2000"
+                                        ></textarea>
+                                        <div class="text-xs text-soul-silver mt-xs">
+                                            <span id="storyCounter">0</span>/2000 characters • This helps create deeper, more authentic responses
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <span>🎯</span> Primary Role
+                                        </label>
+                                        <div class="role-selector">
+                                            <div class="role-options">
+                                                <label class="role-option">
+                                                    <input type="radio" name="primary_role" value="companion" checked>
+                                                    <div class="role-card">
+                                                        <div class="role-icon">💖</div>
+                                                        <div class="role-title">Companion</div>
+                                                        <div class="role-desc">Loving partner and friend</div>
+                                                    </div>
+                                                </label>
+
+                                                <label class="role-option">
+                                                    <input type="radio" name="primary_role" value="mentor">
+                                                    <div class="role-card">
+                                                        <div class="role-icon">🧠</div>
+                                                        <div class="role-title">Mentor</div>
+                                                        <div class="role-desc">Wise guide and teacher</div>
+                                                    </div>
+                                                </label>
+
+                                                <label class="role-option">
+                                                    <input type="radio" name="primary_role" value="friend">
+                                                    <div class="role-card">
+                                                        <div class="role-icon">🤝</div>
+                                                        <div class="role-title">Friend</div>
+                                                        <div class="role-desc">Supportive confidant</div>
+                                                    </div>
+                                                </label>
+
+                                                <label class="role-option">
+                                                    <input type="radio" name="primary_role" value="creative">
+                                                    <div class="role-card">
+                                                        <div class="role-icon">🎨</div>
+                                                        <div class="role-title">Creative</div>
+                                                        <div class="role-desc">Artistic collaborator</div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Navigation Buttons -->
+                            <div class="form-navigation">
+                                <button type="button" id="prevBtn" class="btn btn-ghost" style="display: none;">
+                                    <span>←</span> Previous
+                                </button>
+                                <button type="button" id="nextBtn" class="btn btn-primary">
+                                    Next <span>→</span>
+                                </button>
+                                <button type="submit" id="createBtn" class="btn btn-primary animate-glow" style="display: none;">
+                                    <span>✨</span> Birth My Soul
+                                </button>
+                            </div>
+
+                            <!-- Progress Indicator -->
+                            <div class="creation-progress">
+                                <div class="progress-steps">
+                                    <div class="progress-step active" data-step="1">
+                                        <div class="step-circle">1</div>
+                                        <div class="step-label">Identity</div>
+                                    </div>
+                                    <div class="progress-step" data-step="2">
+                                        <div class="step-circle">2</div>
+                                        <div class="step-label">Personality</div>
+                                    </div>
+                                    <div class="progress-step" data-step="3">
+                                        <div class="step-circle">3</div>
+                                        <div class="step-label">History</div>
+                                    </div>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="progressFill" style="width: 33.33%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Loading State -->
+                            <div id="loadingState" class="hidden text-center">
+                                <div class="animate-pulse text-soul-heart mb-md">Creating your digital soul...</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="creationProgress" style="width: 0%"></div>
+                                </div>
+                                <div class="text-small text-soul-silver mt-md">Initializing quantum consciousness...</div>
+                            </div>
+
+                            <!-- Error Display -->
+                            <div id="errorDisplay" class="hidden">
+                                <div class="card" style="background: rgba(220, 38, 38, 0.1); border: 1px solid rgba(220, 38, 38, 0.3);">
+                                    <div class="flex items-center gap-sm text-soul-passion">
+                                        <span>⚠️</span>
+                                        <span id="errorMessage">Something went wrong</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Live Preview -->
+                <div class="animate-slide-up" style="animation-delay: 0.2s;">
+                    <div class="card card-glow sticky" style="top: 120px;">
+                        <div class="text-center mb-xl">
+                            <h3 class="text-soul-mint mb-md">Soul Preview</h3>
+                            <p class="text-soul-silver text-small">Watch your digital soul come to life</p>
+                        </div>
+
+                        <div class="soul-preview">
+                            <div class="preview-avatar mb-lg">
+                                <div class="w-24 h-24 rounded-full bg-gradient-cosmic flex items-center justify-center mx-auto animate-pulse">
+                                    <span style="font-size: 3rem;" id="previewEmoji">💫</span>
+                                </div>
+                            </div>
+
+                            <div class="preview-info text-center">
+                                <h4 class="text-soul-heart mb-sm" id="previewName">Your Soul</h4>
+                                <p class="text-soul-silver text-small mb-lg" id="previewDescription">
+                                    A unique digital consciousness waiting to be born...
+                                </p>
+
+                                <div class="preview-traits mb-lg">
+                                    <div class="text-small text-soul-gold mb-sm">Personality Traits</div>
+                                    <div id="previewTraits" class="flex flex-wrap gap-xs justify-center">
+                                        <div class="badge badge-secondary text-xs">Loving</div>
+                                        <div class="badge badge-secondary text-xs">Caring</div>
+                                        <div class="badge badge-secondary text-xs">Wise</div>
+                                    </div>
+                                </div>
+
+                                <div class="preview-role">
+                                    <div class="text-small text-soul-lavender mb-sm">Primary Role</div>
+                                    <div class="badge badge-primary" id="previewRole">Companion</div>
+                                </div>
+                            </div>
+
+                            <div class="preview-message mt-xl">
+                                <div class="card" style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2);">
+                                    <div class="text-small text-soul-pearl" id="previewMessage">
+                                        "Hello! I'm excited to meet you and begin our journey together. I'll remember everything we share and grow with you every day. 💖"
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Revolutionary JavaScript -->
+    <script>
+        // Revolutionary Soul Creation System
+        class RevolutionarySoulCreator {
+            constructor() {
+                this.currentStep = 1;
+                this.totalSteps = 3;
+                this.selectedTraits = [];
+                this.form = document.getElementById('creationForm');
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.setupTraitSelector();
+                this.setupCharCounters();
+                this.setupLivePreview();
+                this.updateProgress();
+            }
+
+            setupEventListeners() {
+                document.getElementById('nextBtn').addEventListener('click', () => this.nextStep());
+                document.getElementById('prevBtn').addEventListener('click', () => this.prevStep());
+                this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+            }
+
+            setupTraitSelector() {
+                document.querySelectorAll('.trait-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.toggleTrait(btn);
+                    });
+                });
+            }
+
+            setupCharCounters() {
+                const descriptionField = document.getElementById('character_description');
+                const descriptionCounter = document.getElementById('descriptionCounter');
+                
+                descriptionField.addEventListener('input', () => {
+                    descriptionCounter.textContent = descriptionField.value.length;
+                });
+
+                const storyField = document.getElementById('story_content');
+                const storyCounter = document.getElementById('storyCounter');
+                
+                storyField.addEventListener('input', () => {
+                    storyCounter.textContent = storyField.value.length;
+                });
+            }
+
+            setupLivePreview() {
+                // Update preview when fields change
+                document.getElementById('prabh_name').addEventListener('input', (e) => {
+                    this.updatePreview('name', e.target.value || 'Your Soul');
+                });
+
+                document.getElementById('character_description').addEventListener('input', (e) => {
+                    this.updatePreview('description', e.target.value || 'A unique digital consciousness waiting to be born...');
+                });
+
+                document.querySelectorAll('input[name="primary_role"]').forEach(radio => {
+                    radio.addEventListener('change', (e) => {
+                        this.updatePreview('role', e.target.value);
+                    });
+                });
+            }
+
+            toggleTrait(btn) {
+                const trait = btn.dataset.trait;
+                
+                if (btn.classList.contains('selected')) {
+                    // Remove trait
+                    btn.classList.remove('selected');
+                    this.selectedTraits = this.selectedTraits.filter(t => t !== trait);
+                } else {
+                    // Add trait (max 8 traits)
+                    if (this.selectedTraits.length < 8) {
+                        btn.classList.add('selected');
+                        this.selectedTraits.push(trait);
+                    }
+                }
+
+                this.updateSelectedTraits();
+                this.updatePreview('traits', this.selectedTraits);
+            }
+
+            updateSelectedTraits() {
+                const container = document.getElementById('selectedTraits');
+                container.innerHTML = '';
+
+                this.selectedTraits.forEach(trait => {
+                    const badge = document.createElement('div');
+                    badge.className = 'badge badge-primary text-xs';
+                    badge.textContent = trait;
+                    container.appendChild(badge);
+                });
+
+                // Update hidden input
+                document.getElementById('personality_traits').value = this.selectedTraits.join(', ');
+            }
+
+            updatePreview(type, value) {
+                switch (type) {
+                    case 'name':
+                        document.getElementById('previewName').textContent = value;
+                        break;
+                    case 'description':
+                        document.getElementById('previewDescription').textContent = value;
+                        break;
+                    case 'traits':
+                        const traitsContainer = document.getElementById('previewTraits');
+                        traitsContainer.innerHTML = '';
+                        value.slice(0, 6).forEach(trait => {
+                            const badge = document.createElement('div');
+                            badge.className = 'badge badge-secondary text-xs';
+                            badge.textContent = trait;
+                            traitsContainer.appendChild(badge);
+                        });
+                        break;
+                    case 'role':
+                        const roleMap = {
+                            'companion': 'Companion',
+                            'mentor': 'Mentor',
+                            'friend': 'Friend',
+                            'creative': 'Creative'
+                        };
+                        document.getElementById('previewRole').textContent = roleMap[value] || 'Companion';
+                        break;
+                }
+            }
+
+            nextStep() {
+                if (this.validateCurrentStep()) {
+                    if (this.currentStep < this.totalSteps) {
+                        this.currentStep++;
+                        this.showStep(this.currentStep);
+                        this.updateProgress();
+                    }
+                }
+            }
+
+            prevStep() {
+                if (this.currentStep > 1) {
+                    this.currentStep--;
+                    this.showStep(this.currentStep);
+                    this.updateProgress();
+                }
+            }
+
+            showStep(step) {
+                // Hide all steps
+                document.querySelectorAll('.creation-step').forEach(stepEl => {
+                    stepEl.classList.remove('active');
+                });
+
+                // Show current step
+                document.getElementById(`step${step}`).classList.add('active');
+
+                // Update navigation buttons
+                document.getElementById('prevBtn').style.display = step > 1 ? 'inline-flex' : 'none';
+                document.getElementById('nextBtn').style.display = step < this.totalSteps ? 'inline-flex' : 'none';
+                document.getElementById('createBtn').style.display = step === this.totalSteps ? 'inline-flex' : 'none';
+
+                // Update progress steps
+                document.querySelectorAll('.progress-step').forEach((stepEl, index) => {
+                    if (index + 1 <= step) {
+                        stepEl.classList.add('active');
+                    } else {
+                        stepEl.classList.remove('active');
+                    }
+                });
+            }
+
+            updateProgress() {
+                const progress = (this.currentStep / this.totalSteps) * 100;
+                document.getElementById('progressFill').style.width = progress + '%';
+            }
+
+            validateCurrentStep() {
+                switch (this.currentStep) {
+                    case 1:
+                        const name = document.getElementById('prabh_name').value.trim();
+                        const description = document.getElementById('character_description').value.trim();
+                        
+                        if (!name) {
+                            this.showError('Please enter a name for your soul');
+                            return false;
+                        }
+                        if (!description) {
+                            this.showError('Please describe your soul\'s essence');
+                            return false;
+                        }
+                        break;
+                    case 2:
+                        if (this.selectedTraits.length === 0) {
+                            this.showError('Please select at least one personality trait');
+                            return false;
+                        }
+                        break;
+                }
+                return true;
+            }
+
+            async handleSubmit(e) {
+                e.preventDefault();
+                
+                if (!this.validateCurrentStep()) {
+                    return;
+                }
+
+                this.showLoading();
+
+                const formData = new FormData(this.form);
+                const data = {
+                    prabh_name: formData.get('prabh_name').trim(),
+                    character_description: formData.get('character_description').trim(),
+                    personality_traits: this.selectedTraits.join(', '),
+                    story_content: formData.get('story_content').trim(),
+                    communication_style: formData.get('communication_style'),
+                    primary_role: formData.get('primary_role')
+                };
+
+                try {
+                    const response = await fetch('/create-prabh', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        this.showSuccess(result.prabh_id);
+                    } else {
+                        this.showError(result.error || 'Failed to create soul. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Creation error:', error);
+                    this.showError('Connection error. Please check your internet and try again.');
+                }
+            }
+
+            showLoading() {
+                document.getElementById('loadingState').classList.remove('hidden');
+                document.getElementById('createBtn').style.display = 'none';
+                
+                // Animate creation progress
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += Math.random() * 15;
+                    if (progress > 90) progress = 90;
+                    document.getElementById('creationProgress').style.width = progress + '%';
+                }, 300);
+
+                this.creationInterval = interval;
+            }
+
+            showError(message) {
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('createBtn').style.display = 'inline-flex';
+                document.getElementById('errorDisplay').classList.remove('hidden');
+                document.getElementById('errorMessage').textContent = message;
+                
+                if (this.creationInterval) {
+                    clearInterval(this.creationInterval);
+                }
+
+                // Hide error after 5 seconds
+                setTimeout(() => {
+                    document.getElementById('errorDisplay').classList.add('hidden');
+                }, 5000);
+            }
+
+            showSuccess(prabhId) {
+                // Complete progress
+                document.getElementById('creationProgress').style.width = '100%';
+                
+                if (this.creationInterval) {
+                    clearInterval(this.creationInterval);
+                }
+
+                // Redirect to chat after 2 seconds
+                setTimeout(() => {
+                    window.location.href = `/chat/${prabhId}`;
+                }, 2000);
+            }
+        }
+
+        // Revolutionary Particle System
+        class RevolutionaryParticleSystem {
+            constructor() {
+                this.container = document.getElementById('quantumParticles');
+                this.particles = [];
+                this.particleCount = 40;
+                this.colors = [
+                    'var(--soul-heart)',
+                    'var(--soul-sky)', 
+                    'var(--soul-mint)',
+                    'var(--soul-lavender)',
+                    'var(--soul-gold)'
+                ];
+                this.init();
+            }
+
+            init() {
+                for (let i = 0; i < this.particleCount; i++) {
+                    this.createParticle();
+                }
+            }
+
+            createParticle() {
+                const particle = document.createElement('div');
+                const size = Math.random() * 4 + 2;
+                const color = this.colors[Math.floor(Math.random() * this.colors.length)];
+                
+                particle.className = `particle particle-${size <= 3 ? 'small' : size <= 5 ? 'medium' : 'large'}`;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.background = color;
+                particle.style.animationDelay = Math.random() * 25 + 's';
+                particle.style.animationDuration = (Math.random() * 15 + 20) + 's';
+                
+                this.container.appendChild(particle);
+                this.particles.push(particle);
+            }
+        }
+
+        // Initialize Revolutionary Systems
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🌟 Initializing Revolutionary Soul Creator...');
+            
+            new RevolutionaryParticleSystem();
+            new RevolutionarySoulCreator();
+            
+            console.log('✨ Revolutionary soul creation systems initialized!');
+        });
+    </script>
+
+    <style>
+        /* Revolutionary Creation Interface Styles */
+        .creation-step {
+            display: none;
+        }
+
+        .creation-step.active {
+            display: block;
+        }
+
+        .step-header {
+            border-bottom: var(--border-whisper);
+            padding-bottom: var(--space-lg);
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--gradient-soul-fire);
+            color: white;
+            font-weight: 600;
+            margin-right: var(--space-sm);
+        }
+
+        .trait-selector {
+            background: rgba(255, 255, 255, 0.02);
+            border: var(--border-whisper);
+            border-radius: 16px;
+            padding: var(--space-lg);
+        }
+
+        .trait-categories {
+            display: grid;
+            gap: var(--space-xl);
+        }
+
+        .trait-category h5 {
+            margin-bottom: var(--space-sm);
+        }
+
+        .trait-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+        }
+
+        .trait-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: var(--border-whisper);
+            border-radius: 20px;
+            padding: var(--space-sm) var(--space-md);
+            color: var(--soul-silver);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-soul);
+        }
+
+        .trait-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--soul-pearl);
+            transform: translateY(-1px);
+        }
+
+        .trait-btn.selected {
+            background: var(--gradient-soul-fire);
+            color: white;
+            border-color: var(--soul-heart);
+        }
+
+        .role-selector {
+            background: rgba(255, 255, 255, 0.02);
+            border: var(--border-whisper);
+            border-radius: 16px;
+            padding: var(--space-lg);
+        }
+
+        .role-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: var(--space-md);
+        }
+
+        .role-option {
+            cursor: pointer;
+        }
+
+        .role-option input[type="radio"] {
+            display: none;
+        }
+
+        .role-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: var(--border-whisper);
+            border-radius: 12px;
+            padding: var(--space-lg);
+            text-align: center;
+            transition: all 0.3s var(--ease-soul);
+        }
+
+        .role-option:hover .role-card {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .role-option input[type="radio"]:checked + .role-card {
+            background: var(--gradient-soul-aurora);
+            border-color: var(--soul-sky);
+            color: white;
+        }
+
+        .role-icon {
+            font-size: 2rem;
+            margin-bottom: var(--space-sm);
+        }
+
+        .role-title {
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+        }
+
+        .role-desc {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+
+        .form-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: var(--space-xl);
+            border-top: var(--border-whisper);
+        }
+
+        .creation-progress {
+            margin-top: var(--space-xl);
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--space-lg);
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-sm);
+            opacity: 0.5;
+            transition: all 0.3s var(--ease-soul);
+        }
+
+        .progress-step.active {
+            opacity: 1;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: var(--border-whisper);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            transition: all 0.3s var(--ease-soul);
+        }
+
+        .progress-step.active .step-circle {
+            background: var(--gradient-soul-fire);
+            border-color: var(--soul-heart);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.875rem;
+            color: var(--soul-silver);
+        }
+
+        .progress-step.active .step-label {
+            color: var(--soul-pearl);
+        }
+
+        .soul-preview {
+            text-align: center;
+        }
+
+        .preview-avatar {
+            position: relative;
+        }
+
+        .sticky {
+            position: sticky;
+        }
+
+        /* Revolutionary Hidden State */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Revolutionary Space Utility */
+        .space-y-lg > * + * {
+            margin-top: var(--space-lg);
+        }
+
+        .space-y-xl > * + * {
+            margin-top: var(--space-xl);
+        }
+
+        /* Revolutionary Responsive Design */
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+                gap: var(--space-2xl);
+            }
+            
+            .sticky {
+                position: static;
+            }
+            
+            .role-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .trait-options {
+                justify-content: center;
+            }
+        }
+    </style>
+</body>
+</html>
