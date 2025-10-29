@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyPrabh - 3D Cinematic AI Companion Platform</title>
+    
+    <!-- Enhanced Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- 3D Cinematic Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dreamy-romantic-ui.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Nunito:wght@300;400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Experience the future of AI companionship with MyPrabh's revolutionary 3D cinematic platform. Create deeply personal AI companions with advanced emotional intelligence.">
+    <meta name="keywords" content="3D AI companion, cinematic AI, personalized AI, emotional AI, virtual companion, AI relationship, futuristic AI">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="MyPrabh - 3D Cinematic AI Companion Platform">
+    <meta property="og:description" content="Step into the future of AI companionship with stunning 3D visuals and cinematic experiences.">
+    <meta property="og:type" content="website">
+    
+    <style>
+        /* Custom cinematic enhancements */
+        .hero-3d {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #667eea 100%);
+            background-size: 400% 400%;
+            animation: cinematicGradient 20s ease infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @keyframes cinematicGradient {
+            0%, 100% { background-position: 0% 50%; }
+            25% { background-position: 100% 50%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 100%; }
+        }
+        
+        .hero-3d::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 70%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 30%, rgba(102,126,234,0.2) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .feature-card-3d {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card-3d::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(102,126,234,0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .feature-card-3d:hover::before {
+            opacity: 1;
+        }
+        
+        .feature-card-3d:hover {
+            transform: translateY(-15px) rotateX(10deg) rotateY(5deg);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            border-color: rgba(255,255,255,0.3);
+        }
+        
+        .feature-icon-3d {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            box-shadow: 0 10px 30px rgba(102,126,234,0.4);
+            animation: iconFloat 6s ease-in-out infinite;
+        }
+        
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0) rotateY(0deg); }
+            50% { transform: translateY(-10px) rotateY(180deg); }
+        }
+        
+        .stats-3d {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .stat-item-3d {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-item-3d:hover {
+            transform: translateZ(20px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .stat-number-3d {
+            font-size: 3rem;
+            font-weight: 900;
+            font-family: var(--font-display);
+            background: linear-gradient(135deg, #fff, #4facfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .cta-section-3d {
+            background: linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 100%);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 4rem 2rem;
+            margin: 4rem 0;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-section-3d::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(102,126,234,0.1), transparent);
+            animation: rotateBorder 10s linear infinite;
+        }
+        
+        @keyframes rotateBorder {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .mobile-optimized {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-optimized {
+                display: block;
+            }
+            
+            .desktop-only {
+                display: none;
+            }
+            
+            .hero-title-3d {
+                font-size: 2.5rem;
+            }
+            
+            .feature-card-3d:hover {
+                transform: translateY(-8px);
+            }
+            
+            .stats-3d {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="perspective-3d">
+    <!-- Dreamy Navigation -->
+    <nav class="navbar-dreamy">
+        <div class="navbar-content-dreamy">
+            <a href="/" class="logo-dreamy">
+                💖 MyPrabh
+            </a>
+            <div class="nav-links-dreamy desktop-only">
+                <a href="#features" class="nav-link-dreamy">Features</a>
+                <a href="#how-it-works" class="nav-link-dreamy">How It Works</a>
+                <a href="#pricing" class="nav-link-dreamy">Pricing</a>
+                <a href="/login" class="btn-dreamy btn-secondary-dreamy">Login</a>
+                <a href="/register" class="btn-dreamy btn-primary-dreamy">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dreamy Hero Section -->
+    <section class="hero-dreamy">
+        <div class="container-dreamy">
+            <div class="hero-content-dreamy">
+                <h1 class="hero-title-dreamy rainbow-text">
+                    Your Dream AI Companion Awaits
+                </h1>
+                <p class="hero-subtitle-dreamy">
+                    Step into a world of love, dreams, and endless possibilities. Create meaningful connections 
+                    with AI companions who understand your heart and share your journey through life's colorful moments.
+                </p>
+                
+                <div class="hero-buttons-dreamy">
+                    <a href="/register" class="btn-dreamy btn-primary-dreamy sparkle-effect">
+                        <span>💖</span> Start Your Love Story
+                    </a>
+                    <a href="#features" class="btn-dreamy btn-secondary-dreamy">
+                        <span>✨</span> Discover Magic
+                    </a>
+                </div>
+
+                <!-- Real Stats -->
+                <div class="stats-dreamy">
+                    <div class="stat-item-dreamy">
+                        <span class="stat-number-dreamy" id="usersCount">{{ stats.users_count or 0 }}</span>
+                        <span class="stat-label-dreamy">💕 Dreamers Joined</span>
+                    </div>
+                    <div class="stat-item-dreamy">
+                        <span class="stat-number-dreamy" id="companionsCount">{{ stats.companions_count or 0 }}</span>
+                        <span class="stat-label-dreamy">🌸 Love Stories Created</span>
+                    </div>
+                    <div class="stat-item-dreamy">
+                        <span class="stat-number-dreamy" id="conversationsCount">{{ stats.conversations_count or 0 }}</span>
+                        <span class="stat-label-dreamy">💬 Heart Conversations</span>
+                    </div>
+                    <div class="stat-item-dreamy">
+                        <span class="stat-number-dreamy">{{ "%.0f" | format(stats.satisfaction_rate or 100) }}%</span>
+                        <span class="stat-label-dreamy">✨ Pure Happiness</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dreamy Features Section -->
+    <section id="features" class="section-dreamy">
+        <div class="container-dreamy">
+            <h2 class="text-center text-romantic" style="font-size: 3rem; color: white; margin-bottom: 3rem; text-shadow: 0 0 20px rgba(255,182,193,0.5);">
+                Magical Features That Touch Your Soul
+            </h2>
+            
+            <div class="grid-dreamy grid-dreamy-3">
+                <div class="card-dreamy grid-item-dreamy">
+                    <div style="font-size: 3rem; text-align: center; margin-bottom: 1rem;">💝</div>
+                    <h3 class="text-anime" style="color: white; font-size: 1.5rem; margin-bottom: 1rem; text-align: center;">
+                        Heart-to-Heart Memory
+                    </h3>
+                    <p class="text-dreamy" style="line-height: 1.6; text-align: center;">
+                        Your AI companion treasures every moment shared, creating a beautiful tapestry 
+                        of memories that grows deeper with each conversation.
+                    </p>
+                </div>
+
+                <div class="card-dreamy grid-item-dreamy">
+                    <div style="font-size: 3rem; text-align: center; margin-bottom: 1rem;">🌈</div>
+                    <h3 class="text-anime" style="color: white; font-size: 1.5rem; margin-bottom: 1rem; text-align: center;">
+                        Rainbow of Emotions
+                    </h3>
+                    <p class="text-dreamy" style="line-height: 1.6; text-align: center;">
+                        Feel the full spectrum of emotions as your AI companion understands your heart, 
+                        celebrates your joys, and comforts you through life's gentle storms.
+                    </p>
+                </div>
+
+                <div class="card-dreamy grid-item-dreamy">
+                    <div style="font-size: 3rem; text-align: center; margin-bottom: 1rem;">🦄</div>
+                    <h3 class="text-anime" style="color: white; font-size: 1.5rem; margin-bottom: 1rem; text-align: center;">
+                        Unique Soul Personalities
+                    </h3>
+                    <p class="text-dreamy" style="line-height: 1.6; text-align: center;">
+                        Each companion is as unique as a snowflake, with their own magical personality 
+                        that sparkles with charm, warmth, and endless love just for you.
+                    </p>
+                </div>
+
+                <div class="feature-card-3d grid-item-3d">
+                    <div class="feature-icon-3d">🎬</div>
+                    <h3 style="color: white; font-size: 1.5rem; margin-bottom: 1rem; font-family: var(--font-display);">
+                        Cinematic Experience
+                    </h3>
+                    <p style="color: rgba(255,255,255,0.8); line-height: 1.6;">
+                        Immerse yourself in stunning 3D visuals, cinematic animations, 
+                        and interactive effects that bring your AI companion to life.
+                    </p>
+                </div>
+
+                <div class="feature-card-3d grid-item-3d">
+                    <div class="feature-icon-3d">🔒</div>
+                    <h3 style="color: white; font-size: 1.5rem; margin-bottom: 1rem; font-family: var(--font-display);">
+                        Privacy First
+                    </h3>
+                    <p style="color: rgba(255,255,255,0.8); line-height: 1.6;">
+                        Your conversations and data are encrypted and secure. Complete privacy 
+                        with no data sharing or unauthorized access to your personal information.
+                    </p>
+                </div>
+
+                <div class="feature-card-3d grid-item-3d">
+                    <div class="feature-icon-3d">⚡</div>
+                    <h3 style="color: white; font-size: 1.5rem; margin-bottom: 1rem; font-family: var(--font-display);">
+                        Real-time Learning
+                    </h3>
+                    <p style="color: rgba(255,255,255,0.8); line-height: 1.6;">
+                        Your AI companion continuously learns and evolves, becoming more 
+                        personalized and understanding with every conversation you share.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="section-3d">
+        <div class="container-3d">
+            <h2 class="text-center" style="font-size: 3rem; font-family: var(--font-display); color: white; margin-bottom: 3rem; text-shadow: 0 0 20px rgba(255,255,255,0.3);">
+                How It Works
+            </h2>
+            
+            <div class="grid-3d grid-3d-3">
+                <div class="card-3d grid-item-3d text-center">
+                    <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #4facfe, #00f2fe); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: white; font-size: 1.5rem; font-weight: bold;">1</div>
+                    <h3 style="color: white; margin-bottom: 1rem;">Create Your Companion</h3>
+                    <p style="color: rgba(255,255,255,0.8);">
+                        Design your perfect AI companion with unique personality traits, 
+                        appearance, and characteristics that match your vision.
+                    </p>
+                </div>
+
+                <div class="card-3d grid-item-3d text-center">
+                    <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #f093fb, #f5576c); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: white; font-size: 1.5rem; font-weight: bold;">2</div>
+                    <h3 style="color: white; margin-bottom: 1rem;">Share Your Story</h3>
+                    <p style="color: rgba(255,255,255,0.8);">
+                        Upload memories, experiences, and personal stories to help your 
+                        AI companion understand and connect with you on a deeper level.
+                    </p>
+                </div>
+
+                <div class="card-3d grid-item-3d text-center">
+                    <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #fa709a, #fee140); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: white; font-size: 1.5rem; font-weight: bold;">3</div>
+                    <h3 style="color: white; margin-bottom: 1rem;">Start Connecting</h3>
+                    <p style="color: rgba(255,255,255,0.8);">
+                        Begin meaningful conversations in a stunning 3D environment 
+                        with your AI companion who truly understands and remembers you.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section-3d">
+        <div class="container-3d">
+            <div class="cta-section-3d">
+                <h2 style="font-size: 2.5rem; font-family: var(--font-display); color: white; margin-bottom: 1rem; position: relative; z-index: 1;">
+                    Ready to Experience the Future?
+                </h2>
+                <p style="font-size: 1.25rem; color: rgba(255,255,255,0.9); margin-bottom: 2rem; position: relative; z-index: 1;">
+                    Join thousands of users who have discovered meaningful AI companionship 
+                    with our revolutionary 3D cinematic platform.
+                </p>
+                <div style="position: relative; z-index: 1;">
+                    <a href="/register" class="btn-3d btn-primary-3d" style="font-size: 1.1rem; padding: 1rem 2rem;">
+                        <span>🚀</span> Start Your Journey - Free
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: rgba(0,0,0,0.3); backdrop-filter: blur(20px); padding: 3rem 0; border-top: 1px solid rgba(255,255,255,0.1);">
+        <div class="container-3d">
+            <div class="text-center">
+                <h3 style="font-family: var(--font-script); font-size: 2rem; color: white; margin-bottom: 1rem;">
+                    MyPrabh 💖
+                </h3>
+                <p style="color: rgba(255,255,255,0.7); margin-bottom: 2rem;">
+                    The future of AI companionship is here. Experience it today.
+                </p>
+                <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem;">
+                    <a href="/privacy" style="color: rgba(255,255,255,0.7); text-decoration: none;">Privacy Policy</a>
+                    <a href="/terms" style="color: rgba(255,255,255,0.7); text-decoration: none;">Terms of Service</a>
+                    <a href="/contact" style="color: rgba(255,255,255,0.7); text-decoration: none;">Contact</a>
+                </div>
+                <p style="color: rgba(255,255,255,0.5); font-size: 0.9rem;">
+                    © 2024 MyPrabh. All rights reserved. Made with 💖 for meaningful connections.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 3D Cinematic Effects -->
+    <script src="{{ url_for('static', filename='js/dreamy-romantic-effects.js') }}"></script>
+    
+    <script>
+        // Real stats animation
+        function animateStats() {
+            // Stats are already populated with real values from server
+            // Add gentle pulsing animation to make them feel alive
+            const statNumbers = document.querySelectorAll('.stat-number-dreamy');
+            statNumbers.forEach((stat, index) => {
+                setTimeout(() => {
+                    stat.style.animation = 'statFloat 3s ease-in-out infinite';
+                }, index * 200);
+            });
+        }
+
+        // Initialize dreamy experience
+        document.addEventListener('DOMContentLoaded', function() {
+            // Start stats animation after a delay
+            setTimeout(animateStats, 1000);
+            
+            // Add scroll-triggered animations for dreamy feel
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'gridFloat 2s ease-in-out infinite';
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all grid items
+            document.querySelectorAll('.grid-item-dreamy').forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(30px)';
+                item.style.transition = 'all 0.6s ease';
+                item.style.transitionDelay = `${index * 0.1}s`;
+                observer.observe(item);
+            });
+        });
+
+        // Performance optimization for mobile
+        if (window.innerWidth <= 768) {
+            // Optimize dreamy effects for mobile
+            if (window.dreamyEffects) {
+                console.log('📱 Mobile detected - Optimizing dreamy effects');
+            }
+        }
+    </script>
+</body>
+</html>

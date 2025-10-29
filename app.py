@@ -49,17 +49,67 @@ def index():
     """Landing page"""
     try:
         stats = {
-            'total_users': 1247,
-            'total_prabhs': 892,
-            'early_signups': 3456,
-            'active_conversations': 2676,
-            'happiness_score': '98%',
-            'countries': 25
+            'total_users': len(users_db),
+            'total_prabhs': len(prabhs_db),
+            'early_signups': 0,
+            'active_conversations': 0,
+            'happiness_score': '100%',
+            'countries': 1
         }
-        return render_template('unicorn_landing.html', stats=stats)
+        return render_template('cinematic_landing.html', stats=stats)
     except Exception as e:
         print(f"Landing page error: {e}")
         return f"<h1>My Prabh</h1><p>Welcome to My Prabh! <a href='/create_account'>Create Account</a></p>", 200
+
+# 3D Cinematic Routes
+@app.route('/cinematic')
+def cinematic_landing():
+    """3D Cinematic Landing Page"""
+    try:
+        stats = {
+            'users_count': len(users_db),
+            'companions_count': len(prabhs_db),
+            'conversations_count': 0,
+            'satisfaction_rate': 100.0
+        }
+        return render_template('cinematic_landing.html', stats=stats)
+    except Exception as e:
+        print(f"Cinematic landing error: {e}")
+        return redirect(url_for('index'))
+
+@app.route('/cinematic/dashboard')
+@login_required
+def cinematic_dashboard():
+    """3D Cinematic Dashboard"""
+    try:
+        user_prabhs = [p for p in prabhs_db.values() if p['user_id'] == session['user_id']]
+        admin_email = 'abhaythakur@aiprabh.com'
+        is_admin = session.get('user_email') == admin_email
+        
+        return render_template('cinematic_dashboard.html',
+                             user_name=session.get('user_name', 'User'),
+                             is_admin=is_admin,
+                             prabh_instances=user_prabhs)
+    except Exception as e:
+        print(f"Cinematic dashboard error: {e}")
+        return redirect(url_for('dashboard'))
+
+@app.route('/cinematic/chat/<prabh_id>')
+@login_required
+def cinematic_chat(prabh_id):
+    """3D Cinematic Chat Interface"""
+    try:
+        prabh_data = prabhs_db.get(prabh_id)
+        if not prabh_data or prabh_data['user_id'] != session['user_id']:
+            return redirect(url_for('cinematic_dashboard'))
+        
+        return render_template('cinematic_chat.html',
+                             prabh_id=prabh_id,
+                             prabh_name=prabh_data['prabh_name'],
+                             prabh_description=prabh_data['character_description'])
+    except Exception as e:
+        print(f"Cinematic chat error: {e}")
+        return redirect(url_for('cinematic_dashboard'))
 
 @app.route('/health')
 def health_check():
@@ -77,7 +127,7 @@ def register_page():
     try:
         if is_authenticated():
             return redirect(url_for('dashboard'))
-        return render_template('unicorn_register.html')
+        return render_template('cinematic_register.html')
     except Exception as e:
         print(f"Register page error: {e}")
         return f"<h1>Create Account</h1><form method='post' action='/register'><input name='name' placeholder='Name' required><input name='email' placeholder='Email' required><input name='password' type='password' placeholder='Password' required><button type='submit'>Register</button></form>", 200
@@ -94,7 +144,7 @@ def login_page():
     try:
         if is_authenticated():
             return redirect(url_for('dashboard'))
-        return render_template('unicorn_login.html')
+        return render_template('cinematic_login.html')
     except Exception as e:
         print(f"Login page error: {e}")
         return f"<h1>Login</h1><form method='post' action='/login'><input name='email' placeholder='Email' required><input name='password' type='password' placeholder='Password' required><button type='submit'>Login</button></form><p><a href='/create_account'>Create Account</a></p>", 200
@@ -206,7 +256,7 @@ def dashboard():
         admin_email = 'abhaythakur@aiprabh.com'
         is_admin = session.get('user_email') == admin_email
         
-        return render_template('unicorn_dashboard.html', 
+        return render_template('cinematic_dashboard.html', 
                              prabhs=user_prabhs, 
                              prabh_instances=user_prabhs,
                              user_stats=user_stats,
@@ -220,7 +270,7 @@ def dashboard():
 @app.route('/create-prabh')
 @login_required
 def create_prabh_page():
-    return render_template('unicorn_create_companion.html')
+    return render_template('cinematic_create_companion.html')
 
 @app.route('/create-prabh', methods=['POST'])
 @login_required
@@ -277,19 +327,10 @@ def chat_interface(prabh_id):
     if not prabh_data or prabh_data['user_id'] != session['user_id']:
         return redirect(url_for('dashboard'))
     
-    prabh_context = {
-        'name': prabh_data['prabh_name'],
-        'description': prabh_data['character_description'],
-        'story': prabh_data.get('story_content', ''),
-        'personality': prabh_data.get('personality_traits', ''),
-        'created_at': prabh_data.get('created_at'),
-        'message_count': 0
-    }
-    
-    return render_template('unicorn_chat.html', 
+    return render_template('cinematic_chat.html', 
                          prabh_id=prabh_id,
-                         prabh_data=prabh_context,
-                         chat_history=[],
+                         prabh_name=prabh_data['prabh_name'],
+                         prabh_description=prabh_data['character_description'],
                          user_name=session.get('user_name', 'User'))
 
 @app.route('/chat-message', methods=['POST'])
@@ -313,6 +354,10 @@ def chat_message():
         
         # Get AI response using natural AI service
         try:
+            import sys
+            import os
+            sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+            
             from services.natural_ai_service import NaturalAIService
             ai_service = NaturalAIService()
             
@@ -345,8 +390,7 @@ def chat_message():
             'success': True,
             'response': response,
             'timestamp': datetime.now().isoformat(),
-            'character_name': prabh_data['prabh_name'],
-            'model_used': ai_response.get('model_used', 'fallback') if 'ai_response' in locals() else 'fallback'
+            'character_name': prabh_data['prabh_name']
         })
         
     except Exception as e:
@@ -443,10 +487,10 @@ def admin_setup():
 def live_stats():
     """Live stats API endpoint"""
     return jsonify({
-        'visitors': len(users_db) * 5 + 1247,
-        'prabhs_created': len(prabhs_db) + 892,
-        'users': len(users_db) + 1247,
-        'early_access': len(users_db) * 2 + 3456
+        'visitors': len(users_db),
+        'prabhs_created': len(prabhs_db),
+        'users': len(users_db),
+        'early_access': 0
     })
 
 @app.route('/submit-early-access', methods=['POST'])
