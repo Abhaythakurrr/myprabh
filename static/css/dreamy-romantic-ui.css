@@ -6,23 +6,23 @@
 
 /* ===== DREAMY ROMANTIC DESIGN SYSTEM ===== */
 :root {
-  /* Romantic Color Palette */
-  --dream-pink: #FFB6C1;
-  --soft-rose: #FFC0CB;
-  --heaven-blue: #E6F3FF;
-  --angel-white: #FFFAFA;
-  --sunset-orange: #FFE4E1;
-  --lavender-mist: #E6E6FA;
-  --cherry-blossom: #FFB7C5;
-  --sky-blue: #87CEEB;
-  --warm-peach: #FFDAB9;
-  --mint-green: #F0FFF0;
+  /* High Contrast Romantic Colors */
+  --dream-pink: #FF1493;
+  --soft-rose: #FF69B4;
+  --heaven-blue: #4169E1;
+  --angel-white: #FFFFFF;
+  --sunset-orange: #FF4500;
+  --lavender-mist: #9370DB;
+  --cherry-blossom: #DC143C;
+  --sky-blue: #1E90FF;
+  --warm-peach: #FF6347;
+  --mint-green: #00FF7F;
   
-  /* Gradients for dreamy effects */
-  --heaven-gradient: linear-gradient(135deg, #FFB6C1 0%, #E6F3FF 25%, #E6E6FA 50%, #FFDAB9 75%, #F0FFF0 100%);
-  --sunset-gradient: linear-gradient(135deg, #FFE4E1 0%, #FFB7C5 50%, #E6F3FF 100%);
-  --dream-gradient: linear-gradient(45deg, #FFB6C1, #E6E6FA, #87CEEB, #FFDAB9);
-  --anime-gradient: linear-gradient(135deg, #FF69B4 0%, #FF1493 25%, #DA70D6 50%, #BA55D3 75%, #9370DB 100%);
+  /* High Contrast Gradients */
+  --heaven-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #533483 75%, #e94560 100%);
+  --sunset-gradient: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 50%, #45b7d1 100%);
+  --dream-gradient: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
+  --anime-gradient: linear-gradient(135deg, #FF1493 0%, #FF69B4 25%, #DA70D6 50%, #BA55D3 75%, #9370DB 100%);
   
   /* Soft shadows for heavenly feel */
   --dream-shadow: 0 8px 32px rgba(255, 182, 193, 0.3);
@@ -55,6 +55,7 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
+  color: #FFFFFF;
 }
 
 @keyframes dreamyFlow {
@@ -351,15 +352,16 @@ body {
 
 /* ===== DREAMY CARDS ===== */
 .card-dreamy {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 182, 193, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 25px;
   padding: 2rem;
   box-shadow: var(--dream-shadow);
   transition: all 0.4s ease;
   position: relative;
   overflow: hidden;
+  color: #FFFFFF;
 }
 
 .card-dreamy::before {
@@ -434,18 +436,18 @@ body {
 .form-input-dreamy {
   width: 100%;
   padding: 1rem 1.5rem;
-  border: 2px solid rgba(255, 182, 193, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.5);
   border-radius: 25px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(10px);
-  color: white;
+  color: #FFFFFF;
   font-family: var(--font-dream);
   transition: all 0.3s ease;
   font-size: 1rem;
 }
 
 .form-input-dreamy::placeholder {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .form-input-dreamy:focus {
@@ -600,7 +602,7 @@ body {
 
 /* ===== UTILITY CLASSES ===== */
 .text-center { text-align: center; }
-.text-dreamy { color: rgba(255, 255, 255, 0.9); }
+.text-dreamy { color: #FFFFFF; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
 .text-romantic { font-family: var(--font-romantic); }
 .text-anime { font-family: var(--font-anime); }
 

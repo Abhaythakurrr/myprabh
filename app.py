@@ -61,10 +61,10 @@ def index():
         print(f"Landing page error: {e}")
         return f"<h1>My Prabh</h1><p>Welcome to My Prabh! <a href='/create_account'>Create Account</a></p>", 200
 
-# 3D Cinematic Routes
+# Dreamy Routes
 @app.route('/cinematic')
 def cinematic_landing():
-    """3D Cinematic Landing Page"""
+    """Dreamy Landing Page"""
     try:
         stats = {
             'users_count': len(users_db),
@@ -74,13 +74,25 @@ def cinematic_landing():
         }
         return render_template('cinematic_landing.html', stats=stats)
     except Exception as e:
-        print(f"Cinematic landing error: {e}")
+        print(f"Landing error: {e}")
         return redirect(url_for('index'))
+
+@app.route('/create-companion')
+@app.route('/companion/create')
+@login_required
+def create_companion_page():
+    """Create AI Companion Page"""
+    try:
+        return render_template('cinematic_create_companion.html',
+                             user_name=session.get('user_name', 'User'))
+    except Exception as e:
+        print(f"Create companion error: {e}")
+        return redirect(url_for('dashboard'))
 
 @app.route('/cinematic/dashboard')
 @login_required
 def cinematic_dashboard():
-    """3D Cinematic Dashboard"""
+    """Dreamy Dashboard"""
     try:
         user_prabhs = [p for p in prabhs_db.values() if p['user_id'] == session['user_id']]
         admin_email = 'abhaythakur@aiprabh.com'
@@ -91,25 +103,25 @@ def cinematic_dashboard():
                              is_admin=is_admin,
                              prabh_instances=user_prabhs)
     except Exception as e:
-        print(f"Cinematic dashboard error: {e}")
+        print(f"Dashboard error: {e}")
         return redirect(url_for('dashboard'))
 
 @app.route('/cinematic/chat/<prabh_id>')
 @login_required
 def cinematic_chat(prabh_id):
-    """3D Cinematic Chat Interface"""
+    """Dreamy Chat Interface"""
     try:
         prabh_data = prabhs_db.get(prabh_id)
         if not prabh_data or prabh_data['user_id'] != session['user_id']:
-            return redirect(url_for('cinematic_dashboard'))
+            return redirect(url_for('dashboard'))
         
         return render_template('cinematic_chat.html',
                              prabh_id=prabh_id,
                              prabh_name=prabh_data['prabh_name'],
                              prabh_description=prabh_data['character_description'])
     except Exception as e:
-        print(f"Cinematic chat error: {e}")
-        return redirect(url_for('cinematic_dashboard'))
+        print(f"Chat error: {e}")
+        return redirect(url_for('dashboard'))
 
 @app.route('/health')
 def health_check():
@@ -270,7 +282,12 @@ def dashboard():
 @app.route('/create-prabh')
 @login_required
 def create_prabh_page():
-    return render_template('cinematic_create_companion.html')
+    try:
+        return render_template('cinematic_create_companion.html', 
+                             user_name=session.get('user_name', 'User'))
+    except Exception as e:
+        print(f"Create Prabh page error: {e}")
+        return render_template('cinematic_register.html')  # Fallback
 
 @app.route('/create-prabh', methods=['POST'])
 @login_required
@@ -478,6 +495,71 @@ def admin_setup():
     except Exception as e:
         print(f"Admin setup error: {e}")
         return jsonify({'error': 'Admin setup failed'}), 500
+
+# ============================================================================
+# SEO & SITEMAP ROUTES
+# ============================================================================
+
+@app.route('/sitemap.xml')
+def sitemap():
+    """Generate sitemap for SEO"""
+    from flask import make_response
+    
+    sitemap_xml = '''<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://aiprabh.com/</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>https://aiprabh.com/register</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://aiprabh.com/login</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://aiprabh.com/dashboard</loc>
+        <changefreq>daily</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://aiprabh.com/create-prabh</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://aiprabh.com/terms</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>https://aiprabh.com/privacy</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+</urlset>'''
+    
+    response = make_response(sitemap_xml)
+    response.headers['Content-Type'] = 'application/xml'
+    return response
+
+@app.route('/robots.txt')
+def robots():
+    """Robots.txt for SEO"""
+    from flask import make_response
+    
+    robots_txt = '''User-agent: *
+Allow: /
+Sitemap: https://aiprabh.com/sitemap.xml'''
+    
+    response = make_response(robots_txt)
+    response.headers['Content-Type'] = 'text/plain'
+    return response
 
 # ============================================================================
 # API ROUTES

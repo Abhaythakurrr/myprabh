@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - MyPrabh AI Companion</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Nunito:wght@300;400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dreamy-romantic-ui.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    
+    <style>
+        .dashboard-dreamy {
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+        
+        .dashboard-header-dreamy {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .welcome-title-dreamy {
+            font-family: var(--font-romantic);
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 700;
+            background: var(--anime-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            animation: titleFloat 6s ease-in-out infinite;
+        }
+        
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .companions-grid-dreamy {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .companion-card-dreamy {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            padding: 2rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            color: #FFFFFF;
+        }
+        
+        .companion-card-dreamy:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: var(--heaven-shadow);
+            border-color: rgba(255, 105, 180, 0.5);
+        }
+        
+        .companion-avatar-dreamy {
+            width: 80px;
+            height: 80px;
+            background: var(--anime-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            margin: 0 auto 1.5rem;
+            box-shadow: var(--dream-shadow);
+            animation: avatarPulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes avatarPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .companion-name-dreamy {
+            font-family: var(--font-anime);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .companion-description-dreamy {
+            color: rgba(255,255,255,0.9);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+        
+        .create-companion-card-dreamy {
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(15px);
+            border: 2px dashed rgba(255, 255, 255, 0.5);
+            border-radius: 25px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+        }
+        
+        .create-companion-card-dreamy:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 105, 180, 0.8);
+            transform: translateY(-10px);
+            box-shadow: var(--dream-shadow);
+        }
+        
+        .create-icon-dreamy {
+            width: 100px;
+            height: 100px;
+            background: var(--anime-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            animation: createIconFloat 8s ease-in-out infinite;
+            box-shadow: var(--dream-shadow);
+        }
+        
+        @keyframes createIconFloat {
+            0%, 100% { transform: translateY(0) rotateZ(0deg); }
+            50% { transform: translateY(-15px) rotateZ(180deg); }
+        }
+        
+        .quick-actions-dreamy {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .quick-action-dreamy {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .quick-action-dreamy:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+            box-shadow: var(--dream-shadow);
+            color: white;
+            text-decoration: none;
+        }
+        
+        @media (max-width: 768px) {
+            .companions-grid-dreamy {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .quick-actions-dreamy {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body class="perspective-3d">
+    <!-- Dreamy Navigation -->
+    <nav class="navbar-dreamy">
+        <div class="navbar-content-dreamy">
+            <a href="/" class="logo-dreamy">
+                💖 MyPrabh
+            </a>
+            <div class="nav-links-dreamy">
+                <span style="color: rgba(255,255,255,0.8);">Welcome, {{ user_name }}!</span>
+                {% if is_admin %}
+                <span style="color: #FFD700; font-weight: 600;">👑 Admin</span>
+                {% endif %}
+                <a href="/profile" class="nav-link-dreamy">
+                    <i class="fas fa-user"></i> Profile
+                </a>
+                <a href="/logout" class="btn-dreamy btn-secondary-dreamy">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-dreamy">
+        <div class="container-dreamy">
+            <!-- Header -->
+            <div class="dashboard-header-dreamy">
+                <h1 class="welcome-title-dreamy">Your AI Companions</h1>
+                <p style="color: rgba(255,255,255,0.9); font-size: 1.1rem;">
+                    <i class="fas fa-heart" style="color: #f093fb; margin-right: 0.5rem;"></i>
+                    Experience the magic of AI companionship in paradise
+                </p>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions-dreamy">
+                <a href="/create-prabh" class="quick-action-dreamy">
+                    <i class="fas fa-plus-circle" style="font-size: 2rem; margin-bottom: 0.5rem; color: #4facfe;"></i>
+                    <div style="font-weight: 600;">Create Companion</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">Start a new AI relationship</div>
+                </a>
+                <a href="/memory/upload" class="quick-action-dreamy">
+                    <i class="fas fa-brain" style="font-size: 2rem; margin-bottom: 0.5rem; color: #f093fb;"></i>
+                    <div style="font-weight: 600;">Upload Memories</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">Share your experiences</div>
+                </a>
+                <a href="/settings" class="quick-action-dreamy">
+                    <i class="fas fa-cog" style="font-size: 2rem; margin-bottom: 0.5rem; color: #fa709a;"></i>
+                    <div style="font-weight: 600;">Settings</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">Customize your experience</div>
+                </a>
+                <a href="/help" class="quick-action-dreamy">
+                    <i class="fas fa-question-circle" style="font-size: 2rem; margin-bottom: 0.5rem; color: #fee140;"></i>
+                    <div style="font-weight: 600;">Help & Support</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">Get assistance</div>
+                </a>
+            </div>
+
+            <!-- Companions Grid -->
+            <div class="companions-grid-dreamy">
+                <!-- Create New Companion Card -->
+                <div class="create-companion-card-dreamy" onclick="window.location.href='/create-prabh'">
+                    <div class="create-icon-dreamy">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <h3 style="color: white; font-family: var(--font-anime); font-size: 1.5rem; margin-bottom: 0.5rem;">
+                        Create New Companion
+                    </h3>
+                    <p style="color: rgba(255,255,255,0.8); margin: 0;">
+                        Design your perfect AI companion with unique personality and memories
+                    </p>
+                </div>
+
+                <!-- Existing Companions -->
+                {% if prabh_instances %}
+                {% for prabh in prabh_instances %}
+                <div class="companion-card-dreamy">
+                    <div class="companion-avatar-dreamy">
+                        💖
+                    </div>
+                    <h3 class="companion-name-dreamy">{{ prabh.prabh_name }}</h3>
+                    <p class="companion-description-dreamy">
+                        {{ prabh.character_description or "Your personalized AI companion with advanced emotional intelligence and memory-based conversations." }}
+                    </p>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; font-size: 0.9rem; color: rgba(255,255,255,0.7);">
+                        <span>
+                            <i class="fas fa-calendar"></i>
+                            Created: {{ prabh.created_at.strftime('%m/%d/%Y') if prabh.created_at else 'Recently' }}
+                        </span>
+                    </div>
+                    <div style="display: flex; gap: 1rem;">
+                        <a href="/chat/{{ prabh.prabh_id }}" class="btn-dreamy btn-primary-dreamy" style="flex: 1; text-align: center; text-decoration: none;">
+                            <i class="fas fa-comments"></i> Chat Now
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; color: rgba(255,255,255,0.8);">
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">💝</div>
+                    <h3>No AI companions yet</h3>
+                    <p>Create your first AI companion to start building meaningful connections in paradise.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/dreamy-romantic-effects.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.companion-card-dreamy, .create-companion-card-dreamy');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.style.animation = 'gridFloat 6s ease-in-out infinite';
+            });
+        });
+    </script>
+</body>
+</html>

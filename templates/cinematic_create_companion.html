@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create AI Companion - MyPrabh 3D Cinematic</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cinematic-3d-ui.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    
+    <style>
+        .create-3d {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #667eea 100%);
+            background-size: 400% 400%;
+            animation: cinematicGradient 25s ease infinite;
+            padding: 2rem 0;
+        }
+        
+        .create-container-3d {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .create-header-3d {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .create-title-3d {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #fff 0%, #4facfe 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            animation: titleFloat 6s ease-in-out infinite;
+        }
+        
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .create-form-3d {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 25px;
+            padding: 3rem;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            transform-style: preserve-3d;
+        }
+        
+        .form-section-3d {
+            margin-bottom: 2rem;
+        }
+        
+        .section-title-3d {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-textarea-3d {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .character-count {
+            text-align: right;
+            font-size: 0.875rem;
+            color: rgba(255,255,255,0.6);
+            margin-top: 0.5rem;
+        }
+        
+        .create-actions-3d {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 3rem;
+        }
+        
+        @media (max-width: 768px) {
+            .create-container-3d {
+                padding: 0 1rem;
+            }
+            
+            .create-form-3d {
+                padding: 2rem;
+            }
+            
+            .create-actions-3d {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body class="perspective-3d">
+    <!-- Navigation -->
+    <nav class="navbar-3d">
+        <div class="navbar-content-3d">
+            <a href="/" class="logo-3d">
+                <span style="font-size: 1.2em;">💖</span> MyPrabh
+            </a>
+            <div class="nav-links-3d">
+                <a href="/dashboard" class="nav-link-3d">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="create-3d">
+        <div class="create-container-3d">
+            <div class="create-header-3d">
+                <h1 class="create-title-3d">Create Your AI Companion</h1>
+                <p style="color: rgba(255,255,255,0.9); font-size: 1.1rem;">
+                    Design a unique AI companion with personality, memories, and emotional depth
+                </p>
+            </div>
+
+            <form id="createCompanionForm" class="create-form-3d">
+                <div class="form-section-3d">
+                    <h3 class="section-title-3d">
+                        <i class="fas fa-user"></i> Basic Information
+                    </h3>
+                    
+                    <div class="form-group-3d">
+                        <label class="form-label-3d">Companion Name *</label>
+                        <input type="text" name="prabh_name" class="form-input-3d" 
+                               placeholder="What would you like to call your companion?" 
+                               maxlength="50" required>
+                    </div>
+                </div>
+
+                <div class="form-section-3d">
+                    <h3 class="section-title-3d">
+                        <i class="fas fa-heart"></i> Personality & Character
+                    </h3>
+                    
+                    <div class="form-group-3d">
+                        <label class="form-label-3d">Character Description *</label>
+                        <textarea name="character_description" class="form-input-3d form-textarea-3d" 
+                                  placeholder="Describe your companion's personality, appearance, and core traits..."
+                                  maxlength="1000" required></textarea>
+                        <div class="character-count" id="descriptionCount">0/1000</div>
+                    </div>
+                    
+                    <div class="form-group-3d">
+                        <label class="form-label-3d">Personality Traits</label>
+                        <input type="text" name="personality_traits" class="form-input-3d" 
+                               placeholder="e.g., caring, funny, intelligent, romantic, supportive"
+                               maxlength="200">
+                    </div>
+                </div>
+
+                <div class="form-section-3d">
+                    <h3 class="section-title-3d">
+                        <i class="fas fa-book"></i> Memories & Background
+                    </h3>
+                    
+                    <div class="form-group-3d">
+                        <label class="form-label-3d">Shared Story & Memories</label>
+                        <textarea name="story_content" class="form-input-3d form-textarea-3d" 
+                                  placeholder="Share memories, experiences, or the story of your relationship with this companion..."
+                                  maxlength="2000"></textarea>
+                        <div class="character-count" id="storyCount">0/2000</div>
+                    </div>
+                </div>
+
+                <div class="create-actions-3d">
+                    <a href="/dashboard" class="btn-3d btn-glass-3d">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn-3d btn-primary-3d" id="createBtn">
+                        <i class="fas fa-magic"></i> Create Companion
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/cinematic-3d-effects.js') }}"></script>
+    <script>
+        // Character counters
+        const descriptionTextarea = document.querySelector('textarea[name="character_description"]');
+        const storyTextarea = document.querySelector('textarea[name="story_content"]');
+        const descriptionCount = document.getElementById('descriptionCount');
+        const storyCount = document.getElementById('storyCount');
+
+        descriptionTextarea.addEventListener('input', function() {
+            const count = this.value.length;
+            descriptionCount.textContent = `${count}/1000`;
+            descriptionCount.style.color = count > 900 ? '#ff6b6b' : 'rgba(255,255,255,0.6)';
+        });
+
+        storyTextarea.addEventListener('input', function() {
+            const count = this.value.length;
+            storyCount.textContent = `${count}/2000`;
+            storyCount.style.color = count > 1800 ? '#ff6b6b' : 'rgba(255,255,255,0.6)';
+        });
+
+        // Form submission
+        document.getElementById('createCompanionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const createBtn = document.getElementById('createBtn');
+            const originalText = createBtn.innerHTML;
+            
+            // Show loading state
+            createBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+            createBtn.disabled = true;
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+            
+            try {
+                const response = await fetch('/create-prabh', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Show success message
+                    showNotification('Companion created successfully! 🎉', 'success');
+                    
+                    // Redirect after delay
+                    setTimeout(() => {
+                        window.location.href = result.redirect || '/dashboard';
+                    }, 2000);
+                } else {
+                    throw new Error(result.error || 'Creation failed');
+                }
+            } catch (error) {
+                console.error('Creation error:', error);
+                showNotification(error.message || 'Failed to create companion. Please try again.', 'error');
+                
+                // Reset button
+                createBtn.innerHTML = originalText;
+                createBtn.disabled = false;
+            }
+        });
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? 'linear-gradient(135deg, #10b981, #059669)' : 
+                             type === 'error' ? 'linear-gradient(135deg, #ef4444, #dc2626)' : 
+                             'linear-gradient(135deg, #3b82f6, #1d4ed8)'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 15px;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                z-index: 3000;
+                animation: slideInRight 0.3s ease;
+                backdrop-filter: blur(10px);
+                max-width: 300px;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease forwards';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 4000);
+        }
+
+        // Add notification animations
+        const notificationStyles = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = notificationStyles;
+        document.head.appendChild(styleSheet);
+    </script>
+</body>
+</html>
